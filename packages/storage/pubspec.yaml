@@ -1,0 +1,25 @@
+name: ondam_storage
+description: >
+  Shared local storage foundation for both apps, split into two concepts per
+  technical-decisions.md §1-11: SecureStorageService (auth tokens and other
+  sensitive values) and LocalStorageService (easy mode, non-sensitive UI
+  settings). This package only provides the read/write primitives — actual
+  auth-token usage is Phase 2 work.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.12.2
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_secure_storage: ^9.2.4
+  shared_preferences: ^2.5.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

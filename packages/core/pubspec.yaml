@@ -1,0 +1,16 @@
+name: ondam_core
+description: >
+  Cross-cutting, framework-agnostic types shared by the ondam Senior and
+  Guardian apps (e.g. Failure). Pure Dart — no Flutter dependency, so domain
+  layers that depend on this package stay Flutter-free per architecture.md.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.12.2
+
+resolution: workspace
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.0

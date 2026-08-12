@@ -1,0 +1,16 @@
+name: ondam_models
+description: >
+  Shared domain models that both the Senior and Guardian apps need the same
+  shape for (e.g. AnalysisResult, GuardianLink). Pure Dart — no Flutter
+  dependency. Fields are skeletons only; no business logic yet.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.12.2
+
+resolution: workspace
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.0

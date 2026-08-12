@@ -1,0 +1,22 @@
+name: ondam_design_system
+description: >
+  Shared design tokens (colors/typography/spacing/radius/theme) and common
+  widgets (AppButton, AppTextField, AppCard, AppLoading, AppEmptyState,
+  AppError) used by both the Senior and Guardian apps. UI-spec.md is the
+  source of truth for the values here.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.12.2
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

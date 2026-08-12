@@ -1,0 +1,17 @@
+name: ondam_shared
+description: >
+  Placeholder for generic cross-app utilities (formatters, validators, etc.)
+  that don't yet exist. Intentionally empty — add real code here only when a
+  concrete need shows up in both apps; do not pre-populate with speculative
+  helpers.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.12.2
+
+resolution: workspace
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.0
