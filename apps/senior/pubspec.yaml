@@ -29,6 +29,8 @@ dependencies:
   ondam_storage:
     path: ../../packages/storage
   supabase_flutter: ^2.17.1
+  camera: ^0.12.0+2
+  permission_handler: 12.0.0
 
 dev_dependencies:
   flutter_test:

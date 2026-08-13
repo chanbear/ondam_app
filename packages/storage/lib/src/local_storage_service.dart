@@ -24,6 +24,16 @@ class LocalStorageService {
     await prefs.setString(key, value);
   }
 
+  Future<int> getInt(String key, {int defaultValue = 0}) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(key) ?? defaultValue;
+  }
+
+  Future<void> setInt(String key, int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(key, value);
+  }
+
   Future<void> remove(String key) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(key);

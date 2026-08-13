@@ -16,6 +16,12 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # AppRiskBadge/AppConfidenceIndicator render these domain enums directly —
+  # ondam_models has zero Flutter dependency, so this stays a one-directional,
+  # lightweight dependency (design_system -> models, never the reverse).
+  ondam_models:
+    path: ../models
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
