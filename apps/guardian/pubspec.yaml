@@ -28,11 +28,18 @@ dependencies:
     path: ../../packages/design_system
   ondam_storage:
     path: ../../packages/storage
+  supabase_flutter: ^2.17.1
+  mobile_scanner: ^7.1.2
+  permission_handler: 12.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  # Direct dep (not just transitive via ondam_storage) so widget/auth tests
+  # can call SharedPreferences.setMockInitialValues directly — same pattern
+  # as apps/senior.
+  shared_preferences: ^2.5.3
 
 flutter:
   uses-material-design: true
