@@ -7,3 +7,4 @@ export 'src/guardian_link.dart';
 export 'src/guardian_link_status.dart';
 export 'src/reliability_level.dart';
 export 'src/risk_level.dart';
+export 'src/user_role.dart';

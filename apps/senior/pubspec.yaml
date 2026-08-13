@@ -28,6 +28,7 @@ dependencies:
     path: ../../packages/design_system
   ondam_storage:
     path: ../../packages/storage
+  supabase_flutter: ^2.17.1
 
 dev_dependencies:
   flutter_test:

@@ -28,3 +28,13 @@ final class ValidationFailure extends Failure {
 final class UnknownFailure extends Failure {
   const UnknownFailure([super.message = '알 수 없는 오류가 발생했습니다.']);
 }
+
+/// A feature whose backend doesn't exist yet (no Edge Function/AI service
+/// deployed). Distinct from [ServerFailure] — that means "the server tried
+/// and failed"; this means "there is nothing to call yet". Repositories
+/// must return this instead of attempting a call that would only fail by
+/// accident, and instead of fabricating a fake success (see Phase 4 rule:
+/// "Mock 분석 결과 생성 금지").
+final class UnavailableFailure extends Failure {
+  const UnavailableFailure([super.message = '이 기능은 아직 준비 중이에요.']);
+}

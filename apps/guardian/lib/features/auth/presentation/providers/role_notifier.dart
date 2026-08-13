@@ -1,0 +1,30 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ondam_core/ondam_core.dart';
+import 'package:ondam_models/ondam_models.dart';
+
+import 'auth_di_providers.dart';
+
+/// Roles currently held by the signed-in user. `build()` doubles as the
+/// router-support check ("does this user have any role yet") — the role
+/// selection page's redirect gate uses `hasValue && value.isNotEmpty`.
+class RoleNotifier extends AsyncNotifier<List<UserRole>> {
+  @override
+  Future<List<UserRole>> build() async {
+    final result = await ref.read(getRolesUseCaseProvider).call();
+    return switch (result) {
+      Ok(:final value) => value,
+      Err() => const [],
+    };
+  }
+
+  Future<Result<void>> addRole(UserRole role) async {
+    final result = await ref.read(addRoleUseCaseProvider).call(role);
+    if (result is Ok<void>) {
+      ref.invalidateSelf();
+    }
+    return result;
+  }
+}
+
+final roleNotifierProvider =
+    AsyncNotifierProvider<RoleNotifier, List<UserRole>>(RoleNotifier.new);
