@@ -1,0 +1,17 @@
+{
+  "_comment": "OPTIONAL. Merge the PostToolUse entry below into your PROJECT-level .claude/settings.json (create the file if it doesn't exist) to enable real tool-name-level activity in the dashboard for Claude Code sessions running in this repo. The dashboard works without this — you just get coarser 'status changed' activity instead of per-tool detail. This does NOT touch or replace any existing user-level hooks (e.g. ~/.claude/settings.json) — project-level and user-level hooks both run; adding this here does not disable anything else.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"<REPO_ROOT>/tools/agent-dashboard/hooks/dashboard-activity-hook.js\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

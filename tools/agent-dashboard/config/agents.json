@@ -1,0 +1,68 @@
+{
+  "_comment": "ONDAM Office 직원 registry. 여기 적힌 항목은 '연결되면 이 부서/역할로 보여준다'는 표시용 설정일 뿐, 실제 Claude Code Agent가 아니다. 'match'에 해당하는 실제 세션이 감지되지 않으면 그 자리는 항상 미출근(비어있음)으로 표시된다 — 가짜 인원을 채우지 않는다. name/role은 Claude Code가 제공하는 값이 아니라 이 파일에서 사용자가 정한 표시용 라벨이다. description/allowedPaths는 표시·문서화용 참고 정보다 — 실제 파일 접근 제한은 spawn 시 --append-system-prompt에 실리는 agent-spawner.js의 DEPARTMENT_SCOPE가 담당하며, 여기 값과 수동으로 동기화한다.",
+  "roster": [
+    {
+      "id": "lead-01",
+      "department": "management",
+      "role": "Lead / Architecture",
+      "displayName": "ONDAM Lead",
+      "description": "전체 작업 분배, 우선순위 결정, Agent 간 충돌 방지, 결과/QA/문서 검토, Phase 진행 관리. 직접 대규모 코드 수정은 지양.",
+      "allowedPaths": ["**"],
+      "match": { "kind": "interactive", "nameContains": ["management", "mgmt"] }
+    },
+    {
+      "id": "senior-01",
+      "department": "senior",
+      "role": "Senior App Flutter Engineer",
+      "displayName": "Senior App Developer",
+      "description": "apps/senior 어르신 앱 기능 구현.",
+      "allowedPaths": ["apps/senior/**"],
+      "match": { "nameContains": ["senior"] }
+    },
+    {
+      "id": "guardian-01",
+      "department": "guardian",
+      "role": "Guardian App Flutter Engineer",
+      "displayName": "Guardian App Developer",
+      "description": "apps/guardian 보호자 앱 기능 구현.",
+      "allowedPaths": ["apps/guardian/**"],
+      "match": { "nameContains": ["guardian"] }
+    },
+    {
+      "id": "frontend-01",
+      "department": "frontend",
+      "role": "UI / UX Engineer",
+      "displayName": "UI Engineer",
+      "description": "packages/design_system 공통 컴포넌트/토큰/문서. Senior/Guardian feature 내부 UI 직접 수정은 Management 승인 필요.",
+      "allowedPaths": ["packages/design_system/**"],
+      "match": { "nameContains": ["frontend", "ui", "design"] }
+    },
+    {
+      "id": "backend-01",
+      "department": "backend",
+      "role": "Supabase / Backend Engineer",
+      "displayName": "Backend Engineer",
+      "description": "supabase migration/RLS/Edge Function/data model.",
+      "allowedPaths": ["supabase/**"],
+      "match": { "nameContains": ["backend", "supabase", "edge function"] }
+    },
+    {
+      "id": "qa-01",
+      "department": "qa",
+      "role": "QA / Integration Engineer",
+      "displayName": "QA Engineer",
+      "description": "flutter analyze/test/build, regression, architecture validation. 기본 read-only — production 코드 수정은 Management 승인 후에만.",
+      "allowedPaths": ["apps/**/test/**"],
+      "match": { "nameContains": ["qa", "test"] }
+    },
+    {
+      "id": "docs-01",
+      "department": "docs",
+      "role": "Technical Writer",
+      "displayName": "Documentation Agent",
+      "description": "docs/** 를 실제 구현 상태와 동기화. 존재하지 않는 기능 문서화 금지.",
+      "allowedPaths": ["docs/**"],
+      "match": { "nameContains": ["doc", "documentation"] }
+    }
+  ]
+}
