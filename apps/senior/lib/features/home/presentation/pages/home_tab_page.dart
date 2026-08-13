@@ -6,6 +6,7 @@ import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/widgets/coming_soon_page.dart';
 import '../../../document_scan/presentation/pages/document_scan_camera_page.dart';
 import '../../../emergency_help/presentation/widgets/emergency_help_sheet.dart';
+import '../../../message_check/presentation/pages/message_check_entry_page.dart';
 import '../../../onboarding/presentation/pages/onboarding_flow_page.dart';
 import '../../../onboarding/presentation/providers/onboarding_status_provider.dart';
 import '../widgets/easy_mode_home_view.dart';
@@ -38,6 +39,12 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
     ).push(MaterialPageRoute(builder: (_) => const DocumentScanCameraPage()));
   }
 
+  void _openMessageCheck() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const MessageCheckEntryPage()));
+  }
+
   List<HomeFeatureItem> _features() {
     return [
       HomeFeatureItem(
@@ -50,7 +57,7 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
         icon: Icons.sms_outlined,
         label: '문자 확인',
         iconColor: AppColors.primary,
-        onTap: () => _openComingSoon('문자 확인'),
+        onTap: _openMessageCheck,
       ),
       HomeFeatureItem(
         icon: Icons.place_outlined,

@@ -1,12 +1,19 @@
 # Technical Decisions — Architecture 확정 및 보안 요구사항
 
-> 이 문서는 `feature-development` 착수 **이전** 단계 산출물이다. 실제 기능/API/DB/Provider 코드, Supabase 프로젝트, package 설치는 아직 진행하지 않는다.
+> v1~v6은 `feature-development` 착수 **이전** 단계 산출물이었다. **v7부터는 Phase 2(Authentication)가 실제로 구현된 상태를 반영한다** — 아래 결정 사항 중 Phase 2 관련 항목은 더 이상 계획이 아니라 실제 코드/DB migration/Edge Function으로 존재한다(§1-3-A 하단 "Phase 2 구현 완료 요약" 참고).
 >
 > **개정 이력**
 > - v1(초안): Backend/DB/인증/알림 등 11개 Architecture 결정 + 6개 UI 결정을 미확정 상태로 나열.
 > - v2: 사용자가 Architecture 결정 11개 전체와 UI 결정 5개를 확정. 확정 내용을 반영하고, 남은 진짜 미확정 사항만 `OPEN QUESTIONS`로 분리했다.
 > - v3: 신규 요구사항(음성 비서/쉬운 모드 Main 강화/카메라 플래시/답변 신뢰도/보호자 고지서 통계 동기화/관리자 시스템 PROPOSED)에 따른 미결정 사항 6개를 OPEN QUESTIONS에 추가하고, 전체 번호를 1~14로 재정리했다(§5).
-> - v4(이 버전): Phase 1(프로젝트 기반 구축)에서 "어르신 앱/보호자 앱을 하나의 앱으로 만들지, 별도 앱으로 만들지"가 **별도 2개 Flutter 앱 + Monorepo**로 확정되어 OPEN QUESTIONS 6번을 해소 처리했다. Monorepo 도구는 melos 대신 Dart/Flutter native pub workspace를 채택했다(근거는 `architecture.md` "저장소 구조" 참고).
+> - v4: Phase 1(프로젝트 기반 구축)에서 "어르신 앱/보호자 앱을 하나의 앱으로 만들지, 별도 앱으로 만들지"가 **별도 2개 Flutter 앱 + Monorepo**로 확정되어 OPEN QUESTIONS 6번을 해소 처리했다. Monorepo 도구는 melos 대신 Dart/Flutter native pub workspace를 채택했다(근거는 `architecture.md` "저장소 구조" 참고).
+> - v5: Phase 2 착수 전 OPEN QUESTIONS 1번(Supabase Auth OTP+PIN 결합 방식)을 설계·확정했다. **B안(PIN 검증은 Backend Edge Function이 전담, Session은 Supabase 표준 그대로 유지)**을 채택했다. 상세는 §1-3-A. 데이터 모델(§4)에 `pin_credentials`/`user_roles` 테이블을 추가하고 `users.pin_hash`/`users.role`을 제거했다. OPEN QUESTIONS를 15~18로 확장했다(§5).
+> - v6: Phase 2 실구현 전, Authentication 관련 OPEN QUESTIONS 15~18 중 15·16·17을 실제 기술 조사(웹 검색)를 거쳐 확정했다. 가장 중요한 변경: **PIN 해시를 Argon2id에서 bcrypt(pgcrypto)로 변경**(Supabase Edge Function의 2초 CPU 제한과 Deno Argon2 라이브러리의 낮은 성숙도가 근거) — §1-3-A. Role 동시허용(B안)과 idle timeout(Senior 15분/Guardian 5분)도 확정. 18번(Guardian 생체인증)은 OPEN 유지, 19번(idle timeout 설정 가능 여부) 신규 추가.
+> - v7: Phase 2(Authentication)를 실제로 구현했다. DB migration 4개(`user_roles`/`pin_credentials`/`pin_functions`+`has_pin`/`guardian_links`), Edge Function 5개(`set-pin`/`verify-pin`/`reset-pin`/`delete-account`/`has-pin` — 계획했던 최소 4개에 `has-pin`을 라우터 지원용으로 추가), Senior/Guardian 양쪽 앱의 Auth feature(domain/data/presentation) 전체, 라우터 3-state(+role) redirect, idle timeout(15분/5분)을 실제 코드로 구현했다. 상세는 §1-3-A 하단 "Phase 2 구현 완료 요약". Argon2id/bcrypt 등 이미 v6에서 확정된 결정 자체는 변경되지 않았다 — 실제 구현이 그 결정을 그대로 따랐음을 기록한다.
+> - v8: Phase 3(Senior/Guardian UI 골격, Design System 컴포넌트 13개)에 이어 Phase 4(문서 촬영 카메라+분석 요청 골격)를 구현했다. `AnalysisResult` 도메인 모델을 재검토해 Phase 4 요구사항에 이미 충분함을 확인(신규 필드 추가 없음). `packages/core`의 `Failure` 계층에 `UnavailableFailure`를 신규 추가(백엔드 부재를 서버 오류와 구분). 상세는 §6 "Phase 4 구현 완료 요약".
+> - v9: Phase 5(Connection) 착수 전 OPEN QUESTIONS 2번(보호자 연결 요청 입력 방식)을 **QR 코드 기반**으로 확정했다. 전화번호/연결 코드 직접 입력은 기본 방식으로 채택하지 않는다 — 어르신 앱이 서버 발급 단기 유효 토큰을 QR로 표시하고, 보호자 앱이 이를 스캔해 연결 요청(pending)을 생성하며, 어르신의 명시적 수락을 거쳐야 `accepted`가 된다. 상세는 §1-6. QR을 사용할 수 없는 상황의 fallback 방식은 이번에 함께 결정하지 않고 신규 OPEN QUESTIONS 20으로 남겼다(§5).
+> - v10: Phase 6(Guardian 핵심 기능 + 고지서 통계)을 실제로 구현했다. `analysis_results` 테이블을 신규 migration으로 만들고, §2 item 6("위험 문자 원문/분석 결과는 (a) 본인, (b) accepted 보호자만 조회 가능")을 그대로 RLS 2개(select-only)로 구현했다 — client에는 어떤 insert/update/delete 정책도 주지 않는다. **OPEN QUESTIONS #12(고지서 통계 최종 데이터 항목)는 이번에도 확정하지 않았다** — Phase 6 완료 조건이 이 결정을 전제하지 않도록, 통계는 스키마 무관 집계(건수)만 구현하고 고지서 구조화 필드는 제네릭하게 나열만 한다. 차트 라이브러리(Decision 3, ui-component-spec.md)도 여전히 추가하지 않았다. 상세는 `implementation-plan.md` Phase 6 항목.
+> - **v11(이 버전)**: Phase 7(위험 문자 확인, `message_check`)을 실제로 구현했다. OPEN QUESTIONS #4(Android SMS 패키지 선정)를 `flutter_sms_inbox` 기반 실제 SMS inbox 자동 조회로 DECIDED 처리했다 — Android는 실제 SMS 접근, iOS는 자동 접근 없이 복사/붙여넣기+직접 입력(Play Store 정책은 이번 구현 판단에서 고려하지 않음, 사용자 명시적 결정). `message_check`은 자체 분석 결과 모델을 만들지 않고 기존 `AnalysisResult`/`RiskLevel`/`document_scan`의 `UnavailableFailure` 패턴을 그대로 재사용했고, `AnalysisResultView`를 `document_scan`에서 `apps/senior/lib/core/widgets/`로 승격해 두 feature가 공유하도록 리팩터링했다. Guardian 앱은 Phase 6에서 이미 `AnalysisType.message`를 "문자 확인"으로 분기 처리하고 있어 변경이 필요 없었다(코드 확인 완료). 상세는 §1-9, `implementation-plan.md` Phase 7 항목.
 >
 > 함께 읽는 문서: `docs/product/implementation-plan.md`(Phase별 실행 계획), `docs/product/feature-spec.md`, `docs/architecture/architecture.md`, `docs/ui/ui-spec.md`.
 
@@ -18,10 +25,10 @@
 |---|---|---|
 | 1 | Backend | **Supabase** (커스텀 서버 미사용) |
 | 2 | Database | **PostgreSQL** (Supabase 기본 제공) |
-| 3 | 인증 | **전화번호 + OTP(가입 시) + PIN(평상시 로그인)**, 중요 작업(보호자 연결/계정 복구/보안정보 변경)에 추가 인증 |
+| 3 | 인증 | **전화번호 + OTP(가입 시) + PIN(평상시 로그인)**, 중요 작업(보호자 연결/계정 복구/보안정보 변경)에 추가 인증. **PIN 검증은 100% Backend Edge Function 담당(B안), Session은 Supabase 표준 유지 — 상세 §1-3-A** |
 | 4 | 보호자 알림 | **Push(FCM) 기본 + 서버에 알림 상태 저장**, SMS는 보조 수단으로 확장 가능하게 설계만 |
 | 5 | 어르신-보호자 관계 | **어르신 1 : 보호자 N (1:N) 기본**, DB는 관계 테이블로 N:M 확장 여지를 막지 않음 |
-| 6 | 보호자 연결 인증 | **어르신 수락(승인) 방식** — 전화번호만으로 즉시 연결 금지 |
+| 6 | 보호자 연결 인증 | **어르신 수락(승인) 방식** — 전화번호만으로 즉시 연결 금지. 요청 트리거는 **QR 코드**(서버 발급 단기 유효 토큰, PII 미포함) — v9 확정, §1-6 |
 | 7 | 위험 문자 판단 | **서버 측 AI 판단 기본**, API Key는 클라이언트에 절대 두지 않음(Edge Function 처리) |
 | 8 | 사진/문서 원본 | **분석 완료 후 즉시 삭제 기본**, 사용자가 명시적으로 요청 시에만 별도 보관 정책 적용 가능하게 확장 설계 |
 | 9 | Android SMS | **Android 전용 DataSource로 격리**, iOS는 직접 읽기 시도하지 않고 대체 Flow(붙여넣기/공유/직접입력/기능제한) |
@@ -59,7 +66,215 @@ Supabase의 PostgreSQL을 그대로 사용. 어르신/보호자/연결/분석/�
 ```
 
 - 평상시 로그인에 매번 OTP를 요구하지 않는 이유: 어르신 사용자의 접근성(문자 확인·입력 반복이 인지 부담)을 고려한 결정. **이 방향은 확정**이며, `feature-spec.md` KEEP-1("전화번호+PIN 로그인 유지")과 상충하지 않는다 — 가입 시 OTP 1회 추가 + 평상시는 기존과 동일한 PIN 로그인이므로 KEEP 항목은 "가입 시 OTP 추가"로 세부 보강만 필요(§6에서 갱신).
-- PIN 자체의 저장/검증 메커니즘은 §2(보안 요구사항)에서 별도로 다룬다.
+- PIN 자체의 저장/검증 메커니즘, Supabase Auth Session과의 결합 방식은 아래 **§1-3-A**에서 확정한다(구 OPEN QUESTIONS 1번).
+
+### 1-3-A. OTP+PIN+Supabase Auth Session 결합 방식 — 확정 (구 OPEN QUESTIONS 1번)
+
+> 이 절은 Phase 2(Authentication) 착수 전 `technical-decisions.md` OPEN QUESTIONS 1번을 해소하기 위해 별도로 설계한 세부 Architecture다. §5에서는 이 항목을 `DECIDED`로 표시하고 상세 내용은 이 절을 가리킨다.
+
+#### 최종 선택: **B안 — PIN 검증을 100% Backend(Edge Function)에서 관리**
+
+A안(PIN을 앱 로컬 인증으로만 처리)은 기각한다. 4자리 PIN은 경우의 수가 10,000가지뿐이라, PIN 해시를 기기에 저장해두고 로컬에서 비교하는 순간 — 기기가 탈취/루팅되면 오프라인 무차별 대입에 사실상 무방비가 된다(느린 해시 알고리즘을 써도 10,000번은 금방 끝난다). C안(PIN 전용 별도 인증 레이어 신설)은 이번 단계에서는 과설계로 판단 — 아래 설계의 "앱 재진입 게이트"가 C안이 주려는 이점(세션이 살아있어도 재인증 요구)을 별도 토큰 시스템 없이도 충분히 제공한다.
+
+#### 핵심 원칙: Session과 PIN은 완전히 분리된 두 개념이다
+
+| 개념 | 정체 | 수명주기 | 저장 위치 |
+|---|---|---|---|
+| **Supabase Auth Session** | 표준 GoTrue access/refresh token | Supabase SDK가 표준대로 관리(발급/자동갱신/만료) — 앱이 이 동작에 개입하지 않는다 | 각 앱의 Secure Storage(SDK 내부 위임) |
+| **PIN 상태** | "지금 이 사람이 이 세션을 써도 되는가"를 매번 재확인하는 앱 자체 게이트 | 앱을 새로 열 때마다(cold start) 또는 idle timeout 경과 후 **항상 초기화**됨 — 로컬에 "PIN 확인됨" 상태를 영속화하지 않는다 | `pinVerifiedProvider`(각 앱의 인메모리 Riverpod 상태, `core/storage`가 아닌 순수 메모리 — **디스크에 저장 금지**) |
+
+이 둘을 절대 같은 저장소/같은 토큰으로 섞지 않는다(사용자 원칙 7을 문자 그대로 구현).
+
+#### 흐름 1 — 최초 가입
+
+```
+전화번호 입력
+  ↓
+Supabase Phone OTP 발송(auth.signInWithOtp)
+  ↓
+OTP 코드 검증(auth.verifyOtp) → Supabase Auth 유저 생성 + Session 발급(Supabase 표준 동작)
+  ↓
+PIN 설정 화면 (이미 유효한 Session이 있으므로 Authorization 헤더로 신원 증명됨)
+  ↓
+클라이언트 → `set-pin` Edge Function 호출 (평문 PIN 전송, HTTPS)
+  ↓
+Edge Function: auth.uid()로 본인 확인 → DB 함수 호출(pgcrypto로 PIN을 bcrypt 해시, v6 확정) → `pin_credentials` 테이블에 저장
+  ↓
+가입 완료. `pinVerifiedProvider = true`로 세팅(방금 본인이 설정했으므로), 온보딩 계속 진행
+```
+
+#### 흐름 2 — 앱 재진입(이미 로그인된 기기, Session은 로컬에 유효)
+
+```
+앱 실행(cold start) 또는 idle timeout 경과
+  ↓
+라우터 가드: Supabase SDK에 유효한 Session이 있는가? → 있음
+  ↓
+라우터 가드: `pinVerifiedProvider`가 true인가? → **항상 false**(재실행 시 초기화됨) → PIN 입력 화면으로 이동
+  ↓
+사용자가 PIN 입력 → 클라이언트 → `verify-pin` Edge Function 호출 (phone 또는 auth.uid() + PIN)
+  ↓
+Edge Function: `pin_credentials`에서 lockout 상태 확인 → 해시 비교
+  ├── 실패 → failed_attempts 증가, 필요 시 locked_until 설정, 401 반환
+  └── 성공 → failed_attempts 리셋, 200 반환
+  ↓
+클라이언트: 200 응답 받으면 `pinVerifiedProvider = true`로 세팅 → 게이트 해제, 홈 화면 진입
+```
+
+**세션 자체는 다시 발급받지 않는다** — 이미 SDK가 들고 있는 Session을 그대로 쓴다. `verify-pin`은 오직 "PIN이 맞는지"만 서버에서 확인해줄 뿐이다. 이 설계 덕분에 PIN 무차별 대입은 반드시 이 Edge Function을 거쳐야 하고, `pin_credentials.failed_attempts`/`locked_until`은 클라이언트가 건드릴 수 없는 서버 측 상태이므로 우회 불가능하다(사용자가 지적한 "PIN brute force via API" 위협에 대한 직접적 방어).
+
+#### 흐름 3 — 새 기기 로그인
+
+```
+전화번호 입력(새 기기 — 로컬에 Session 없음)
+  ↓
+라우터 가드: 유효한 Session 없음 → OTP 화면으로 강제 이동(PIN 화면으로 가지 않음, 검증할 로컬 세션이 없으므로 무의미)
+  ↓
+Supabase Phone OTP 발송/검증 → 기존 phone에 매칭되는 기존 Supabase Auth 유저로 Session 발급(Supabase가 phone 기준 기존 유저 인식)
+  ↓
+기존 PIN 그대로 유효(서버의 `pin_credentials`에 이미 저장되어 있으므로) — "기존 PIN 입력" 또는 "새 PIN으로 재설정" 중 선택 제공
+  ↓
+어느 쪽이든 통과하면 `pinVerifiedProvider = true`, 새 기기의 Secure Storage에 새 Session(refresh token) 저장
+```
+
+#### 흐름 4 — PIN 분실
+
+```
+로그인 화면의 "PIN을 잊으셨나요?"
+  ↓
+전화번호 확인 → Supabase Phone OTP 재발송/검증(원칙 6: 보안상 중요한 상황의 OTP 재검증)
+  ↓
+성공 → `reset-pin` Edge Function 호출 → 새 PIN 설정, 기존 pin_hash 덮어씀, failed_attempts/locked_until 초기화
+```
+
+#### 흐름 5 — 로그아웃
+
+```
+클라이언트: `pinVerifiedProvider`를 false로 리셋
+  ↓
+Supabase `auth.signOut()` 호출 → 서버가 refresh token을 명시적으로 revoke(rotating refresh token이므로 재사용 탐지도 됨)
+  ↓
+Secure Storage에서 Session 관련 캐시 정리(SDK가 관리하는 영역 포함)
+```
+
+#### 흐름 6 — 계정 탈퇴
+
+```
+`delete-account` Edge Function(서비스 롤 권한으로 실행)
+  ↓
+`pin_credentials` row 삭제 + `user_roles` row 삭제 + auth.admin.deleteUser() 호출
+  ↓
+연쇄 삭제: guardian_links/analysis_results/schedules 등은 FK ON DELETE CASCADE 또는 명시적 삭제(§2-10 정책과 동일)
+```
+
+#### PIN 정책 확정값
+
+- **자릿수**: 4자리 숫자 유지(기존 앱 UX, 고령층 접근성 고려 — KEEP-1과 일관). 브루트포스 방어는 자릿수가 아니라 서버 lockout으로 확보한다.
+- **해시**: **bcrypt(pgcrypto) — v6에서 Argon2id에서 변경 확정. 근거는 아래 "PIN 해시 알고리즘 기술 검증(구 OPEN QUESTIONS 16)" 참고.**
+- **앱 재진입 idle timeout**: Senior 15분 / Guardian 5분 — v6 확정. 근거는 아래 "앱 재진입 idle timeout(구 OPEN QUESTIONS 17)" 참고.
+- **잠금 정책**: 5회 연속 실패 → 5분 잠금. 추가 5회(누적 10회) → 30분 잠금. 이후 실패마다 지수 백오프(최대 24시간) 또는 OTP 재인증 강제 전환. 성공 시 `failed_attempts` 즉시 리셋.
+- **저장 위치**: `pin_credentials` 전용 테이블. `users`(프로필) 테이블과 분리하고, 클라이언트/anon/authenticated 어떤 role도 이 테이블에 직접 SELECT/INSERT/UPDATE 권한을 갖지 않는다(RLS로 전면 차단, 오직 서비스 롤을 쓰는 Edge Function만 접근) — §2-3 RLS 원칙과 동일한 defense-in-depth.
+- **클라이언트 로컬 저장**: PIN 원문·해시 어느 것도 클라이언트에 저장하지 않는다(로컬 저장소에는 PIN에 관한 어떤 파생값도 남기지 않음 — 사용자 요구 "평문 저장 금지, 단순 암호화만 해서 저장하는 방식도 사용 안 함"을 가장 강하게 만족하는 방법은 **저장 자체를 안 하는 것**).
+
+#### Session ↔ PIN 상태를 분리 유지하는 구현 지침
+
+- Supabase SDK의 자동 토큰 갱신(autoRefreshToken)은 표준 설정 그대로 둔다 — 이 동작을 앱이 막거나 흉내내지 않는다.
+- "PIN 게이트"는 순수하게 **화면 접근 제어**로 구현한다: 각 앱의 `app/router/`에 `redirect` 콜백을 추가해 `hasValidSession && !pinVerified`이면 PIN 입력 화면으로, `!hasValidSession`이면 로그인(전화번호) 화면으로 보낸다. Backend API 호출 권한 자체(RLS)는 Session만으로 이미 정상 동작하므로 건드리지 않는다 — PIN 게이트는 "UI 접근"만 막는 앱 차원의 추가 안전장치다.
+- `pinVerifiedProvider`는 `autoDispose` 없이 앱 최상위 `ProviderScope` 수명과 함께하되, **앱 프로세스가 재시작되면 무조건 초기값(false)**이어야 한다 — 즉 어떤 형태로든 디스크에 캐시하면 안 된다(`riverpod.md`의 "화면 하나에서만 쓰는 상태는 전역 Provider로 만들지 않는다" 원칙과 다른 이유로 keepAlive를 쓰되, 영속화는 명시적으로 금지).
+
+#### PIN 해시 알고리즘 기술 검증 — 확정 (구 OPEN QUESTIONS 16, v6)
+
+> 웹 조사로 실제 Supabase Edge Function 환경에서의 운영 가능성을 확인한 결과다(공식 문서/GitHub 기준, 아래 근거 참고).
+
+**확인된 사실**:
+1. **Supabase Edge Function은 요청당 CPU 시간이 최대 2초, 메모리 256MB로 제한된다**(Supabase 공식 Limits 문서). 이는 요청 처리 전체(파싱/DB 조회/해시 계산 등)에 대한 예산이며, Argon2id 같은 메모리 하드 KDF를 OWASP 권장 파라미터(예: m=19~47MB, t=1~2)로 계산하면 WASM 실행 오버헤드(네이티브 대비 통상 2~5배 느림) + cold start 시 WASM 모듈 컴파일 비용까지 겹쳐 이 예산에 근접하거나 초과할 위험이 실측 없이는 배제되지 않는다.
+2. **Deno 생태계의 "검증된" Argon2 라이브러리(`deno.land/x/argon2`)는 네이티브 플러그인(FFI, `--allow-plugin` 필요) 방식**이다 — Supabase의 샌드박스형 Edge Runtime은 이런 임의 네이티브 플러그인 로딩을 허용하지 않을 가능성이 매우 높아(다중 테넌트 보안 격리가 핵심 설계 목표이므로), 사실상 배제된다.
+3. **순수 WASM 기반 Argon2 대안**(`argontwo`, `hash-wasm`, `openpgpjs/argon2id`)은 기술적으로 `npm:` 임포트를 통해 동작할 여지가 있으나: `argontwo`는 커밋 9개뿐으로 유지보수 신호가 약함, `hash-wasm`은 최종 릴리즈가 약 2년 전으로 정체 상태, `openpgpjs/argon2id`가 그나마 가장 활발하고 신뢰할 만한 조직(OpenPGP.js)이 유지하는 옵션이나 **Supabase Edge Function 환경에서의 실사용 사례/벤치마크가 공개적으로 확인되지 않는다**.
+4. **Supabase 자신도 자사 Auth(GoTrue)의 비밀번호 해시에 bcrypt를 쓴다**(공식 문서 확인). 커뮤니티의 "Edge Function에서 커스텀 인증 구현" 예제들도 일관되게 `bcrypt`/`bcrypt.compare`를 사용한다 — 이는 실제로 이 정확한 시나리오(Edge Function에서 자체 자격증명 해시 검증)에서 검증된 실무 패턴이다.
+5. **PostgreSQL의 `pgcrypto` 확장은 `crypt()`/`gen_salt('bf', ...)`로 bcrypt를 네이티브(C) 속도로 지원한다.** Argon2는 지원하지 않는다.
+
+**결론(확정)**: **Argon2id 대신 bcrypt를 채택한다.** 더 나아가, 해시 계산 자체를 Edge Function(Deno/WASM)이 아니라 **PostgreSQL의 `pgcrypto` 확장을 사용하는 `SECURITY DEFINER` DB 함수**(`set_pin(uid, pin)`, `verify_pin(uid, pin)` 등)로 구현할 것을 권장한다. 이렇게 하면:
+- Deno/WASM Argon2 라이브러리의 유지보수·호환성 리스크를 원천적으로 제거.
+- 해시 계산이 Edge Function의 2초 CPU 예산과 무관하게 Postgres 엔진 내부(C로 컴파일된 확장)에서 실행되어 타임아웃 리스크가 사라짐.
+- Edge Function(`set-pin`/`verify-pin`/`reset-pin`)은 얇은 오케스트레이션 계층(요청 검증, lockout 카운터 조회, DB 함수 호출, 세션 관련 응답 구성)으로 단순해짐.
+- Supabase 자신의 내부 구현(bcrypt)과 일치해 향후 유지보수 부담이 낮다.
+
+**PIN이 4자리라는 점에서 이 선택이 안전한 이유**: PIN 브루트포스 방어의 1차 방어선은 애초에 해시 알고리즘의 계산 비용이 아니라 **서버 측 lockout 정책**(§ "PIN 정책 확정값")이다. Argon2id의 우위(GPU/ASIC 병렬화 저항)는 키 공간이 큰 일반 비밀번호에서 두드러지는데, PIN의 키 공간은 애초에 10,000가지뿐이라 그 우위가 상대적으로 작다. 반대로 bcrypt는 cost factor(예: 10~12)로 offline 대입 시간을 의미 있게 늘리면서도(수백ms/회) Edge Function 예산 안에서 예측 가능하게 동작한다는 실무적 이점이 훨씬 크다.
+
+**대체안 비교(참고)**:
+
+| 기준 | Argon2id(WASM) | **bcrypt via pgcrypto — 채택** | PBKDF2 |
+|---|---|---|---|
+| Supabase Edge Function 호환성 | 불확실(벤치마크 없음, 2초 CPU 예산 리스크) | **확실(Postgres 네이티브, Edge Function 예산과 무관)** | 확실(가볍지만 반복 횟수 낮으면 약함) |
+| 라이브러리 유지보수 | 약함~보통(후보들 대부분 정체) | **강함(Postgres 코어 확장, 수십 년 검증)** | 강함(표준 라이브러리 수준) |
+| PIN(4자리) 시나리오 적합성 | 과설계(이점이 서버 lockout에 가려짐) | **충분(cost factor로 조절 가능)** | 충분하나 업계 권장도가 bcrypt보다 낮음 |
+| 구현 난이도 | 높음(WASM 임포트+벤치마크+파라미터 튜닝 필요) | **낮음(SQL 함수 몇 줄)** | 낮음 |
+
+#### 앱 재진입 idle timeout — 확정 (구 OPEN QUESTIONS 17, v6)
+
+- **Senior App: 15분.** 고령 사용자는 전화를 받거나 TV를 보는 등 앱을 잠깐 두고 자리를 뜨는 일이 잦다 — 너무 짧은 timeout(1~5분)은 정상 사용 흐름에서도 PIN을 자주 요구해 "평상시엔 OTP 없이 PIN만" 원칙의 접근성 취지를 해친다. 그렇다고 30분 이상은 분실/방치된 기기의 노출 시간을 과도하게 늘린다. 일반적인 모바일 뱅킹 앱들의 idle timeout 관행(5~15분)과도 정합되는 15분을 기본값으로 채택.
+- **Guardian App: 5분.** 보호자는 상대적으로 기기 조작에 익숙하고, 부모의 민감한 개인정보(위험 문자 원문, 연락처 등)를 다루므로 Senior 앱보다 짧게 재확인한다.
+- 두 값 모두 **Phase 2에서는 고정값**으로 시작한다. 사용자가 값을 직접 조정할 수 있게 설정 UI를 제공할지는 이번에 다루지 않는 후속 개선사항으로 **OPEN QUESTIONS 19**에 남긴다.
+
+#### Guardian 생체인증 — OPEN 유지 (구 OPEN QUESTIONS 18, v6)
+
+**Phase 2 범위에는 포함하지 않는다.** 이유:
+- 생체인증(FaceID/TouchID/Android BiometricPrompt)이 성공했을 때 앱이 실제로 "무엇을 서버에 제출해 세션을 언락할지"가 문제다. PIN 자체를 로컬에 캐시해뒀다가 생체인증 성공 시 자동 제출하는 방식은 "PIN을 로컬에 저장하지 않는다"는 원칙 4를 정면으로 위반한다.
+- 이를 피하려면 PIN과 별개로 "생체인증으로 보호되는 별도의 장기 device credential"을 새로 설계해야 하는데, 이는 사실상 새 자격증명 체계를 하나 더 만드는 것이라 B안 대비 복잡도가 C안에 가까워진다. 지금 시점에 Guardian 생체인증 하나를 위해 들일 복잡도로는 정당화하기 어렵다고 판단.
+- `local_auth`(Flutter 공식 지원 패키지)로 Android/iOS 구현 자체의 난이도는 낮으므로, 향후 "PIN 대신"이 아니라 "PIN 검증 요청을 로컬에서 트리거하는 편의 기능"(여전히 서버 `verify-pin` 호출은 필요, 별도 device credential 발급 포함)으로 재설계해 추가하는 것은 유효한 후속 과제로 남긴다.
+- **Status: OPEN.** 기술적으로 불가능하지 않지만, 이번 Phase 2에서 결정할 문제가 아니라 별도 설계 라운드가 필요하다.
+
+#### Role 관리 — "앱 이름으로 role을 신뢰하지 않는다" (구 OPEN QUESTIONS 15 — 확정, v6)
+
+- `auth.users`(Supabase Auth)는 Senior/Guardian 두 앱이 **공유하는 단일 사용자 풀**이다 — 전화번호가 유일 식별자이며, 앱과 무관하게 같은 전화번호는 같은 `auth.users` row로 귀결된다.
+- Role은 앱 종류가 아니라 **`user_roles` 테이블**(신규, `user_id`, `role`— `elder`/`guardian`, 복수 row 허용)이 진실의 원천이다. 온보딩에서 "저는 어르신입니다/보호자입니다"를 선택하면 해당 row가 INSERT된다.
+- 데이터 접근 RLS 정책은 **요청이 어느 앱 번들에서 왔는지를 절대 신뢰하지 않고**, 항상 `user_roles`에 실제로 해당 role이 존재하는지로 권한을 검사한다(예: `guardian_links`에 보호자로서 쓰기 작업을 하려면 RLS가 `auth.uid()`가 `user_roles`에 `role='guardian'`으로 있는지 확인).
+- **확정(B안 — 동시 허용)**: 동일 전화번호가 Senior/Guardian 양쪽 role을 동시에 가질 수 있도록 허용한다. 근거:
+  - `user_roles`를 이미 N:M 구조로 설계해뒀다(A안을 택하려면 오히려 "전화번호당 1 role" 제약을 역으로 추가해야 해 이미 만든 구조를 좁히는 방향).
+  - 실사용에서 "부모님 기기를 설정해주다가 실수로 본인 번호로 어르신 앱에 가입"처럼 앱을 잘못 사용하는 상황이 드물지 않다 — A안(원천 차단)은 이런 상황에서 사용자가 스스로 복구하기 어려운 막다른 골목을 만든다. B안(허용)은 이런 실수를 온보딩 안내로 부드럽게 처리할 수 있다.
+  - 향후 관리자 시스템 관점에서도 "한 사용자가 여러 role을 가질 수 있다"는 데이터 모델이 예외 케이스가 아니라 정상 케이스로 다뤄지는 편이 더 유연하다.
+  - **온보딩 UX 보완**: 이미 다른 role로 가입된 전화번호로 새 앱에 가입을 시도하면 완전히 막지 않되 "이 번호는 이미 온담 [어르신/보호자] 앱에 가입되어 있어요. 계속 진행하시겠어요?" 같은 안내를 표시한다(무음 허용도, 완전 차단도 아닌 절충).
+  - **자기 자신을 보호자로 연결하는 어뷰징 방지**: `guardian_links` 생성 시 `elder_id != guardian_id`를 애플리케이션/DB 제약(CHECK 제약 또는 트리거)으로 명시적으로 막는다 — B안 채택에 따라 새로 필요해진 유일한 추가 제약.
+
+#### A/B/C 비교
+
+| 기준 | A안(로컬 인증) | **B안(서버 관리) — 채택** | C안(별도 인증 레이어) |
+|---|---|---|---|
+| 보안(브루트포스) | 취약(기기 탈취 시 오프라인 대입 무방비) | **강함(서버 lockout으로 원천 차단)** | 강함(단, B안과 동일한 서버 검증이 필요해 결국 B안을 포함) |
+| Session 탈취 방지 | Session과 PIN 개념이 얽히기 쉬움 | **완전 분리(원칙 7 충족)** | 완전 분리(추가 토큰 레이어로 더 복잡하게 분리) |
+| UX | 오프라인에서도 빠름 | 매 재진입마다 네트워크 필요(단, 응답 매우 가벼움) | A/B와 동일하거나 더 느림(레이어 추가) |
+| 구현 난이도 | 낮음 | **중간**(Edge Function 3~4개 필요) | 높음(별도 토큰 발급/검증 시스템 신설) |
+| Supabase와의 궁합 | 좋음(로컬 완결) | **좋음**(Supabase 표준 Session은 그대로, PIN만 별도 관리) | 보통(Supabase Session과 별개로 자체 토큰 체계를 유지해야 해 이중 관리 부담) |
+| Senior App 적합성 | 보통(오프라인 진입은 빠르나 보안 취약이 더 치명적 — 고령층 대상일수록 피싱/탈취 피해에 취약) | **좋음** | 좋음(과설계 대비 이득 적음) |
+| Guardian App 적합성 | 보통 | **좋음** | 좋음(과설계 대비 이득 적음) |
+| 새 기기 대응 | 별도 설계 필요(로컬 해시가 없으므로 사실상 OTP로 우회) | **자연스러움**(OTP 재인증 후 기존 PIN 그대로 유효) | 자연스러움(B안과 동일 메커니즘 필요) |
+| PIN 분실 대응 | 로컬 초기화만 가능, 서버와 정합성 깨지기 쉬움 | **OTP 재인증 → 서버 PIN 재설정으로 깔끔** | 동일 |
+| 계정 탈퇴 대응 | 로컬 삭제만으로는 서버 데이터 잔존 위험 | **서버가 진실의 원천이므로 삭제도 서버가 원자적으로 처리** | 동일 |
+| 향후 관리자 시스템 확장성 | 무관 | **무관 — 관리자 인증은 완전히 별도 경로(예: 이메일+비밀번호)로, 이 결정과 독립적** | 무관(동일) |
+
+**결론**: C안이 주는 이점(세션이 살아있어도 재인증)은 B안의 "앱 재진입 게이트"로 별도 토큰 시스템 없이 동일하게 달성되므로, B안 대비 C안의 추가 복잡도를 정당화할 이유가 없다. B안을 최종 채택한다.
+
+#### Phase 2 구현 완료 요약 (v7)
+
+위 설계가 실제로 어떻게 구현됐는지 기록한다. 설계 자체(B안, bcrypt/pgcrypto, lockout 정책, idle timeout 값 등)는 변경되지 않았다 — 아래는 "실제로 그 설계를 어떤 파일/구조로 옮겼는지"의 기록이다.
+
+**DB migration (`supabase/migrations/`, 4개, 순서대로 적용)**
+1. `20260812000001_create_user_roles.sql` — `user_roles` 테이블 + RLS(본인 행만 select/insert).
+2. `20260812000002_create_pin_credentials.sql` — `pgcrypto` extension 활성화 + `pin_credentials` 테이블. RLS 활성화 상태로 `authenticated`/`anon`/`public` 모든 grant를 revoke — 클라이언트의 직접 접근이 RLS 정책 부재가 아니라 이중으로(RLS + grant revoke) 차단됨.
+3. `20260812000003_pin_functions.sql` — `set_pin`/`verify_pin`(설계대로) + **`has_pin`(설계 문서에는 없던 추가 함수)**. `has_pin(uid) returns boolean`은 PIN 해시 자체는 절대 노출하지 않고 "PIN이 설정되어 있는가"만 반환한다 — 라우터가 PIN 설정 화면과 PIN 입력 화면 중 어디로 보낼지 결정하는 데 필요해서 구현 중 추가했다. 세 함수 모두 EXECUTE는 `service_role`에만 부여.
+4. `20260812000004_create_guardian_links.sql` — `guardian_links` 테이블 + `elder_id <> guardian_id` CHECK 제약(설계대로) + 본인 관련 행 select RLS만. INSERT/UPDATE(연결 요청·수락·거절·해제) 정책은 의도적으로 이번 범위에 넣지 않았다 — `connection` 기능은 Phase 5이므로, 그 기능의 migration에서 추가한다.
+
+**Edge Functions (`supabase/functions/`, 5개)**: `set-pin`/`verify-pin`/`reset-pin`/`delete-account`(설계된 최소 4개) + **`has-pin`**(위 `has_pin` DB 함수를 감싸는 얇은 오케스트레이션, 라우터 지원용으로 신규 추가). 공통 `_shared/{cors.ts, http.ts, auth.ts}`. `auth.ts`의 `verifyCaller()`가 설계된 "anon 클라이언트로 신원 확인 → service-role 클라이언트로 특권 RPC 호출" 2단계 패턴을 구현한다. `reset-pin`은 설계대로 `last_sign_in_at` 10분 이내 여부를 추가로 검사한다.
+
+**Flutter 구현 (양쪽 앱 동일 구조 — `apps/senior`, `apps/guardian` 각자 독립적으로 전체 구현, 서로 import하지 않음)**
+- `core/auth/`: `supabase_client_provider`(Supabase.instance.client를 Riverpod에 노출), `auth_state_provider`(Supabase Auth 상태 스트림), `pin_verified_provider`(메모리 전용 PIN 게이트), `auth_constants`(idle timeout 상수), `idle_timeout_controller`(`AppLifecycleListener` 기반, `shouldRelock()` 순수 함수로 분리해 유닛 테스트 가능하게 함).
+- `features/auth/domain/`: `entities/pin_verify_result.dart`, `repositories/auth_repository.dart`(추상), `usecases/`(OTP 요청/검증, PIN 설정/검증/재설정, 계정탈퇴, role 추가/조회, sign-out — 9개), `utils/phone_number_formatter.dart`(한국 휴대폰 번호 → E.164 정규화).
+- `features/auth/data/`: `datasources/auth_remote_datasource.dart`(Supabase Auth SDK + `user_roles` 테이블 직접 호출), `datasources/pin_remote_datasource.dart`(`SupabaseClient.functions.invoke`로 Edge Function 호출), `repositories/auth_repository_impl.dart`(SDK 예외 → domain `Failure` 매핑 — `api.md`의 "DataSource는 원본 예외를 던지고 Repository가 변환" 규칙을 Dio 대신 Supabase SDK 예외에 맞게 적용).
+- `features/auth/presentation/`: DI wiring(`auth_di_providers.dart`), `OtpNotifier`/`PinNotifier`/`RoleNotifier`(모두 `AsyncNotifier`, `riverpod.md`의 "AsyncValue로 노출, 수동 isLoading/error 금지" 준수), `hasPinProvider`(라우터 지원 캐시), 화면 7개(phone_input/otp_verify/pin_setup/pin_entry/pin_forgot/role_select/session_loading), `widgets/pin_keypad.dart`(feature-local — Senior는 큰 버튼 76px, Guardian은 표준 크기 56px, 디자인 토큰만 사용).
+- `packages/core`에 `Result<T>`(`Ok`/`Err`) 추가 — 이 프로젝트에는 `dartz`/`fpdart`가 없어 `api.md`의 "Either 또는 이에 준하는 명시적 성공/실패 표현" 요구를 충족하는 최소 구현. `packages/models`에 `UserRole` enum 추가.
+- 라우터(`app/router/app_router.dart`)는 리다이렉트 판단 로직을 `app/router/auth_redirect.dart`의 순수 함수 `decideAuthRedirect()`로 분리해 Supabase/Riverpod 없이 유닛 테스트 가능하게 했다. 상태: No Session → phone/OTP, Session+PIN 미설정 → PIN 설정, Session+PIN 설정+미검증 → PIN 입력, Session+PIN 검증+role 없음 → role 선택, 그 외 → home(Phase 3 placeholder).
+
+**설계 대비 변경/보완 사항**: (1) `has_pin` DB 함수 + `has-pin` Edge Function을 설계에 없던 것으로 추가(§4 데이터 모델에는 없었음, 순수 조회이므로 보안 영향 없음). (2) Role 선택 화면(`role_select_page`)을 신규 가입 흐름의 필수 단계로 라우터에 넣었다 — §1-3-A "Role 관리"의 "온보딩에서 선택" 문구를 실제 라우팅 단계로 구체화한 것.
 
 ### 1-4. 보호자 알림 — Push 기본 + 서버 상태 저장 확정
 
@@ -81,20 +296,29 @@ Supabase의 PostgreSQL을 그대로 사용. 어르신/보호자/연결/분석/�
   4. 연결된 보호자에게는 필요한 최소 정보만 제공한다(요약 정보만, 비밀번호/설정 등 비공개 — 기존 앱 원칙 유지).
 - `feature-spec.md`의 ADD(PROPOSED)-3("어르신 측 보호자 해제 기능")과 ADD(PROPOSED)-5("다중 보호자 등록 UI")는 이 결정으로 **PROPOSED에서 확정 요구사항으로 전환**한다(§6에서 `feature-spec.md` 갱신 반영).
 
-### 1-6. 보호자 연결 인증 — 어르신 수락 방식 확정
+### 1-6. 보호자 연결 인증 — QR 코드 기반 어르신 수락 방식 확정 (v9, 구 OPEN QUESTIONS 2번)
 
 ```
-보호자: 어르신 전화번호 또는 연결 코드 입력
-  → 연결 요청 생성
-  → 어르신 앱에 연결 요청 표시
-  → 어르신 확인 → 수락
-  → 연결 완료
+어르신: "보호자 연결" 화면 진입 → 서버가 단기 유효(수 분) 1회성 연결 토큰 발급 → QR로 표시
+  ↓ ("보호자에게 이 QR을 보여주세요")
+보호자: "어르신 연결하기" → QR 스캔 → 토큰을 서버로 전달
+  ↓
+서버: 토큰 유효성(미사용/미만료) + elder_id != guardian_id 검증
+  → guardian_links에 pending 상태로 연결 요청 생성
+  ↓
+어르신 앱: "OO님이 보호자 연결을 요청했습니다" 표시 → 어르신이 확인 → 수락(accepted) 또는 거절(rejected)
+  ↓
+연결 완료(accepted) — 이후 보호자 앱은 공유 허용 정보만 RLS로 제한 조회
 ```
 
-- 전화번호만으로 즉시 연결되는 기존 프로토타입 방식은 사용하지 않는다.
-- "전화번호" 또는 "연결 코드" 두 가지 입력 방식을 열어두되, 최종적으로 하나만 채택할지 병행할지는 `OPEN QUESTIONS`로 남긴다(§5의 2번).
-- `guardian_links` 테이블은 `status: pending | accepted | rejected | revoked` 상태를 가져야 한다.
-- `feature-spec.md`의 ADD(PROPOSED)-2("보호자 연결 2단계 인증")는 이 결정으로 **확정**(수락 방식 자체가 인증 장치) — 추가 OTP/연결 코드는 "필요하다면 추후 붙일 수 있도록 설계"까지만 확정, 최초 구현에 반드시 포함은 아님.
+- **전화번호 직접 입력, 연결 코드 직접 입력은 기본 연결 방식으로 채택하지 않는다** — v9에서 OPEN QUESTIONS 2번을 **QR 코드 기반**으로 DECIDED 처리했다(구 초안에 있던 "전화번호 또는 연결 코드" 문구는 폐기).
+- QR에는 전화번호/이름 등 개인정보나 추측 가능한 `user_id`를 직접 담지 않는다. 서버가 발급한 **단기 유효·1회성 연결 토큰** 문자열만 담는다.
+- **QR 스캔 성공 ≠ 연결 완료.** 스캔은 pending 연결 요청을 생성하는 트리거일 뿐이며, `accepted`가 되려면 반드시 어르신 본인의 명시적 승인을 거쳐야 한다(§1-5 필수요구사항 3 "보호자가 임의로 연결되는 구조를 만들지 않는다"와 일치). 거절도 가능해야 한다.
+- 서버는 토큰을 받으면 (1) 토큰이 유효/미사용/미만료인지, (2) 요청자와 토큰 소유 어르신이 다른 사용자인지(`elder_id != guardian_id`, 기존 CHECK 제약 유지)를 검증한 뒤에만 `guardian_links`에 pending row를 생성한다. **토큰만으로 클라이언트가 직접 `accepted` 상태를 만들 수 없다** — RLS로 차단.
+- `guardian_links` 테이블은 기존과 동일하게 `status: pending | accepted | rejected | revoked` 상태를 가진다.
+- QR을 사용할 수 없는 상황(카메라 미지원/권한 거부 등)을 위한 fallback 입력 방식은 이번 결정에 포함하지 않는다 — 전화번호/연결 코드를 기본 UX로 다시 도입하지 않으며, 별도 OPEN QUESTIONS로 남긴다(§5의 20번).
+- `feature-spec.md`의 ADD(PROPOSED)-2("보호자 연결 2단계 인증")는 이 결정으로 **확정**(QR 토큰 발급/검증 + 어르신 수락이 인증 장치) — 추가 OTP는 최초 구현에 포함하지 않는다.
+- **데이터 모델 영향(v9: 구현 완료)**: QR 토큰 발급/검증을 위해 `connection_tokens` 테이블 + `create_connection_token`/`redeem_connection_token` SECURITY DEFINER 함수를 신설했다. `guardian_links` UPDATE는 양측 모두 RLS로 행에 접근 가능하되, `pending→accepted/rejected`는 어르신만, `accepted→revoked`는 양측 모두 가능하도록 트리거로 전이를 검증한다(§4, `supabase/migrations/20260813000001~3`).
 
 ### 1-7. 위험 문자 판단 — 서버 측 AI 기본 확정
 
@@ -115,20 +339,31 @@ Android SMS → 앱에서 필요 데이터 추출 → Backend → Risk Detection
 - 사용자가 명시적으로 "문서 저장"을 요청하는 기능이 미래에 필요할 경우, 별도 보관 정책(보관 기간, 접근 권한)을 그때 설계한다 — 지금은 확장 여지만 남긴다.
 - `technical-decisions.md` v1 §4-6("사진 원본 처리 정책")은 이 결정으로 해소.
 
-### 1-9. Android SMS — 전용 DataSource 격리 확정
+### 1-9. Android SMS — 전용 DataSource 격리 확정 (v11: **Phase 7 구현 완료, 실제 구현 기준으로 갱신**)
+
+> **v11 완료 보고**: 아래 계획대로 Android는 실제 SMS inbox 자동 조회, iOS는 붙여넣기/직접 입력으로 구현 완료했다. Play Store SMS/Call Log 정책은 사용자 명시적 결정에 따라 이번 구현 판단에서 고려하지 않았다(§5 OPEN QUESTIONS 4번 DECIDED 참고). 상세는 `implementation-plan.md` Phase 7.
 
 ```
-message_check/
+apps/senior/lib/features/message_check/
 ├── domain/
+│   ├── entities/          # SmsMessage, SmsPermissionStatus(granted/denied/permanentlyDenied/unsupported)
+│   ├── repositories/       # SmsInboxRepository(Android 자동 조회), MessageRiskRepository(분석 요청)
+│   └── usecases/
 ├── data/
-│   ├── repositories/
-│   └── datasources/
-│       ├── sms_datasource.dart   # Android 전용 구현
-│       └── ...
+│   ├── datasources/
+│   │   ├── sms_permission_datasource.dart   # permission_handler Permission.sms 래핑
+│   │   └── android_sms_datasource.dart       # flutter_sms_inbox SmsQuery 래핑 — Android 전용
+│   └── repositories/
+│       ├── sms_inbox_repository_impl.dart              # Android 실제 구현
+│       ├── unsupported_sms_inbox_repository_impl.dart  # 비Android(iOS 등) — 항상 unsupported/UnavailableFailure
+│       ├── sms_inbox_repository_factory.dart            # Platform.isAndroid로 위 둘 중 선택(유일하게 platform 분기를 아는 지점)
+│       └── message_risk_repository_impl.dart             # 분석 백엔드 없음 — 항상 UnavailableFailure(document_scan과 동일 패턴)
+└── presentation/           # 권한 상태별 분기 UI(Android 목록/iOS 붙여넣기), AnalysisResultView 재사용(core/widgets로 승격)
 ```
 
-- iOS에서는 수신 SMS 직접 읽기를 시도하지 않는다. iOS 대체 Flow: 붙여넣기 / 공유 / 사용자 직접 입력 / 기능 제한 중 실제 구현 시점에 선택.
-- 실제 SMS 관련 패키지 선정은 **구현 Phase 착수 시점에 현재 Flutter/Android 정책을 재확인한 후 결정**한다(지금은 package 미설치 원칙 유지).
+- iOS에서는 수신 SMS 직접 읽기를 시도하지 않는다(구현 확인: iOS 코드 경로에 SMS 관련 API 호출 없음). iOS/비Android Flow: 클립보드 붙여넣기(비어있어도 오류 아님) + 직접 입력.
+- **실제 채택 패키지**: `flutter_sms_inbox: ^1.0.5`(2026-08 기준 최근 갱신, 순수 inbox 조회 전용 — 발신/수신 브로드캐스트 등 불필요한 권한을 요구하는 `telephony`/`another_telephony`류 대신 최소 권한 원칙에 맞춰 선정). `telephony`는 discontinued라 채택하지 않았다. Android manifest에는 `READ_SMS`만 추가했다(`RECEIVE_SMS`/`SEND_SMS`는 요청하지 않음).
+- 새 문자 자동 감지(실시간 리스너)는 이번 Phase 범위에 포함하지 않았다 — `SmsInboxRepository`는 1회성 조회(`fetchRecentMessages`)만 노출하도록 설계해, 필요해지면 별도 스트림 메서드를 추가할 수 있는 구조로 남겨두되 불필요한 백그라운드 서비스는 만들지 않았다.
 
 ### 1-10. Push Notification — FCM 확정
 
@@ -156,11 +391,10 @@ Local Storage  → 쉬운 모드, UI 설정, 비민감 사용자 설정
 
 > 이 절은 "결정"이 아니라, 위 Architecture 결정을 실제로 구현할 때 **반드시 검토해야 할 체크리스트**다. 세부 구현 방법은 각 Phase 착수 시점에 확정한다.
 
-1. **Supabase Auth로 전화번호 OTP + PIN 구조를 어떻게 구현할지**
-   - Supabase Auth는 Phone OTP(가입/로그인 시 매번 문자 인증)를 네이티브로 지원하지만, "평상시에는 PIN만으로 로그인"이라는 요구사항은 Supabase 기본 흐름과 정확히 일치하지 않는다.
-   - 검토 방향: (a) Supabase Phone OTP는 **가입 시 전화번호 소유 검증에만** 사용하고, 이후 로그인은 자체 PIN 검증 Edge Function(또는 Supabase Auth의 password 필드를 PIN 해시로 활용)으로 별도 세션을 발급하는 방식, (b) Supabase Auth 세션을 그대로 쓰되 PIN 검증을 거친 뒤에만 refresh token을 노출하는 방식. **최종 방식은 Phase 2 착수 시 결정**(§5의 1번).
-2. **PIN을 어떻게 안전하게 관리할지**
-   - PIN은 4자리 숫자로 전체 공간이 10,000가지뿐이라 무차별 대입에 매우 취약하다. 반드시 (a) 서버 측에서 해시(bcrypt/argon2 등) 저장, (b) 로그인 시도 횟수 제한/지수 백오프 또는 계정 잠금, (c) 클라이언트에 평문 PIN을 절대 저장하지 않을 것을 요구사항으로 명시한다.
+1. **Supabase Auth로 전화번호 OTP + PIN 구조를 어떻게 구현할지 — 확정, §1-3-A 참고**
+   - Supabase Phone OTP는 가입/새기기/PIN분실 등 "보안상 중요한 이벤트"에서만 쓰고, 평상시 앱 재진입은 Supabase Session은 SDK가 표준대로 유지한 채 **PIN 검증은 별도 `verify-pin` Edge Function이 서버에서 담당**하는 B안으로 확정(§1-3-A).
+2. **PIN을 어떻게 안전하게 관리할지 — 확정, §1-3-A 참고**
+   - PIN은 4자리 숫자 유지(경우의 수 10,000가지). 무차별 대입 방어는 자릿수가 아니라 **서버(Edge Function + DB lockout 상태) 측 lockout 정책**(5회 실패→5분 잠금, 누적 10회→30분, 이후 지수 백오프)으로 확보. 해시는 **bcrypt(v6에서 Argon2id로부터 변경 — pgcrypto DB 함수로 계산)**, 전용 `pin_credentials` 테이블에 저장하고 클라이언트/모든 DB role의 직접 접근을 RLS로 전면 차단. 클라이언트에는 PIN 원문·해시 어느 것도 저장하지 않는다.
 3. **`guardian_links` RLS 정책**
    - 보호자는 `status = accepted`인 링크에 대해서만, 그것도 연결된 어르신의 **요약 데이터만** 조회 가능해야 한다.
    - 어르신은 자신에게 걸린 모든 링크(pending 포함)를 조회하고 상태를 변경(수락/거절/해제)할 수 있어야 한다.
@@ -200,15 +434,18 @@ Local Storage  → 쉬운 모드, UI 설정, 비민감 사용자 설정
 
 ---
 
-## 4. 확정 데이터 모델 개요 (설계 참고, 실제 스키마는 구현 시 확정)
+## 4. 확정 데이터 모델 개요 (`users`/`analysis_results`/`schedules`/`notifications`/`fcm_tokens`는 설계 참고, `pin_credentials`/`user_roles`/`guardian_links`는 v7에서 실제 migration으로 구현 완료)
 
-> 코드/DDL은 작성하지 않는다. 표는 어떤 테이블이 필요한지에 대한 합의 수준의 개요다.
+> `pin_credentials`/`user_roles`/`guardian_links`는 `supabase/migrations/`에 실제 DDL이 존재한다(v7). 나머지 테이블은 아직 합의 수준의 개요다.
 
 | 테이블(가칭) | 핵심 컬럼(예시) | 비고 |
 |---|---|---|
-| `users` | id, phone, pin_hash, role(elder/guardian), name, age, region, easy_mode_enabled | PIN은 반드시 해시로 저장(§2-2) |
-| `guardian_links` | id, elder_id, guardian_id, status(pending/accepted/rejected/revoked), created_at, responded_at | §1-5, §1-6, §2-3 |
-| `analysis_results` | id, elder_id, type(document/message), risk_level, summary, source_excerpt, **reliability(높음/보통/낮음 또는 원시 confidence, v3 추가)**, **structured_fields(고지서 금액/기한/항목 등 JSON, v3 추가)**, created_at | 원문 저장 범위는 §2-6과 함께 재검토. 신뢰도/구조화 필드의 정확한 스키마는 OPEN QUESTIONS 11, 12 |
+| `users` | id, phone, name, age, region, easy_mode_enabled | **v5: `pin_hash`/`role` 컬럼 제거** — 각각 `pin_credentials`, `user_roles`로 분리(§1-3-A). Phase 2에는 `auth.users`(Supabase Auth 내장)만 있고 이 앱 소유의 `users` 테이블은 아직 만들지 않았다 — 프로필 필드(name/age/region 등)가 필요해지는 Phase에서 생성 |
+| `pin_credentials`(v5 설계 → **v7 구현 완료**) | user_id(PK/FK), pin_hash, failed_attempts, locked_until, created_at, updated_at | §1-3-A. RLS 활성화 + `authenticated`/`anon`/`public` grant 전면 revoke로 이중 차단, `service_role`(Edge Function 경유)만 `set_pin`/`verify_pin`/`has_pin` DB 함수를 통해 접근. `pin_hash`는 bcrypt(pgcrypto `crypt()`) 결과 |
+| `user_roles`(v5 설계 → **v7 구현 완료**) | id, user_id(FK), role(elder/guardian), created_at, unique(user_id, role) | §1-3-A "Role 관리". select/insert만 RLS로 허용(본인 행), update/delete 정책 없음(관리자 기능 대기) |
+| `guardian_links`(**v7 구현 완료, 단 connection 기능 자체는 Phase 5**) | id, elder_id, guardian_id, status(pending/accepted/rejected/revoked), created_at, responded_at | §1-5, §1-6, §2-3. `elder_id != guardian_id` CHECK 제약 + `unique(elder_id, guardian_id)` 구현 완료. select RLS(양측 본인 행)만 구현 — insert/update(연결 요청·수락·거절·해제)는 Phase 5(connection 기능)에서 추가 |
+| `connection_tokens`(**v9: 구현 완료**) | token(PK, pgcrypto 랜덤 hex), elder_id(FK), expires_at(발급 후 5분), used_at(nullable), created_at | §1-6 QR 기반 연결. `pin_credentials`와 동일하게 클라이언트 직접 접근 전면 차단(RLS + grant revoke), `service_role`만 `create_connection_token`/`redeem_connection_token` DB 함수를 통해 접근 |
+| `analysis_results`(**v10: 테이블/RLS 구현 완료, 실제 row는 아직 0건**) | id, elder_id, type(document/message), risk_level, summary, source_excerpt, reliability(높음/보통/낮음), structured_fields(JSON, 스키마 미확정) | §2 item 6. select RLS만 구현(본인 elder / accepted guardian) — insert/update/delete는 어떤 client role에도 없음(쓰기는 미래 서버 AI 파이프라인 전담). Phase 4 AI 백엔드가 아직 없어 실제로는 항상 빈 테이블. 신뢰도/구조화 필드의 정확한 스키마는 여전히 OPEN QUESTIONS 11, 12 |
 | `schedules` | id, elder_id, title, due_at, completed_at, source_analysis_id(nullable) | 분석 기록에서 분리 — `docs/product/implementation-plan.md` §1 참고 |
 | `notifications` | id, target_user_id, type, payload, read_at, sent_via(push/sms 등), created_at | §1-4 채널 확장 구조 반영 |
 | `fcm_tokens` | id, user_id, token, device_info, updated_at | §2-5 |
@@ -223,10 +460,10 @@ Local Storage  → 쉬운 모드, UI 설정, 비민감 사용자 설정
 
 ### Architecture 세부 (기존)
 
-1. Supabase Auth의 Phone OTP를 가입 시 1회성 검증에만 쓰고 별도 PIN 세션 체계를 자체 구축할지, Supabase Auth 세션 자체를 PIN 검증 게이트 뒤에 두는 방식으로 재사용할지(§2-1).
-2. 보호자 연결 요청 입력 방식으로 "전화번호"와 "연결 코드" 중 하나만 채택할지, 둘 다 지원할지(§1-6).
+1. ~~Supabase Auth의 Phone OTP를 가입 시 1회성 검증에만 쓰고 별도 PIN 세션 체계를 자체 구축할지, Supabase Auth 세션 자체를 PIN 검증 게이트 뒤에 두는 방식으로 재사용할지~~ → **DECIDED**: B안(PIN 검증은 서버 Edge Function, Session은 Supabase 표준 그대로) 확정. 상세는 §1-3-A.
+2. ~~보호자 연결 요청 입력 방식으로 "전화번호"와 "연결 코드" 중 하나만 채택할지, 둘 다 지원할지~~ → **DECIDED(v9)**: 둘 다 채택하지 않고 **QR 코드 기반**(서버 발급 단기 유효 토큰)으로 확정. 상세는 §1-6. QR 사용 불가 시 fallback은 20번으로 별도 이관.
 3. `notifications` 테이블에서 향후 SMS 채널을 추가할 때 채널별 재시도/우선순위 정책을 어떻게 둘지(지금은 구조만 확장 가능하게 설계, 정책은 미정).
-4. Android SMS 접근에 사용할 실제 패키지/플러그인 선정(§1-9, 구현 착수 시점 재조사 원칙 유지).
+4. ~~Android SMS 접근에 사용할 실제 패키지/플러그인 선정~~ → **DECIDED(v11)**: Android는 `flutter_sms_inbox`(SMS inbox 자동 조회) 기반 실제 접근, iOS는 SMS 자동 접근 없이 복사/붙여넣기 및 직접 입력 기반 문자 확인으로 확정. 이번 결정에서는 Play Store SMS/Call Log 정책을 구현 판단의 제약으로 사용하지 않았다(사용자 명시적 결정). 상세는 §1-9.
 5. `analysis_results`에 원문(문자 원문, OCR 텍스트)을 얼마나 오래/얼마나 상세히 저장할지(요약만 남길지, 원문도 일정 기간 남길지) — §2-6, §2-9와 연결된 세부 보관기간 정책.
 6. ~~어르신 앱과 보호자 앱을 하나의 Flutter 앱으로 만들지, 별도 앱으로 만들지~~ → **해소(Phase 1)**: **별도 2개 Flutter 앱(`apps/senior`, `apps/guardian`) + Monorepo**로 확정. `packages/*`로 공통 코드를 공유하고, 두 앱은 서로 직접 import하지 않는다. 자세한 근거는 `architecture.md` "저장소 구조" 참고.
 
@@ -253,4 +490,41 @@ Local Storage  → 쉬운 모드, UI 설정, 비민감 사용자 설정
 13. 관리자 기능을 별도 관리자 앱(Flutter 등)으로 제공할지, 웹 관리자 페이지로 제공할지 결정 필요.
 14. 관리자 시스템을 초기 MVP 범위에 포함할지, 완전히 제외하고 이후 로드맵으로 미룰지 결정 필요.
 
-> 위 목록에 없는 항목(Backend, DB, 인증 큰 흐름, 알림 채널, 관계 카디널리티, 연결 인증 방식, 위험판단 주체, 원본 보관, SMS 격리, Push, 로컬 저장소 분리, 쉬운모드 범위/Main 격상, Empty State/Loading 정책, 미리보기 제거, 신규 기능 6개의 제품 방향, **어르신/보호자 앱 분리 구조**)은 **모두 확정**되었다. 위 14개 중 6번은 Phase 1에서 해소되어, 실질적으로 남은 것은 13개다. 나머지는 순수 **기술/세부 구현 방식** 미결정 사항이다.
+### Authentication 세부 (v5 신규, v6에서 15~17 해소)
+
+15. ~~Senior/Guardian 앱에 동일 전화번호로 양쪽 role(elder+guardian)을 동시에 가질 수 있게 허용할지~~ → **DECIDED(v6)**: B안(동시 허용) 확정. 상세는 §1-3-A "Role 관리".
+16. ~~PIN 해시에 Argon2id를 Supabase Edge Function(Deno 런타임) 환경에서 어떤 라이브러리/방식으로 구현할지~~ → **DECIDED(v6)**: Argon2id 대신 **bcrypt(pgcrypto, DB 함수)**로 변경 확정 — 기술 검증 근거는 §1-3-A "PIN 해시 알고리즘 기술 검증".
+17. ~~앱 재진입(cold start/idle timeout) 시 PIN 재확인을 요구하는 구체적 idle timeout 값~~ → **DECIDED(v6)**: Senior 15분 / Guardian 5분. 상세는 §1-3-A "앱 재진입 idle timeout".
+18. **Guardian 앱에 생체인증(지문/FaceID)을 PIN의 대체/보완 수단으로 추가할지 — OPEN(유지)**: Phase 2 범위에는 포함하지 않기로 했으나(§1-3-A "Guardian 생체인증"), 채택 여부 자체는 아직 결정되지 않았다.
+19. **(v6 신규) Senior/Guardian idle timeout 값을 사용자가 직접 조정할 수 있게 설정 UI를 제공할지** — 지금은 15분/5분 고정값으로 시작(§1-3-A).
+
+### 연결(Connection) 세부 (v9 신규)
+
+20. **QR 코드를 사용할 수 없는 상황(카메라 미지원/권한 거부 등)의 fallback 입력 방식** — §1-6에서 QR을 기본 방식으로 확정하면서, 전화번호/연결 코드를 기본 UX로 다시 도입하지 않기로 했다. fallback 자체의 필요 여부와 방식은 별도 결정으로 남긴다.
+
+> 위 목록에 없는 항목(Backend, DB, 인증 큰 흐름 — **OTP+PIN+Session 결합 방식, PIN 해시 알고리즘, Role 동시허용 정책, idle timeout 값 포함**, 알림 채널, 관계 카디널리티, 연결 인증 방식(QR 기반 확정 포함), 위험판단 주체, 원본 보관, SMS 격리, Push, 로컬 저장소 분리, 쉬운모드 범위/Main 격상, Empty State/Loading 정책, 미리보기 제거, 신규 기능 6개의 제품 방향, 어르신/보호자 앱 분리 구조)은 **모두 확정**되었다. 위 20개 중 1·2·6·15·16·17번이 해소되어, 실질적으로 남은 것은 14개(18·20번 OPEN 포함)다. 나머지는 순수 **기술/세부 구현 방식** 미결정 사항이다.
+
+---
+
+## 6. Phase 4 구현 완료 요약 (v8)
+
+### AnalysisResult 도메인 모델 재검토
+
+Phase 4 착수 전, `packages/models/lib/src/analysis_result.dart`가 카메라/분석 화면 요구사항을 충분히 표현하는지 먼저 검토했다(임의로 필드부터 추가하지 않는다는 원칙에 따라).
+
+**결론: 신규 필드 추가 없이 현재 모델로 충분하다.**
+
+- `reliability`(`ReliabilityLevel`) — `AppConfidenceIndicator`가 그대로 소비, 충분.
+- `riskLevel`(nullable `RiskLevel`) — `AppRiskBadge`가 그대로 소비, 문서 분석에는 없을 수 있어(nullable) 충분.
+- `structuredFields`(`Map<String, Object?>?`, 의도적으로 열린 형태) — 고지서 금액/기한/항목을 스키마 미확정 상태로도 제네릭하게 렌더링 가능(`AnalysisResultView`가 key-value 순회만 함, 특정 키를 가정하지 않음). **정확한 항목 스키마는 여전히 OPEN QUESTIONS 12** — 이번에도 임의로 확정하지 않았다.
+- `sourceExcerpt`/`summary` — 결과 화면의 원문/요약 표시에 충분.
+- 검토했으나 추가하지 않은 필드: "고지서 종류(billType/documentCategory)" 같은 분류 필드 — 통계 항목이 아직 미정(OPEN QUESTIONS 12)인 상태에서 분류 스키마부터 정하면 그 결정을 앞지르게 된다. 필요해지면 OPEN QUESTIONS 12가 해소되는 시점에 함께 추가한다.
+- **원본 이미지 참조 필드는 의도적으로 없다** — §1-8(분석 완료 후 원본 즉시 삭제) 정책상 분석 후에는 참조할 원본이 남지 않아야 하므로, `AnalysisResult`가 영속적인 이미지 URL을 갖는 것 자체가 정책과 모순된다.
+
+### Camera/Analysis 골격 구현 요약
+
+`document_scan` feature(Senior 전용)에 카메라 권한(`CameraRepository`)·분석 요청(`AnalysisRepository`) 도메인/데이터/프레젠테이션 계층을 구현했다. 상세 구조와 "왜 `CameraController`가 Repository가 아니라 `StatefulWidget`에 있는지"는 `architecture.md` "Camera Architecture" 참고.
+
+- **백엔드 없음 처리**: `AnalysisRepositoryImpl.analyzeDocument()`는 항상 `Err(UnavailableFailure())`를 반환한다 — Storage 업로드도, Edge Function 호출도 시도하지 않는다(실패할 걸 알면서 호출하지 않고, 애초에 호출 자체를 안 함). 결과 화면은 이를 일반 오류(재시도 유도)가 아니라 "준비 중" 상태로 구분해서 보여준다.
+- **신규 패키지**: `camera`(Android/iOS 카메라 프리뷰+촬영), `permission_handler`(카메라 권한, Android `compileSdk 37` 요구 버전을 피해 `^12.0.0`으로 고정 — `compileSdk 36` 환경과 호환). 둘 다 `apps/senior`에만 추가, Guardian에는 추가하지 않았다.
+- **`analysis_results` 테이블은 여전히 DB에 존재하지 않는다**(§4 데이터 모델 개요 — 설계 참고 상태 그대로) — `AnalysisResult`는 지금까지 순수 Dart 모델로만 존재하며, 실제 테이블/RLS는 분석 백엔드를 실제로 붙이는 Phase에서 함께 만든다.

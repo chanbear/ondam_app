@@ -6,7 +6,15 @@
 > - v1(초안): Architecture 미확정 상태를 전제로 한 계획.
 > - v2: `docs/architecture/technical-decisions.md` v2에서 확정된 Backend(Supabase)/인증(OTP+PIN)/알림(Push+서버)/연결(어르신 수락)/위험판단(서버 AI)/저장(즉시삭제)/SMS(Android 격리)/Push(FCM)/Storage(Secure+Local 분리) 결정을 반영해 갱신.
 > - v3: 신규 요구사항(음성 비서/쉬운 모드 Main 강화/카메라 플래시/답변 신뢰도/보호자 고지서 통계 동기화/관리자 시스템 PROPOSED)을 Feature 구조와 Phase 계획에 반영.
-> - **v4(이 버전)**: Phase 1 실행 결과 반영. "하나의 앱, role 분기" 대신 **`apps/senior` + `apps/guardian` 별도 2개 Flutter 앱 + `packages/*` Monorepo**로 확정되어 Feature 구조를 두 앱으로 분리했다. Phase 1에서 실제로 스캐폴딩·구현된 부분은 아래에 "(Phase 1 완료)"로 표시했다.
+> - v4: Phase 1 실행 결과 반영. "하나의 앱, role 분기" 대신 **`apps/senior` + `apps/guardian` 별도 2개 Flutter 앱 + `packages/*` Monorepo**로 확정되어 Feature 구조를 두 앱으로 분리했다. Phase 1에서 실제로 스캐폴딩·구현된 부분은 아래에 "(Phase 1 완료)"로 표시했다.
+> - v5: Phase 2 착수 전 Authentication Architecture(OTP+PIN+Session 결합, B안)를 확정하여 Phase 2를 더 이상 막는 미확정 사항이 없다. Phase 2 설명을 `technical-decisions.md` §1-3-A 설계에 맞춰 구체화했다.
+> - v6: Authentication 세부 OPEN QUESTIONS(PIN 해시 알고리즘/Role 동시허용/idle timeout)를 실제 기술 조사로 확정. Phase 2를 pgcrypto/bcrypt, Role 동시허용 안내 UX, idle timeout 고정값(15분/5분)에 맞춰 갱신했다.
+> - v7: **Phase 2(Authentication)를 실제로 구현 완료.** 두 앱(`apps/senior`, `apps/guardian`) 각자 전체 Auth feature(domain/data/presentation) + `core/auth/` + 라우터 redirect + idle timeout을 구현했고, DB migration 4개 + Edge Function 5개(`has-pin` 추가)를 작성했다. `dart format`/`flutter analyze`/`flutter test`/`flutter build apk --debug` 전부 통과. Supabase 프로젝트가 없어 실제 서버 통신은 미검증(NOT AVAILABLE). 상세는 아래 Phase 2 항목과 `technical-decisions.md` §1-3-A "Phase 2 구현 완료 요약".
+> - v8: Phase 3(Senior/Guardian UI 골격) + Phase 4(문서 촬영 카메라/권한/플래시/미리보기/분석 요청 골격)를 구현 완료. 실제 AI 분석 백엔드는 여전히 없어 분석 요청은 항상 "준비 중" 상태로 귀결(가짜 결과 없음). `dart format`/`flutter analyze`/`flutter test`/`flutter build apk --debug` 양쪽 앱 전부 통과. 상세는 아래 Phase 3·4 항목.
+> - v9: Phase 5 착수 전 미결정이었던 "보호자 연결 입력 방식"을 **QR 코드 기반**으로 확정(`technical-decisions.md` §1-6 v9, OPEN QUESTIONS 2번 DECIDED)하고, **Phase 5(Connection)를 실제로 구현 완료**했다. `connection_tokens` 테이블 + `create_connection_token`/`redeem_connection_token` DB 함수 + `guardian_links` write policy(전이 검증 트리거 포함) migration 3개, Edge Function 2개(`create-connection-token`/`redeem-connection-token`)를 작성했고, 두 앱(`apps/senior`, `apps/guardian`) 각자 전체 connection feature(domain/data/presentation)를 구현해 더보기 탭에 연결했다. `dart format`/`flutter analyze`/`flutter test`/`flutter build apk --debug` 양쪽 앱 전부 통과. Supabase 프로젝트가 없어 실제 서버 통신(토큰 발급/QR 스캔/RLS 적용)은 미검증(NOT AVAILABLE). 상세는 아래 Phase 5 항목.
+> - v10: **Phase 6(Guardian 핵심 기능 + 고지서 통계 동기화)를 실제로 구현 완료.** `analysis_results` 테이블 migration(elder 본인 + `accepted` guardian_links 보유자만 SELECT, client INSERT/UPDATE/DELETE 정책 없음 — 쓰기는 미래의 서버 AI 파이프라인 전담)을 신규 작성했다. Guardian 앱에 `analysis` feature(domain/data/presentation)를 신규 구현해 홈(안심 상태/최근 활동)·알림(받은 연락)·기록·통계 탭을 전부 실제 데이터 조회로 연결했고, `connectedEldersProvider`를 Phase 5의 실제 `guardian_links`(accepted만) 기반으로 교체했다. **OPEN QUESTIONS #12(고지서 통계 최종 데이터 항목)는 여전히 미결정**이라 통계 탭은 스키마와 무관하게 항상 well-defined한 두 집계(이번 달 분석 건수/위험 문자 건수)만 `AppStatCard`로 보여주고, 고지서 구조화 필드는 기록별 원본을 제네릭하게(key-value) 나열하는 데 그쳤다 — 차트 라이브러리도 여전히 추가하지 않았다(Decision 3 유지). `dart format`/`flutter analyze`/`flutter test`/`flutter build apk --debug` 양쪽 앱 전부 통과, packages는 `dart analyze` 전부 통과(`dart test`는 대상 테스트 파일 자체가 없어 N/A). `analysis_results`가 실제로는 항상 빈 테이블(Phase 4 AI 분석 백엔드 부재)이라 모든 신규 화면이 정직하게 Empty State로 귀결된다 — 가짜 데이터 없음. 상세는 아래 Phase 6 항목.
+>
+> - **v11(이 버전)**: **Phase 7(위험 문자 확인, `message_check`)을 실제로 구현 완료.** Android는 `flutter_sms_inbox` 기반 실제 SMS inbox 자동 조회(권한 granted/denied/permanentlyDenied 3상태 처리), iOS는 자동 접근 없이 클립보드 붙여넣기+직접 입력으로 구현했다(`technical-decisions.md` §1-9/§5 OPEN QUESTIONS #4 DECIDED, v11). 위험도 분석은 `document_scan`과 동일하게 아직 없는 백엔드를 향해 항상 `UnavailableFailure`를 반환한다(가짜 분석 결과 없음) — `AnalysisResultView`를 `document_scan`에서 `apps/senior/lib/core/widgets/`로 승격해 두 feature가 공유하도록 리팩터링했다. Guardian 앱은 Phase 6에서 이미 `AnalysisType.message`를 분기 처리하고 있어 신규 feature나 코드 변경 없이 그대로 동작한다(코드 확인 완료, `guardian` 전용 feature 미생성). Senior 앱 신규 테스트 37개(기존 79개 + 37개), `dart format`/`flutter analyze`/`flutter test` 양쪽 앱 통과. Supabase/Edge Function 변경 없음(기존 `analysis_results` RLS가 `type` 무관하게 이미 커버). 실기기 SMS 하드웨어 동작은 이 환경에 Android 실기기/에뮬레이터가 없어 **NOT AVAILABLE**. 상세는 아래 Phase 7 항목.
 >
 > 기반 문서: `docs/product/current-app-analysis.md`, `docs/product/feature-spec.md`, `docs/product/user-flow.md`, `docs/architecture/architecture.md`, `docs/ui/ui-spec.md`, `docs/architecture/technical-decisions.md`
 
@@ -166,53 +174,74 @@ packages/
 - **테스트 항목**: 헬스체크 연결 테스트 1건, `core/storage`의 Secure/Local 각각 read/write 단위 테스트.
 - **완료 조건**: `dart format .` / `flutter analyze` / `flutter test` 통과, Supabase 실연결 확인.
 
-### Phase 2 — 인증(Auth)
+### Phase 2 — 인증(Auth) — Senior/Guardian 각자 구현 (v7: **구현 완료**)
 
-- **구현 기능**: 전화번호 입력 → OTP 인증 → PIN 설정(가입), 전화번호+PIN 로그인(평상시), 로그인 상태 전역 Provider.
-- **선행 조건**: Phase 1, **`technical-decisions.md` OPEN QUESTIONS 1번(Supabase Auth OTP+PIN 결합 방식) 결정 필요** — 이 Phase 착수 전 반드시 확정.
-- **예상 영향 범위**: `lib/features/auth/`, `lib/core/storage/`, `lib/app/router/`.
-- **테스트 항목**: OTP 검증 성공/실패, PIN 설정/검증(§2-2 보안 요구사항 — 해시 저장, 시도 횟수 제한 포함) UseCase 테스트, Repository Failure 변환 테스트, 로그인 화면 Widget Test.
-- **완료 조건**: 가입(OTP+PIN)→로그인(PIN)→로그아웃 전체 흐름이 Supabase와 통신하며 동작, PIN이 평문으로 어디에도 저장되지 않음을 코드 리뷰로 확인.
+> **v7 완료 보고**: 아래 계획대로 두 앱 각자 구현했다. 실제 파일 구조·DB migration·Edge Function 목록은 `technical-decisions.md` §1-3-A "Phase 2 구현 완료 요약" 참고. 요약: 가입/로그인/PIN 설정/PIN 재확인/PIN 분실/로그아웃/role 선택 전체 흐름을 코드로 구현했고, `dart format`/`flutter analyze`/`flutter test`/`flutter build apk --debug` 모두 통과(양쪽 앱). Supabase 프로젝트가 없는 로컬 개발 환경이라 **실제 서버 통신(OTP 발송, Edge Function 호출, RLS 적용)은 검증하지 못했다** — 이는 라이브 Supabase 프로젝트 연결 후 별도로 확인해야 한다. Guardian 생체인증(OPEN QUESTIONS 18)은 계획대로 이번 범위에서 제외했다.
 
-### Phase 3 — 어르신 핵심 기능(홈/프로필/온보딩) + 쉬운 모드 Main 골격
+- **구현 기능** (`technical-decisions.md` §1-3-A 설계 그대로 구현, 두 앱 각자):
+  - 가입: 전화번호 입력 → Supabase Phone OTP 발송/검증 → PIN 설정(`set-pin` Edge Function 호출, 내부적으로 pgcrypto DB 함수로 bcrypt 해시) → 온보딩 계속. 이미 반대쪽 앱에 같은 번호로 가입되어 있으면 안내 문구 표시 후 계속 진행(`feature-spec.md` MODIFY-12).
+  - 앱 재진입: 라우터 가드가 `hasValidSession`/`pinVerified`를 확인해 로그인/PIN/홈 중 적절한 화면으로 분기. PIN 입력 시 `verify-pin` Edge Function 호출, 성공하면 `pinVerifiedProvider`(인메모리, 비영속) true 세팅. **idle timeout: Senior 15분 / Guardian 5분(고정값)**.
+  - 새 기기: 로컬 세션 없음 → OTP 재인증 → 기존 PIN 유지 또는 재설정 선택.
+  - PIN 분실: "PIN을 잊으셨나요?" → OTP 재인증 → `reset-pin` Edge Function.
+  - 로그아웃: `pinVerifiedProvider` 리셋 + `auth.signOut()`.
+  - Guardian 생체인증(지문/FaceID)은 **이번 Phase 2 범위에 포함하지 않는다**(OPEN QUESTIONS 18).
+  - (Backend 측, 이 저장소 범위 밖일 수 있음 — 별도 확인 필요) Edge Function 4종(`set-pin`/`verify-pin`/`reset-pin`/`delete-account`)은 PIN 해시 계산을 직접 하지 않고 **pgcrypto 기반 Postgres `SECURITY DEFINER` 함수**(`set_pin`/`verify_pin`)를 호출하는 얇은 계층으로 구현. `pin_credentials`/`user_roles` 테이블 + RLS(클라이언트 접근 전면 차단), `guardian_links`에 `elder_id != guardian_id` CHECK 제약 추가.
+- **선행 조건**: Phase 1 완료. **Architecture 결정은 v6에서 전부 완료됨 — 이 Phase를 막는 미확정 사항이 없다.** (PIN 해시는 Argon2id가 아니라 bcrypt/pgcrypto로 확정 — 실제 Supabase Edge Function 2초 CPU 제한과 Deno Argon2 라이브러리 성숙도를 웹 조사로 검증한 결과.) Guardian 생체인증(18번)만 여전히 OPEN이나 Phase 2 범위 밖이라 착수를 막지 않는다.
+- **예상 영향 범위**: `apps/<app>/lib/features/auth/`(OTP/PIN 화면, UseCase), `apps/<app>/lib/core/auth/pin_verified_provider.dart`(신규, idle timeout 타이머 포함), `apps/<app>/lib/app/router/`(redirect 가드 확장), `apps/<app>/lib/core/storage/`(Session은 Supabase SDK 위임 — PIN 관련 로컬 저장은 하지 않음).
+- **테스트 항목**: OTP 검증 성공/실패, `verify-pin` 성공/실패/lockout 도달 UseCase 테스트, `pinVerifiedProvider`가 앱(위젯 트리) 재생성 시 항상 false로 시작하는지 Widget Test, idle timeout 경과 후 게이트가 다시 잠기는지 테스트(Senior 15분/Guardian 5분 각각), 라우터 가드 3분기(세션 없음/세션 있으나 PIN 미확인/PIN 확인됨) 각각의 리다이렉트 테스트, Repository Failure 변환 테스트.
+- **완료 조건**: 가입(OTP+PIN)→앱 재시작→PIN 재확인→로그아웃 전체 흐름이 Supabase와 통신하며 동작. PIN이 클라이언트 어디에도(로컬 저장소 포함) 저장되지 않음을 코드 리뷰로 확인. `pin_credentials` 테이블에 클라이언트 role로 직접 접근 가능한 경로가 없음을 RLS 정책 리뷰로 확인. bcrypt 해시가 Edge Function이 아니라 DB 함수(pgcrypto)에서 계산됨을 코드 리뷰로 확인.
 
-- **구현 기능**: 온보딩(접근성/프로필/보호자 등록 **요청** — 즉시 연결 아님) → 홈(**쉬운 모드를 Main으로 하는 골격** + 일반 모드) → `profile` → `settings` 기본형. **v3**: 홈 화면 설계 시점부터 쉬운 모드를 부가 옵션이 아니라 기본 진입 경험으로 두고, 핵심 기능(문서/문자/경로당/긴급도움) 접근 동선을 최소화하는 구조를 잡는다(음성 비서 진입점은 Phase 10에서 실제 연결).
-- **선행 조건**: Phase 2 완료.
-- **예상 영향 범위**: `lib/features/onboarding/`, `lib/features/home/`, `lib/features/profile/`, `lib/features/settings/`(일부).
-- **테스트 항목**: 온보딩 각 단계 UseCase 테스트, 홈 화면(쉬운 모드/일반 모드 둘 다) Widget Test, 보호자 등록 요청이 `connection` UseCase를 호출하는지 확인.
-- **완료 조건**: 신규 가입 사용자가 온보딩을 마치고 홈에 진입해 쉬운 모드/일반 모드를 전환할 수 있고, 쉬운 모드가 핵심 기능 중심의 단순화된 Main 구조로 렌더링됨(기본 on/off 여부는 별도 UI 결정 사항 — OPEN QUESTIONS 미포함, 필요 시 추가 논의). 보호자 연결 요청이 `pending` 상태로 생성됨.
+### Phase 3 — 어르신/보호자 UI 골격 + 쉬운 모드 Main + Design System 확장 (v8: **구현 완료, 범위 재조정**)
 
-### Phase 4 — 어르신 분석 기능(문서/경로당/정보) + 카메라 플래시 + 고지서 구조화
+> **v8 완료 보고**: 실제 구현 범위는 사용자의 Phase 3 착수 지시(UI/UX 리서치 기반 재설계)에 따라 원래 계획에서 조정됐다 — Guardian UI 골격(1:N 어르신 선택 구조 포함)이 이 Phase로 앞당겨졌고, "보호자 등록 요청"은 `connection` feature 자체가 아직 없어 온보딩 안에서 UI만 존재(실제 `pending` row 생성 없음, 정직하게 "곧 제공 예정" 안내로 대체).
 
-- **구현 기능**: `document_scan`(촬영/업로드→분석→**원본 즉시 삭제**, **v3: 플래시 ON/OFF/자동 제어 포함**), `welfare_center`, `info`, `analysis`/`schedule` 골격(**v3: `analysis_results`에 신뢰도 메타데이터 + 고지서 구조화 필드(`structured_fields`) 포함해 설계** — UI 표시는 이후 Phase에서 하되, 데이터 구조는 이 시점에 확정해야 Phase 6/9에서 재작업이 없음).
-- **선행 조건**: Phase 3 완료. Risk Detection/원본 삭제 정책은 이미 확정(§1-7, §1-8)되어 추가 결정 불필요. 고지서 통계 최종 항목(OPEN QUESTIONS 12)은 이 Phase 착수 시점까지 최소 초안이라도 필요.
-- **예상 영향 범위**: `lib/features/document_scan/`, `lib/features/welfare_center/`, `lib/features/info/`, `lib/features/analysis/`, `lib/features/schedule/`.
-- **테스트 항목**: 분석 Repository Failure 매핑 테스트, 원본 삭제가 실제로 트리거되는지(Storage 수명주기 정책 포함, §2-9) 통합 테스트, 위치 권한 거부 폴백 테스트, `AppEmptyState` Widget Test, 플래시 상태 전환 Widget Test, 고지서 구조화 필드 파싱 UseCase 테스트.
-- **완료 조건**: 실제 사진 업로드→분석 결과가 `analysis_results`(신뢰도·구조화 필드 포함)에 저장되고 원본이 남지 않음(Android/에뮬레이터 검증, iOS는 Windows 환경상 `NOT AVAILABLE`). 촬영 화면에서 플래시 상태가 항상 명확히 보임.
+- **구현 완료**: 온보딩(접근성 설정은 `LocalStorageService`에 실제 저장, 내 정보/보호자 등록은 UI만 — 저장할 백엔드 없음), Senior 홈(정보/홈/기록/더보기 4탭, 쉬운 모드는 Main 진입 경험으로 구현), Guardian 홈(홈/알림/기록/통계/더보기 5탭, `AppElderSwitcher`+`selectedElderIdProvider`로 1:N 구조 선반영 — `connection` feature 부재로 항상 빈 리스트), `profile`/`settings` 기본형(둘 다 UI만 또는 로컬 저장, 로그아웃/회원탈퇴는 Phase 2 usecase 실연동), Design System 컴포넌트 13개 추가.
+- **미구현(정직하게 Empty State)**: `welfare_center`/`info`/`analysis`/`schedule`/`notification`/`connection` — 도메인 계층 자체가 없어 관련 탭은 전부 `AppEmptyState`.
+- **테스트**: Senior/Guardian 각 앱 기존 스위트 그대로 통과(45/43개, Phase 3는 신규 UI 골격에 별도 유닛 테스트를 추가하지 않음).
+- **완료 조건 충족 여부**: 온보딩→홈 진입, 쉬운/일반 모드 전환은 충족. "보호자 등록 요청이 pending 상태로 생성됨"은 **미충족**(connection feature가 Phase 5이므로 구조적으로 불가능 — 임의로 앞당겨 구현하지 않음).
 
-### Phase 5 — 어르신↔보호자 연결(Connection)
+### Phase 4 — 어르신 문서 촬영(카메라+분석 요청 골격) (v8: **구현 완료, 범위 재조정**)
 
-- **구현 기능**: `connection` feature(요청 생성/어르신 확인 화면/수락·거절/해제), 보호자 앱 랜딩(전화번호 또는 연결 코드 입력 — 방식은 `technical-decisions.md` OPEN QUESTIONS 2번), 어르신 측 "연결된 보호자 목록" 화면(신규 확정 요구사항).
-- **선행 조건**: Phase 3 완료. **OPEN QUESTIONS 2번(전화번호 vs 연결코드) 결정 권장**(둘 다 지원해도 되므로 강한 블로커는 아님).
-- **예상 영향 범위**: `lib/features/connection/`(신규).
-- **테스트 항목**: 요청 생성→어르신 화면 노출→수락 통합 테스트, 거절/미응답 케이스, 어르신의 연결 해제 테스트, `guardian_links` RLS 정책이 의도대로 동작하는지 검증(보호자가 pending 링크를 직접 accepted로 바꿀 수 없어야 함).
-- **완료 조건**: 실제 두 계정 간 연결이 **어르신 수락을 거쳐** 성립, 어르신이 언제든 연결을 해제할 수 있음.
+> **v8 완료 보고**: 사용자의 Phase 4 착수 지시에 따라 범위가 "카메라+권한+플래시+촬영+분석 요청 골격"으로 좁혀졌다 — `welfare_center`/`info`/`analysis`(기록 목록)/`schedule`은 이번에 포함하지 않았다(도메인 자체가 아직 없음). "원본 즉시 삭제"/실제 업로드는 **분석 백엔드가 없어 검증할 대상 자체가 없음**(NOT AVAILABLE, 아래 참고).
 
-### Phase 6 — 보호자 핵심 기능(Guardian) + 고지서 통계 동기화
+- **구현 완료**: `document_scan`의 카메라 권한(허용/거부/영구거부/제한 4상태) → 카메라 프리뷰(플래시 OFF/ON/자동 실제 전환) → 촬영 → 결과 확인(재촬영/분석하기) → 분석 요청(항상 `UnavailableFailure`, 가짜 결과 없음) 전체 플로우. `AnalysisResult` 모델 재검토 완료(신규 필드 불필요, `technical-decisions.md` §6).
+- **미구현**: `welfare_center`, `info`, `analysis`(기록 리스트), `schedule`, 실제 이미지 업로드/AI 분석/원본 삭제(백엔드 자체가 없음 — Storage 수명주기 정책 검증은 Storage가 생기는 시점에 가능), 고지서 구조화 필드의 실제 값 채우기(스키마조차 OPEN QUESTIONS 12로 미정, `AnalysisResultView`는 스키마에 의존하지 않는 제네릭 렌더러로 구현해 나중에 스키마가 정해져도 재작업 없이 동작).
+- **테스트**: 26개 신규(권한 usecase 4, 분석 usecase 3, flash 상태 3, 신뢰도/구조화필드 위젯 7, 촬영결과/재촬영/분석 3, 라우터 진입/복귀 1, 기타) — Camera API 자체는 `CameraRepository` 추상화로 분리해 플랫폼 채널 없이 테스트.
+- **완료 조건 재정의**: (원래 조건인 "실제 사진 업로드→analysis_results 저장" 대신) **Code-level validation PASS** — 카메라/권한/플래시/네비게이션 전체 플로우가 코드 수준에서 검증됨. **Physical device validation NOT AVAILABLE** — 이 환경에 Android 실기기/에뮬레이터가 없어 실제 카메라 하드웨어 동작은 확인하지 못함(`flutter build apk --debug` 성공까지만 확인).
 
-- **구현 기능**: 보호자 홈, 받은 연락, 기록, 통계(**v3: `analysis`의 구조화된 고지서 데이터를 조회하는 통계 화면 포함** — 원본 문서 이미지는 노출하지 않음). **연결 전 화면은 Mock 프리뷰 대신 `AppEmptyState`("아직 연결된 어르신이 없습니다")**.
-- **선행 조건**: Phase 4, 5 완료(Phase 4에서 고지서 구조화 필드가 이미 설계되어 있어야 함).
-- **예상 영향 범위**: `lib/features/guardian/`(신규).
-- **테스트 항목**: 도메인 엔티티 조회·집계 테스트, RLS로 인해 비연결 어르신 데이터가 조회되지 않는지 확인하는 보안 테스트, 고지서 통계 집계(월별/변화율 등) UseCase 테스트.
-- **완료 조건**: 연결된 어르신의 실제 데이터만 보호자 앱에 반영되고, 비연결 상태에서는 명확한 Empty State가 표시됨. 고지서 통계가 원본 없이 구조화 데이터만으로 표시됨.
+### Phase 5 — 어르신↔보호자 연결(Connection) — QR 기반 (v9: **구현 완료**)
 
-### Phase 7 — 문자/위험 기능(Android 전용)
+> **v9 완료 보고**: OPEN QUESTIONS 2번(전화번호 vs 연결 코드)을 **QR 코드 기반**으로 확정(`technical-decisions.md` §1-6)한 뒤, 계획대로 두 앱 각자 구현했다. Backend는 migration 3개(`connection_tokens` 테이블, `create_connection_token`/`redeem_connection_token` DB 함수, `guardian_links` insert/update 정책 — 전이 검증 트리거 포함) + Edge Function 2개(`create-connection-token`/`redeem-connection-token`)로 구성했다. `dart format`/`flutter analyze`/`flutter test`/`flutter build apk --debug` 전부 통과(양쪽 앱). Supabase 프로젝트가 없어 **실제 서버 통신(토큰 발급/QR 스캔/RLS 적용)은 검증하지 못했다** — 라이브 Supabase 연결 후 별도 확인 필요.
 
-- **구현 기능**: `message_check`(`sms_datasource.dart`), 서버 Risk Detection 호출, "보호자에게 알리기" → `notification` 이벤트 생성.
-- **선행 조건**: Phase 4, 6 완료. SMS 패키지 선정(`technical-decisions.md` OPEN QUESTIONS 4번)은 이 Phase 착수 시점에 확정.
-- **예상 영향 범위**: `lib/features/message_check/`.
-- **테스트 항목**: SMS 권한 거부 대체 UX, 위험 판정 매핑 테스트, iOS 빌드에서 기능 비활성 확인(코드 리뷰, `NOT AVAILABLE` 명시).
-- **완료 조건**: Android 실기기/에뮬레이터에서 문자 분석→"보호자에게 알리기"까지 동작.
+- **구현 완료**: `connection` feature(양 앱 domain/data/presentation). Senior 쪽 "보호자 연결" 화면(서버 발급 5분 유효 토큰을 `qr_flutter`로 QR 렌더링, 만료 시 재발급) + "연결된 보호자 목록" 화면(pending 수락/거절, accepted 연결 해제, 더보기 탭에 연결). Guardian 쪽 "어르신 연결하기" → QR 스캔 화면(`mobile_scanner`, 카메라 권한 거부 시 설정 이동 안내) → 연결 요청 생성 → "어르신 연결 관리" 화면(연결 해제, 더보기 탭에 연결).
+- **Backend 설계 결정(구현 시 확정)**: `connection_tokens`는 `token`(PK, pgcrypto 랜덤 hex)/`elder_id`/`expires_at`/`used_at` — `pin_credentials`와 동일하게 클라이언트 직접 접근 전면 차단, `service_role`만 두 DB 함수를 통해 접근. `guardian_links` UPDATE는 양측 모두 RLS로 행에 접근 가능하되(`elder_id = auth.uid() or guardian_id = auth.uid()`), **어떤 상태 전이를 누가 할 수 있는지는 트리거가 검증**한다 — `pending→accepted/rejected`는 어르신만, `accepted→revoked`는 양측 모두(기존 온담앱이 보호자 측 연결 해제만 제공했던 것을 유지하는 차원). INSERT는 클라이언트 정책 자체가 없다 — pending row 생성은 오직 `redeem_connection_token` RPC(service_role)를 통해서만 가능.
+- **예상 영향 범위(실제)**: `apps/senior/lib/features/connection/`, `apps/guardian/lib/features/connection/`(신규). Guardian 앱에 카메라 관련 패키지(`mobile_scanner`, `permission_handler`)가 처음 추가됨(`architecture.md` "어르신↔보호자 연결(QR)" 참고) — AndroidManifest/Info.plist 카메라 권한 항목도 함께 추가. Senior 앱에 `qr_flutter` 추가. `packages/models`의 `GuardianLinkStatus`에 `toDbValue()`/`fromDbValue()` 추가(기존 `UserRole` 패턴과 통일).
+- **테스트**: 양 앱 각 4개 usecase 테스트(총 8개, Repository는 fake로 대체 — testing.md) — 위 "완료 조건 재정의"의 domain 분기(토큰 발급/목록 조회/수락·거절/해제, 빈 토큰 검증)를 커버. Widget/Integration 테스트는 실제 Supabase 없이는 의미 있는 흐름 검증이 어려워 이번 범위에 포함하지 않았다(NOT AVAILABLE 사유는 Phase 2와 동일).
+- **완료 조건 재정의**: (원래 조건인 "실제 두 계정 간 연결이 QR 스캔+어르신 수락을 거쳐 성립" 대신) **Code-level validation PASS** — QR 발급/스캔/요청생성/수락·거절/해제 전체 플로우와 RLS/트리거 권한 검증이 코드·migration 수준에서 구현·검증됨. **Live backend validation NOT AVAILABLE** — Supabase 프로젝트가 없어 실제 토큰 발급·RLS 적용은 확인하지 못함(`flutter build apk --debug` 성공까지만 확인).
+
+### Phase 6 — 보호자 핵심 기능(Guardian) + 고지서 통계 동기화 (v10: **구현 완료**)
+
+> **v10 완료 보고**: OPEN QUESTIONS #12(고지서 통계 최종 데이터 항목)가 여전히 미결정이라, 계획했던 "고지서 통계 집계(월별/변화율 등)"는 이번에 구현하지 않았다 — 대신 스키마와 무관하게 항상 well-defined한 집계(분석 건수/위험 문자 건수)만 구현하고, 고지서 구조화 필드는 제네릭하게 나열만 한다. `lib/features/guardian/`이 아니라 `lib/features/analysis/`로 구현했다(receiving/기록/통계 3개 탭이 전부 같은 `analysis_results` 소스를 공유해 하나의 feature로 묶는 것이 architecture.md의 feature 결합 최소화 원칙에 더 부합 — "guardian" feature는 별도로 만들지 않았다). 아래 항목을 실제 구현 기준으로 갱신했다.
+
+- **구현 완료**: 보호자 홈(안심 상태 — `RiskSummary.worst()`로 계산, 최근 활동 최대 3건), 알림 탭("받은 연락" — caution/dangerous만 필터링), 기록 탭(전체 `analysis_results` 리스트 + 상세), 통계 탭(이번 달 분석 건수/위험 문자 건수 `AppStatCard` + 추세 문장, 고지서는 기록별 구조화 필드 원본 나열 + "아직 결정되지 않았어요" 안내). `connectedEldersProvider`가 Phase 5의 실제 `guardian_links`(accepted만, pending/rejected/revoked 제외)를 소스로 사용하도록 교체됨. 어르신 표시 이름은 `users`/`profile` 테이블이 여전히 없어 임의 문자열 대신 `elder_id` 앞 8자리로 대체("어르신 (12345678)" — Phase 5 `ConnectionListPage`와 동일한 표현, 새로 지어내지 않음).
+- **Backend**: `analysis_results` 테이블(`supabase/migrations/20260814000001_create_analysis_results.sql`) 신규 — select RLS 2개(본인 elder, `accepted` guardian_link 보유 guardian), insert/update/delete 정책은 어떤 client role에도 없음(§1-7 원칙대로 서버 AI 파이프라인만 작성 가능). `packages/models`의 `AnalysisType`/`ReliabilityLevel`/`RiskLevel`에 `UserRole`/`GuardianLinkStatus`와 동일한 `toDbValue()`/`fromDbValue()` 추가.
+- **선행 조건**: Phase 4, 5 완료 — 충족.
+- **실제 영향 범위**: `apps/guardian/lib/features/analysis/`(신규, domain/data/presentation), `apps/guardian/lib/features/home/presentation/pages/{home_tab_page,notification_tab_page,records_tab_page,statistics_tab_page}.dart`(실데이터 연결로 교체), `apps/guardian/lib/features/connection/presentation/providers/connected_elders_provider.dart`(실데이터 연결), `packages/models/lib/src/{analysis_type,reliability_level,risk_level}.dart`(db-value 헬퍼 추가), `supabase/migrations/`(신규 1개).
+- **테스트**: Guardian 신규 19개 — `connectedEldersProvider`(0/1/2명, pending·rejected·revoked 제외, 이름이 실제 elderId 기반인지) 7개, `analysis` domain(usecase 4개, `RiskSummary` 4개, `AnalysisStats` 5개) 13개, `AnalysisRecordsNotifier`(선택된 어르신 없음/선택/전환 시 재조회) 3개. Widget 6개(`AnalysisRecordDetailPage` — 신뢰도 문장/위험 배지 유무/원문 유무/구조화 필드 렌더링). RLS 보안 테스트("연결 안 된 elder 접근 차단", "revoked 연결 접근 차단")는 실제 Supabase 프로젝트가 없어 실행 불가 — 대신 migration의 정책 정의 자체가 정적 리뷰 대상이다(§4, §15 참고. **NOT AVAILABLE**로 명시).
+- **완료 조건 재정의**: (원래 조건 그대로 충족) 연결된 어르신의 실제 데이터만 보호자 앱에 반영되고(RLS로 강제, 앱 레이어에서 추가로 걸러내지 않음), 비연결 상태에서는 명확한 Empty State가 표시됨. 고지서 통계는 "구조화 데이터만으로 표시"까지는 충족하되, 통계 항목 자체(OPEN QUESTIONS #12)가 미확정이라 집계·차트는 보류 — 원본 구조화 필드 나열까지만 구현.
+
+### Phase 7 — 문자/위험 기능 (v11: **구현 완료, 범위 재조정**)
+
+> **v11 완료 보고**: 원래 계획은 "Android 전용"이었으나, 사용자 결정에 따라 **iOS도 붙여넣기/직접 입력 기반으로 함께 구현**했다(자동 SMS 접근은 여전히 Android 전용). "서버 Risk Detection 호출"과 "보호자에게 알리기 → `notification` 이벤트 생성"은 실제 분석 백엔드(Edge Function)가 아직 없어 이번 범위에 포함하지 않았다 — `document_scan`과 동일하게 분석 요청은 항상 `UnavailableFailure`로 귀결된다(가짜 위험 판정 없음). `notification` feature 자체가 아직 없으므로(Phase 8) "보호자에게 알리기"는 구조적으로 불가능해 임의로 앞당기지 않았다.
+
+- **구현 완료**: `apps/senior/lib/features/message_check/`(domain/data/presentation). **Android**: `flutter_sms_inbox` 기반 최근 SMS inbox 조회, `permission_handler`의 `Permission.sms`로 권한 상태(granted/denied/permanentlyDenied) 처리, 문자 목록 → 문자 확인(상세) → 분석하기 흐름. **iOS(및 자동 조회 미지원 플랫폼)**: `SmsPermissionStatus.unsupported`로 자동 판별되어 클립보드 붙여넣기(비어 있어도 오류 아님) + 직접 입력 화면으로 바로 연결. 두 플랫폼 모두 마지막에 기존 `AnalysisResultView`(이번에 `document_scan`에서 `apps/senior/lib/core/widgets/`로 승격)를 그대로 재사용해 결과를 표시한다. Home 탭의 "문자 확인" 카드를 실제 진입점으로 연결(기존 `ComingSoonPage` placeholder 제거).
+- **Architecture**: `SmsInboxRepository`(Android 자동 조회) / `MessageRiskRepository`(분석 요청, `document_scan`의 `AnalysisRepository`와 동일한 `UnavailableFailure` 패턴 — 입력 타입이 달라 인터페이스만 분리) 두 축으로 domain을 구성했다. Platform 분기는 `data/repositories/sms_inbox_repository_factory.dart` 한 곳(`Platform.isAndroid`)에서만 일어나고, presentation/domain은 플랫폼을 모른다. `SmsMessage`(domain entity)는 Android inbox 조회 결과와 iOS 수동 입력을 동일하게 표현한다(`sender`가 null이면 수동 입력).
+- **미구현(정직하게 Unavailable/구조 부재)**: 실제 위험도 분석 AI/Edge Function(백엔드 자체가 없음 — `analyzeMessage()`가 항상 `UnavailableFailure` 반환), "보호자에게 알리기"(`notification` feature가 Phase 8이라 구조적으로 불가능), 새 문자 자동 감지(백그라운드 리스너 — 이번 범위에서 의도적으로 제외, 인터페이스는 확장 가능하게 남김).
+- **Guardian**: 신규 feature 없음 — Phase 6에서 이미 `AnalysisType.message`를 "문자 확인" 라벨/아이콘으로 분기 처리하고 있음을 코드로 확인(`analysis_record_card.dart`/`analysis_record_detail_page.dart`). `analysis_results` RLS도 `type` 컬럼과 무관하게 이미 커버하므로 Backend 변경 없음.
+- **선행 조건**: Phase 4, 6 완료 — 충족. SMS 패키지 선정(`technical-decisions.md` OPEN QUESTIONS 4번)을 이번에 `flutter_sms_inbox`로 확정(DECIDED).
+- **실제 영향 범위**: `apps/senior/lib/features/message_check/`(신규), `apps/senior/lib/core/widgets/analysis_result_view.dart`(신규, `document_scan`에서 승격), `apps/senior/lib/features/document_scan/presentation/pages/document_scan_result_page.dart`(import만 변경, 로직 변경 없음), `apps/senior/lib/features/home/presentation/pages/home_tab_page.dart`(진입점 연결), `apps/senior/pubspec.yaml`(`flutter_sms_inbox` 추가), `apps/senior/android/app/src/main/AndroidManifest.xml`(`READ_SMS` 권한 추가). Guardian/Supabase 변경 없음.
+- **테스트**: Senior 신규 37개 — domain usecase 10개(권한 3상태+unsupported, 최근 조회, 위험 분석), data 5개(Unsupported repository, factory가 비Android 호스트에서 안전하게 fallback하는지, MessageRiskRepositoryImpl), presentation 22개(권한별 진입 분기 4, 목록/타일/붙여넣기 위젯, 결과 화면 Unavailable 상태, Home 연결). 기존 `document_scan`의 `AnalysisResultView` 테스트는 `core/widgets/`로 이동(내용 동일, import만 변경 — 커버리지 손실 없음). `dart format`/`flutter analyze`/`flutter test` 양쪽 앱 통과, Phase 1~6 regression(기존 79+78개) PASS 확인.
+- **완료 조건 재정의**: (원래 조건인 "Android 실기기에서 문자 분석→보호자에게 알리기까지 동작" 대신) **Code-level validation PASS** — 권한 분기/목록/붙여넣기/분석 요청 전체 플로우가 코드 수준에서 검증됨. **Physical device validation NOT AVAILABLE** — 이 환경에 Android 실기기/에뮬레이터가 없어 실제 SMS 하드웨어 읽기 동작은 확인하지 못했다(`flutter build apk --debug` 성공까지만 확인 예정).
 
 ### Phase 8 — 알림(Notification)
 
@@ -257,4 +286,4 @@ packages/
 - `pubspec.yaml` package 추가
 - 코드 작성 일체
 
-`technical-decisions.md` §5 OPEN QUESTIONS 중 Phase 2(1번)/Phase 5(2번)/Phase 7(4번)/Phase 10(9~10번) 착수 전 필요한 항목이 정리되면, `feature-development` skill로 Phase 1부터 순차 착수한다.
+`technical-decisions.md` §5 OPEN QUESTIONS 중 Phase 7(4번)/Phase 10(9~10번) 착수 전 필요한 항목이 정리되면(Phase 2는 v5, Phase 5는 v9에서 이미 해소됨), `feature-development` skill로 이어서 착수한다. Phase 6(보호자 핵심 기능)은 Phase 5가 방금 완료되어 착수 가능한 상태다.
