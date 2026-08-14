@@ -812,6 +812,108 @@
     return list;
   }
 
+  // ---- Pixel-art employee sprite (canvas-based) -------------------------
+  // Replaces the old div-stack (.e-head/.e-body/.e-legs) sprite with a
+  // hand-drawn pixel character on a 34x44 <canvas>, redrawn every animation
+  // frame from the canvas's own data-status/data-shirt attributes (set in
+  // deskSlotHtml()/emptySlotHtml()). Canvases are re-queried every frame —
+  // never cached by id/reference — because renderOffice() periodically
+  // replaces #office-floor's innerHTML wholesale (SSE updates + the 5s
+  // recompute interval); any cached canvas/context would go stale the
+  // instant that happens.
+  const PIXEL_INK = '#14151c';
+  const PIXEL_SKIN = '#f2c396';
+  const PIXEL_CAP = '#232733';
+  const PIXEL_PANTS = '#2f333d';
+
+  function shadeColor(hex, percent) {
+    const num = parseInt(String(hex).replace('#', ''), 16) || 0;
+    const clamp = (v) => Math.max(0, Math.min(255, v));
+    const r = clamp(((num >> 16) & 0xff) + Math.round(255 * percent));
+    const g = clamp(((num >> 8) & 0xff) + Math.round(255 * percent));
+    const b = clamp((num & 0xff) + Math.round(255 * percent));
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  // Filled rect with a crisp 1px inset outline — the "game sprite" look
+  // every block of the character uses.
+  function pixelRect(ctx, x, y, w, h, fill) {
+    ctx.fillStyle = fill;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = PIXEL_INK;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+  }
+
+  // Draws one RPG-style pixel character into a 34x44 canvas: legs -> body
+  // (shirt, 3-tone shaded) -> arms -> head+cap, outlined throughout. `t` is
+  // an ever-increasing timestamp (the rAF callback's DOMHighResTimeStamp)
+  // used only to animate WORKING's typing sway — it is not real activity
+  // data, just an animation clock.
+  function drawPixelEmployee(ctx, shirt, status, t) {
+    ctx.clearRect(0, 0, 34, 44);
+
+    const resting = status === 'OFFLINE' || status === 'UNKNOWN';
+    const typing = status === 'WORKING';
+    const armSwing = typing ? Math.sin(t / 140) * 2 : 0;
+
+    // legs
+    pixelRect(ctx, 11, 29, 5, 10, PIXEL_PANTS);
+    pixelRect(ctx, 18, 29, 5, 10, PIXEL_PANTS);
+
+    // body (shirt), 3-tone shading: base fill + lighter collar strip +
+    // darker waist strip, all inside one outlined silhouette.
+    pixelRect(ctx, 8, 16, 18, 13, shirt);
+    ctx.fillStyle = shadeColor(shirt, 0.18);
+    ctx.fillRect(9, 17, 16, 3);
+    ctx.fillStyle = shadeColor(shirt, -0.22);
+    ctx.fillRect(9, 24, 16, 4);
+    ctx.strokeStyle = PIXEL_INK;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(8.5, 16.5, 17, 12);
+
+    // arms — sway like typing while WORKING, still otherwise
+    const sleeve = shadeColor(shirt, -0.08);
+    pixelRect(ctx, 3, 18 + armSwing, 5, 8, sleeve);
+    pixelRect(ctx, 3, 26 + armSwing, 5, 4, PIXEL_SKIN);
+    pixelRect(ctx, 26, 18 - armSwing, 5, 8, sleeve);
+    pixelRect(ctx, 26, 26 - armSwing, 5, 4, PIXEL_SKIN);
+
+    // head
+    pixelRect(ctx, 10, 5, 14, 12, PIXEL_SKIN);
+
+    // eyes — closed for OFFLINE/UNKNOWN (nobody actually working), open
+    // otherwise. Drawn without their own outline (too small to read as a
+    // block) directly on top of the head fill.
+    ctx.fillStyle = PIXEL_INK;
+    if (resting) {
+      ctx.fillRect(13, 11, 3, 1);
+      ctx.fillRect(19, 11, 3, 1);
+    } else {
+      ctx.fillRect(13, 10, 2, 2);
+      ctx.fillRect(19, 10, 2, 2);
+    }
+
+    // cap — drawn last so it sits on top of the head, per the layering
+    // order (legs -> body -> arms -> head+cap).
+    pixelRect(ctx, 9, 2, 16, 5, PIXEL_CAP);
+    pixelRect(ctx, 21, 6, 7, 3, PIXEL_CAP);
+  }
+
+  // One rAF loop drives every employee canvas on the page — cheap even
+  // with many desks (small canvases, simple fillRect/strokeRect calls) and
+  // avoids per-employee timers that would drift out of sync with each
+  // other.
+  function tickEmployeeCanvases(t) {
+    document.querySelectorAll('.e-canvas').forEach((canvas) => {
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      drawPixelEmployee(ctx, canvas.dataset.shirt || '#6ec6ff', canvas.dataset.status || 'UNKNOWN', t);
+    });
+    requestAnimationFrame(tickEmployeeCanvases);
+  }
+  requestAnimationFrame(tickEmployeeCanvases);
+
   function deskSlotHtml(e) {
     const a = e.agent;
     const v = statusVisual(a.status);
@@ -834,9 +936,9 @@
           <div class="employee ${v.cls}" style="--emp-shirt:${color}">
             <span class="e-badge">${v.icon}</span>
             <div class="e-ring"></div>
-            <div class="e-head"></div>
-            <div class="e-body"></div>
-            <div class="e-legs"></div>
+            <canvas class="e-canvas" width="34" height="44"
+              data-status="${escapeHtml(a.status || 'UNKNOWN')}"
+              data-shirt="${color}"></canvas>
           </div>
         </div>
         <div class="desk"></div>
@@ -856,9 +958,9 @@
         <div class="employee-wrap">
           <div class="employee status-offline">
             <span class="e-badge">💤</span>
-            <div class="e-head"></div>
-            <div class="e-body"></div>
-            <div class="e-legs"></div>
+            <canvas class="e-canvas" width="34" height="44"
+              data-status="OFFLINE"
+              data-shirt="#b9b2a4"></canvas>
           </div>
         </div>
         <div class="desk"></div>
