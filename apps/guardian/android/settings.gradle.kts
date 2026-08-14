@@ -21,6 +21,10 @@ plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
     id("com.android.application") version "9.0.1" apply false
     id("org.jetbrains.kotlin.android") version "2.3.20" apply false
+    // Reads apps/guardian/android/app/google-services.json into native
+    // FirebaseOptions at build time — required for firebase_core/
+    // firebase_messaging (Phase 8 Push) to actually initialize on Android.
+    id("com.google.gms.google-services") version "4.4.4" apply false
 }
 
 include(":app")
