@@ -13,7 +13,9 @@
 > - v8: Phase 3(Senior/Guardian UI 골격, Design System 컴포넌트 13개)에 이어 Phase 4(문서 촬영 카메라+분석 요청 골격)를 구현했다. `AnalysisResult` 도메인 모델을 재검토해 Phase 4 요구사항에 이미 충분함을 확인(신규 필드 추가 없음). `packages/core`의 `Failure` 계층에 `UnavailableFailure`를 신규 추가(백엔드 부재를 서버 오류와 구분). 상세는 §6 "Phase 4 구현 완료 요약".
 > - v9: Phase 5(Connection) 착수 전 OPEN QUESTIONS 2번(보호자 연결 요청 입력 방식)을 **QR 코드 기반**으로 확정했다. 전화번호/연결 코드 직접 입력은 기본 방식으로 채택하지 않는다 — 어르신 앱이 서버 발급 단기 유효 토큰을 QR로 표시하고, 보호자 앱이 이를 스캔해 연결 요청(pending)을 생성하며, 어르신의 명시적 수락을 거쳐야 `accepted`가 된다. 상세는 §1-6. QR을 사용할 수 없는 상황의 fallback 방식은 이번에 함께 결정하지 않고 신규 OPEN QUESTIONS 20으로 남겼다(§5).
 > - v10: Phase 6(Guardian 핵심 기능 + 고지서 통계)을 실제로 구현했다. `analysis_results` 테이블을 신규 migration으로 만들고, §2 item 6("위험 문자 원문/분석 결과는 (a) 본인, (b) accepted 보호자만 조회 가능")을 그대로 RLS 2개(select-only)로 구현했다 — client에는 어떤 insert/update/delete 정책도 주지 않는다. **OPEN QUESTIONS #12(고지서 통계 최종 데이터 항목)는 이번에도 확정하지 않았다** — Phase 6 완료 조건이 이 결정을 전제하지 않도록, 통계는 스키마 무관 집계(건수)만 구현하고 고지서 구조화 필드는 제네릭하게 나열만 한다. 차트 라이브러리(Decision 3, ui-component-spec.md)도 여전히 추가하지 않았다. 상세는 `implementation-plan.md` Phase 6 항목.
-> - **v11(이 버전)**: Phase 7(위험 문자 확인, `message_check`)을 실제로 구현했다. OPEN QUESTIONS #4(Android SMS 패키지 선정)를 `flutter_sms_inbox` 기반 실제 SMS inbox 자동 조회로 DECIDED 처리했다 — Android는 실제 SMS 접근, iOS는 자동 접근 없이 복사/붙여넣기+직접 입력(Play Store 정책은 이번 구현 판단에서 고려하지 않음, 사용자 명시적 결정). `message_check`은 자체 분석 결과 모델을 만들지 않고 기존 `AnalysisResult`/`RiskLevel`/`document_scan`의 `UnavailableFailure` 패턴을 그대로 재사용했고, `AnalysisResultView`를 `document_scan`에서 `apps/senior/lib/core/widgets/`로 승격해 두 feature가 공유하도록 리팩터링했다. Guardian 앱은 Phase 6에서 이미 `AnalysisType.message`를 "문자 확인"으로 분기 처리하고 있어 변경이 필요 없었다(코드 확인 완료). 상세는 §1-9, `implementation-plan.md` Phase 7 항목.
+> - v11: Phase 7(위험 문자 확인, `message_check`)을 실제로 구현했다. OPEN QUESTIONS #4(Android SMS 패키지 선정)를 `flutter_sms_inbox` 기반 실제 SMS inbox 자동 조회로 DECIDED 처리했다 — Android는 실제 SMS 접근, iOS는 자동 접근 없이 복사/붙여넣기+직접 입력(Play Store 정책은 이번 구현 판단에서 고려하지 않음, 사용자 명시적 결정). `message_check`은 자체 분석 결과 모델을 만들지 않고 기존 `AnalysisResult`/`RiskLevel`/`document_scan`의 `UnavailableFailure` 패턴을 그대로 재사용했고, `AnalysisResultView`를 `document_scan`에서 `apps/senior/lib/core/widgets/`로 승격해 두 feature가 공유하도록 리팩터링했다. Guardian 앱은 Phase 6에서 이미 `AnalysisType.message`를 "문자 확인"으로 분기 처리하고 있어 변경이 필요 없었다(코드 확인 완료). 상세는 §1-9, `implementation-plan.md` Phase 7 항목.
+> - v12: Phase 8(알림) 중 **Backend 인프라만** 실제로 구현했다(Flutter `notification` feature는 아직 없음 — 이번 범위 밖). `notifications`/`fcm_tokens` 테이블을 §4 설계 그대로 migration으로 작성: `notifications`는 `analysis_results`와 동일하게 select-only RLS(본인 `target_user_id`만, client insert/update/delete 정책 없음 — 쓰기는 `send-notification` Edge Function이 service_role로 수행). `fcm_tokens`는 §2-5 "FCM Token 보안"을 만족시키는 범위에서 본인 `user_id` 행만 select/insert/update 가능하도록 RLS를 붙였다(delete 정책은 없음 — 토큰 무효화 절차는 이번에 구현하지 않음, §5 OPEN QUESTIONS 참고). `send-notification` Edge Function을 신규 작성했다: 호출자(JWT로 검증)와 대상(`targetUserId`)이 `accepted` 상태의 `guardian_links`로 실제 연결되어 있는지 확인한 뒤에만 `notifications` row를 만들고, `fcm_tokens`에서 대상 사용자의 토큰을 조회해 FCM 발송을 시도한다(§1-10 "서버 키 사용" 원칙에 따라 legacy FCM HTTP API + 서버 키 사용). 이 환경에는 실제 Firebase 프로젝트/FCM 서버 키가 없어 발송 자체는 검증하지 못했다(`FCM_SERVER_KEY` 미설정 시 `pushSent: false, reason: "fcm_not_configured"`로 정직하게 응답) — migration/Edge Function 모두 정적 구조 검토만 완료(CLI 미설치로 실행 검증 불가). 상세는 `implementation-plan.md` Phase 8 항목.
+> - **v13(이 버전)**: Phase 8 Guardian 프론트엔드를 실제로 구현했다(v12에서 "아직 없음"이라 적었던 부분 — `apps/guardian/lib/features/notification/` 3계층, FCM 토큰 lifecycle, 알림 목록, 딥링크). 통합 검증 중 발견한 두 개의 silent failure(클라이언트 `.update()`/`.delete()`가 RLS에 막혀 0건 처리되는데도 에러 없이 성공으로 보임)를 신규 migration(`20260814000004`)으로 수정했다: `read_at`은 `mark_notification_read(p_notification_id)` SECURITY DEFINER RPC로만 쓸 수 있게 하고(전체 UPDATE 정책은 열지 않음, `target_user_id = auth.uid()` 소유권 확인, 존재하지 않거나 타인 것이면 동일하게 `false` 반환), `fcm_tokens`에는 본인 행 한정 DELETE 정책을 추가했다. **Phase 7(위험 문자 AI 분석)을 실제로 구현했다** — 가장 중요한 미완료 지점이었다. `analyze-message` Edge Function(Anthropic Claude Messages API, tool-forced 구조화 출력 + 서버측 allowlist 재검증, §1-7 그대로 구현)을 신규 작성해 `MessageRiskRepositoryImpl`이 항상 `UnavailableFailure`를 반환하던 것을 실제 호출로 교체했다. 위험 판정(`caution`/`dangerous`) 시 `analyze-message`가 직접 `guardian_links`(accepted)를 조회해 대상 보호자를 결정한 뒤 `send-notification`을 호출한다 — client가 임의 `target_user_id`를 넣을 수 있는 경로는 만들지 않았다. 이 과정에서 **`send-notification`의 실제 버그를 하나 더 발견해 수정**했다: FCM `data` 블록에 `elder_id`/`analysis_result_id`가 빠져 있어 Guardian의 push-tap 딥링크(`resolveAndNavigateToAnalysisDetail`)가 항상 조용히 실패하고 있었다(인앱 알림 목록 tap은 `notifications.payload`를 따로 읽어 정상 동작했지만, 실제 푸시 배너를 탭하는 경로는 FCM `data`만 보므로 별도로 깨져 있었다). AI provider 시크릿은 `ANTHROPIC_API_KEY`(Supabase Edge Function secret)로 신규 문서화한다 — 이 환경에는 값이 없어 실제 AI 호출/실제 Supabase 연결(CLI·Docker·credentials 전부 없음)/실제 FCM 발송/실기기 E2E는 전부 **NOT AVAILABLE**로 기록한다(정적 코드 검토 + Dart mocktail 단위테스트만 완료, Deno 테스트 파일은 작성했으나 미실행). 상세는 `implementation-plan.md` Phase 8 항목.
 >
 > 함께 읽는 문서: `docs/product/implementation-plan.md`(Phase별 실행 계획), `docs/product/feature-spec.md`, `docs/architecture/architecture.md`, `docs/ui/ui-spec.md`.
 
@@ -409,6 +411,7 @@ Local Storage  → 쉬운 모드, UI 설정, 비민감 사용자 설정
    - 업로드된 사진은 분석 완료 전까지만 짧게 존재해야 하며(§1-8), Storage 버킷 정책도 "업로드한 본인 + 처리 중인 서버 함수"만 접근 가능하도록 제한. Signed URL의 만료 시간을 짧게 설정.
 8. **Edge Function에서 AI API Key 관리**
    - AI 분석 API Key는 Supabase Edge Function의 환경변수(Secrets)로만 저장하고, 클라이언트로 전달되는 응답에 Key나 원본 프롬프트가 노출되지 않도록 응답 스키마를 최소화해야 한다.
+   - **v13**: `analyze-message`가 실제로 요구하는 secret 이름은 `ANTHROPIC_API_KEY`(Anthropic Messages API). `supabase secrets set ANTHROPIC_API_KEY=...`로 Supabase 프로젝트에 등록해야 하며, 코드/문서/로그 어디에도 실제 값을 남기지 않는다 — 이 저장소에는 값이 없다(NOT AVAILABLE, `.env.example` 대상도 아님: Edge Function secret은 Flutter `.env`가 아니라 Supabase 프로젝트 secret이라 별도 채널로 관리).
 9. **원본 이미지 즉시 삭제 정책**
    - "분석 완료 후 삭제"가 실제로 지켜지는지 보장하는 메커니즘(예: 분석 성공/실패와 무관하게 일정 시간 후 자동 삭제하는 Storage 수명주기 정책)을 함께 설계해, 분석 실패 시 원본이 무기한 남는 상황을 방지해야 한다.
 10. **계정 탈퇴 시 연결/데이터 삭제 정책**
@@ -434,9 +437,9 @@ Local Storage  → 쉬운 모드, UI 설정, 비민감 사용자 설정
 
 ---
 
-## 4. 확정 데이터 모델 개요 (`users`/`analysis_results`/`schedules`/`notifications`/`fcm_tokens`는 설계 참고, `pin_credentials`/`user_roles`/`guardian_links`는 v7에서 실제 migration으로 구현 완료)
+## 4. 확정 데이터 모델 개요 (`users`/`schedules`는 설계 참고, `pin_credentials`/`user_roles`/`guardian_links`는 v7, `analysis_results`는 v10, `notifications`/`fcm_tokens`는 v12에서 실제 migration으로 구현 완료)
 
-> `pin_credentials`/`user_roles`/`guardian_links`는 `supabase/migrations/`에 실제 DDL이 존재한다(v7). 나머지 테이블은 아직 합의 수준의 개요다.
+> `pin_credentials`/`user_roles`/`guardian_links`/`analysis_results`/`notifications`/`fcm_tokens`는 `supabase/migrations/`에 실제 DDL이 존재한다. `users`/`schedules`는 아직 합의 수준의 개요다.
 
 | 테이블(가칭) | 핵심 컬럼(예시) | 비고 |
 |---|---|---|
@@ -447,8 +450,8 @@ Local Storage  → 쉬운 모드, UI 설정, 비민감 사용자 설정
 | `connection_tokens`(**v9: 구현 완료**) | token(PK, pgcrypto 랜덤 hex), elder_id(FK), expires_at(발급 후 5분), used_at(nullable), created_at | §1-6 QR 기반 연결. `pin_credentials`와 동일하게 클라이언트 직접 접근 전면 차단(RLS + grant revoke), `service_role`만 `create_connection_token`/`redeem_connection_token` DB 함수를 통해 접근 |
 | `analysis_results`(**v10: 테이블/RLS 구현 완료, 실제 row는 아직 0건**) | id, elder_id, type(document/message), risk_level, summary, source_excerpt, reliability(높음/보통/낮음), structured_fields(JSON, 스키마 미확정) | §2 item 6. select RLS만 구현(본인 elder / accepted guardian) — insert/update/delete는 어떤 client role에도 없음(쓰기는 미래 서버 AI 파이프라인 전담). Phase 4 AI 백엔드가 아직 없어 실제로는 항상 빈 테이블. 신뢰도/구조화 필드의 정확한 스키마는 여전히 OPEN QUESTIONS 11, 12 |
 | `schedules` | id, elder_id, title, due_at, completed_at, source_analysis_id(nullable) | 분석 기록에서 분리 — `docs/product/implementation-plan.md` §1 참고 |
-| `notifications` | id, target_user_id, type, payload, read_at, sent_via(push/sms 등), created_at | §1-4 채널 확장 구조 반영 |
-| `fcm_tokens` | id, user_id, token, device_info, updated_at | §2-5 |
+| `notifications`(**v12: 구현 완료, v13: read_at RPC 추가**) | id, target_user_id, type, payload(jsonb), read_at, sent_via(push/sms, default push), created_at | §1-4 채널 확장 구조 반영. select RLS만 구현(본인 `target_user_id`) — insert/update/delete는 어떤 client role에도 없음(쓰기는 `send-notification` Edge Function이 service_role로 전담). **v13**: `read_at`만 클라이언트가 안전하게 쓸 수 있도록 `mark_notification_read(p_notification_id)` SECURITY DEFINER RPC를 추가했다(전체 UPDATE 정책은 열지 않음, 본인 소유 아니면 `false`) — Guardian의 client-side `.update()`가 RLS에 막혀 조용히 0건 처리되던 버그(20260814000004)를 수정 |
+| `fcm_tokens`(**v12: 구현 완료, v13: delete 정책 추가**) | id, user_id, token(unique), device_info(jsonb), updated_at | §2-5. select/insert/update RLS 구현(본인 `user_id` 행만). **v13**: 본인 `user_id` 행 한정 delete 정책을 추가해 로그아웃 시 토큰 무효화가 실제로 동작하도록 수정(이전에는 delete 정책이 없어 client `.delete()`가 조용히 0건 처리됨, 20260814000004) — 물리 토큰의 타 사용자 소유권 재할당 절차는 여전히 미구현(§5 OPEN QUESTIONS 21) |
 
 ---
 
@@ -502,7 +505,15 @@ Local Storage  → 쉬운 모드, UI 설정, 비민감 사용자 설정
 
 20. **QR 코드를 사용할 수 없는 상황(카메라 미지원/권한 거부 등)의 fallback 입력 방식** — §1-6에서 QR을 기본 방식으로 확정하면서, 전화번호/연결 코드를 기본 UX로 다시 도입하지 않기로 했다. fallback 자체의 필요 여부와 방식은 별도 결정으로 남긴다.
 
-> 위 목록에 없는 항목(Backend, DB, 인증 큰 흐름 — **OTP+PIN+Session 결합 방식, PIN 해시 알고리즘, Role 동시허용 정책, idle timeout 값 포함**, 알림 채널, 관계 카디널리티, 연결 인증 방식(QR 기반 확정 포함), 위험판단 주체, 원본 보관, SMS 격리, Push, 로컬 저장소 분리, 쉬운모드 범위/Main 격상, Empty State/Loading 정책, 미리보기 제거, 신규 기능 6개의 제품 방향, 어르신/보호자 앱 분리 구조)은 **모두 확정**되었다. 위 20개 중 1·2·6·15·16·17번이 해소되어, 실질적으로 남은 것은 14개(18·20번 OPEN 포함)다. 나머지는 순수 **기술/세부 구현 방식** 미결정 사항이다.
+### 알림(Notification) Backend 세부 (v12 신규)
+
+21. ~~`fcm_tokens` 토큰 무효화 절차~~ → **DECIDED(v13)**: 본인 행 한정 delete 정책을 추가해 로그아웃 시 실제로 토큰이 삭제되도록 구현했다(§4 `fcm_tokens` 참고). **단, 소유권 재할당은 여전히 미구현으로 OPEN 유지**: 같은 물리 토큰이 다른 사용자 소유로 넘어가는 경우(기기를 다른 사람에게 넘김 등) — 그 토큰 문자열이 이미 다른 `user_id` 행에 `unique` 제약으로 걸려 있으면 새 소유자의 insert/update가 그냥 실패한다. 실제 발생 빈도가 낮고 우회(로그아웃 시 delete가 정상 동작하면 대부분 자연히 해소)도 있어 우선순위 낮음으로 남긴다.
+
+### AI 위험분석 Backend 세부 (v13 신규)
+
+22. **AI provider 실제 자격증명/모델 운영 정책** — `analyze-message`는 Anthropic Messages API(`claude-haiku-4-5-20251001`, `ANTHROPIC_API_KEY` secret)로 구현했다(§1-7). 이 환경에는 실제 키가 없어 호출 자체는 검증하지 못했다(NOT AVAILABLE). 실제 운영 시 (a) 이 모델/provider를 그대로 쓸지 재검토, (b) 비용/rate limit 정책, (c) 오분류(false negative — 위험 문자를 safe로 판정) 발생 시 사용자/보호자에게 미치는 영향에 대한 완화책(예: caution 임계값을 보수적으로 잡을지)은 실제 운영 데이터 없이는 결정할 수 없어 OPEN으로 남긴다.
+
+> 위 목록에 없는 항목(Backend, DB, 인증 큰 흐름 — **OTP+PIN+Session 결합 방식, PIN 해시 알고리즘, Role 동시허용 정책, idle timeout 값 포함**, 알림 채널, 관계 카디널리티, 연결 인증 방식(QR 기반 확정 포함), 위험판단 주체, 원본 보관, SMS 격리, Push, 로컬 저장소 분리, 쉬운모드 범위/Main 격상, Empty State/Loading 정책, 미리보기 제거, 신규 기능 6개의 제품 방향, 어르신/보호자 앱 분리 구조)은 **모두 확정**되었다. 위 22개 중 1·2·6·15·16·17·21번이 해소되어(21번은 토큰 무효화만 해소, 소유권 재할당은 여전히 OPEN), 실질적으로 남은 것은 15개(18·20·22번 OPEN 포함)다. 나머지는 순수 **기술/세부 구현 방식** 미결정 사항이다.
 
 ---
 
