@@ -43,6 +43,7 @@ dev_dependencies:
   # can call SharedPreferences.setMockInitialValues directly — same pattern
   # as apps/senior.
   shared_preferences: ^2.5.3
+  mocktail: ^1.0.5
 
 flutter:
   uses-material-design: true
