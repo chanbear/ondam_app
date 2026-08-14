@@ -52,3 +52,7 @@ android/app/release
 # See https://dart.dev/go/workspaces-stray-files
 apps/*/pubspec.lock
 packages/*/pubspec.lock
+
+# Supabase CLI local link/session state (`supabase link`) — machine-specific,
+# not project config.
+supabase/.temp/
