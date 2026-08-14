@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/auth/supabase_client_provider.dart';
+import '../../data/datasources/analysis_remote_datasource.dart';
 import '../../data/datasources/camera_permission_datasource.dart';
 import '../../data/repositories/analysis_repository_impl.dart';
 import '../../data/repositories/camera_repository_impl.dart';
@@ -17,8 +19,12 @@ final cameraRepositoryProvider = Provider<CameraRepository>((ref) {
   return CameraRepositoryImpl(ref.watch(cameraPermissionDataSourceProvider));
 });
 
+final analysisRemoteDataSourceProvider = Provider(
+  (ref) => AnalysisRemoteDataSource(ref.watch(supabaseClientProvider)),
+);
+
 final analysisRepositoryProvider = Provider<AnalysisRepository>((ref) {
-  return const AnalysisRepositoryImpl();
+  return AnalysisRepositoryImpl(ref.watch(analysisRemoteDataSourceProvider));
 });
 
 final checkCameraPermissionUseCaseProvider = Provider(

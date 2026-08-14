@@ -6,6 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_senior/features/document_scan/domain/entities/captured_photo.dart';
 import 'package:ondam_senior/features/document_scan/presentation/pages/document_scan_preview_page.dart';
 import 'package:ondam_senior/features/document_scan/presentation/pages/document_scan_result_page.dart';
+import 'package:ondam_senior/features/document_scan/presentation/providers/document_scan_di_providers.dart';
+
+import '../../domain/fakes/fake_analysis_repository.dart';
 
 // Minimal 1x1 transparent PNG so Image.file has real bytes to decode.
 const _onePixelPng = [
@@ -148,8 +151,16 @@ void main() {
   });
 
   testWidgets('analyze navigates to the result page', (tester) async {
+    // Phase 8+: AnalysisRepositoryImpl now calls the real `analyze-document`
+    // Edge Function (Supabase), so it needs an override here too — same
+    // reasoning as message_check's equivalent widget test.
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          analysisRepositoryProvider.overrideWithValue(
+            FakeAnalysisRepository(),
+          ),
+        ],
         child: MaterialApp(home: DocumentScanPreviewPage(photo: photo)),
       ),
     );
