@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../core/auth/idle_timeout_controller.dart';
+import '../features/notification/presentation/services/push_notification_service.dart';
 import 'router/app_router.dart';
 
 /// Root widget — wires theme and router together. Business logic does not
@@ -15,6 +16,8 @@ class App extends ConsumerWidget {
     // Instantiated once here so it lives for the app's lifetime — see
     // idle_timeout_controller.dart.
     ref.watch(idleTimeoutControllerProvider);
+    // Same pattern — see push_notification_service.dart.
+    ref.watch(pushNotificationControllerProvider);
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(

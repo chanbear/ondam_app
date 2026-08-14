@@ -17,6 +17,7 @@ import '../../features/auth/presentation/providers/role_notifier.dart';
 import '../../features/home/presentation/pages/home_shell_page.dart';
 import 'auth_redirect.dart';
 import 'auth_routes.dart';
+import 'root_navigator_key.dart';
 
 /// Central route table for the Guardian app, gated by the 3-state auth
 /// model (technical-decisions.md §1-3-A):
@@ -32,6 +33,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   ref.onDispose(refreshNotifier.dispose);
 
   return GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: AuthRoutes.phoneInput,
     refreshListenable: refreshNotifier,
     redirect: (context, state) => _redirect(ref, state),

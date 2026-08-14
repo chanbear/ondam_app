@@ -28,6 +28,12 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>어르신의 QR 코드를 스캔해 연결하려면 카메라 접근이 필요해요.</string>
+	<!-- Required for FCM Push while the app is backgrounded (Phase 8,
+	     technical-decisions.md §1-10). -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
