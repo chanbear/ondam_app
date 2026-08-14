@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/auth/supabase_client_provider.dart';
+import '../../data/datasources/message_risk_remote_datasource.dart';
 import '../../data/repositories/message_risk_repository_impl.dart';
 import '../../data/repositories/sms_inbox_repository_factory.dart';
 import '../../domain/repositories/message_risk_repository.dart';
@@ -13,8 +15,14 @@ final smsInboxRepositoryProvider = Provider<SmsInboxRepository>((ref) {
   return createSmsInboxRepository();
 });
 
+final messageRiskRemoteDataSourceProvider = Provider(
+  (ref) => MessageRiskRemoteDataSource(ref.watch(supabaseClientProvider)),
+);
+
 final messageRiskRepositoryProvider = Provider<MessageRiskRepository>((ref) {
-  return const MessageRiskRepositoryImpl();
+  return MessageRiskRepositoryImpl(
+    ref.watch(messageRiskRemoteDataSourceProvider),
+  );
 });
 
 final checkSmsPermissionUseCaseProvider = Provider(

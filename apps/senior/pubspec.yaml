@@ -41,6 +41,7 @@ dev_dependencies:
   # Used directly (not just transitively via ondam_storage) in
   # test/core/easy_mode_provider_test.dart to seed SharedPreferences mocks.
   shared_preferences: ^2.5.3
+  mocktail: ^1.0.5
 
 flutter:
   uses-material-design: true

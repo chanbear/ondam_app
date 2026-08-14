@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_senior/features/home/presentation/pages/home_tab_page.dart';
 import 'package:ondam_senior/features/message_check/domain/entities/sms_message.dart';
 import 'package:ondam_senior/features/message_check/domain/entities/sms_permission_status.dart';
 import 'package:ondam_senior/features/message_check/presentation/pages/message_check_entry_page.dart';
 import 'package:ondam_senior/features/message_check/presentation/pages/message_risk_result_page.dart';
 import 'package:ondam_senior/features/message_check/presentation/pages/sms_message_detail_page.dart';
+import 'package:ondam_senior/features/message_check/presentation/providers/message_check_di_providers.dart';
 import 'package:ondam_senior/features/message_check/presentation/providers/sms_inbox_notifier.dart';
 import 'package:ondam_senior/features/message_check/presentation/providers/sms_permission_provider.dart';
 import 'package:ondam_senior/features/message_check/presentation/widgets/manual_message_input_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../domain/fakes/fake_message_risk_repository.dart';
 
 /// Fixed permission state — avoids ever touching the real
 /// `permission_handler` platform channel, mirrors
@@ -126,6 +130,16 @@ void main() {
             ),
             smsInboxProvider.overrideWith(
               () => _FixedSmsInboxNotifier([message]),
+            ),
+            // Phase 8: analysis now calls the real Edge Function (Supabase)
+            // — override with a fake so this navigation test doesn't need a
+            // live backend. Default result (Err(UnavailableFailure())) keeps
+            // this test's original assertion unchanged.
+            messageRiskRepositoryProvider.overrideWithValue(
+              FakeMessageRiskRepository()
+                ..result = const Err(
+                  UnavailableFailure('분석 서버가 아직 준비되지 않았어요. 조금만 기다려주세요.'),
+                ),
             ),
           ],
           child: const MaterialApp(home: MessageCheckEntryPage()),
