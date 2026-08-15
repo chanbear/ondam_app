@@ -33,6 +33,9 @@ dependencies:
   permission_handler: 12.0.0
   qr_flutter: ^4.1.0
   flutter_sms_inbox: ^1.0.5
+  url_launcher: ^6.3.1
+  speech_to_text: ^7.4.0
+  flutter_tts: ^4.2.5
 
 dev_dependencies:
   flutter_test:

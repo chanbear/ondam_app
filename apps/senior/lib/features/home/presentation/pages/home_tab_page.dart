@@ -9,6 +9,7 @@ import '../../../emergency_help/presentation/widgets/emergency_help_sheet.dart';
 import '../../../message_check/presentation/pages/message_check_entry_page.dart';
 import '../../../onboarding/presentation/pages/onboarding_flow_page.dart';
 import '../../../onboarding/presentation/providers/onboarding_status_provider.dart';
+import '../../../voice_assistant/presentation/pages/voice_assistant_page.dart';
 import '../widgets/easy_mode_home_view.dart';
 import '../widgets/home_feature_card.dart';
 import '../widgets/normal_home_view.dart';
@@ -45,6 +46,12 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
     ).push(MaterialPageRoute(builder: (_) => const MessageCheckEntryPage()));
   }
 
+  void _openVoiceAssistant() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const VoiceAssistantPage()));
+  }
+
   List<HomeFeatureItem> _features() {
     return [
       HomeFeatureItem(
@@ -69,7 +76,7 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
         icon: Icons.mic_none,
         label: '음성 비서',
         iconColor: AppColors.primary,
-        onTap: () => _openComingSoon('음성 비서'),
+        onTap: _openVoiceAssistant,
       ),
     ];
   }
@@ -104,6 +111,7 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
                 bottom: 0,
                 child: FloatingActionButton(
                   backgroundColor: AppColors.error,
+                  tooltip: '긴급 도움',
                   onPressed: () => EmergencyHelpSheet.show(context),
                   child: const Icon(Icons.emergency, color: Colors.white),
                 ),

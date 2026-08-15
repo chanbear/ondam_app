@@ -5,6 +5,8 @@
     <!-- message_check(Phase 7): 최근 문자 조회 전용. RECEIVE_SMS/SEND_SMS는
          이 기능에 필요하지 않아 요청하지 않는다(최소 권한 원칙). -->
     <uses-permission android:name="android.permission.READ_SMS" />
+    <!-- voice_assistant(Phase 10): 온디바이스 STT(speech_to_text) 전용. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application
         android:label="ondam_senior"
         android:name="${applicationName}"
