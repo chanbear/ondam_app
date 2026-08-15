@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/easy_mode/easy_mode_provider.dart';
 import 'home_tab_page.dart';
 import 'info_tab_page.dart';
 import 'more_tab_page.dart';
@@ -13,14 +15,19 @@ import 'records_tab_page.dart';
 /// (딥링크 요구사항 없음), 라우터 구조를 더 크게 바꾸지 않기 위함(구현
 /// 방식 선택일 뿐 UX 결과는 동일). 필요해지면 나중에 shell route로 전환
 /// 가능하다.
-class HomeShellPage extends StatefulWidget {
+///
+/// Easy Mode는 탭 4개 구성 자체는 바꾸지 않고(OPEN QUESTIONS 8, DECIDED:
+/// 스타일만 확대) `AppBottomNavigation(large: true)`로 아이콘/라벨만
+/// 키운다 — 쉬운 모드가 하단 Navigation까지 일관되게 적용된다는 완료
+/// 조건(implementation-plan.md Phase 9)을 이걸로 충족한다.
+class HomeShellPage extends ConsumerStatefulWidget {
   const HomeShellPage({super.key});
 
   @override
-  State<HomeShellPage> createState() => _HomeShellPageState();
+  ConsumerState<HomeShellPage> createState() => _HomeShellPageState();
 }
 
-class _HomeShellPageState extends State<HomeShellPage> {
+class _HomeShellPageState extends ConsumerState<HomeShellPage> {
   int _index = 1;
 
   static const _tabs = [
@@ -32,11 +39,14 @@ class _HomeShellPageState extends State<HomeShellPage> {
 
   @override
   Widget build(BuildContext context) {
+    final easyMode = ref.watch(easyModeProvider);
+
     return Scaffold(
       body: SafeArea(
         child: IndexedStack(index: _index, children: _tabs),
       ),
       bottomNavigationBar: AppBottomNavigation(
+        large: easyMode,
         items: const [
           AppBottomNavItem(icon: Icons.info_outline, label: '정보'),
           AppBottomNavItem(icon: Icons.home_outlined, label: '홈'),
