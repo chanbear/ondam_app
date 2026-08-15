@@ -38,12 +38,9 @@ Feature 내부 계층 흐름: `UI → Provider(Riverpod) → UseCase → Reposit
 - `assets/*` pubspec 등록: 폴더 구조만 존재, 실제 에셋 파일이 생기면 pubspec에 등록
 - iOS 빌드: Windows에서는 근본적으로 불가 — macOS/Xcode 필요 (코드 작성은 가능)
 
-## 개발 환경 (이 머신 기준)
+## 개발 환경
 
-- Flutter 3.44.9 (stable) — `C:\flutter`, PATH 등록됨
-- Android SDK — `%LOCALAPPDATA%\Android\Sdk` (build-tools 36.0.0, platform android-36), `ANDROID_HOME`/`ANDROID_SDK_ROOT` 등록됨, 라이선스 전부 승인됨
-- JDK 21 — `JAVA_HOME` 등록됨
-- iOS 빌드 도구: 없음 (Windows이므로 근본적으로 불가)
+컴퓨터마다 다를 수 있는 SDK 경로 등은 `.claude/CLAUDE.local.md`(gitignore됨)에 적는다. 새 컴퓨터에서 작업을 시작하면 그 파일이 없을 수 있으니 먼저 확인하고 없으면 새로 작성한다.
 
 ## 문서
 

@@ -1,6 +1,10 @@
 # Environment secrets
 .env
 
+# Claude Code personal/machine-specific files
+CLAUDE.local.md
+.claude/settings.local.json
+
 # Miscellaneous
 *.class
 *.log
