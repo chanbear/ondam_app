@@ -65,6 +65,11 @@ class PinNotifier extends AsyncNotifier<void> {
       Err(:final failure) => AsyncError(failure, StackTrace.current),
     };
     if (result is Ok<void>) {
+      // The account is already gone server-side at this point — also end
+      // the local Supabase session so the router's `hasSession` gate sees
+      // it immediately, instead of leaving a stale session that would
+      // route to PIN entry for an account that no longer exists.
+      await ref.read(signOutUseCaseProvider).call();
       ref.read(pinVerifiedProvider.notifier).reset();
     }
     return result;

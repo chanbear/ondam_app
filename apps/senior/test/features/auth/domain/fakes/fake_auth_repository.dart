@@ -25,6 +25,8 @@ class FakeAuthRepository implements AuthRepository {
   final List<String> verifyPinCalls = [];
   final List<String> resetPinCalls = [];
   final List<UserRole> addRoleCalls = [];
+  int signOutCalls = 0;
+  int deleteAccountCalls = 0;
 
   @override
   Future<Result<void>> requestOtp(String phoneNumber) async {
@@ -42,7 +44,10 @@ class FakeAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<Result<void>> signOut() async => signOutResult;
+  Future<Result<void>> signOut() async {
+    signOutCalls++;
+    return signOutResult;
+  }
 
   @override
   Future<Result<void>> setPin(String pin) async {
@@ -66,7 +71,10 @@ class FakeAuthRepository implements AuthRepository {
   Future<Result<bool>> hasPin() async => hasPinResult;
 
   @override
-  Future<Result<void>> deleteAccount() async => deleteAccountResult;
+  Future<Result<void>> deleteAccount() async {
+    deleteAccountCalls++;
+    return deleteAccountResult;
+  }
 
   @override
   Future<Result<void>> addRole(UserRole role) async {
