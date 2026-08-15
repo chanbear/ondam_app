@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter test *)",
+      "Bash(flutter analyze *)",
+      "Bash(claude agents *)",
+      "Bash(claude logs *)",
+      "Bash(adb devices *)",
+      "Bash(flutter devices *)",
+      "Bash(supabase functions list *)",
+      "Bash(flutter emulators *)",
+      "Bash(supabase migration list *)",
+      "Bash(supabase secrets list *)",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "mcp__claude-in-chrome__find",
+      "mcp__claude-in-chrome__read_console_messages",
+      "mcp__claude-in-chrome__read_network_requests",
+      "mcp__claude-in-chrome__get_page_text"
+    ]
+  }
+}
