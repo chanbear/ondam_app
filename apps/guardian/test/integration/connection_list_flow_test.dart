@@ -1,0 +1,94 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:ondam_core/ondam_core.dart';
+import 'package:ondam_guardian/features/connection/presentation/pages/connection_list_page.dart';
+import 'package:ondam_guardian/features/connection/presentation/providers/connection_di_providers.dart';
+import 'package:ondam_models/ondam_models.dart';
+
+import '../features/connection/domain/fakes/fake_connection_repository.dart';
+
+/// Phase 11 통합 테스트 — "어르신 연결 관리" 화면에서 accepted 연결을
+/// 해제하는 흐름. Senior 쪽 `guardian_list_flow_test.dart`의 보호자 앱
+/// 대응 — 지금까지 domain usecase 단위 테스트만 있던 gap을 메운다.
+void main() {
+  GuardianLink link({required String id, required GuardianLinkStatus status}) =>
+      GuardianLink(
+        id: id,
+        elderId: 'elder-$id',
+        guardianId: 'guardian-1',
+        status: status,
+        createdAt: DateTime(2026, 1, 1),
+      );
+
+  testWidgets('pending 연결은 대기 문구만 보여주고 해제 버튼이 없다(수락/거절은 어르신 전용)', (
+    tester,
+  ) async {
+    final fake = FakeConnectionRepository()
+      ..getMyLinksResult = Ok([
+        link(id: 'link-1', status: GuardianLinkStatus.pending),
+      ]);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
+        child: const MaterialApp(home: ConnectionListPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('어르신 수락 대기 중'), findsOneWidget);
+    expect(find.text('연결 해제'), findsNothing);
+  });
+
+  testWidgets('accepted 연결은 확인 다이얼로그를 거쳐 해제하면 목록에서 사라진다', (tester) async {
+    final fake = FakeConnectionRepository()
+      ..getMyLinksResult = Ok([
+        link(id: 'link-1', status: GuardianLinkStatus.accepted),
+      ]);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
+        child: const MaterialApp(home: ConnectionListPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('연결 해제'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('연결을 해제할까요?'), findsOneWidget);
+    expect(fake.revokeLinkCalls, isEmpty);
+
+    fake.getMyLinksResult = const Ok([]);
+    await tester.tap(find.text('해제'));
+    await tester.pumpAndSettle();
+
+    expect(fake.revokeLinkCalls, ['link-1']);
+    expect(find.text('아직 연결된 어르신이 없습니다\n어르신 연결하기로 QR을 스캔해주세요'), findsOneWidget);
+  });
+
+  testWidgets('해제 확인 다이얼로그에서 취소하면 연결이 그대로 남아있다', (tester) async {
+    final fake = FakeConnectionRepository()
+      ..getMyLinksResult = Ok([
+        link(id: 'link-1', status: GuardianLinkStatus.accepted),
+      ]);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
+        child: const MaterialApp(home: ConnectionListPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('연결 해제'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('취소'));
+    await tester.pumpAndSettle();
+
+    expect(fake.revokeLinkCalls, isEmpty);
+    expect(find.text('연결됨'), findsOneWidget);
+  });
+}

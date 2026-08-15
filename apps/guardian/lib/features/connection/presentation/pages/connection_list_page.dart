@@ -99,9 +99,11 @@ class _LinkCard extends ConsumerWidget {
                   await ref.read(myLinksProvider.notifier).revoke(link.id);
                 }
               },
-              child: const Text(
+              child: Text(
                 '연결 해제',
-                style: TextStyle(color: AppColors.error),
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.error,
+                ),
               ),
             ),
         ],

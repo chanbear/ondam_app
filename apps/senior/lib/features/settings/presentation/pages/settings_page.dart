@@ -59,7 +59,10 @@ class SettingsPage extends ConsumerWidget {
           ),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text('회원 탈퇴', style: TextStyle(color: AppColors.error)),
+            title: Text(
+              '회원 탈퇴',
+              style: AppTextStyles.bodyLarge.copyWith(color: AppColors.error),
+            ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _confirmDeleteAccount(context, ref),
           ),
