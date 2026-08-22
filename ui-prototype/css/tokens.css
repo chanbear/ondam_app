@@ -1,0 +1,126 @@
+/* ONDAM 2.0 design tokens — mirrors packages/design_system/lib/src/tokens/*.dart
+   (AppColors/AppSpacing/AppRadius/AppTextStyles) plus proposed additions from
+   docs/ui/design-token-refresh.md (emergency / easySurface / warmAccent, on-color
+   pairs). Prototype-only — nothing here writes back to Dart.
+   Base palette re-verified 2026-08-21 against chanbear/gyeongjidaehoe3-main
+   branch easy-mode-test (css/styles.css — shared Senior/Guardian design system). */
+
+:root{
+  /* ---- existing Flutter tokens (unchanged) ---- */
+  --primary:#3D6BF5;
+  --secondary:#00BFA5;
+  --background:#FFFFFF;
+  --surface:#F5F7FB;
+  --text-primary:#171B2B;
+  --text-secondary:#646D7C;
+  --text-disabled:#BDBDBD;
+  --border:#E9ECF2;
+  --divider:#E9ECF2;
+  --success:#1FA851;
+  --warning:#F9A825;
+  --danger:#E34237;
+  --background-dark:#121212;
+  --surface-dark:#1E1E1E;
+
+  /* ---- proposed additions (design-token-refresh.md v2) ---- */
+  --emergency:#FF6B78;         /* SOS 전용 — danger(#E34237)와 분리 */
+  --warm-accent:#E2714B;       /* Senior/Easy Mode 따뜻함 accent (Behance "툭,안부" 참고) */
+  --easy-surface:#E9F3EE;      /* Easy Mode 전용 배경 (민트) */
+  --easy-surface-cream:#FBF7EC;
+
+  /* on-color pairs (Material 3 방식 — 배경색마다 강제되는 전경색) */
+  --on-primary:#FFFFFF;
+  --on-secondary:#FFFFFF;
+  --on-emergency:#FFFFFF;
+  --on-warm-accent:#FFFFFF;
+  --on-success:#FFFFFF;
+  --on-danger:#FFFFFF;
+  --on-warning-icon:#FFFFFF;
+  --on-warning-text:#8A5A00;
+
+  /* ---- typography scale (app content — matches AppTextStyles) ---- */
+  --font-app:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+  --fs-display:32px; --fw-display:700; --lh-display:1.25;
+  --fs-h1:24px; --fw-h1:700; --lh-h1:1.3;
+  --fs-title:18px; --fw-title:600; --lh-title:1.4;
+  --fs-body:16px; --fw-body:400; --lh-body:1.5;
+  --fs-body-sm:14px; --fw-body-sm:400; --lh-body-sm:1.5;
+  --fs-caption:12px; --fw-caption:500; --lh-caption:1.4;
+
+  /* ---- spacing scale (AppSpacing) ---- */
+  --sp-xs:4px; --sp-sm:8px; --sp-md:16px; --sp-lg:24px; --sp-xl:32px; --sp-xxl:48px;
+
+  /* ---- radius scale (AppRadius) ---- */
+  --r-sm:4px; --r-md:8px; --r-lg:16px; --r-xl:24px; --r-full:999px;
+
+  /* ---- app-level defaults (overridden per data-app below) ---- */
+  --radius-card:var(--r-md);
+  --touch-min:48px;
+  --gap-section:var(--sp-lg);
+  --app-bg:var(--background);
+}
+
+/* Senior — Simple / Readable / Calm / Large / Friendly / Accessible */
+[data-app="senior"]{
+  --radius-card:var(--r-xl);
+  --touch-min:56px;
+  --gap-section:var(--sp-xl);
+  --app-bg:var(--background);
+  --accent:var(--warm-accent);
+  --on-accent:var(--on-warm-accent);
+}
+[data-app="senior"][data-easy="true"]{
+  --app-bg:var(--easy-surface);
+  --fs-body:20px; --fw-body:700;
+  --fs-title:22px; --fw-title:800;
+  --touch-min:64px;
+}
+
+/* Guardian — Structured / Informative / Efficient / Data-oriented.
+   Palette below is lifted from chanbear/gyeongjidaehoe3-main
+   (codex/guardian-app branch, css/guardian.css, final cascaded :root —
+   "초기 Codex 파란색 테마 복원") per user request 2026-08-21: that link's
+   color array is now Guardian's main color, not just a loose reference. */
+[data-app="guardian"]{
+  --radius-card:var(--r-lg);
+  --touch-min:48px;
+  --gap-section:var(--sp-lg);
+  --app-bg:#F5F7FB;
+  --accent:var(--primary);
+  --on-accent:var(--on-primary);
+
+  --text-primary:#1B2440;
+  --surface:#EAF0FE;
+
+  --g-dark:#2648C4;
+  --g-soft:#EAF0FE;
+  --g-mint:#DCE6FF;
+  --g-danger-soft:#FDECEB;
+  --g-shadow:0 1px 1px rgba(23,27,43,.04),0 2px 5px rgba(23,27,43,.05);
+}
+
+/* ---- prototype chrome tokens (shell/navigator/dev-panel — not app content) ---- */
+:root{
+  --chrome-paper:#FBF9F3; --chrome-surface:#FFFFFF; --chrome-mint:#EAF2ED; --chrome-coral:#FBEBE3;
+  --chrome-ink:#232921; --chrome-ink-soft:#5B6058; --chrome-ink-faint:#8B9088;
+  --chrome-line:#E5E0D3; --chrome-line-strong:#D3CDBB;
+  --chrome-sage:#4F7A68; --chrome-sage-deep:#365548;
+  --chrome-coral-ink:#A84E2B;
+  --font-chrome-display:"Noto Serif KR",serif;
+  --font-chrome-body:"Noto Sans KR",sans-serif;
+  --font-chrome-mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --chrome-paper:#1A1E1A; --chrome-surface:#232823; --chrome-mint:#213027; --chrome-coral:#332420;
+    --chrome-ink:#ECE9DF; --chrome-ink-soft:#A9AFA1; --chrome-ink-faint:#767C71;
+    --chrome-line:#333930; --chrome-line-strong:#454C40;
+    --chrome-sage:#7FB09B; --chrome-sage-deep:#9BC7B4; --chrome-coral-ink:#F0A688;
+  }
+}
+:root[data-theme="dark"]{
+  --chrome-paper:#1A1E1A; --chrome-surface:#232823; --chrome-mint:#213027; --chrome-coral:#332420;
+  --chrome-ink:#ECE9DF; --chrome-ink-soft:#A9AFA1; --chrome-ink-faint:#767C71;
+  --chrome-line:#333930; --chrome-line-strong:#454C40;
+  --chrome-sage:#7FB09B; --chrome-sage-deep:#9BC7B4; --chrome-coral-ink:#F0A688;
+}
