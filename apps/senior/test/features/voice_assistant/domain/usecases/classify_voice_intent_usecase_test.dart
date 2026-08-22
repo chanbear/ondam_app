@@ -20,6 +20,13 @@ void main() {
     expect(useCase('도와줘'), VoiceIntent.emergencyHelp);
   });
 
+  test('경로당 관련 발화는 welfareCenter로 분류한다', () {
+    expect(useCase('경로당'), VoiceIntent.welfareCenter);
+    expect(useCase('경로당 찾아줘'), VoiceIntent.welfareCenter);
+    expect(useCase('근처 경로당'), VoiceIntent.welfareCenter);
+    expect(useCase('주변 경로당'), VoiceIntent.welfareCenter);
+  });
+
   test('빈 문자열(무음)은 unrecognized로 분류한다', () {
     expect(useCase(''), VoiceIntent.unrecognized);
     expect(useCase('   '), VoiceIntent.unrecognized);

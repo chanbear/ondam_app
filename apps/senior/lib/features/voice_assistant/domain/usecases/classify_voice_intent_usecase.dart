@@ -10,6 +10,7 @@ class ClassifyVoiceIntentUseCase {
   static const _documentScanKeywords = ['문서', '서류', '촬영', '찍어'];
   static const _messageCheckKeywords = ['문자', '메시지', '메세지'];
   static const _emergencyHelpKeywords = ['긴급', '도와줘', '도움', '살려'];
+  static const _welfareCenterKeywords = ['경로당'];
 
   VoiceIntent call(String recognizedText) {
     final text = recognizedText.trim();
@@ -23,6 +24,9 @@ class ClassifyVoiceIntentUseCase {
     }
     if (_emergencyHelpKeywords.any(text.contains)) {
       return VoiceIntent.emergencyHelp;
+    }
+    if (_welfareCenterKeywords.any(text.contains)) {
+      return VoiceIntent.welfareCenter;
     }
     return VoiceIntent.unrecognized;
   }

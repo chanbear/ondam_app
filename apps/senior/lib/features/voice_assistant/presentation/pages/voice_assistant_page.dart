@@ -8,13 +8,19 @@ import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../document_scan/presentation/pages/document_scan_camera_page.dart';
 import '../../../emergency_help/presentation/widgets/emergency_help_sheet.dart';
 import '../../../message_check/presentation/pages/message_check_entry_page.dart';
+import '../../../welfare_center/presentation/pages/welfare_center_list_page.dart';
 import '../../domain/entities/mic_permission_status.dart';
+import '../../domain/entities/voice_intent.dart';
 import '../providers/mic_permission_provider.dart';
 import '../widgets/voice_interaction_view.dart';
 
 /// 음성 비서 진입점 — 권한 상태별로 명확히 다른 화면을 보여준다(허용/거부/
 /// 영구거부/제한), `document_scan`의 `DocumentScanCameraPage`와 동일한 구조.
 /// 허용 상태에서만 실제 STT/TTS 상호작용(`VoiceInteractionView`)을 그린다.
+///
+/// 실제 Navigation은 이 페이지가 전담한다(`VoiceIntent` → 화면) — 새
+/// 목적지를 추가할 때는 [VoiceIntent]에 값을 추가하고 이 switch에 한 줄만
+/// 더하면 된다.
 class VoiceAssistantPage extends ConsumerWidget {
   const VoiceAssistantPage({super.key});
 
@@ -36,9 +42,7 @@ class VoiceAssistantPage extends ConsumerWidget {
           return switch (status) {
             MicPermissionStatus.granted => VoiceInteractionView(
               easyMode: easyMode,
-              onDocumentScan: () => _goToDocumentScan(context),
-              onMessageCheck: () => _goToMessageCheck(context),
-              onEmergencyHelp: () => EmergencyHelpSheet.show(context),
+              onNavigate: (intent) => _navigate(context, intent),
             ),
             MicPermissionStatus.denied => _PermissionRequestView(
               easyMode: easyMode,
@@ -53,16 +57,25 @@ class VoiceAssistantPage extends ConsumerWidget {
     );
   }
 
-  void _goToDocumentScan(BuildContext context) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const DocumentScanCameraPage()),
-    );
-  }
-
-  void _goToMessageCheck(BuildContext context) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const MessageCheckEntryPage()),
-    );
+  void _navigate(BuildContext context, VoiceIntent intent) {
+    switch (intent) {
+      case VoiceIntent.documentScan:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const DocumentScanCameraPage()),
+        );
+      case VoiceIntent.messageCheck:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const MessageCheckEntryPage()),
+        );
+      case VoiceIntent.emergencyHelp:
+        EmergencyHelpSheet.show(context);
+      case VoiceIntent.welfareCenter:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const WelfareCenterListPage()),
+        );
+      case VoiceIntent.unrecognized:
+        break; // hasImmediateDestination이 false라 여기 도달하지 않는다.
+    }
   }
 }
 

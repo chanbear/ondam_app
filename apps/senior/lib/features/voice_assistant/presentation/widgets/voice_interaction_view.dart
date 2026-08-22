@@ -6,10 +6,31 @@ import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
+import '../../../../core/locale/locale_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/voice_intent.dart';
 import '../providers/voice_assistant_di_providers.dart';
 
 enum _Stage { idle, listening, processing, answered }
+
+/// STT/TTS 엔진에 넘길 locale 태그 — 다국어 지원(ONDAM i18n)에서 앱 locale과
+/// 연결하는 지점. 단, [ClassifyVoiceIntentUseCase]는 한국어 키워드 매칭만
+/// 지원하므로(재설계 범위 밖) 다른 언어를 선택해도 인식된 문장의 의도 파악은
+/// 여전히 한국어 기준이다 — 이 화면의 안내 문구(예시 명령어)에 한국어
+/// 원문을 그대로 남겨둔 이유이기도 하다(l10n 키 `voiceUnrecognizedAnswer`).
+String _ttsLocaleTag(Locale locale) => switch (locale.languageCode) {
+  'en' => 'en-US',
+  'zh' => 'zh-CN',
+  'ja' => 'ja-JP',
+  _ => 'ko-KR',
+};
+
+String _sttLocaleId(Locale locale) => switch (locale.languageCode) {
+  'en' => 'en_US',
+  'zh' => 'zh_CN',
+  'ja' => 'ja_JP',
+  _ => 'ko_KR',
+};
 
 /// Owns the live `SpeechToText`/`FlutterTts` engines directly — same
 /// reasoning as `document_scan`'s `CameraPreviewView` owning
@@ -22,15 +43,15 @@ class VoiceInteractionView extends ConsumerStatefulWidget {
   const VoiceInteractionView({
     super.key,
     required this.easyMode,
-    required this.onDocumentScan,
-    required this.onMessageCheck,
-    required this.onEmergencyHelp,
+    required this.onNavigate,
   });
 
   final bool easyMode;
-  final VoidCallback onDocumentScan;
-  final VoidCallback onMessageCheck;
-  final VoidCallback onEmergencyHelp;
+
+  /// 목적지가 분명한 Intent가 인식되면 곧장 호출된다(요구사항: "이동하기"
+  /// 확인 생략). 실제 화면 전환은 이 위젯이 알지 못하는 상위(호출부)의
+  /// 책임이다 — 여기서는 "언제" 호출할지만 안다.
+  final ValueChanged<VoiceIntent> onNavigate;
 
   @override
   ConsumerState<VoiceInteractionView> createState() =>
@@ -46,7 +67,6 @@ class _VoiceInteractionViewState extends ConsumerState<VoiceInteractionView> {
   _Stage _stage = _Stage.idle;
   String _recognizedText = '';
   String _answerText = '';
-  VoiceIntent _intent = VoiceIntent.unrecognized;
 
   @override
   void initState() {
@@ -60,15 +80,21 @@ class _VoiceInteractionViewState extends ConsumerState<VoiceInteractionView> {
         onError: _onSttError,
         onStatus: _onSttStatus,
       );
-      await _tts.setLanguage('ko-KR');
+      await _tts.setLanguage(_ttsLocaleTag(ref.read(localeControllerProvider)));
       await _tts.awaitSpeakCompletion(true);
       if (!mounted) return;
       setState(() {
         _engineReady = available;
-        _initError = available ? null : '이 기기에서는 음성 인식을 사용할 수 없어요.';
+        _initError = available
+            ? null
+            : AppLocalizations.of(context)!.voiceUnavailableError;
       });
     } catch (_) {
-      if (mounted) setState(() => _initError = '음성 비서를 시작하지 못했어요.');
+      if (mounted) {
+        setState(
+          () => _initError = AppLocalizations.of(context)!.voiceInitError,
+        );
+      }
     }
   }
 
@@ -80,14 +106,33 @@ class _VoiceInteractionViewState extends ConsumerState<VoiceInteractionView> {
   }
 
   Future<void> _startListening() async {
+    // 이전 안내(특히 인식 실패 안내)가 아직 재생 중일 수 있다 — 새로 듣기
+    // 시작하기 전에 반드시 멈춘다. stop()이 실패해도(이미 멈춰있는 등)
+    // 듣기 시작을 막아서는 안 되므로 결과와 무관하게 항상 진행한다.
+    await _stopSpeaking();
+    if (!mounted) return;
     setState(() {
       _stage = _Stage.listening;
       _recognizedText = '';
     });
     try {
-      await _speech.listen(onResult: _onResult);
+      await _speech.listen(
+        onResult: _onResult,
+        listenOptions: SpeechListenOptions(
+          localeId: _sttLocaleId(ref.read(localeControllerProvider)),
+        ),
+      );
     } catch (_) {
       _respond('');
+    }
+  }
+
+  Future<void> _stopSpeaking() async {
+    try {
+      await _tts.stop();
+    } catch (_) {
+      // 멈추는 것 자체가 실패해도(예: 이미 재생 중이 아님) 듣기 시작을
+      // 막지 않는다 — 사용자에게는 "다시 말씀해주세요"가 항상 동작해야 한다.
     }
   }
 
@@ -122,15 +167,17 @@ class _VoiceInteractionViewState extends ConsumerState<VoiceInteractionView> {
     final intent = ref
         .read(classifyVoiceIntentUseCaseProvider)
         .call(recognizedText);
-    final answer = switch (intent) {
-      VoiceIntent.documentScan => '문서 촬영 화면으로 이동할 수 있어요.',
-      VoiceIntent.messageCheck => '문자 확인 화면으로 이동할 수 있어요.',
-      VoiceIntent.emergencyHelp => '긴급 도움을 보여드릴게요.',
-      VoiceIntent.unrecognized =>
-        '무슨 말씀인지 잘 이해하지 못했어요. "문서 찍어줘", "문자 확인해줘", "긴급 도움"처럼 말씀해주세요.',
-    };
+
+    // 목적지가 분명한 명령은 확인 화면("이동하기")을 거치지 않고 곧장
+    // 이동한다 — ambiguous/unknown(unrecognized)만 아래로 내려가 기존
+    // 안내/재시도 흐름을 유지한다.
+    if (intent.hasImmediateDestination) {
+      widget.onNavigate(intent);
+      return;
+    }
+
+    final answer = AppLocalizations.of(context)!.voiceUnrecognizedAnswer;
     setState(() {
-      _intent = intent;
       _answerText = answer;
       _stage = _Stage.answered;
     });
@@ -143,19 +190,6 @@ class _VoiceInteractionViewState extends ConsumerState<VoiceInteractionView> {
     } catch (_) {
       // TTS 재생 실패는 조용히 무시한다 — 답변 텍스트는 이미 화면에 표시되어
       // 있어(ui-spec.md "음성만으로 끝내지 않음") 음성 없이도 내용 전달은 된다.
-    }
-  }
-
-  void _confirmIntent() {
-    switch (_intent) {
-      case VoiceIntent.documentScan:
-        widget.onDocumentScan();
-      case VoiceIntent.messageCheck:
-        widget.onMessageCheck();
-      case VoiceIntent.emergencyHelp:
-        widget.onEmergencyHelp();
-      case VoiceIntent.unrecognized:
-        break;
     }
   }
 
@@ -172,7 +206,7 @@ class _VoiceInteractionViewState extends ConsumerState<VoiceInteractionView> {
       );
     }
     if (!_engineReady) {
-      return const AppLoading(message: '음성 비서를 준비하고 있어요');
+      return AppLoading(message: AppLocalizations.of(context)!.voicePreparing);
     }
 
     return switch (_stage) {
@@ -184,14 +218,15 @@ class _VoiceInteractionViewState extends ConsumerState<VoiceInteractionView> {
         easyMode: widget.easyMode,
         recognizedText: _recognizedText,
       ),
-      _Stage.processing => const AppLoading(message: '요청하신 내용을 확인하고 있어요'),
+      _Stage.processing => AppLoading(
+        message: AppLocalizations.of(context)!.voiceProcessing,
+      ),
+      // 목적지가 분명한 명령은 _respond()에서 곧장 이동하므로, 이 단계에
+      // 도달하는 것은 항상 unrecognized(목적지 없음)인 경우뿐이다.
       _Stage.answered => _AnsweredView(
         easyMode: widget.easyMode,
         answerText: _answerText,
-        recognized: _intent != VoiceIntent.unrecognized,
-        onReplay: () => _speak(_answerText),
         onRetry: _startListening,
-        onConfirm: _confirmIntent,
       ),
     };
   }
@@ -211,7 +246,7 @@ class _IdleView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            '마이크를 눌러 말씀해주세요',
+            AppLocalizations.of(context)!.voiceIdlePrompt,
             style: AppTextStyles.titleMedium,
             textAlign: TextAlign.center,
           ),
@@ -236,7 +271,10 @@ class _ListeningView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('듣고 있어요', style: AppTextStyles.titleMedium),
+          Text(
+            AppLocalizations.of(context)!.voiceListening,
+            style: AppTextStyles.titleMedium,
+          ),
           const SizedBox(height: AppSpacing.xl),
           _MicButton(active: true, onTap: null, size: easyMode ? 120 : 88),
           if (recognizedText.isNotEmpty) ...[
@@ -253,22 +291,19 @@ class _ListeningView extends StatelessWidget {
   }
 }
 
+/// 목적지가 없는 명령(unrecognized)에 대한 안내 — 목적지가 분명한 명령은
+/// [VoiceInteractionView._respond]에서 이 화면을 거치지 않고 곧장
+/// 이동하므로, 여기서는 "다시 말씀해주세요" 재시도만 제공하면 된다.
 class _AnsweredView extends StatelessWidget {
   const _AnsweredView({
     required this.easyMode,
     required this.answerText,
-    required this.recognized,
-    required this.onReplay,
     required this.onRetry,
-    required this.onConfirm,
   });
 
   final bool easyMode;
   final String answerText;
-  final bool recognized;
-  final VoidCallback onReplay;
   final VoidCallback onRetry;
-  final VoidCallback onConfirm;
 
   @override
   Widget build(BuildContext context) {
@@ -291,14 +326,10 @@ class _AnsweredView extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xl),
-          if (recognized) ...[
-            AppButton(label: '이동하기', size: buttonSize, onPressed: onConfirm),
-            const SizedBox(height: AppSpacing.sm),
-          ],
           AppButton(
-            label: recognized ? '다시 듣기' : '다시 말씀해주세요',
+            label: AppLocalizations.of(context)!.voiceRetryButton,
             size: buttonSize,
-            onPressed: recognized ? onReplay : onRetry,
+            onPressed: onRetry,
           ),
         ],
       ),
@@ -336,9 +367,10 @@ class _MicButtonState extends State<_MicButton>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Semantics(
       button: true,
-      label: widget.active ? '듣고 있어요' : '말하기 시작',
+      label: widget.active ? l10n.voiceListening : l10n.voiceStartSemanticLabel,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
