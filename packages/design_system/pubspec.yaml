@@ -22,6 +22,13 @@ dependencies:
   ondam_models:
     path: ../models
 
+  # PHASE 37 요금 통계 월별/연별 선 그래프(AppFeeTrendChart) 전용 — 프로젝트
+  # 전체에서 처음 추가하는 chart 패키지(ui-component-spec.md Decision 3가
+  # "structuredFields 통계 요구사항이 확정된 뒤 결정"이라며 보류했던 지점,
+  # 이번 phase에서 실제로 확정됨). Flutter 네이티브 위젯과 잘 맞고 단일
+  # 데이터/빈 데이터 렌더링을 직접 제어할 수 있어 선택했다.
+  fl_chart: ^0.69.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

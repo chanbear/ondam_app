@@ -7,13 +7,14 @@ import '../../../analysis/domain/analysis_stats.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
 import '../../../connection/presentation/providers/connected_elders_provider.dart';
 
-/// 통계 탭 — 차트 라이브러리는 아직 선택하지 않는다(ui-component-spec.md
-/// Decision 3: `structuredFields` 데이터/통계 요구사항이 실제로 확정된
-/// 뒤에 결정). `technical-decisions.md` OPEN QUESTIONS #12(고지서 통계
-/// 최종 데이터 항목)가 여전히 미결정이므로, 고지서 관련 집계는 임의로
-/// 만들지 않는다 — 개수처럼 스키마와 무관하게 항상 well-defined한 값만
-/// `AppStatCard`로 집계하고, 고지서 구조화 필드는 기록별 원본을 그대로
-/// 나열하는 데 그친다(Phase 6 지시 9 "아직 결정되지 않았다면" 분기).
+/// 통계 탭. 원래 차트 라이브러리를 선택하지 않고(ui-component-spec.md
+/// Decision 3) 고지서 구조화 필드도 원본 나열만 했던 이유는
+/// `technical-decisions.md` OPEN QUESTIONS #12(고지서 통계 최종 데이터
+/// 항목)가 미결정이었기 때문이다 — PHASE 37에서 `billingAmountKrw`/
+/// `billingDate` 전용 필드가 실제로 연결되면서 그 결정이 내려졌다
+/// (`FeeStatisticsSection`, `fl_chart` 도입). 개수 기반 [AnalysisStats]와
+/// 고지서 원본 나열 섹션은 그대로 유지하고, 요금 통계는 그 사이에 별도
+/// 섹션으로 추가한다.
 class StatisticsTabPage extends ConsumerWidget {
   const StatisticsTabPage({super.key});
 
@@ -33,6 +34,13 @@ class StatisticsTabPage extends ConsumerWidget {
           ),
           child: AppSectionHeader(title: '통계'),
         ),
+        if (elders.isNotEmpty)
+          AppElderSwitcher(
+            elders: elders,
+            selectedElderId: ref.watch(effectiveSelectedElderIdProvider),
+            onSelect: (elderId) =>
+                ref.read(selectedElderIdProvider.notifier).select(elderId),
+          ),
         Expanded(
           child: elders.isEmpty
               ? const AppEmptyState(message: '아직 연결된 어르신이 없습니다.')
@@ -90,6 +98,10 @@ class _StatisticsContent extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: AppSpacing.xl),
+        AppSectionHeader(title: '요금 통계'),
+        const SizedBox(height: AppSpacing.sm),
+        AppFeeStatisticsSection(records: records),
         const SizedBox(height: AppSpacing.xl),
         AppSectionHeader(title: '고지서 정보'),
         Text(
