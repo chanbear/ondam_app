@@ -21,6 +21,8 @@
 > - v16: Phase 10(음성 비서)을 실제로 구현했다. §5 OPEN QUESTIONS 9~10을 사용자 확인 후 DECIDED 처리했다 — (9) STT/TTS는 온디바이스(`speech_to_text`/`flutter_tts`, 클라우드 서비스 채택 안 함), (10) 의도분류는 클라이언트 키워드 매칭(§1-7의 "AI 처리는 서버 경유" 원칙은 문자/문서 내용의 실제 위험·의미 판단에 적용되는 것이지, 음성 비서의 고정된 소수 명령을 온담 기능에 연결하는 것에는 해당하지 않는다고 판단). `apps/senior/lib/features/voice_assistant/`를 신규 구현: 마이크 권한은 `document_scan`의 `CameraPermissionStatus`/`CameraRepository` 구조를 그대로 미러링(`MicPermissionStatus`/`MicRepository`), 의도분류(`ClassifyVoiceIntentUseCase`)는 순수 Dart 키워드 매칭으로 서버 호출이 전혀 없다. STT/TTS 엔진은 `document_scan`의 `CameraPreviewView`가 `CameraController`를 직접 소유하는 것과 동일한 이유로 `VoiceInteractionView`(presentation)가 직접 소유한다. 지원 명령은 문서 촬영/문자 확인/긴급 도움 3개로 한정했다 — "경로당 찾아줘"는 `welfare_center` feature 자체가 비어 있어(`.gitkeep`만 존재) 제외했고, 명령이 늘거나 자유 발화가 필요해지면 그때 서버 AI 의도분류를 재검토하도록 신규 OPEN QUESTIONS 23번을 남겼다(§5). 인식 실패/무음은 하드 에러가 아니라 "다시 한번 말씀해주세요" 부드러운 재시도로 처리한다(ui-spec.md 그대로). Senior 신규 테스트 9개(`ClassifyVoiceIntentUseCase` 5, mic permission usecase 4) — `flutter test` 130→139개 통과. `VoiceAssistantPage`/`VoiceInteractionView`는 플랫폼 채널(STT/TTS) 의존으로 `document_scan_camera_page`/`CameraPreviewView`와 동일하게 위젯 테스트를 작성하지 않았다(선례와 일관). `dart format`/`flutter analyze`/`flutter build apk --debug` 통과(빌드 로그에 `flutter_tts`/`speech_to_text`의 Kotlin Gradle Plugin 구버전 적용 방식 경고가 있으나 빌드는 성공 — 차단 아님). 이 환경에 Android/iOS 실기기가 없어 실제 한국어 음성 인식/TTS 발화/마이크 권한 프롬프트는 **NOT AVAILABLE**. Guardian 앱은 이번 Phase 대상이 아니라 변경 없음. 상세는 `implementation-plan.md` Phase 10 항목.
 > - **v17(이 버전)**: Phase 11(통합 테스트 및 안정화)을 실제로 구현했다. 안정화 점검 중 실제 버그를 하나 발견해 수정했다 — Senior/Guardian 양쪽 `PinNotifier.deleteAccount()`가 성공 후 `pinVerifiedProvider`만 리셋하고 로컬 Supabase 세션(`signOut`)은 끝내지 않고 있었다. 계정은 서버에서 이미 삭제됐지만 로컬 세션이 남아 있으면 라우터의 `hasSession` 게이트가 여전히 참이 되어, 존재하지 않는 계정을 위한 PIN 입력 화면으로 보낼 수 있는 상태였다 — 양쪽 모두 성공 시 `signOutUseCase`를 함께 호출하도록 수정했다. 같은 점검에서 `TextStyle(color: AppColors.error)` 형태의 하드코딩 4건(양쪽 앱 `settings_page.dart`의 "회원 탈퇴", Senior `guardian_list_page.dart`/Guardian `connection_list_page.dart`의 "연결 해제")을 발견해 `AppTextStyles.xxx.copyWith(color:)`로 교체했다(ui-design.md 규칙 위반 — 신규 코드가 아니라 기존 코드에 남아 있던 것). `design_system`의 `AppConfirmDialog`에도 같은 패턴이 하나 더 있으나, 이 컴포넌트는 여러 feature가 공유하고 원래 `TextStyle(color: destructive ? error : null)`이 "테마 기본 스타일은 유지하고 색상만 오버라이드"를 의도적으로 하고 있어(page-level 4건과 달리 null 분기가 의미 있음) 시각적 회귀 위험이 있다고 판단해 이번에는 건드리지 않고 기록만 남긴다. **§2 item 10(계정 탈퇴 시 연결/데이터 삭제 정책) 정적 검증**: 모든 사용자 소유 테이블에 `on delete cascade`가 실제로 걸려 있음을 마이그레이션 리뷰로 확인했으나, "보호자 쪽에 안내만 남기고"는 cascade가 레코드 자체를 지워버려 구현되어 있지 않음을 발견 — 신규 OPEN QUESTIONS 24번으로 남기고 이번에 임의로 설계·구현하지 않았다(제품 결정 필요). **통합 테스트 신규 작성**: `test/integration/`(양쪽 앱 신규 디렉터리) — 계정 탈퇴 흐름(설정→확인 다이얼로그→탈퇴, 방금 고친 버그의 회귀 테스트) 2세트, 보호자 연결 수락/거절/해제 흐름(지금까지 domain usecase 단위 테스트만 있고 화면 단위 테스트가 없던 gap) 2세트. `go_router`의 `hasSession` 게이트가 `Supabase.instance.client.auth.currentSession`을 직접 읽어 fake로 override할 수 없어(의도된 설계 — 세션 검증을 순수 클라이언트 상태로 우회할 수 없게 함) OTP+PIN 가입 전체를 관통하는 진짜 end-to-end 라우터 테스트는 이 환경에서 구조적으로 **NOT AVAILABLE**임을 확인했다 — 대신 인증이 필요 없는 화면을 직접 마운트하는 기존 프로젝트 관례(`message_check_navigation_test.dart` 등)를 그대로 따랐다. Senior `flutter test` 139→144개, Guardian 100→105개(v13 기준 100에서 신규 5개 추가) 모두 통과. `dart format`/`flutter analyze`(양쪽 0 issue)/`flutter build apk --debug`(양쪽 성공) 통과. "보호자 연결요청→위험문자→Push알림"의 실제 크로스앱 E2E와 음성 비서 실기기 동작은 이 환경에 실 Supabase/FCM/AI 키/실기기가 없어 지금까지와 동일하게 **NOT AVAILABLE**. 상세는 `implementation-plan.md` Phase 11 항목.
 >
+> - **v18(이 버전)**: 실기기(Galaxy S22) 테스트 중 Supabase Phone OTP 발송이 `signInWithOtp` → `AuthApiException: Unsupported phone provider`로 항상 실패함을 확인했다 — 이 프로젝트에 SMS 발송업체(Twilio 등)가 한 번도 연결된 적이 없었다(Phase 2 v7 완료 보고에 이미 "실제 서버 통신은 검증하지 못했다"고 기록돼 있었던 부분이 실제로 막혀 있었다). **제품 결정(사용자, 트레이드오프 인지)**: SMS 발송업체를 연동하는 대신 **OTP(전화번호 소유 검증)를 완전히 제거**하고 "이름 + 전화번호 입력 → 즉시 가입/로그인"으로 영구 변경했다 — §1-3의 "전화번호+OTP+PIN" 중 OTP 부분을 되돌리는 결정이다. **보안 트레이드오프: 전화번호 소유 검증이 없어져 임의의 번호로(본인 것이 아니어도) 가입할 수 있다** — PIN(§1-3-A)과 idle timeout은 그대로 유지되어 가입 이후 보호는 변하지 않지만, "이 번호는 진짜 이 사람 것"이라는 보장은 이제 없다. 상세 메커니즘·이유는 신규 §1-3-B. Senior/Guardian 양쪽 `features/auth`의 OTP 관련 코드(`request_otp_usecase`/`verify_otp_usecase`/`otp_notifier`/`otp_verify_page`, 라우트 `/auth/otp`)를 전부 제거하고 `sign_up_usecase`/`sign_up_notifier`로 교체, `phone_input_page`에 이름 입력 필드를 추가했다. PIN 분실(`pin_forgot_page`) 흐름도 OTP 재인증 대신 동일한 이름+전화번호 재로그인으로 교체했다(현재 로그인된 사용자의 phone/`user_metadata.name`을 그대로 재사용해 화면엔 아무것도 다시 입력받지 않음) — `reset-pin`의 세션 신선도(freshness) 검사는 그대로 통과한다. 신규 Edge Function `signup-with-phone`(서버 시크릿 `PHONE_SIGNUP_SECRET` 필요 — **아직 미배포/미설정**, 사용자가 `supabase functions deploy signup-with-phone`과 `supabase secrets set PHONE_SIGNUP_SECRET=<임의의 긴 문자열>`을 직접 실행해야 실제로 동작한다). 상세는 `implementation-plan.md` Phase 2 항목(v18 추가 보고).
+>
 > 함께 읽는 문서: `docs/product/implementation-plan.md`(Phase별 실행 계획), `docs/product/feature-spec.md`, `docs/architecture/architecture.md`, `docs/ui/ui-spec.md`.
 
 ---
@@ -31,7 +33,7 @@
 |---|---|---|
 | 1 | Backend | **Supabase** (커스텀 서버 미사용) |
 | 2 | Database | **PostgreSQL** (Supabase 기본 제공) |
-| 3 | 인증 | **전화번호 + OTP(가입 시) + PIN(평상시 로그인)**, 중요 작업(보호자 연결/계정 복구/보안정보 변경)에 추가 인증. **PIN 검증은 100% Backend Edge Function 담당(B안), Session은 Supabase 표준 유지 — 상세 §1-3-A** |
+| 3 | 인증 | **전화번호(OTP 없이 이름+전화번호로 즉시 가입/로그인, v18에 확정 — §1-3-B) + PIN(평상시 로그인)**, 중요 작업(보호자 연결/계정 복구/보안정보 변경)에 추가 인증. **PIN 검증은 100% Backend Edge Function 담당(B안), Session은 Supabase 표준 유지 — 상세 §1-3-A** |
 | 4 | 보호자 알림 | **Push(FCM) 기본 + 서버에 알림 상태 저장**, SMS는 보조 수단으로 확장 가능하게 설계만 |
 | 5 | 어르신-보호자 관계 | **어르신 1 : 보호자 N (1:N) 기본**, DB는 관계 테이블로 N:M 확장 여지를 막지 않음 |
 | 6 | 보호자 연결 인증 | **어르신 수락(승인) 방식** — 전화번호만으로 즉시 연결 금지. 요청 트리거는 **QR 코드**(서버 발급 단기 유효 토큰, PII 미포함) — v9 확정, §1-6 |
@@ -281,6 +283,28 @@ Secure Storage에서 Session 관련 캐시 정리(SDK가 관리하는 영역 포
 - 라우터(`app/router/app_router.dart`)는 리다이렉트 판단 로직을 `app/router/auth_redirect.dart`의 순수 함수 `decideAuthRedirect()`로 분리해 Supabase/Riverpod 없이 유닛 테스트 가능하게 했다. 상태: No Session → phone/OTP, Session+PIN 미설정 → PIN 설정, Session+PIN 설정+미검증 → PIN 입력, Session+PIN 검증+role 없음 → role 선택, 그 외 → home(Phase 3 placeholder).
 
 **설계 대비 변경/보완 사항**: (1) `has_pin` DB 함수 + `has-pin` Edge Function을 설계에 없던 것으로 추가(§4 데이터 모델에는 없었음, 순수 조회이므로 보안 영향 없음). (2) Role 선택 화면(`role_select_page`)을 신규 가입 흐름의 필수 단계로 라우터에 넣었다 — §1-3-A "Role 관리"의 "온보딩에서 선택" 문구를 실제 라우팅 단계로 구체화한 것.
+
+**v18 갱신**: 위 요약의 OTP 관련 부분(`OtpNotifier`, `otp_verify_page`, `request/verify_otp_usecase`, "No Session → phone/OTP")은 더 이상 실제 코드와 일치하지 않는다 — OTP가 완전히 제거되고 이름+전화번호 즉시 가입/로그인으로 교체됐다. 상세는 아래 §1-3-B.
+
+### 1-3-B. OTP 제거 — 이름+전화번호 즉시 가입/로그인으로 변경 (v18)
+
+**배경**: 실기기(Galaxy S22, Android 16) 테스트에서 `signInWithOtp` 호출이 항상 `AuthApiException: Unsupported phone provider`로 실패했다 — 이 Supabase 프로젝트에 SMS 발송업체(Twilio/MessageBird/Vonage 등)가 한 번도 연동된 적이 없었기 때문이다(Phase 2 v7 시점부터 "실제 서버 통신 미검증"으로 기록돼 있던 리스크가 실기기에서 실제로 드러난 것). SMS 발송업체는 실제 사업자 계정+본인인증+결제수단이 필요해 이 세션에서 즉시 해결할 수 없었고, **사용자가 SMS 연동 대신 OTP 자체를 없애기로 결정**했다.
+
+**받아들인 트레이드오프(사용자 인지 확인됨)**: 전화번호 소유 여부를 검증하지 않는다 — 임의의 전화번호(타인 것 포함)로 가입이 가능하다. PIN(§1-3-A, 100% 서버 검증)과 idle timeout은 그대로라 가입 이후의 보호 수준은 변하지 않지만, "이 번호가 실제로 이 사람 것"이라는 보장은 이제 없다. §1-3 확정표(§0 표 3번)도 이 결정을 반영해 갱신했다.
+
+**세션 발급 메커니즘**: Supabase Auth는 공개 클라이언트 API로는 OTP 검증 없이 phone 기반 세션을 발급할 수 없다. 그래서 신규 Edge Function `signup-with-phone`이 이렇게 우회한다:
+1. `phone`을 `PHONE_SIGNUP_SECRET`(서버 전용 시크릿, 클라이언트에 절대 노출 안 됨)으로 HMAC-SHA256 서명해 사용자별 결정론적 비밀번호를 만든다.
+2. 그 비밀번호로 먼저 `signInWithPassword({phone, password})`를 시도한다 — 기존 사용자면 이걸로 세션이 나온다.
+3. 실패하면(첫 가입) `admin.createUser({phone, password, phone_confirm: true, user_metadata: {name}})`로 사용자를 만들고(전화번호는 검증 없이 바로 confirmed 처리 — 위 트레이드오프의 실제 구현 지점), 다시 2번을 시도한다.
+4. 발급된 세션의 `refresh_token`만 클라이언트에 반환한다(access_token/비밀번호 자체는 절대 응답에 넣지 않음). 클라이언트는 `supabase.auth.setSession(refreshToken)`으로 실제 세션을 세운다.
+
+**"이름" 필드**: `이름`은 최초 가입 시 `user_metadata.name`으로만 저장되고(신규 DB 테이블 없음 — YAGNI), 재로그인 시 전달되는 값은 무시된다(기존 사용자 분기는 metadata를 다시 쓰지 않는다).
+
+**PIN 분실(`pin_forgot_page`) 흐름 변경**: 기존에는 OTP 재인증이 `reset-pin`의 "최근 로그인" 프레시니스 검사(10분 이내)를 만족시키는 역할이었다. OTP가 없어진 지금은, 화면 진입 즉시(사용자 입력 없이) 현재 로그인된 사용자의 `phone`/`user_metadata.name`으로 같은 `signup-with-phone`을 다시 호출해 세션을 새로 발급한다 — 이것도 실제 로그인이라 `last_sign_in_at`이 갱신되고, `reset-pin`의 프레시니스 검사는 코드 변경 없이 그대로 통과한다.
+
+**배포 전 필요 작업(아직 안 됨)**: `supabase functions deploy signup-with-phone`과 `supabase secrets set PHONE_SIGNUP_SECRET=<충분히 긴 임의 문자열>`을 실행해야 실제로 동작한다 — 이 세션에서는 코드만 작성했고 배포/시크릿 설정은 하지 않았다(라이브 프로젝트에 대한 배포는 별도 확인 후 진행하기로 함).
+
+**영향 범위**: `apps/{senior,guardian}/lib/features/auth/`(domain: `sign_up_usecase.dart` 신규, `request_otp_usecase.dart`/`verify_otp_usecase.dart` 삭제; data: `auth_remote_datasource.dart`/`auth_repository_impl.dart`; presentation: `sign_up_notifier.dart` 신규, `otp_notifier.dart`/`otp_verify_page.dart` 삭제, `phone_input_page.dart`에 이름 필드 추가, `pin_forgot_page.dart` 재설계), `app/router/`(`auth_routes.dart`의 `/auth/otp` 제거, `app_router.dart`/`auth_redirect.dart`), `supabase/functions/signup-with-phone/`(신규). `reset-pin`/`set-pin`/`verify-pin`/`has-pin`/`delete-account` Edge Function과 `pin_credentials`/`user_roles` 테이블은 변경 없음.
 
 ### 1-4. 보호자 알림 — Push 기본 + 서버 상태 저장 확정
 
