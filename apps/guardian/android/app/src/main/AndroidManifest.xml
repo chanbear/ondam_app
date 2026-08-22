@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- debug/profile 빌드는 Flutter tool이 자동으로 병합해주지만 release는
+         그렇지 않다 — 이게 없으면 release APK는 모든 네트워크 요청이
+         실패한다(ONDAM 2.0 Phase 14에서 release 빌드 전용 재현 버그로 발견). -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
