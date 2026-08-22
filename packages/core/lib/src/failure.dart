@@ -38,3 +38,11 @@ final class UnknownFailure extends Failure {
 final class UnavailableFailure extends Failure {
   const UnavailableFailure([super.message = '이 기능은 아직 준비 중이에요.']);
 }
+
+/// Couldn't determine a location — GPS timeout, no signal, or reverse
+/// geocoding failed to turn coordinates into an address. Distinct from
+/// [NetworkFailure]/[ServerFailure]: the device/OS-level location pipeline
+/// failed, not a request to this app's own backend.
+final class LocationFailure extends Failure {
+  const LocationFailure([super.message = '현재 위치를 확인할 수 없어요.']);
+}
