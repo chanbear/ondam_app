@@ -8,13 +8,14 @@ import '../entities/pin_verify_result.dart';
 /// that turns Supabase SDK exceptions into [Failure]s — presentation code
 /// never sees `AuthException`/`PostgrestException`/`FunctionException`.
 abstract class AuthRepository {
-  /// Sends an OTP SMS to [phoneNumber] (E.164 format, e.g. `+8210...`).
-  Future<Result<void>> requestOtp(String phoneNumber);
-
-  /// Verifies the OTP code, establishing a Supabase Auth session on success.
-  Future<Result<void>> verifyOtp({
+  /// Signs up (first time) or signs in (returning) by phone number alone —
+  /// no OTP/SMS verification (technical-decisions.md §1-3-A "OTP 제거").
+  /// [phoneNumber] must be E.164 format (e.g. `+8210...`). [name] is only
+  /// actually stored on first signup; returning callers may pass anything
+  /// non-empty. Establishes a Supabase Auth session on success.
+  Future<Result<void>> signUp({
+    required String name,
     required String phoneNumber,
-    required String otp,
   });
 
   /// Ends the Supabase Auth session (full sign-out, not just the PIN gate).

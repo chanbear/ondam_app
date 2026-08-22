@@ -13,25 +13,19 @@ String? decideAuthRedirect({
   required String location,
 }) {
   final onPhoneInput = location == AuthRoutes.phoneInput;
-  final onOtpVerify = location == AuthRoutes.otpVerify;
   final onPinSetup = location == AuthRoutes.pinSetup;
   final onPinEntry = location == AuthRoutes.pinEntry;
   final onPinForgot = location == AuthRoutes.pinForgot;
   final onRoleSelect = location == AuthRoutes.roleSelect;
   final onAuthFlow =
-      onPhoneInput ||
-      onOtpVerify ||
-      onPinSetup ||
-      onPinEntry ||
-      onPinForgot ||
-      onRoleSelect;
+      onPhoneInput || onPinSetup || onPinEntry || onPinForgot || onRoleSelect;
 
   if (!hasSession) {
-    if (onPhoneInput || onOtpVerify) return null;
+    if (onPhoneInput) return null;
     return AuthRoutes.phoneInput;
   }
 
-  // PIN-forgot always needs a fresh OTP re-auth mid-flow even though a
+  // PIN-forgot always needs a fresh re-signin mid-flow even though a
   // session already exists — let it run to completion; it exits via an
   // explicit context.go(home) on success, not via this redirect.
   if (onPinForgot) return null;

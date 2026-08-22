@@ -6,14 +6,16 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../app/router/auth_routes.dart';
 import '../../../../core/auth/supabase_client_provider.dart';
-import '../providers/otp_notifier.dart';
 import '../providers/pin_notifier.dart';
+import '../providers/sign_up_notifier.dart';
 import '../widgets/pin_keypad.dart';
 
 const _pinLength = 4;
 
-/// PIN-forgot flow: re-authenticate via a fresh OTP (never decrypts/
-/// recovers the old PIN — bcrypt is one-way), then set a new PIN. Two
+/// PIN-forgot flow: re-authenticate (a fresh sign-in via the same
+/// name+phone `signup-with-phone` call as the login screen — no OTP, see
+/// technical-decisions.md §1-3-A "OTP 제거"; this refreshes `last_sign_in_at`
+/// so `reset-pin`'s freshness check still passes), then set a new PIN. Two
 /// local UI steps within one page/route (flutter.md: local step sequencing
 /// is legitimate `StatefulWidget` state, not global business state).
 class PinForgotPage extends ConsumerStatefulWidget {
@@ -23,40 +25,28 @@ class PinForgotPage extends ConsumerStatefulWidget {
   ConsumerState<PinForgotPage> createState() => _PinForgotPageState();
 }
 
-enum _Step { requestOtp, enterOtp, newPin }
+enum _Step { reauthenticating, newPin }
 
 class _PinForgotPageState extends ConsumerState<PinForgotPage> {
-  _Step _step = _Step.requestOtp;
-  final _otpController = TextEditingController();
+  _Step _step = _Step.reauthenticating;
   String _newPinEntry = '';
 
   @override
-  void dispose() {
-    _otpController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _reauthenticate());
   }
 
-  String? get _currentPhoneNumber =>
-      ref.read(supabaseClientProvider).auth.currentUser?.phone;
+  Future<void> _reauthenticate() async {
+    final currentUser = ref.read(supabaseClientProvider).auth.currentUser;
+    final rawPhone = currentUser?.phone;
+    if (rawPhone == null || rawPhone.isEmpty) return;
+    final phoneNumber = rawPhone.startsWith('+') ? rawPhone : '+$rawPhone';
+    final name = currentUser?.userMetadata?['name'] as String? ?? phoneNumber;
 
-  Future<void> _sendOtp() async {
-    final phoneNumber = _currentPhoneNumber;
-    if (phoneNumber == null) return;
     final result = await ref
-        .read(otpNotifierProvider.notifier)
-        .requestOtp(phoneNumber);
-    if (!mounted) return;
-    if (result is Ok<String>) {
-      setState(() => _step = _Step.enterOtp);
-    }
-  }
-
-  Future<void> _verifyOtp() async {
-    final phoneNumber = _currentPhoneNumber;
-    if (phoneNumber == null) return;
-    final result = await ref
-        .read(otpNotifierProvider.notifier)
-        .verifyOtp(phoneNumber: phoneNumber, otp: _otpController.text);
+        .read(signUpNotifierProvider.notifier)
+        .signUp(name: name, rawPhoneNumber: phoneNumber);
     if (!mounted) return;
     if (result is Ok<void>) {
       setState(() => _step = _Step.newPin);
@@ -93,11 +83,8 @@ class _PinForgotPageState extends ConsumerState<PinForgotPage> {
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: switch (_step) {
-            _Step.requestOtp => _RequestOtpStep(onSend: _sendOtp),
-            _Step.enterOtp => _EnterOtpStep(
-              controller: _otpController,
-              onVerify: _verifyOtp,
-              onResend: _sendOtp,
+            _Step.reauthenticating => _ReauthenticatingStep(
+              onRetry: _reauthenticate,
             ),
             _Step.newPin => _NewPinStep(
               enteredLength: _newPinEntry.length,
@@ -111,88 +98,32 @@ class _PinForgotPageState extends ConsumerState<PinForgotPage> {
   }
 }
 
-class _RequestOtpStep extends ConsumerWidget {
-  const _RequestOtpStep({required this.onSend});
+class _ReauthenticatingStep extends ConsumerWidget {
+  const _ReauthenticatingStep({required this.onRetry});
 
-  final VoidCallback onSend;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final otpState = ref.watch(otpNotifierProvider);
-    final isLoading = otpState.isLoading;
-    final failure = otpState.hasError ? otpState.error as Failure : null;
+    final signUpState = ref.watch(signUpNotifierProvider);
+    final failure = signUpState.hasError ? signUpState.error as Failure : null;
+
+    if (failure == null) {
+      return const Center(child: AppLoading());
+    }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('본인 확인이 필요해요', style: AppTextStyles.headlineMedium),
+        Text('본인 확인에 실패했어요', style: AppTextStyles.headlineMedium),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          '가입하신 휴대폰 번호로 인증번호를 보내드릴게요.',
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          failure.message,
+          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
         ),
-        if (failure != null) ...[
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            failure.message,
-            style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
-          ),
-        ],
         const SizedBox(height: AppSpacing.xl),
-        AppButton(
-          label: '인증번호 받기',
-          isLoading: isLoading,
-          onPressed: isLoading ? null : onSend,
-        ),
-      ],
-    );
-  }
-}
-
-class _EnterOtpStep extends ConsumerWidget {
-  const _EnterOtpStep({
-    required this.controller,
-    required this.onVerify,
-    required this.onResend,
-  });
-
-  final TextEditingController controller;
-  final VoidCallback onVerify;
-  final VoidCallback onResend;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final otpState = ref.watch(otpNotifierProvider);
-    final isLoading = otpState.isLoading;
-    final failure = otpState.hasError ? otpState.error as Failure : null;
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('인증번호를 입력해주세요', style: AppTextStyles.headlineMedium),
-        const SizedBox(height: AppSpacing.xl),
-        AppTextField(
-          label: '인증번호',
-          controller: controller,
-          hintText: '000000',
-          keyboardType: TextInputType.number,
-          errorText: failure?.message,
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        AppButton(
-          label: '확인',
-          isLoading: isLoading,
-          onPressed: isLoading ? null : onVerify,
-        ),
-        const SizedBox(height: AppSpacing.md),
-        TextButton(
-          onPressed: isLoading ? null : onResend,
-          child: const Text('인증번호 다시 받기'),
-        ),
+        AppButton(label: '다시 시도', onPressed: onRetry),
       ],
     );
   }

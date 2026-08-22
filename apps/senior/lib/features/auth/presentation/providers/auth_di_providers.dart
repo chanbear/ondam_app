@@ -9,11 +9,10 @@ import '../../domain/usecases/add_role_usecase.dart';
 import '../../domain/usecases/delete_account_usecase.dart';
 import '../../domain/usecases/get_roles_usecase.dart';
 import '../../domain/usecases/has_pin_usecase.dart';
-import '../../domain/usecases/request_otp_usecase.dart';
 import '../../domain/usecases/reset_pin_usecase.dart';
 import '../../domain/usecases/set_pin_usecase.dart';
 import '../../domain/usecases/sign_out_usecase.dart';
-import '../../domain/usecases/verify_otp_usecase.dart';
+import '../../domain/usecases/sign_up_usecase.dart';
 import '../../domain/usecases/verify_pin_usecase.dart';
 
 // Dependency injection wiring only — no business logic here (riverpod.md:
@@ -35,12 +34,8 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   );
 });
 
-final requestOtpUseCaseProvider = Provider(
-  (ref) => RequestOtpUseCase(ref.watch(authRepositoryProvider)),
-);
-
-final verifyOtpUseCaseProvider = Provider(
-  (ref) => VerifyOtpUseCase(ref.watch(authRepositoryProvider)),
+final signUpUseCaseProvider = Provider(
+  (ref) => SignUpUseCase(ref.watch(authRepositoryProvider)),
 );
 
 final signOutUseCaseProvider = Provider(

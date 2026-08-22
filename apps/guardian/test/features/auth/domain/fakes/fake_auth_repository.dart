@@ -8,8 +8,7 @@ import 'package:ondam_models/ondam_models.dart';
 /// so tests can assert both outcome and call shape without a mocking
 /// package (testing.md: Repository is faked/mocked, not hit over network).
 class FakeAuthRepository implements AuthRepository {
-  Result<void> requestOtpResult = const Ok(null);
-  Result<void> verifyOtpResult = const Ok(null);
+  Result<void> signUpResult = const Ok(null);
   Result<void> signOutResult = const Ok(null);
   Result<void> setPinResult = const Ok(null);
   Result<PinVerifyResult> verifyPinResult = const Ok(PinVerifyResult.success());
@@ -19,8 +18,7 @@ class FakeAuthRepository implements AuthRepository {
   Result<void> addRoleResult = const Ok(null);
   Result<List<UserRole>> getRolesResult = const Ok(<UserRole>[]);
 
-  final List<String> requestOtpCalls = [];
-  final List<({String phoneNumber, String otp})> verifyOtpCalls = [];
+  final List<({String name, String phoneNumber})> signUpCalls = [];
   final List<String> setPinCalls = [];
   final List<String> verifyPinCalls = [];
   final List<String> resetPinCalls = [];
@@ -29,18 +27,12 @@ class FakeAuthRepository implements AuthRepository {
   int deleteAccountCalls = 0;
 
   @override
-  Future<Result<void>> requestOtp(String phoneNumber) async {
-    requestOtpCalls.add(phoneNumber);
-    return requestOtpResult;
-  }
-
-  @override
-  Future<Result<void>> verifyOtp({
+  Future<Result<void>> signUp({
+    required String name,
     required String phoneNumber,
-    required String otp,
   }) async {
-    verifyOtpCalls.add((phoneNumber: phoneNumber, otp: otp));
-    return verifyOtpResult;
+    signUpCalls.add((name: name, phoneNumber: phoneNumber));
+    return signUpResult;
   }
 
   @override

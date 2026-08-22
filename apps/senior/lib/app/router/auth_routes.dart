@@ -4,7 +4,6 @@
 /// in multiple places.
 abstract final class AuthRoutes {
   static const phoneInput = '/auth/phone';
-  static const otpVerify = '/auth/otp';
   static const pinSetup = '/auth/pin/setup';
   static const pinEntry = '/auth/pin/entry';
   static const pinForgot = '/auth/pin/forgot';

@@ -23,25 +23,15 @@ class AuthRepositoryImpl implements AuthRepository {
   final PinRemoteDataSource _pinDataSource;
 
   @override
-  Future<Result<void>> requestOtp(String phoneNumber) async {
-    try {
-      await _authDataSource.requestOtp(phoneNumber);
-      return const Ok(null);
-    } on AuthException catch (e) {
-      return Err(_mapAuthException(e));
-    } catch (_) {
-      return const Err(UnknownFailure());
-    }
-  }
-
-  @override
-  Future<Result<void>> verifyOtp({
+  Future<Result<void>> signUp({
+    required String name,
     required String phoneNumber,
-    required String otp,
   }) async {
     try {
-      await _authDataSource.verifyOtp(phoneNumber: phoneNumber, otp: otp);
+      await _authDataSource.signUp(name: name, phoneNumber: phoneNumber);
       return const Ok(null);
+    } on FunctionException catch (e) {
+      return Err(_mapFunctionException(e));
     } on AuthException catch (e) {
       return Err(_mapAuthException(e));
     } catch (_) {
@@ -191,10 +181,18 @@ class AuthRepositoryImpl implements AuthRepository {
     final reason = details is Map ? details['reason'] as String? : null;
     return switch (reason) {
       'invalid_pin_format' => const ValidationFailure('PIN은 4자리 숫자로 입력해주세요.'),
+      'invalid_phone_format' => const ValidationFailure('휴대폰 번호를 다시 확인해주세요.'),
+      'invalid_name' => const ValidationFailure('이름을 입력해주세요.'),
       'missing_authorization' ||
       'invalid_session' ||
       'reauthentication_required' => const AuthFailure(),
       'locked' => const AuthFailure('PIN이 잠겨 있습니다. 잠시 후 다시 시도해주세요.'),
+      // set-pin은 PIN이 이미 있는 계정에서는 호출되지 않는다(PinSetupPage는
+      // has-pin=false일 때만 보임) — 정상 흐름에서는 도달하지 않지만, 서버가
+      // 이를 거부하는 것 자체가 Phase 9 보안 수정의 목적이다.
+      'pin_already_set' => const AuthFailure(
+        '이미 PIN이 설정되어 있어요. PIN을 잊으셨다면 PIN 재설정을 이용해주세요.',
+      ),
       'server_error' => const ServerFailure(),
       _ => e.status == 0 ? const NetworkFailure() : const UnknownFailure(),
     };

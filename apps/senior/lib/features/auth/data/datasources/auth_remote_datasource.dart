@@ -11,16 +11,22 @@ class AuthRemoteDataSource {
 
   final SupabaseClient _client;
 
-  Future<void> requestOtp(String phoneNumber) {
-    return _client.auth.signInWithOtp(phone: phoneNumber);
-  }
-
-  Future<void> verifyOtp({required String phoneNumber, required String otp}) {
-    return _client.auth.verifyOTP(
-      phone: phoneNumber,
-      token: otp,
-      type: OtpType.sms,
+  /// Calls the `signup-with-phone` Edge Function (creates or finds the user
+  /// by phone, no OTP) and establishes the session from the refresh token
+  /// it returns.
+  Future<void> signUp({
+    required String name,
+    required String phoneNumber,
+  }) async {
+    final response = await _client.functions.invoke(
+      'signup-with-phone',
+      body: {'name': name, 'phone': phoneNumber},
     );
+    final data = response.data;
+    if (data is! Map || data['ok'] != true || data['refreshToken'] is! String) {
+      throw FunctionException(status: response.status, details: data);
+    }
+    await _client.auth.setSession(data['refreshToken'] as String);
   }
 
   Future<void> signOut() => _client.auth.signOut();

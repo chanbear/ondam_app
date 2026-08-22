@@ -3,9 +3,13 @@ import 'package:ondam_models/ondam_models.dart';
 import 'package:ondam_senior/app/router/auth_redirect.dart';
 import 'package:ondam_senior/app/router/auth_routes.dart';
 
+/// ONDAM 2.0V(요구사항 2/3/4) — 휴대폰 번호+비밀번호(PIN) 로그인, PIN
+/// 최초 설정/확인, 역할 자동 결정이 모두 [AuthRoutes.phoneInput] 하나의
+/// 화면으로 합쳐졌다. 이 테스트는 `/auth/pin/setup`, `/auth/pin/entry`,
+/// `/auth/role-select`로 더 이상 리다이렉트되지 않는다는 것을 검증한다.
 void main() {
   group('No Session', () {
-    test('allows staying on the phone-input route', () {
+    test('allows staying on the login route', () {
       expect(
         decideAuthRedirect(
           hasSession: false,
@@ -18,20 +22,7 @@ void main() {
       );
     });
 
-    test('allows staying on the otp-verify route', () {
-      expect(
-        decideAuthRedirect(
-          hasSession: false,
-          hasPin: null,
-          pinVerified: false,
-          roles: null,
-          location: AuthRoutes.otpVerify,
-        ),
-        isNull,
-      );
-    });
-
-    test('redirects any other route back to phone input', () {
+    test('redirects any other route back to the login route', () {
       expect(
         decideAuthRedirect(
           hasSession: false,
@@ -46,27 +37,30 @@ void main() {
   });
 
   group('Session, PIN not set yet', () {
-    test('sends a new signup to PIN setup', () {
-      expect(
-        decideAuthRedirect(
-          hasSession: true,
-          hasPin: false,
-          pinVerified: false,
-          roles: null,
-          location: AuthRoutes.home,
-        ),
-        AuthRoutes.pinSetup,
-      );
-    });
+    test(
+      'sends a new signup back to the login screen, not a separate PIN setup route',
+      () {
+        expect(
+          decideAuthRedirect(
+            hasSession: true,
+            hasPin: false,
+            pinVerified: false,
+            roles: null,
+            location: AuthRoutes.home,
+          ),
+          AuthRoutes.phoneInput,
+        );
+      },
+    );
 
-    test('allows staying on the pin-setup route', () {
+    test('allows staying on the login route while PIN is unset', () {
       expect(
         decideAuthRedirect(
           hasSession: true,
           hasPin: false,
           pinVerified: false,
           roles: null,
-          location: AuthRoutes.pinSetup,
+          location: AuthRoutes.phoneInput,
         ),
         isNull,
       );
@@ -74,27 +68,30 @@ void main() {
   });
 
   group('Session, PIN set but not verified this session', () {
-    test('sends a returning user to PIN entry', () {
-      expect(
-        decideAuthRedirect(
-          hasSession: true,
-          hasPin: true,
-          pinVerified: false,
-          roles: null,
-          location: AuthRoutes.home,
-        ),
-        AuthRoutes.pinEntry,
-      );
-    });
+    test(
+      'sends a returning user back to the login screen, not a separate PIN entry route',
+      () {
+        expect(
+          decideAuthRedirect(
+            hasSession: true,
+            hasPin: true,
+            pinVerified: false,
+            roles: null,
+            location: AuthRoutes.home,
+          ),
+          AuthRoutes.phoneInput,
+        );
+      },
+    );
 
-    test('allows staying on the pin-entry route', () {
+    test('allows staying on the login route while PIN is unverified', () {
       expect(
         decideAuthRedirect(
           hasSession: true,
           hasPin: true,
           pinVerified: false,
           roles: null,
-          location: AuthRoutes.pinEntry,
+          location: AuthRoutes.phoneInput,
         ),
         isNull,
       );
@@ -114,8 +111,8 @@ void main() {
     });
   });
 
-  group('Session + PIN verified, role not chosen yet', () {
-    test('sends to role selection', () {
+  group('Session + PIN verified, role not auto-added yet', () {
+    test('waits on session-loading instead of a role-selection screen', () {
       expect(
         decideAuthRedirect(
           hasSession: true,
@@ -124,12 +121,12 @@ void main() {
           roles: const <UserRole>[],
           location: AuthRoutes.home,
         ),
-        AuthRoutes.roleSelect,
+        AuthRoutes.sessionLoading,
       );
     });
   });
 
-  group('Session + PIN verified + role chosen', () {
+  group('Session + PIN verified + role present', () {
     test('sends the auth flow to home', () {
       expect(
         decideAuthRedirect(
@@ -159,7 +156,7 @@ void main() {
 
   group('idle-timeout re-entry', () {
     test(
-      're-locking (pinVerified: false) after a timeout sends back to PIN entry even from home',
+      're-locking (pinVerified: false) after a timeout sends back to the login screen even from home',
       () {
         // Simulates IdleTimeoutController having called pinVerifiedProvider.reset()
         // after the app was backgrounded past the threshold.
@@ -171,7 +168,7 @@ void main() {
             roles: const [UserRole.elder],
             location: AuthRoutes.home,
           ),
-          AuthRoutes.pinEntry,
+          AuthRoutes.phoneInput,
         );
       },
     );

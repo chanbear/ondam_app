@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../core/auth/auth_state_provider.dart';
 import '../../core/auth/pin_verified_provider.dart';
 import '../../core/auth/supabase_client_provider.dart';
-import '../../features/auth/presentation/pages/otp_verify_page.dart';
 import '../../features/auth/presentation/pages/phone_input_page.dart';
 import '../../features/auth/presentation/pages/pin_entry_page.dart';
 import '../../features/auth/presentation/pages/pin_forgot_page.dart';
@@ -21,7 +20,7 @@ import 'root_navigator_key.dart';
 
 /// Central route table for the Guardian app, gated by the 3-state auth
 /// model (technical-decisions.md §1-3-A):
-///   No Session            -> phone/OTP flow
+///   No Session            -> phone input (name + phone, no OTP)
 ///   Session, PIN unset    -> PIN setup
 ///   Session, PIN unverified -> PIN entry
 ///   Session, PIN verified, no role -> role selection
@@ -45,11 +44,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AuthRoutes.phoneInput,
         builder: (context, state) => const PhoneInputPage(),
-      ),
-      GoRoute(
-        path: AuthRoutes.otpVerify,
-        builder: (context, state) =>
-            OtpVerifyPage(phoneNumber: state.extra as String? ?? ''),
       ),
       GoRoute(
         path: AuthRoutes.pinSetup,

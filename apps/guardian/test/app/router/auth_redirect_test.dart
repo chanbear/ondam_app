@@ -18,19 +18,6 @@ void main() {
       );
     });
 
-    test('allows staying on the otp-verify route', () {
-      expect(
-        decideAuthRedirect(
-          hasSession: false,
-          hasPin: null,
-          pinVerified: false,
-          roles: null,
-          location: AuthRoutes.otpVerify,
-        ),
-        isNull,
-      );
-    });
-
     test('redirects any other route back to phone input', () {
       expect(
         decideAuthRedirect(
