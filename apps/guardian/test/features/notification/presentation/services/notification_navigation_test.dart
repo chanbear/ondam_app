@@ -1,6 +1,11 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_guardian/features/notification/presentation/services/notification_navigation.dart';
 import 'package:ondam_models/ondam_models.dart';
+
+// ProviderContainer isn't itself a Ref — this is the standard Riverpod
+// testing trick to obtain one bound to the container under test.
+final _refProvider = Provider<Ref>((ref) => ref);
 
 AnalysisResult _record(String id) {
   return AnalysisResult(
@@ -35,6 +40,23 @@ void main() {
       final result = findNotificationTarget(const [], 'r1');
 
       expect(result, isNull);
+    });
+  });
+
+  group('handleNotificationTapData', () {
+    // 실기기 Phase 8 검증에서 발견된 버그의 회귀 방지: PIN이 잠긴 상태에서
+    // 알림을 탭하면 즉시 push하지 않고 pendingNotificationTargetProvider에
+    // 저장만 해야 한다 — 즉시 push하면 PIN 해제 직후 go_router의
+    // redirect 리빌드에 씻겨나간다(notification_navigation.dart doc 참고).
+    test('PIN이 잠겨 있으면 즉시 이동하지 않고 pending에 저장한다', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      final ref = container.read(_refProvider);
+      final data = {'elder_id': 'elder-1', 'analysis_result_id': 'r1'};
+
+      handleNotificationTapData(ref, data);
+
+      expect(container.read(pendingNotificationTargetProvider), data);
     });
   });
 }
