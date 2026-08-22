@@ -109,4 +109,37 @@ void main() {
     final elder = container.read(connectedEldersProvider).single;
     expect(elder.name, contains('elder-ab'));
   });
+
+  group('effectiveSelectedElderIdProvider (PHASE 37 버그 수정)', () {
+    test('명시적으로 선택한 적이 없고 연결된 어르신이 1명이면 그 어르신으로 자동 대체된다', () async {
+      final container = _containerWithLinks([
+        _link('elder-1', GuardianLinkStatus.accepted),
+      ]);
+      addTearDown(container.dispose);
+      await container.read(myLinksProvider.future);
+
+      expect(container.read(effectiveSelectedElderIdProvider), 'elder-1');
+    });
+
+    test('연결된 어르신이 0명이면 null을 반환한다', () async {
+      final container = _containerWithLinks(const []);
+      addTearDown(container.dispose);
+      await container.read(myLinksProvider.future);
+
+      expect(container.read(effectiveSelectedElderIdProvider), isNull);
+    });
+
+    test('명시적으로 선택한 어르신이 있으면 목록의 첫 번째가 아니라 그 선택을 그대로 따른다', () async {
+      final container = _containerWithLinks([
+        _link('elder-1', GuardianLinkStatus.accepted),
+        _link('elder-2', GuardianLinkStatus.accepted),
+      ]);
+      addTearDown(container.dispose);
+      await container.read(myLinksProvider.future);
+
+      container.read(selectedElderIdProvider.notifier).select('elder-2');
+
+      expect(container.read(effectiveSelectedElderIdProvider), 'elder-2');
+    });
+  });
 }

@@ -20,6 +20,7 @@ class FakeConnectionRepository implements ConnectionRepository {
 
   final List<String> redeemConnectionTokenCalls = [];
   final List<String> revokeLinkCalls = [];
+  int getMyLinksCallCount = 0;
 
   @override
   Future<Result<GuardianLink>> redeemConnectionToken(String token) async {
@@ -28,7 +29,10 @@ class FakeConnectionRepository implements ConnectionRepository {
   }
 
   @override
-  Future<Result<List<GuardianLink>>> getMyLinks() async => getMyLinksResult;
+  Future<Result<List<GuardianLink>>> getMyLinks() async {
+    getMyLinksCallCount++;
+    return getMyLinksResult;
+  }
 
   @override
   Future<Result<void>> revokeLink(String linkId) async {

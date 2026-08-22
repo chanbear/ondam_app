@@ -23,6 +23,12 @@ void main() {
       );
 
   testWidgets('pending 요청을 수락하면 accepted로 바뀐 목록이 다시 표시된다', (tester) async {
+    // GuardianListPage는 BUG 1 수정으로 화면이 떠 있는 동안 주기적으로
+    // 재조회하는 Timer.periodic을 시작한다 — 테스트 종료 시 위젯을
+    // 언마운트해 dispose()가 그 Timer를 취소하게 해야 flutter_test의
+    // "Timer still pending" 실패를 피할 수 있다.
+    addTearDown(() => tester.pumpWidget(const SizedBox()));
+
     final fake = FakeConnectionRepository()
       ..getGuardianLinksResult = Ok([
         link(id: 'link-1', status: GuardianLinkStatus.pending),
@@ -56,6 +62,8 @@ void main() {
   });
 
   testWidgets('pending 요청을 거절하면 목록에서 사라진다(rejected는 숨김)', (tester) async {
+    addTearDown(() => tester.pumpWidget(const SizedBox()));
+
     final fake = FakeConnectionRepository()
       ..getGuardianLinksResult = Ok([
         link(id: 'link-1', status: GuardianLinkStatus.pending),
@@ -83,6 +91,8 @@ void main() {
   });
 
   testWidgets('accepted 연결을 해제하려면 확인 다이얼로그를 거쳐야 한다', (tester) async {
+    addTearDown(() => tester.pumpWidget(const SizedBox()));
+
     final fake = FakeConnectionRepository()
       ..getGuardianLinksResult = Ok([
         link(id: 'link-1', status: GuardianLinkStatus.accepted),
@@ -108,5 +118,38 @@ void main() {
 
     expect(fake.revokeLinkCalls, ['link-1']);
     expect(find.text('아직 연결된 보호자가 없습니다\n보호자 연결하기로 QR을 보여주세요'), findsOneWidget);
+  });
+
+  testWidgets('BUG 1: 화면이 열려 있는 동안 목록을 주기적으로 다시 조회하고, '
+      '화면을 벗어나면 재조회를 멈춘다', (tester) async {
+    final fake = FakeConnectionRepository()
+      ..getGuardianLinksResult = Ok([
+        link(id: 'link-1', status: GuardianLinkStatus.pending),
+      ]);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
+        child: const MaterialApp(home: GuardianListPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(fake.getGuardianLinksCallCount, 1);
+
+    // 상대(보호자) 앱에서 수락한 상태 변화는 이 앱에 push/realtime으로
+    // 통보되지 않으므로, 화면이 떠 있는 동안 주기적 재조회로 반영돼야
+    // 한다(재실행 없이).
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(fake.getGuardianLinksCallCount, 2);
+
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(fake.getGuardianLinksCallCount, 3);
+
+    // 화면을 벗어나면(dispose) 주기적 재조회 Timer가 취소돼야 한다.
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 5));
+    expect(fake.getGuardianLinksCallCount, 3);
   });
 }

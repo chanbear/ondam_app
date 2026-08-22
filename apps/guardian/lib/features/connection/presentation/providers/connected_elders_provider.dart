@@ -45,3 +45,24 @@ final selectedElderIdProvider =
     NotifierProvider<SelectedElderIdNotifier, String?>(
       SelectedElderIdNotifier.new,
     );
+
+/// PHASE 37 버그 수정: [selectedElderIdProvider]는 사용자가 실제로
+/// `AppElderSwitcher`를 조작해야만 값이 채워지는데, `AppElderSwitcher`는
+/// 어르신이 1명뿐이면 선택 UI 자체를 숨긴다(선택할 것이 없으므로) — 그
+/// 결과 어르신이 1명만 연결된, 가장 흔한 경우에 `selectedElderIdProvider`가
+/// 앱을 새로 켤 때마다 계속 null로 남아 이를 직접 watch하는
+/// `analysisRecordsProvider`가 항상 빈 목록을 반환하고 있었다(홈/기록/통계
+/// 탭 전부 영향). `SelectedElderIdNotifier.build()`가 직접
+/// `connectedEldersProvider`를 기본값으로 watch하게 만들면 사용자가 이미
+/// 명시적으로 선택한 어르신이 있어도 `connectedEldersProvider`가 재계산될
+/// 때마다(예: 새 어르신이 연결) 그 선택이 조용히 리셋되는 부작용이 생긴다
+/// (Notifier.build()가 자신이 watch하는 provider가 바뀌면 처음부터 다시
+/// 실행되기 때문). 그래서 상태 자체는 건드리지 않고, "명시적 선택이
+/// 있으면 그것을, 없으면 목록의 첫 어르신을" 계산하는 순수 파생 Provider로
+/// 분리한다 — 명시적 선택은 항상 그대로 보존된다.
+final effectiveSelectedElderIdProvider = Provider<String?>((ref) {
+  final explicit = ref.watch(selectedElderIdProvider);
+  if (explicit != null) return explicit;
+  final elders = ref.watch(connectedEldersProvider);
+  return elders.isEmpty ? null : elders.first.id;
+});
