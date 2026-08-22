@@ -60,3 +60,7 @@ packages/*/pubspec.lock
 # Supabase CLI local link/session state (`supabase link`) — machine-specific,
 # not project config.
 supabase/.temp/
+
+# tools/cc_console (local project console) — Python build artifacts.
+__pycache__/
+*.pyc
