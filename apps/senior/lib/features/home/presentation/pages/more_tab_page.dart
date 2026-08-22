@@ -6,10 +6,11 @@ import '../../../connection/presentation/pages/guardian_list_page.dart';
 import '../../../onboarding/presentation/pages/onboarding_flow_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
+import '../../../statistics/presentation/pages/fee_statistics_page.dart';
 import '../../../support/presentation/pages/support_page.dart';
 
-/// 더보기 탭 — 내 정보/설정/연결된 보호자 목록/고객 지원은 실제 화면으로
-/// 연결하고, 아직 도메인 계층이 없는 항목(통계/알아두면 좋은 정보)은
+/// 더보기 탭 — 내 정보/설정/연결된 보호자 목록/고객 지원/통계(PHASE 37)는
+/// 실제 화면으로 연결하고, 아직 도메인 계층이 없는 "알아두면 좋은 정보"만
 /// `ComingSoonPage`로 보낸다.
 class MoreTabPage extends StatelessWidget {
   const MoreTabPage({super.key});
@@ -27,7 +28,7 @@ class MoreTabPage extends StatelessWidget {
         '연결된 보호자 목록',
         () => const GuardianListPage(),
       ),
-      (Icons.bar_chart_outlined, '통계', () => const ComingSoonPage(title: '통계')),
+      (Icons.bar_chart_outlined, '통계', () => const FeeStatisticsPage()),
       (
         Icons.lightbulb_outline,
         '알아두면 좋은 정보',

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
+import '../../../voice_assistant/presentation/pages/voice_assistant_page.dart';
 import 'home_tab_page.dart';
 import 'info_tab_page.dart';
 import 'more_tab_page.dart';
@@ -20,6 +22,11 @@ import 'records_tab_page.dart';
 /// 스타일만 확대) `AppBottomNavigation(large: true)`로 아이콘/라벨만
 /// 키운다 — 쉬운 모드가 하단 Navigation까지 일관되게 적용된다는 완료
 /// 조건(implementation-plan.md Phase 9)을 이걸로 충족한다.
+///
+/// ONDAM 2.0V — 음성 비서는 홈 탭 카드 중 하나가 아니라, 하단 네비게이션
+/// 바로 위에 떠 있는 FAB로 4개 탭 어디서나 접근할 수 있다(요구사항: 위치를
+/// 네비게이션바에 맞게 변경). 기존 4탭 구성과 `AppBottomNavigation`은
+/// 그대로 유지 — 새 shell/notch 구조를 만들지 않는다.
 class HomeShellPage extends ConsumerStatefulWidget {
   const HomeShellPage({super.key});
 
@@ -37,21 +44,44 @@ class _HomeShellPageState extends ConsumerState<HomeShellPage> {
     MoreTabPage(),
   ];
 
+  void _openVoiceAssistant() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const VoiceAssistantPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     final easyMode = ref.watch(easyModeProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
         child: IndexedStack(index: _index, children: _tabs),
       ),
+      floatingActionButton: Semantics(
+        button: true,
+        label: l10n.voiceAssistantLabel,
+        child: easyMode
+            ? FloatingActionButton.large(
+                onPressed: _openVoiceAssistant,
+                tooltip: l10n.voiceAssistantLabel,
+                child: const Icon(Icons.mic),
+              )
+            : FloatingActionButton(
+                onPressed: _openVoiceAssistant,
+                tooltip: l10n.voiceAssistantLabel,
+                child: const Icon(Icons.mic),
+              ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: AppBottomNavigation(
         large: easyMode,
-        items: const [
-          AppBottomNavItem(icon: Icons.info_outline, label: '정보'),
-          AppBottomNavItem(icon: Icons.home_outlined, label: '홈'),
-          AppBottomNavItem(icon: Icons.history, label: '기록'),
-          AppBottomNavItem(icon: Icons.more_horiz, label: '더보기'),
+        items: [
+          AppBottomNavItem(icon: Icons.info_outline, label: l10n.navInfo),
+          AppBottomNavItem(icon: Icons.home_outlined, label: l10n.navHome),
+          AppBottomNavItem(icon: Icons.history, label: l10n.navRecords),
+          AppBottomNavItem(icon: Icons.more_horiz, label: l10n.navMore),
         ],
         currentIndex: _index,
         onTap: (index) => setState(() => _index = index),
