@@ -10,6 +10,4 @@ workspace:
   - packages/core
   - packages/design_system
   - packages/models
-  - packages/network
   - packages/storage
-  - packages/shared
