@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import 'home_tab_page.dart';
 import 'more_tab_page.dart';
 import 'notification_tab_page.dart';
@@ -32,17 +33,24 @@ class _HomeShellPageState extends State<HomeShellPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: IndexedStack(index: _index, children: _tabs),
       ),
       bottomNavigationBar: AppBottomNavigation(
-        items: const [
-          AppBottomNavItem(icon: Icons.home_outlined, label: '홈'),
-          AppBottomNavItem(icon: Icons.notifications_outlined, label: '알림'),
-          AppBottomNavItem(icon: Icons.history, label: '기록'),
-          AppBottomNavItem(icon: Icons.bar_chart_outlined, label: '통계'),
-          AppBottomNavItem(icon: Icons.more_horiz, label: '더보기'),
+        items: [
+          AppBottomNavItem(icon: Icons.home_outlined, label: l10n.navHome),
+          AppBottomNavItem(
+            icon: Icons.notifications_outlined,
+            label: l10n.navNotification,
+          ),
+          AppBottomNavItem(icon: Icons.history, label: l10n.navRecords),
+          AppBottomNavItem(
+            icon: Icons.bar_chart_outlined,
+            label: l10n.navStatistics,
+          ),
+          AppBottomNavItem(icon: Icons.more_horiz, label: l10n.navMore),
         ],
         currentIndex: _index,
         onTap: (index) => setState(() => _index = index),

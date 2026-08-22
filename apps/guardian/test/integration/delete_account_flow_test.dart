@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_guardian/core/auth/pin_verified_provider.dart';
 import 'package:ondam_guardian/features/auth/presentation/providers/auth_di_providers.dart';
 import 'package:ondam_guardian/features/settings/presentation/pages/settings_page.dart';
+import 'package:ondam_guardian/l10n/generated/app_localizations.dart';
 
 import '../features/auth/domain/fakes/fake_auth_repository.dart';
 
@@ -24,10 +25,18 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: SettingsPage()),
+        child: const MaterialApp(
+          locale: Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: SettingsPage(),
+        ),
       ),
     );
 
+    // 언어 선택 섹션이 추가되며 '회원 탈퇴'가 기본 화면 밖으로 밀려날 수
+    // 있다 — 스크롤 가능한 SettingsPage이므로 탭 전에 보이는 위치로 스크롤한다.
+    await tester.ensureVisible(find.text('회원 탈퇴'));
     await tester.tap(find.text('회원 탈퇴'));
     await tester.pumpAndSettle();
 
@@ -51,10 +60,18 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: SettingsPage()),
+        child: const MaterialApp(
+          locale: Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: SettingsPage(),
+        ),
       ),
     );
 
+    // 언어 선택 섹션이 추가되며 '회원 탈퇴'가 기본 화면 밖으로 밀려날 수
+    // 있다 — 스크롤 가능한 SettingsPage이므로 탭 전에 보이는 위치로 스크롤한다.
+    await tester.ensureVisible(find.text('회원 탈퇴'));
     await tester.tap(find.text('회원 탈퇴'));
     await tester.pumpAndSettle();
 

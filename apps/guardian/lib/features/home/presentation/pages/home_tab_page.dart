@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/domain/risk_summary.dart';
 import '../../../analysis/presentation/pages/analysis_record_detail_page.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
@@ -24,20 +25,21 @@ class HomeTabPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final elders = ref.watch(connectedEldersProvider);
 
     if (elders.isEmpty) {
       return AppEmptyState(
         icon: Icons.family_restroom_outlined,
-        message: '아직 연결된 어르신이 없습니다.',
-        actionLabel: '어르신 연결하기',
+        message: l10n.noConnectedEldersMessage,
+        actionLabel: l10n.connectElderAction,
         onAction: () => Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (_) => const ConnectionScanPage())),
       );
     }
 
-    final selectedId = ref.watch(selectedElderIdProvider) ?? elders.first.id;
+    final selectedId = ref.watch(effectiveSelectedElderIdProvider);
     final recordsState = ref.watch(analysisRecordsProvider);
 
     return ListView(
@@ -52,11 +54,11 @@ class HomeTabPage extends ConsumerWidget {
         const SizedBox(height: AppSpacing.md),
         _ReassuranceCard(recordsState: recordsState),
         const SizedBox(height: AppSpacing.xl),
-        AppSectionHeader(title: '최근 활동'),
+        AppSectionHeader(title: l10n.recentActivityTitle),
         _RecentActivity(recordsState: recordsState),
         const SizedBox(height: AppSpacing.xl),
-        AppSectionHeader(title: '다가오는 일정'),
-        const AppEmptyState(message: '예정된 일정이 없어요.'),
+        AppSectionHeader(title: l10n.upcomingScheduleTitle),
+        AppEmptyState(message: l10n.noUpcomingSchedule),
       ],
     );
   }
@@ -72,28 +74,29 @@ class _ReassuranceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return recordsState.when(
       loading: () => const AppLoading(),
-      error: (error, _) => const AppStatusCard(
-        message: '안심 상태를 불러오지 못했어요.',
+      error: (error, _) => AppStatusCard(
+        message: l10n.reassuranceLoadError,
         icon: Icons.error_outline,
       ),
       data: (records) {
         final worst = RiskSummary.worst(records);
         return switch (worst) {
-          RiskLevel.dangerous => const AppAlertCard(
+          RiskLevel.dangerous => AppAlertCard(
             level: RiskLevel.dangerous,
-            title: '확인이 필요한 활동이 있어요',
-            description: '기록 탭에서 자세한 내용을 확인해주세요.',
+            title: l10n.dangerousAlertTitle,
+            description: l10n.alertCheckRecordsDescription,
           ),
-          RiskLevel.caution => const AppAlertCard(
+          RiskLevel.caution => AppAlertCard(
             level: RiskLevel.caution,
-            title: '주의가 필요한 활동이 있어요',
-            description: '기록 탭에서 자세한 내용을 확인해주세요.',
+            title: l10n.cautionAlertTitle,
+            description: l10n.alertCheckRecordsDescription,
           ),
-          _ => const AppStatusCard(
-            message: '오늘도 평안하세요.',
-            description: '아직 특별한 알림이 없어요.',
+          _ => AppStatusCard(
+            message: l10n.safeStatusMessage,
+            description: l10n.safeStatusDescription,
             icon: Icons.check_circle_outline,
           ),
         };
@@ -109,15 +112,16 @@ class _RecentActivity extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return recordsState.when(
       loading: () => const AppLoading(),
       error: (error, _) => AppError(
-        message: '최근 활동을 불러오지 못했어요.',
+        message: l10n.recentActivityLoadError,
         onRetry: () => ref.invalidate(analysisRecordsProvider),
       ),
       data: (records) {
         if (records.isEmpty) {
-          return const AppEmptyState(message: '아직 활동 기록이 없어요.');
+          return AppEmptyState(message: l10n.noActivityRecords);
         }
         return Column(
           children: [
