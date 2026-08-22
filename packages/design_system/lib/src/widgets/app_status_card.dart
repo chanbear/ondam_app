@@ -17,12 +17,17 @@ class AppStatusCard extends StatelessWidget {
     this.description,
     this.icon,
     this.accentColor,
+    this.messageMaxLines,
   });
 
   final String message;
   final String? description;
   final IconData? icon;
   final Color? accentColor;
+
+  /// Null (default) keeps the previous unclamped behavior — see
+  /// `AppAlertCard.titleMaxLines` for the same rationale.
+  final int? messageMaxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +52,14 @@ class AppStatusCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(message, style: AppTextStyles.titleMedium),
+                Text(
+                  message,
+                  style: AppTextStyles.titleMedium,
+                  maxLines: messageMaxLines,
+                  overflow: messageMaxLines != null
+                      ? TextOverflow.ellipsis
+                      : null,
+                ),
                 if (description != null) ...[
                   const SizedBox(height: AppSpacing.xs),
                   Text(

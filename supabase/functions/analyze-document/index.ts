@@ -2,7 +2,11 @@ import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 import { corsHeaders } from "../_shared/cors.ts";
 import { json } from "../_shared/http.ts";
 import { verifyCaller } from "../_shared/auth.ts";
+import { notifyGuardians, shouldNotifyGuardians } from "../_shared/guardian_notify.ts";
+import { RiskLevel } from "../_shared/risk_floor.ts";
 import {
+  applyRiskFloor,
+  buildDocumentNotificationPayload,
   CLASSIFY_TOOL,
   DocumentClassification,
   MAX_IMAGE_BYTES,
@@ -172,26 +176,66 @@ Deno.serve(async (req: Request) => {
     if (!classification.ok) {
       return json({ ok: false, reason: classification.reason }, 502);
     }
-    const { summary, reliability, structuredFields } = classification.value;
+    const {
+      summary,
+      reliability,
+      structuredFields,
+      riskLevel,
+      actionItems,
+      importantDates,
+      clarifyingQuestions,
+      billingAmountKrw,
+      billingDate,
+    } = applyRiskFloor(classification.value);
 
     const { data: inserted, error: insertError } = await caller.serviceClient
       .from("analysis_results")
       .insert({
         elder_id: caller.userId,
         type: "document",
-        risk_level: null,
+        risk_level: riskLevel,
         summary,
         source_excerpt: null,
         reliability,
         structured_fields: structuredFields,
+        billing_amount_krw: billingAmountKrw,
+        billing_date: billingDate,
       })
       .select(
-        "id, elder_id, type, risk_level, summary, source_excerpt, reliability, structured_fields, created_at",
+        "id, elder_id, type, risk_level, summary, source_excerpt, reliability, structured_fields, billing_amount_krw, billing_date, created_at",
       )
       .single();
 
     if (insertError || !inserted) {
       return json({ ok: false, reason: "server_error" }, 500);
+    }
+
+    // ONDAM 2.0 요구사항 18/27 — analyze-message와 동일한 조건/구조를
+    // 그대로 재사용한다: 위험도(caution/dangerous) 또는 정해진 기한
+    // (importantDates 존재) 중 하나만 충족해도 연결된(accepted) 보호자
+    // 전원에게 알린다. Guardian 연결이 없으면 그냥 0건 — 문서 분석 자체는
+    // 이 알림 성공 여부와 무관하게 항상 정상 완료된다(알림 실패가 분석
+    // 실패로 번지지 않는다).
+    let notifiedGuardianCount = 0;
+    if (
+      shouldNotifyGuardians(riskLevel as RiskLevel, importantDates.length > 0)
+    ) {
+      const payload = buildDocumentNotificationPayload({
+        elderId: caller.userId,
+        analysisResultId: inserted.id as string,
+        riskLevel: riskLevel as RiskLevel,
+        hasImportantDates: importantDates.length > 0,
+        createdAt: inserted.created_at as string,
+      });
+      notifiedGuardianCount = await notifyGuardians({
+        serviceClient: caller.serviceClient,
+        elderId: caller.userId,
+        supabaseUrl: Deno.env.get("SUPABASE_URL")!,
+        anonKey: Deno.env.get("SUPABASE_ANON_KEY")!,
+        authorization: req.headers.get("Authorization")!,
+        notificationType: "risky_document",
+        payload,
+      });
     }
 
     return json({
@@ -204,7 +248,19 @@ Deno.serve(async (req: Request) => {
       sourceExcerpt: inserted.source_excerpt,
       reliability: inserted.reliability,
       structuredFields: inserted.structured_fields,
+      billingAmountKrw: inserted.billing_amount_krw,
+      billingDate: inserted.billing_date,
+      // actionItems/importantDates/clarifyingQuestions are NOT persisted —
+      // no `analysis_results` column exists for them (ONDAM 2.0 Phase 5:
+      // no migration this phase), so they come straight from this request's
+      // in-memory classification, not from `inserted`/a DB round-trip. A
+      // record re-fetched later (e.g. Guardian's analysis list) won't carry
+      // them — only the response to THIS analyze-document call does.
+      actionItems,
+      importantDates,
+      clarifyingQuestions,
       createdAt: inserted.created_at,
+      notifiedGuardianCount,
     });
   } finally {
     // Original photo must not outlive this request regardless of outcome

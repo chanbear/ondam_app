@@ -6,56 +6,163 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../domain/entities/captured_photo.dart';
+import 'document_scan_camera_page.dart';
 import 'document_scan_result_page.dart';
 
-/// 촬영 결과 확인 — 재촬영(뒤로가기, 카메라 화면은 스택에 그대로 살아있어
-/// 다시 초기화하지 않음) 또는 분석하기(다음 화면으로 진행).
-class DocumentScanPreviewPage extends ConsumerWidget {
-  const DocumentScanPreviewPage({super.key, required this.photo});
+/// 촬영 결과 확인 — ONDAM 2.0 요구사항 11(다중 문서 촬영)에 맞춰 여러 장을
+/// 모을 수 있는 화면으로 재구성했다. [photos]는 시작값일 뿐, 이 화면
+/// 안에서 계속 늘어나거나 줄어들 수 있는 로컬 상태다(화면 하나에서만
+/// 의미 있는 상태 — riverpod.md에 따라 전역 Provider로 만들지 않는다).
+///
+/// "재촬영"은 기존과 동일하게 전체를 버리고 카메라로 돌아간다(단일 문서
+/// 흐름의 기존 동작 그대로 — 사진 1장뿐일 때는 "다시 찍기"와 동일하다).
+/// "추가 촬영"이 새로 생긴 버튼으로, 기존 사진을 유지한 채 카메라를 다시
+/// 열어 목록에 追加한다.
+class DocumentScanPreviewPage extends StatefulWidget {
+  const DocumentScanPreviewPage({super.key, required this.photos})
+    : assert(photos.length > 0, '촬영된 사진이 최소 1장 있어야 미리보기를 열 수 있다');
 
-  final CapturedPhoto photo;
+  final List<CapturedPhoto> photos;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final easyMode = ref.watch(easyModeProvider);
+  State<DocumentScanPreviewPage> createState() =>
+      _DocumentScanPreviewPageState();
+}
 
-    return AppScaffold(
-      title: '촬영 결과 확인',
-      onBack: () => Navigator.of(context).pop(),
-      backLabel: '재촬영',
-      body: Column(
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppRadius.md),
-              child: Image.file(File(photo.localPath), fit: BoxFit.contain),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Row(
+class _DocumentScanPreviewPageState extends State<DocumentScanPreviewPage> {
+  late List<CapturedPhoto> _photos = List.of(widget.photos);
+
+  Future<void> _addAnother() async {
+    final photo = await Navigator.of(context).push<CapturedPhoto>(
+      MaterialPageRoute(builder: (_) => const DocumentScanCameraPage()),
+    );
+    if (photo == null || !mounted) return;
+    setState(() => _photos = [..._photos, photo]);
+  }
+
+  void _remove(int index) {
+    setState(() => _photos = [..._photos]..removeAt(index));
+  }
+
+  void _analyze() {
+    // 빈 목록으로는 분석 요청을 만들 수 없다(요구사항 11 최소 요구사항).
+    if (_photos.isEmpty) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => DocumentScanResultPage(photos: _photos),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, _) {
+        final easyMode = ref.watch(easyModeProvider);
+
+        return AppScaffold(
+          title: '촬영 결과 확인',
+          onBack: () => Navigator.of(context).pop(),
+          backLabel: '재촬영',
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('재촬영'),
-                ),
+              Text(
+                '촬영한 문서 (${_photos.length}장)',
+                style: AppTextStyles.titleMedium,
               ),
-              const SizedBox(width: AppSpacing.md),
+              const SizedBox(height: AppSpacing.sm),
               Expanded(
-                child: AppButton(
-                  label: '분석하기',
-                  size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => DocumentScanResultPage(photo: photo),
+                child: _PhotoThumbnailList(photos: _photos, onRemove: _remove),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              OutlinedButton.icon(
+                onPressed: _addAnother,
+                icon: const Icon(Icons.add_a_photo_outlined),
+                label: const Text('추가 촬영'),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('재촬영'),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: AppButton(
+                      label: '분석하기',
+                      size: easyMode
+                          ? AppButtonSize.large
+                          : AppButtonSize.standard,
+                      onPressed: _photos.isEmpty ? null : _analyze,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PhotoThumbnailList extends StatelessWidget {
+  const _PhotoThumbnailList({required this.photos, required this.onRemove});
+
+  final List<CapturedPhoto> photos;
+  final ValueChanged<int> onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      scrollDirection: Axis.horizontal,
+      itemCount: photos.length,
+      separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
+      itemBuilder: (context, index) {
+        final photo = photos[index];
+        return Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              child: Image.file(
+                File(photo.localPath),
+                width: 120,
+                height: 160,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned(
+              top: 4,
+              right: 4,
+              child: Semantics(
+                button: true,
+                label: '${index + 1}번째 사진 삭제',
+                child: Material(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  shape: const CircleBorder(),
+                  child: InkWell(
+                    key: ValueKey('remove_photo_$index'),
+                    customBorder: const CircleBorder(),
+                    onTap: photos.length > 1 ? () => onRemove(index) : null,
+                    // ui-design.md "탭 가능한 요소는 최소 44x44 논리 픽셀
+                    // 터치 영역을 확보한다" — 아이콘(18) + 패딩만으로는
+                    // 26x26에 그쳐 기준에 못 미쳤다(ONDAM 2.0 PHASE 31에서
+                    // 발견). AppSpacing.md 패딩으로 50x50을 확보한다.
+                    child: const Padding(
+                      padding: EdgeInsets.all(AppSpacing.md),
+                      child: Icon(Icons.close, color: Colors.white, size: 18),
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

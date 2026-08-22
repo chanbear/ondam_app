@@ -47,7 +47,94 @@ void main() {
     expect(value.riskLevel, isNull);
     expect(value.reliability, ReliabilityLevel.high);
     expect(value.structuredFields, {'금액': '32,000원', '납부기한': '2026-08-25'});
+    // Phase 3(ONDAM 2.0): actionItems/importantDates/clarifyingQuestions 키가
+    // 아예 없는 기존 응답도 크래시 없이 null로 처리돼야 한다(하위 호환).
+    expect(value.actionItems, isNull);
+    expect(value.importantDates, isNull);
+    expect(value.clarifyingQuestions, isNull);
   });
+
+  test('Phase 3: actionItems/importantDates/clarifyingQuestions가 응답에 있으면 '
+      'AnalysisResult까지 정상 전달된다', () async {
+    when(() => dataSource.analyzeDocument(photo)).thenAnswer(
+      (_) async => {
+        'ok': true,
+        'id': 'a3',
+        'elderId': 'e1',
+        'type': 'document',
+        'riskLevel': 'safe',
+        'summary': '관리비 고지서예요.',
+        'sourceExcerpt': null,
+        'reliability': 'low',
+        'structuredFields': {'금액': '32,000원'},
+        'actionItems': [
+          {'id': 'ai1', 'title': '8월 25일까지 관리비 납부', 'completed': false},
+        ],
+        'importantDates': [
+          {
+            'date': '2026-08-25T00:00:00.000Z',
+            'kind': 'paymentDue',
+            'label': '관리비 납부기한',
+            'priority': 'high',
+            'needsSourceEvidence': true,
+          },
+        ],
+        'clarifyingQuestions': ['이 고지서가 본인 명의 세대의 것이 맞나요?'],
+        'createdAt': '2026-01-01T00:00:00.000Z',
+      },
+    );
+
+    final result = await repository.analyzeDocument(photo);
+
+    expect(result, isA<Ok<AnalysisResult>>());
+    final value = (result as Ok<AnalysisResult>).value;
+    // riskLevel=safe + reliability=low — 서로 강제되는 관계가 아님을 함께 확인.
+    expect(value.riskLevel, RiskLevel.safe);
+    expect(value.reliability, ReliabilityLevel.low);
+
+    expect(value.actionItems, hasLength(1));
+    expect(value.actionItems!.single.id, 'ai1');
+    expect(value.actionItems!.single.title, '8월 25일까지 관리비 납부');
+    expect(value.actionItems!.single.completed, isFalse);
+
+    expect(value.importantDates, hasLength(1));
+    final date = value.importantDates!.single;
+    expect(date.date, DateTime.parse('2026-08-25T00:00:00.000Z'));
+    expect(date.kind, ImportantDateKind.paymentDue);
+    expect(date.label, '관리비 납부기한');
+    expect(date.priority, ImportantDatePriority.high);
+    expect(date.needsSourceEvidence, isTrue);
+
+    expect(value.clarifyingQuestions, ['이 고지서가 본인 명의 세대의 것이 맞나요?']);
+  });
+
+  test(
+    'Phase 2: Edge Function 응답의 riskLevel이 AnalysisResult까지 그대로 전달된다',
+    () async {
+      when(() => dataSource.analyzeDocument(photo)).thenAnswer(
+        (_) async => {
+          'ok': true,
+          'id': 'a2',
+          'elderId': 'e1',
+          'type': 'document',
+          'riskLevel': 'caution',
+          'summary': '금전 요구와 개인정보 요구가 함께 발견된 문서예요.',
+          'sourceExcerpt': null,
+          'reliability': 'medium',
+          'structuredFields': {'금액': '500,000원'},
+          'createdAt': '2026-01-01T00:00:00.000Z',
+        },
+      );
+
+      final result = await repository.analyzeDocument(photo);
+
+      expect(result, isA<Ok<AnalysisResult>>());
+      final value = (result as Ok<AnalysisResult>).value;
+      expect(value.riskLevel, RiskLevel.caution);
+      // confidence(reliability)와 riskLevel은 독립적으로 유지되어야 한다.
+      expect(value.reliability, ReliabilityLevel.medium);
+    },
+  );
 
   test('data.ok가 false면(예: server_error) 성공으로 오인하지 않고 Failure를 반환한다', () async {
     when(

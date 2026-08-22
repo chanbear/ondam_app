@@ -5,6 +5,7 @@ import 'package:ondam_senior/features/document_scan/domain/entities/camera_permi
 import 'package:ondam_senior/features/document_scan/presentation/pages/document_scan_camera_page.dart';
 import 'package:ondam_senior/features/document_scan/presentation/providers/camera_permission_provider.dart';
 import 'package:ondam_senior/features/home/presentation/pages/home_tab_page.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Fixed permission state — avoids ever touching the real
@@ -32,6 +33,9 @@ void main() {
             ),
           ],
           child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: Builder(builder: (_) => const HomeTabPage()),
           ),
         ),

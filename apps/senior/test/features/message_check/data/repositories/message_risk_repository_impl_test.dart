@@ -49,7 +49,49 @@ void main() {
     expect(value.reliability, ReliabilityLevel.high);
     expect(value.type, AnalysisType.message);
     expect(value.structuredFields, {'riskType': 'smishing'});
+    // Phase 3(ONDAM 2.0): actionItems/importantDates/clarifyingQuestions 키가
+    // 아예 없는 기존 응답도 크래시 없이 null로 처리돼야 한다(하위 호환).
+    expect(value.actionItems, isNull);
+    expect(value.importantDates, isNull);
+    expect(value.clarifyingQuestions, isNull);
   });
+
+  test(
+    'Phase 3: actionItems/importantDates가 응답에 있으면 AnalysisResult까지 정상 전달된다',
+    () async {
+      when(() => dataSource.analyzeMessage(message.body)).thenAnswer(
+        (_) async => {
+          'ok': true,
+          'id': 'a2',
+          'elderId': 'e1',
+          'type': 'message',
+          'riskLevel': 'caution',
+          'summary': '환급금을 빙자해 개인정보를 요구하는 문자예요.',
+          'sourceExcerpt': message.body,
+          'reliability': 'medium',
+          'structuredFields': {'riskType': 'other_scam'},
+          'actionItems': [
+            {'id': 'ai1', 'title': '발신 번호로 다시 연락하지 않기', 'completed': false},
+          ],
+          'clarifyingQuestions': ['이 번호로 실제 거래를 한 적이 있나요?'],
+          'createdAt': '2026-01-01T00:00:00.000Z',
+          'notifiedGuardianCount': 0,
+        },
+      );
+
+      final result = await repository.analyzeMessage(message);
+
+      expect(result, isA<Ok<AnalysisResult>>());
+      final value = (result as Ok<AnalysisResult>).value;
+      // riskLevel=caution + reliability=medium — 서로 강제되는 관계가 아님을 확인.
+      expect(value.riskLevel, RiskLevel.caution);
+      expect(value.reliability, ReliabilityLevel.medium);
+      expect(value.actionItems, hasLength(1));
+      expect(value.actionItems!.single.title, '발신 번호로 다시 연락하지 않기');
+      expect(value.clarifyingQuestions, ['이 번호로 실제 거래를 한 적이 있나요?']);
+      expect(value.importantDates, isNull);
+    },
+  );
 
   test('data.ok가 false면(예: server_error) 성공으로 오인하지 않고 Failure를 반환한다', () async {
     when(

@@ -5,8 +5,10 @@ import 'package:ondam_models/ondam_models.dart';
 /// reliability are deliberately different axes (Phase 6 지시 5) — this
 /// helper only ever looks at [AnalysisResult.riskLevel], never reliability.
 abstract final class RiskSummary {
-  /// Null if [records] is empty or none of them carry a risk level
-  /// (document-type records have no risk level today).
+  /// Null if [records] is empty or none of them carry a risk level. Both
+  /// `document`- and `message`-type records may carry one as of ONDAM 2.0
+  /// Phase 2 — this helper doesn't care which `type` a record is, it just
+  /// skips whichever ones have no riskLevel.
   static RiskLevel? worst(List<AnalysisResult> records) {
     RiskLevel? worst;
     for (final record in records) {

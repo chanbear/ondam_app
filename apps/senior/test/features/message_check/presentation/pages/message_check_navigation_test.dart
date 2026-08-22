@@ -12,6 +12,7 @@ import 'package:ondam_senior/features/message_check/presentation/providers/messa
 import 'package:ondam_senior/features/message_check/presentation/providers/sms_inbox_notifier.dart';
 import 'package:ondam_senior/features/message_check/presentation/providers/sms_permission_provider.dart';
 import 'package:ondam_senior/features/message_check/presentation/widgets/manual_message_input_view.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/fakes/fake_message_risk_repository.dart';
@@ -50,7 +51,12 @@ void main() {
               () => _FixedSmsPermissionNotifier(SmsPermissionStatus.denied),
             ),
           ],
-          child: const MaterialApp(home: HomeTabPage()),
+          child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const HomeTabPage(),
+          ),
         ),
       );
       await tester.pumpAndSettle();

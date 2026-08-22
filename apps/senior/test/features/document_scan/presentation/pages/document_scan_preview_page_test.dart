@@ -82,22 +82,31 @@ const _onePixelPng = [
 ];
 
 void main() {
+  late Directory tempDir;
   late File tempFile;
+  late File tempFile2;
   late CapturedPhoto photo;
+  late CapturedPhoto photo2;
 
   setUp(() async {
-    final dir = await Directory.systemTemp.createTemp('document_scan_test');
-    tempFile = File('${dir.path}/photo.png');
+    tempDir = await Directory.systemTemp.createTemp('document_scan_test');
+    tempFile = File('${tempDir.path}/photo.png');
     await tempFile.writeAsBytes(_onePixelPng);
+    tempFile2 = File('${tempDir.path}/photo2.png');
+    await tempFile2.writeAsBytes(_onePixelPng);
     photo = CapturedPhoto(
       localPath: tempFile.path,
       capturedAt: DateTime(2026, 1, 1),
     );
+    photo2 = CapturedPhoto(
+      localPath: tempFile2.path,
+      capturedAt: DateTime(2026, 1, 1, 0, 1),
+    );
   });
 
   tearDown(() async {
-    if (tempFile.existsSync()) {
-      await tempFile.parent.delete(recursive: true);
+    if (tempDir.existsSync()) {
+      await tempDir.delete(recursive: true);
     }
   });
 
@@ -106,7 +115,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       ProviderScope(
-        child: MaterialApp(home: DocumentScanPreviewPage(photo: photo)),
+        child: MaterialApp(home: DocumentScanPreviewPage(photos: [photo])),
       ),
     );
     await tester.pumpAndSettle();
@@ -127,7 +136,7 @@ void main() {
                 child: TextButton(
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => DocumentScanPreviewPage(photo: photo),
+                      builder: (_) => DocumentScanPreviewPage(photos: [photo]),
                     ),
                   ),
                   child: const Text('open preview'),
@@ -161,7 +170,7 @@ void main() {
             FakeAnalysisRepository(),
           ),
         ],
-        child: MaterialApp(home: DocumentScanPreviewPage(photo: photo)),
+        child: MaterialApp(home: DocumentScanPreviewPage(photos: [photo])),
       ),
     );
     await tester.pumpAndSettle();
@@ -170,5 +179,93 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(DocumentScanResultPage), findsOneWidget);
+  });
+
+  group('ONDAM 2.0 요구사항 11 — 다중 문서 촬영', () {
+    testWidgets('2장 이상으로 시작하면 개수와 사진이 모두 보인다', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: DocumentScanPreviewPage(photos: [photo, photo2]),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('촬영한 문서 (2장)'), findsOneWidget);
+      expect(find.byType(Image), findsNWidgets(2));
+    });
+
+    testWidgets('삭제 버튼을 누르면 목록에서 제거되고 개수가 줄어든다', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: DocumentScanPreviewPage(photos: [photo, photo2]),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('remove_photo_0')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('촬영한 문서 (1장)'), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
+    });
+
+    testWidgets('사진이 1장뿐이면 삭제할 수 없다(최소 1장 유지)', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(home: DocumentScanPreviewPage(photos: [photo])),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('remove_photo_0')));
+      await tester.pumpAndSettle();
+
+      // onTap이 null이라 아무 일도 일어나지 않는다 — 여전히 1장.
+      expect(find.text('촬영한 문서 (1장)'), findsOneWidget);
+    });
+
+    testWidgets('삭제 버튼의 실제 탭 영역이 접근성 최소 기준(44x44 논리 픽셀)을 만족한다'
+        '(ONDAM 2.0 PHASE 31 — ui-design.md 접근성 규칙)', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: DocumentScanPreviewPage(photos: [photo, photo2]),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final size = tester.getSize(find.byKey(const ValueKey('remove_photo_0')));
+      expect(size.width, greaterThanOrEqualTo(44));
+      expect(size.height, greaterThanOrEqualTo(44));
+    });
+
+    testWidgets('분석하기를 누르면 현재 목록 전체가 결과 화면으로 전달된다', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            analysisRepositoryProvider.overrideWithValue(
+              FakeAnalysisRepository(),
+            ),
+          ],
+          child: MaterialApp(
+            home: DocumentScanPreviewPage(photos: [photo, photo2]),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('분석하기'));
+      await tester.pumpAndSettle();
+
+      final resultPage = tester.widget<DocumentScanResultPage>(
+        find.byType(DocumentScanResultPage),
+      );
+      expect(resultPage.photos, hasLength(2));
+    });
   });
 }

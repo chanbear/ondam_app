@@ -6,13 +6,18 @@ import 'package:permission_handler/permission_handler.dart'
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../domain/entities/camera_permission_status.dart';
-import '../../domain/entities/captured_photo.dart';
 import '../providers/camera_permission_provider.dart';
 import '../widgets/camera_preview_view.dart';
-import 'document_scan_preview_page.dart';
 
 /// 문서 촬영 진입점 — 권한 상태별로 명확히 다른 화면을 보여준다(허용/거부/
 /// 영구거부/제한). 허용 상태에서만 실제 카메라 프리뷰를 그린다.
+///
+/// ONDAM 2.0 요구사항 11(다중 문서 촬영) — 이 화면은 촬영 한 장을 찍고
+/// 곧장 [Navigator.pop]으로 호출부에 돌려준다(더 이상 스스로 미리보기를
+/// push하지 않는다). "한 번 촬영해서 돌려준다"는 책임 하나만 지므로,
+/// 처음 진입(홈 탭)이든 미리보기 화면의 "추가 촬영"이든 동일하게 재사용할
+/// 수 있다 — 여러 장을 모으는 로직은 호출부(`document_scan_preview_page.dart`)
+/// 가 갖는다.
 class DocumentScanCameraPage extends ConsumerWidget {
   const DocumentScanCameraPage({super.key});
 
@@ -35,7 +40,7 @@ class DocumentScanCameraPage extends ConsumerWidget {
           return switch (status) {
             CameraPermissionStatus.granted => CameraPreviewView(
               easyMode: easyMode,
-              onCaptured: (photo) => _openPreview(context, photo),
+              onCaptured: (photo) => Navigator.of(context).pop(photo),
             ),
             CameraPermissionStatus.denied => _PermissionRequestView(
               easyMode: easyMode,
@@ -47,12 +52,6 @@ class DocumentScanCameraPage extends ConsumerWidget {
           };
         },
       ),
-    );
-  }
-
-  void _openPreview(BuildContext context, CapturedPhoto photo) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => DocumentScanPreviewPage(photo: photo)),
     );
   }
 }

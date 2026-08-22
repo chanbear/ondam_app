@@ -6,11 +6,20 @@ import 'package:ondam_senior/features/document_scan/domain/repositories/analysis
 class FakeAnalysisRepository implements AnalysisRepository {
   Result<AnalysisResult> result = const Err(UnavailableFailure());
 
+  /// 다중 문서(ONDAM 2.0 요구사항 11) 테스트용 — 설정돼 있으면 호출 순서대로
+  /// 하나씩 꺼내 반환한다(사진마다 다른 결과를 주기 위함). 비어있으면 기존
+  /// 처럼 [result] 하나를 매번 반환한다(하위 호환).
+  List<Result<AnalysisResult>>? resultsQueue;
+
   final List<CapturedPhoto> calls = [];
 
   @override
   Future<Result<AnalysisResult>> analyzeDocument(CapturedPhoto photo) async {
     calls.add(photo);
+    final queue = resultsQueue;
+    if (queue != null && queue.isNotEmpty) {
+      return queue.removeAt(0);
+    }
     return result;
   }
 }

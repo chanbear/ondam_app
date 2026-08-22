@@ -13,6 +13,8 @@ class AnalysisResultModel {
     this.riskLevel,
     this.sourceExcerpt,
     this.structuredFields,
+    this.billingAmountKrw,
+    this.billingDate,
   });
 
   factory AnalysisResultModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,10 @@ class AnalysisResultModel {
       riskLevel: json['risk_level'] as String?,
       sourceExcerpt: json['source_excerpt'] as String?,
       structuredFields: json['structured_fields'] as Map<String, Object?>?,
+      billingAmountKrw: json['billing_amount_krw'] as int?,
+      billingDate: json['billing_date'] != null
+          ? DateTime.parse(json['billing_date'] as String)
+          : null,
     );
   }
 
@@ -38,6 +44,8 @@ class AnalysisResultModel {
   final String? riskLevel;
   final String? sourceExcerpt;
   final Map<String, Object?>? structuredFields;
+  final int? billingAmountKrw;
+  final DateTime? billingDate;
 
   AnalysisResult toEntity() {
     return AnalysisResult(
@@ -50,6 +58,8 @@ class AnalysisResultModel {
       riskLevel: riskLevel != null ? RiskLevel.fromDbValue(riskLevel!) : null,
       sourceExcerpt: sourceExcerpt,
       structuredFields: structuredFields,
+      billingAmountKrw: billingAmountKrw,
+      billingDate: billingDate,
     );
   }
 }

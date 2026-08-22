@@ -16,11 +16,17 @@ class AppAlertCard extends StatelessWidget {
     required this.level,
     required this.title,
     this.description,
+    this.titleMaxLines,
   });
 
   final RiskLevel level;
   final String title;
   final String? description;
+
+  /// Null (default) keeps the previous unclamped behavior — pass a value
+  /// (e.g. 4) when [title] may be a long AI summary that needs to fit a
+  /// fixed-height callout instead of pushing the rest of the screen down.
+  final int? titleMaxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +57,10 @@ class AppAlertCard extends StatelessWidget {
                 Text(
                   title,
                   style: AppTextStyles.titleMedium.copyWith(color: color),
+                  maxLines: titleMaxLines,
+                  overflow: titleMaxLines != null
+                      ? TextOverflow.ellipsis
+                      : null,
                 ),
                 if (description != null) ...[
                   const SizedBox(height: AppSpacing.xs),

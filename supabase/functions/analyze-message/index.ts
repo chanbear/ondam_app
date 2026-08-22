@@ -1,13 +1,14 @@
 import { corsHeaders } from "../_shared/cors.ts";
 import { json } from "../_shared/http.ts";
 import { verifyCaller } from "../_shared/auth.ts";
+import { notifyGuardians, shouldNotifyGuardians } from "../_shared/guardian_notify.ts";
 import {
   AiClassification,
+  applyRiskFloor,
   buildNotificationPayload,
   CLASSIFY_TOOL,
   parseAiClassification,
   RiskLevel,
-  shouldNotifyGuardians,
   SYSTEM_PROMPT,
   validateMessageBody,
 } from "./risk_classifier.ts";
@@ -149,7 +150,15 @@ Deno.serve(async (req: Request) => {
   if (!classification.ok) {
     return json({ ok: false, reason: classification.reason }, 502);
   }
-  const { riskLevel, riskType, explanation, confidence } = classification.value;
+  const {
+    riskLevel,
+    riskType,
+    explanation,
+    confidence,
+    actionItems,
+    importantDates,
+    clarifyingQuestions,
+  } = applyRiskFloor(message, classification.value);
 
   const { data: inserted, error: insertError } = await caller.serviceClient
     .from("analysis_results")
@@ -171,54 +180,28 @@ Deno.serve(async (req: Request) => {
     return json({ ok: false, reason: "server_error" }, 500);
   }
 
+  // ONDAM 2.0 요구사항 27 — 위험도(caution/dangerous) 뿐 아니라 "정해진
+  // 기한이 있는 내용"(importantDates 존재)도 독립적인 알림 조건이다. 기존
+  // 위험도 기반 정책(caution/dangerous → 항상 알림)은 그대로 유지된다 —
+  // shouldNotifyGuardians가 OR로만 조건을 넓힌다.
   let notifiedGuardianCount = 0;
-  if (shouldNotifyGuardians(riskLevel as RiskLevel)) {
-    const { data: links, error: linksError } = await caller.serviceClient
-      .from("guardian_links")
-      .select("guardian_id")
-      .eq("elder_id", caller.userId)
-      .eq("status", "accepted");
-
-    if (!linksError && links) {
-      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-      const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-      const authorization = req.headers.get("Authorization")!;
-      const payload = buildNotificationPayload({
-        elderId: caller.userId,
-        analysisResultId: inserted.id as string,
-        riskLevel: riskLevel as RiskLevel,
-        riskType,
-        createdAt: inserted.created_at as string,
-      });
-
-      const results = await Promise.all(
-        links.map(async (link) => {
-          try {
-            const res = await fetch(
-              `${supabaseUrl}/functions/v1/send-notification`,
-              {
-                method: "POST",
-                headers: {
-                  "content-type": "application/json",
-                  "Authorization": authorization,
-                  "apikey": anonKey,
-                },
-                body: JSON.stringify({
-                  targetUserId: link.guardian_id,
-                  type: "risky_message",
-                  payload,
-                  sentVia: "push",
-                }),
-              },
-            );
-            return res.ok;
-          } catch {
-            return false;
-          }
-        }),
-      );
-      notifiedGuardianCount = results.filter(Boolean).length;
-    }
+  if (shouldNotifyGuardians(riskLevel as RiskLevel, importantDates.length > 0)) {
+    const payload = buildNotificationPayload({
+      elderId: caller.userId,
+      analysisResultId: inserted.id as string,
+      riskLevel: riskLevel as RiskLevel,
+      riskType,
+      createdAt: inserted.created_at as string,
+    });
+    notifiedGuardianCount = await notifyGuardians({
+      serviceClient: caller.serviceClient,
+      elderId: caller.userId,
+      supabaseUrl: Deno.env.get("SUPABASE_URL")!,
+      anonKey: Deno.env.get("SUPABASE_ANON_KEY")!,
+      authorization: req.headers.get("Authorization")!,
+      notificationType: "risky_message",
+      payload,
+    });
   }
 
   return json({
@@ -231,6 +214,13 @@ Deno.serve(async (req: Request) => {
     sourceExcerpt: inserted.source_excerpt,
     reliability: inserted.reliability,
     structuredFields: inserted.structured_fields,
+    // actionItems/importantDates/clarifyingQuestions are NOT persisted — no
+    // `analysis_results` column exists for them (ONDAM 2.0 Phase 5: no
+    // migration this phase), so they come straight from this request's
+    // in-memory classification, not from `inserted`/a DB round-trip.
+    actionItems,
+    importantDates,
+    clarifyingQuestions,
     createdAt: inserted.created_at,
     notifiedGuardianCount,
   });
