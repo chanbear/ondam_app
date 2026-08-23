@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_core/ondam_core.dart';
+import 'package:ondam_senior/core/demographics/domain/entities/demographics.dart';
+import 'package:ondam_senior/core/demographics/presentation/providers/demographics_di_providers.dart';
 import 'package:ondam_senior/core/location/domain/entities/region.dart';
 import 'package:ondam_senior/core/location/presentation/providers/location_di_providers.dart';
 import 'package:ondam_senior/features/profile/domain/entities/profile.dart';
@@ -10,6 +12,7 @@ import 'package:ondam_senior/features/profile/presentation/pages/region_input_pa
 import 'package:ondam_senior/features/profile/presentation/providers/profile_di_providers.dart';
 import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
+import '../../../../core/demographics/domain/fakes/fake_demographics_repository.dart';
 import '../../../../core/location/domain/fakes/fake_location_repository.dart';
 import '../../../../core/location/domain/fakes/fake_region_repository.dart';
 import '../../domain/fakes/fake_profile_repository.dart';
@@ -17,10 +20,12 @@ import '../../domain/fakes/fake_profile_repository.dart';
 void main() {
   late FakeRegionRepository regionRepository;
   late FakeProfileRepository profileRepository;
+  late FakeDemographicsRepository demographicsRepository;
 
   setUp(() {
     regionRepository = FakeRegionRepository();
     profileRepository = FakeProfileRepository();
+    demographicsRepository = FakeDemographicsRepository();
   });
 
   Widget buildApp() {
@@ -29,6 +34,9 @@ void main() {
         regionRepositoryProvider.overrideWithValue(regionRepository),
         locationRepositoryProvider.overrideWithValue(FakeLocationRepository()),
         profileRepositoryProvider.overrideWithValue(profileRepository),
+        demographicsRepositoryProvider.overrideWithValue(
+          demographicsRepository,
+        ),
       ],
       child: MaterialApp(
         locale: const Locale('ko'),
@@ -84,6 +92,7 @@ void main() {
 
     await tester.enterText(find.byType(TextField).at(0), '홍길동');
     await tester.enterText(find.byType(TextField).at(1), '73');
+    await tester.ensureVisible(find.text('저장'));
     await tester.tap(find.text('저장'));
     await tester.pumpAndSettle();
 
@@ -98,10 +107,80 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField).at(1), '73');
+    await tester.ensureVisible(find.text('저장'));
     await tester.tap(find.text('저장'));
     await tester.pumpAndSettle();
 
     expect(profileRepository.saveCalls, 0);
     expect(find.text('이름을 입력해주세요.'), findsOneWidget);
+  });
+
+  testWidgets('저장된 성별이 있으면 저장 시 그대로 다시 저장된다(미리 채워짐)', (tester) async {
+    demographicsRepository.getMyDemographicsResult = const Ok(
+      Demographics(age: 72, gender: Gender.female),
+    );
+    await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).at(0), '홍길동');
+    await tester.enterText(find.byType(TextField).at(1), '73');
+    await tester.ensureVisible(find.text('저장'));
+    await tester.tap(find.text('저장'));
+    await tester.pumpAndSettle();
+
+    expect(demographicsRepository.saveCalls, 1);
+    expect(demographicsRepository.savedDemographics?.gender, Gender.female);
+  });
+
+  testWidgets('나이 입력 + 성별 선택 후 저장하면 성별도 함께 저장된다', (tester) async {
+    await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).at(0), '홍길동');
+    await tester.enterText(find.byType(TextField).at(1), '73');
+    await tester.ensureVisible(find.text('남성'));
+    await tester.tap(find.text('남성'));
+    await tester.ensureVisible(find.text('저장'));
+    await tester.tap(find.text('저장'));
+    await tester.pumpAndSettle();
+
+    expect(profileRepository.saveCalls, 1);
+    expect(demographicsRepository.saveCalls, 1);
+    expect(demographicsRepository.savedDemographics?.age, 73);
+    expect(demographicsRepository.savedDemographics?.gender, Gender.male);
+    expect(find.text('프로필이 저장되었어요.'), findsOneWidget);
+  });
+
+  testWidgets('성별을 선택하지 않고 저장하면 성별은 저장을 시도하지 않는다', (tester) async {
+    await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).at(0), '홍길동');
+    await tester.enterText(find.byType(TextField).at(1), '73');
+    await tester.ensureVisible(find.text('저장'));
+    await tester.tap(find.text('저장'));
+    await tester.pumpAndSettle();
+
+    expect(profileRepository.saveCalls, 1);
+    expect(demographicsRepository.saveCalls, 0);
+    expect(find.text('프로필이 저장되었어요.'), findsOneWidget);
+  });
+
+  testWidgets('성별 저장이 실패하면 에러 메시지를 보여준다', (tester) async {
+    demographicsRepository.saveDemographicsResult = const Err(
+      ServerFailure('서버에 문제가 발생했습니다.'),
+    );
+    await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).at(0), '홍길동');
+    await tester.enterText(find.byType(TextField).at(1), '73');
+    await tester.ensureVisible(find.text('남성'));
+    await tester.tap(find.text('남성'));
+    await tester.ensureVisible(find.text('저장'));
+    await tester.tap(find.text('저장'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('서버에 문제가 발생했습니다.'), findsOneWidget);
   });
 }
