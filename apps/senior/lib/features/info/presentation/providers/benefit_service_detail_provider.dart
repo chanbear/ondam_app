@@ -9,14 +9,15 @@ import 'benefit_service_di_providers.dart';
 /// riverpod.md의 "재시도/재계산 로직이 없을 때는 FutureProvider" 원칙,
 /// `autoDispose`로 화면을 벗어나면 폐기된다.
 final benefitServiceDetailProvider = FutureProvider.autoDispose
-    .family<BenefitServiceDetail, ({String id, BenefitServiceSource source})>(
-      (ref, args) async {
-        final result = await ref
-            .read(getBenefitServiceDetailUseCaseProvider)
-            .call(args.id, args.source);
-        return switch (result) {
-          Ok(:final value) => value,
-          Err(:final failure) => throw failure,
-        };
-      },
-    );
+    .family<BenefitServiceDetail, ({String id, BenefitServiceSource source})>((
+      ref,
+      args,
+    ) async {
+      final result = await ref
+          .read(getBenefitServiceDetailUseCaseProvider)
+          .call(args.id, args.source);
+      return switch (result) {
+        Ok(:final value) => value,
+        Err(:final failure) => throw failure,
+      };
+    });

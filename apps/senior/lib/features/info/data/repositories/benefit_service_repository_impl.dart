@@ -49,7 +49,9 @@ class BenefitServiceRepositoryImpl implements BenefitServiceRepository {
       if (data['ok'] != true) {
         return Err(_mapReason(data['reason'] as String?));
       }
-      return Ok(_toBenefitServiceDetail(data['result'] as Map<String, dynamic>));
+      return Ok(
+        _toBenefitServiceDetail(data['result'] as Map<String, dynamic>),
+      );
     } on FunctionException catch (e) {
       return Err(_mapReason(_reasonFrom(e)));
     } on AuthException catch (_) {
@@ -67,7 +69,8 @@ class BenefitServiceRepositoryImpl implements BenefitServiceRepository {
   BenefitService _toBenefitService(Map<String, dynamic> row) {
     return BenefitService(
       id: row['id'] as String,
-      source: BenefitServiceSource.fromValue(row['source'] as String?) ??
+      source:
+          BenefitServiceSource.fromValue(row['source'] as String?) ??
           BenefitServiceSource.central,
       title: row['title'] as String,
       summary: row['summary'] as String,

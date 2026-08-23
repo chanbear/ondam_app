@@ -18,9 +18,7 @@ class SearchBenefitServicesUseCase {
     Region? region,
   ) {
     if (demographics == null || !demographics.isComplete) {
-      return Future.value(
-        const Err(ValidationFailure('나이와 성별을 먼저 입력해주세요.')),
-      );
+      return Future.value(const Err(ValidationFailure('나이와 성별을 먼저 입력해주세요.')));
     }
     if (region == null) {
       return Future.value(const Err(ValidationFailure('내 지역을 먼저 등록해주세요.')));
