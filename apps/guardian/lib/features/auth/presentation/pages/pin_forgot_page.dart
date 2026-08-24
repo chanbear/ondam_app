@@ -6,6 +6,7 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../app/router/auth_routes.dart';
 import '../../../../core/auth/supabase_client_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/pin_notifier.dart';
 import '../providers/sign_up_notifier.dart';
 import '../widgets/pin_keypad.dart';
@@ -77,8 +78,9 @@ class _PinForgotPageState extends ConsumerState<PinForgotPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('PIN 재설정')),
+      appBar: AppBar(title: Text(l10n.pinForgotTitle)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
@@ -105,6 +107,7 @@ class _ReauthenticatingStep extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final signUpState = ref.watch(signUpNotifierProvider);
     final failure = signUpState.hasError ? signUpState.error as Failure : null;
 
@@ -116,14 +119,17 @@ class _ReauthenticatingStep extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('본인 확인에 실패했어요', style: AppTextStyles.headlineMedium),
+        Text(
+          l10n.pinForgotReauthFailedTitle,
+          style: AppTextStyles.headlineMedium,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           failure.message,
           style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
         ),
         const SizedBox(height: AppSpacing.xl),
-        AppButton(label: '다시 시도', onPressed: onRetry),
+        AppButton(label: l10n.retryButtonLabel, onPressed: onRetry),
       ],
     );
   }
@@ -142,6 +148,7 @@ class _NewPinStep extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final pinState = ref.watch(pinNotifierProvider);
     final isLoading = pinState.isLoading;
     final failure = pinState.hasError ? pinState.error as Failure : null;
@@ -150,7 +157,7 @@ class _NewPinStep extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '새로운 PIN 4자리를 정해주세요',
+          l10n.pinForgotNewPinTitle,
           style: AppTextStyles.headlineMedium,
           textAlign: TextAlign.center,
         ),

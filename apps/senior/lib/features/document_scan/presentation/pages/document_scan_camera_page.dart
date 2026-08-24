@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart'
     show openAppSettings;
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/camera_permission_status.dart';
 import '../providers/camera_permission_provider.dart';
 import '../widgets/camera_preview_view.dart';
@@ -25,15 +26,16 @@ class DocumentScanCameraPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final easyMode = ref.watch(easyModeProvider);
     final permissionAsync = ref.watch(cameraPermissionProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return AppScaffold(
-      title: '문서 촬영',
+      title: l10n.documentScanTitle,
       onBack: () => Navigator.of(context).pop(),
       padding: EdgeInsets.zero,
       body: permissionAsync.when(
         loading: () => const AppLoading(),
         error: (error, _) => AppError(
-          message: '카메라 권한을 확인하지 못했어요.',
+          message: l10n.cameraPermissionCheckError,
           onRetry: () => ref.invalidate(cameraPermissionProvider),
         ),
         data: (status) {
@@ -48,7 +50,9 @@ class DocumentScanCameraPage extends ConsumerWidget {
                   ref.read(cameraPermissionProvider.notifier).request(),
             ),
             CameraPermissionStatus.permanentlyDenied ||
-            CameraPermissionStatus.restricted => const _PermissionBlockedView(),
+            CameraPermissionStatus.restricted => _PermissionBlockedView(
+              easyMode: easyMode,
+            ),
           };
         },
       ),
@@ -75,13 +79,13 @@ class _PermissionRequestView extends StatelessWidget {
           const Icon(Icons.camera_alt_outlined, size: 48),
           const SizedBox(height: AppSpacing.md),
           Text(
-            '문서와 문자를 촬영해 분석하려면\n카메라 접근을 허용해주세요.',
+            AppLocalizations.of(context)!.cameraPermissionRequestMessage,
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyLarge,
           ),
           const SizedBox(height: AppSpacing.xl),
           AppButton(
-            label: '카메라 권한 허용하기',
+            label: AppLocalizations.of(context)!.cameraPermissionRequestButton,
             size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
             onPressed: onRequest,
           ),
@@ -92,7 +96,9 @@ class _PermissionRequestView extends StatelessWidget {
 }
 
 class _PermissionBlockedView extends StatelessWidget {
-  const _PermissionBlockedView();
+  const _PermissionBlockedView({required this.easyMode});
+
+  final bool easyMode;
 
   @override
   Widget build(BuildContext context) {
@@ -104,12 +110,16 @@ class _PermissionBlockedView extends StatelessWidget {
           const Icon(Icons.no_photography_outlined, size: 48),
           const SizedBox(height: AppSpacing.md),
           Text(
-            '카메라 권한이 차단되어 있어요.\n기기 설정에서 직접 허용해주셔야 해요.',
+            AppLocalizations.of(context)!.cameraPermissionBlockedMessage,
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyLarge,
           ),
           const SizedBox(height: AppSpacing.xl),
-          AppButton(label: '설정 열기', onPressed: openAppSettings),
+          AppButton(
+            label: AppLocalizations.of(context)!.openSettingsButton,
+            size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
+            onPressed: openAppSettings,
+          ),
         ],
       ),
     );

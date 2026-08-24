@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../pages/sms_message_detail_page.dart';
 import '../providers/sms_inbox_notifier.dart';
 import 'sms_message_tile.dart';
@@ -16,11 +17,12 @@ class SmsRecentListView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inboxAsync = ref.watch(smsInboxProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return inboxAsync.when(
-      loading: () => const AppLoading(message: '최근 문자를 불러오고 있어요'),
+      loading: () => AppLoading(message: l10n.recentSmsLoadingMessage),
       error: (error, _) {
-        final message = error is Failure ? error.message : '문자를 불러오지 못했어요.';
+        final message = error is Failure ? error.message : l10n.smsLoadError;
         return AppError(
           message: message,
           onRetry: () => ref.invalidate(smsInboxProvider),
@@ -28,9 +30,9 @@ class SmsRecentListView extends ConsumerWidget {
       },
       data: (messages) {
         if (messages.isEmpty) {
-          return const AppEmptyState(
+          return AppEmptyState(
             icon: Icons.mark_email_read_outlined,
-            message: '최근 받은 문자가 없어요.',
+            message: l10n.recentSmsEmptyMessage,
           );
         }
         return ListView.separated(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/text_scale_level.dart';
 import '../providers/accessibility_prefs_provider.dart';
 
@@ -14,12 +15,13 @@ class AccessibilitySettingsForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final prefs = ref.watch(accessibilityPrefsProvider);
     final notifier = ref.read(accessibilityPrefsProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        AppSectionHeader(title: '글자 크기'),
+        AppSectionHeader(title: l10n.textSizeTitle),
         Wrap(
           spacing: AppSpacing.sm,
           children: [
@@ -32,10 +34,10 @@ class AccessibilitySettingsForm extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: AppSpacing.xl),
-        AppSectionHeader(title: '음성 안내'),
+        AppSectionHeader(title: l10n.voiceGuideTitle),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('화면 내용을 음성으로도 안내해드려요'),
+          title: Text(l10n.voiceGuideDescription),
           value: prefs.voiceGuideEnabled,
           onChanged: notifier.setVoiceGuideEnabled,
         ),

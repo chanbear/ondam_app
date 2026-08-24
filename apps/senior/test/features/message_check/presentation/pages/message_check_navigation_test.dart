@@ -89,7 +89,12 @@ void main() {
             ),
           ),
         ],
-        child: const MaterialApp(home: MessageCheckEntryPage()),
+        child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const MessageCheckEntryPage(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -109,7 +114,12 @@ void main() {
                   _FixedSmsPermissionNotifier(SmsPermissionStatus.unsupported),
             ),
           ],
-          child: const MaterialApp(home: MessageCheckEntryPage()),
+          child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const MessageCheckEntryPage(),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -148,7 +158,12 @@ void main() {
                 ),
             ),
           ],
-          child: const MaterialApp(home: MessageCheckEntryPage()),
+          child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const MessageCheckEntryPage(),
+          ),
         ),
       );
       await tester.pumpAndSettle();

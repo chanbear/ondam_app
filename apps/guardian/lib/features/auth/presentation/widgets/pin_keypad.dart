@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
+
 /// Standard-sized numeric keypad for PIN entry — the Guardian app's
 /// audience isn't uniformly elderly, so it uses regular touch-target
 /// sizing rather than the Senior app's enlarged keypad. Feature-local: only
@@ -70,7 +72,9 @@ class PinKeypad extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
               child: _KeypadButton(
                 icon: Icons.backspace_outlined,
-                semanticLabel: '지우기',
+                semanticLabel: AppLocalizations.of(
+                  context,
+                )!.pinKeypadClearLabel,
                 onTap: enabled ? onBackspace : null,
               ),
             ),

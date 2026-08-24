@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/emergency_help_di_providers.dart';
 
 /// 긴급 도움 모달 — 119/112/118과 "보호자에게 전화" 모두 실제 다이얼러로
@@ -39,9 +40,13 @@ class EmergencyHelpSheet extends ConsumerWidget {
       case Ok(value: final phone?):
         await _call(context, ref, phone);
       case Ok():
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('아직 연결된 보호자가 없어요.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.noGuardianConnectedError,
+            ),
+          ),
+        );
       case Err(:final failure):
         ScaffoldMessenger.of(
           context,
@@ -51,6 +56,7 @@ class EmergencyHelpSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -58,25 +64,25 @@ class EmergencyHelpSheet extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('도움이 필요하신가요?', style: AppTextStyles.headlineMedium),
+            Text(l10n.emergencyHelpTitle, style: AppTextStyles.headlineMedium),
             const SizedBox(height: AppSpacing.lg),
             _ContactRow(
-              label: '보호자에게 전화',
+              label: l10n.callGuardianLabel,
               icon: Icons.phone,
               onTap: () => _callGuardian(context, ref),
             ),
             _ContactRow(
-              label: '119 (응급구조)',
+              label: l10n.emergency119Label,
               icon: Icons.local_hospital,
               onTap: () => _call(context, ref, '119'),
             ),
             _ContactRow(
-              label: '112 (경찰)',
+              label: l10n.emergency112Label,
               icon: Icons.local_police,
               onTap: () => _call(context, ref, '112'),
             ),
             _ContactRow(
-              label: '118 (사이버 신고)',
+              label: l10n.emergency118Label,
               icon: Icons.security,
               onTap: () => _call(context, ref, '118'),
             ),

@@ -9,6 +9,7 @@ import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/widgets/analysis_progress_indicator.dart';
 import '../../../../core/widgets/analysis_progress_step.dart';
 import '../../../../core/widgets/analysis_result_view.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
 import '../../../voice_assistant/presentation/pages/voice_assistant_page.dart';
 import '../../domain/entities/sms_message.dart';
@@ -72,9 +73,10 @@ class _MessageRiskResultPageState extends ConsumerState<MessageRiskResultPage> {
   Widget build(BuildContext context) {
     final state = ref.watch(messageRiskNotifierProvider);
     final easyMode = ref.watch(easyModeProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return AppScaffold(
-      title: '분석 결과',
+      title: l10n.analysisResultTitle,
       onBack: () => Navigator.of(context).pop(),
       body: state.when(
         // A previous AnalysisResult must never remain visible while a new
@@ -91,7 +93,9 @@ class _MessageRiskResultPageState extends ConsumerState<MessageRiskResultPage> {
               message: error.message,
             );
           }
-          final message = error is Failure ? error.message : '분석 중 문제가 발생했어요.';
+          final message = error is Failure
+              ? error.message
+              : l10n.analysisGenericError;
           return AppError(
             message: message,
             onRetry: () => ref

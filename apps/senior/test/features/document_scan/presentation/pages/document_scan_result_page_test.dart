@@ -7,6 +7,7 @@ import 'package:ondam_senior/features/document_scan/domain/entities/captured_pho
 import 'package:ondam_senior/features/document_scan/presentation/pages/document_scan_result_page.dart';
 import 'package:ondam_senior/features/document_scan/presentation/providers/document_scan_di_providers.dart';
 import 'package:ondam_senior/features/voice_assistant/presentation/pages/voice_assistant_page.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../domain/fakes/fake_analysis_repository.dart';
 
@@ -35,7 +36,12 @@ void main() {
                 ),
             ),
           ],
-          child: MaterialApp(home: DocumentScanResultPage(photos: [photo])),
+          child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: DocumentScanResultPage(photos: [photo]),
+          ),
         ),
       );
 
@@ -53,7 +59,7 @@ void main() {
   );
 
   testWidgets(
-    'Phase 6: 결과 화면의 "음성으로 물어보기" 버튼을 누르면 기존 VoiceAssistantPage로 이동한다',
+    'Phase 6: 결과 화면의 "이 내용 물어보기" 버튼을 누르면 기존 VoiceAssistantPage로 이동한다',
     (tester) async {
       final photo = CapturedPhoto(
         localPath: '/tmp/photo.jpg',
@@ -78,15 +84,20 @@ void main() {
                 ),
             ),
           ],
-          child: MaterialApp(home: DocumentScanResultPage(photos: [photo])),
+          child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: DocumentScanResultPage(photos: [photo]),
+          ),
         ),
       );
 
       await tester.pumpAndSettle();
 
-      expect(find.text('음성으로 물어보기'), findsOneWidget);
+      expect(find.text('이 내용 물어보기'), findsOneWidget);
 
-      await tester.tap(find.text('음성으로 물어보기'));
+      await tester.tap(find.text('이 내용 물어보기'));
       // MaterialPageRoute push는 한 프레임 안에 완전히 반영되지 않는다 —
       // pumpAndSettle()은 VoiceAssistantPage 내부의 micPermissionProvider가
       // 이 테스트 환경(플랫폼 채널 mock 없음)에서 계속 재빌드를 유발하면
@@ -140,6 +151,9 @@ void main() {
             ),
           ],
           child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: DocumentScanResultPage(photos: [photo1, photo2]),
           ),
         ),
@@ -170,6 +184,9 @@ void main() {
             analysisRepositoryProvider.overrideWithValue(fakeRepository),
           ],
           child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: DocumentScanResultPage(photos: [photo1, photo2]),
           ),
         ),

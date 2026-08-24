@@ -22,12 +22,20 @@
   "forgotPinLink": "Forgot your password?",
   "pinWrongWithCount": "Incorrect password. ({count} failed attempts)",
   "@pinWrongWithCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "pinWrong": "Incorrect password.",
   "pinLockedWithTime": "Too many attempts. Please try again at {time}.",
   "@pinLockedWithTime": {
-    "placeholders": { "time": { "type": "String" } }
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   },
   "pinLockedNoTime": "Too many attempts. Your account is temporarily locked — please try again shortly.",
   "pinNotSet": "No password has been set.",
@@ -77,5 +85,272 @@
   "voiceListening": "Listening…",
   "voiceStartSemanticLabel": "Start speaking",
   "voiceUnrecognizedAnswer": "I didn't quite catch that. Try saying \"문서 찍어줘\" (scan document), \"문자 확인해줘\" (check message), or \"긴급 도움\" (emergency help).",
-  "voiceRetryButton": "Please try again"
+  "voiceRetryButton": "Please try again",
+  "riskSafeLabel": "Safe",
+  "riskCautionLabel": "Caution",
+  "riskDangerousLabel": "Danger detected",
+  "analysisTypeDocumentLabel": "Document analysis",
+  "analysisTypeMessageLabel": "Message check",
+  "analysisResultTitle": "Analysis Result",
+  "pinEntryPrompt": "Please enter your PIN",
+  "pinForgotLink": "Forgot your PIN?",
+  "pinResetTitle": "Reset PIN",
+  "identityVerifyFailedTitle": "We couldn't verify your identity",
+  "retryButton": "Try again",
+  "pinNewSetupPrompt": "Please set a new 4-digit PIN",
+  "pinMismatchError": "The PINs don't match. Please start over.",
+  "pinConfirmPrompt": "Please enter it one more time",
+  "pinSetupPrompt": "Please set a 4-digit PIN to use",
+  "pinSetupDescription": "From now on, you'll use this PIN to open the app.",
+  "roleSelectTitle": "How would you like to use the app?",
+  "roleSelectSubtitle": "We'll prepare the screens to fit your purpose.",
+  "roleAlreadyRegisteredNotice": "This number is already registered with another role. If you continue, this role will be added too.",
+  "roleElderButton": "I'm a senior",
+  "roleGuardianButton": "I'm a family member (guardian)",
+  "pinKeypadClearLabel": "Clear",
+  "guardianConnectTitle": "Connect Guardian",
+  "qrGeneratingMessage": "Creating the QR code",
+  "qrGenerateError": "Couldn't create the QR code. Please try again.",
+  "qrShowGuardianPrompt": "Show this QR code to your guardian",
+  "qrScanExplanation": "When your guardian scans this QR code, a connection request will be sent.",
+  "qrExpiredMessage": "The QR code has expired.",
+  "qrRegenerateButton": "Create QR code again",
+  "guardianListTitle": "Connected Guardians",
+  "guardianConnectButton": "Connect a guardian",
+  "guardianListLoadError": "Couldn't load the guardian list.",
+  "guardianListEmptyMessage": "You don't have any connected guardians yet\nTap Connect a Guardian to show your QR code",
+  "guardianRequestLabelWithId": "Guardian connection request ({id})",
+  "@guardianRequestLabelWithId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "acceptButton": "Accept",
+  "rejectButton": "Decline",
+  "guardianRevokeConfirmTitle": "Disconnect this guardian?",
+  "guardianRevokeConfirmMessage": "Once disconnected, this guardian will no longer be able to see your information.",
+  "guardianRevokeConfirmLabel": "Disconnect",
+  "guardianRevokeAction": "Disconnect",
+  "guardianStatusPending": "Request pending",
+  "guardianStatusAccepted": "Connected",
+  "guardianStatusRejected": "Declined",
+  "guardianStatusRevoked": "Disconnected",
+  "documentScanTitle": "Scan Document",
+  "cameraPermissionCheckError": "Couldn't check camera permission.",
+  "cameraPermissionRequestMessage": "To photograph and analyze documents and messages,\nplease allow camera access.",
+  "cameraPermissionRequestButton": "Allow camera permission",
+  "cameraPermissionBlockedMessage": "Camera permission is blocked.\nPlease allow it directly in device settings.",
+  "openSettingsButton": "Open settings",
+  "scanPreviewTitle": "Review Photos",
+  "retakeLabel": "Retake",
+  "scannedDocumentsCount": "Photos taken ({count})",
+  "@scannedDocumentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "addAnotherPhotoButton": "Take another photo",
+  "analyzeButton": "Analyze",
+  "documentIndexLabel": "Document {index}",
+  "@documentIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "deletePhotoAtIndexLabel": "Delete photo {index}",
+  "@deletePhotoAtIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "documentAnalyzingProgress": "Analyzing document {current}/{total}",
+  "@documentAnalyzingProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "documentsAnalyzedCount": "Analyzed {count} documents",
+  "@documentsAnalyzedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noCameraAvailableError": "No camera is available.",
+  "cameraStartError": "Couldn't start the camera.",
+  "flashUnavailableError": "Flash isn't available on this device.",
+  "captureFailedError": "The photo failed. Please try again.",
+  "cameraPreparingMessage": "Preparing the camera",
+  "documentFrameGuideMessage": "Fit the document within the frame",
+  "captureButtonLabel": "Take photo",
+  "noGuardianConnectedError": "You don't have a connected guardian yet.",
+  "emergencyHelpTitle": "Do you need help?",
+  "callGuardianLabel": "Call guardian",
+  "emergency119Label": "119 (Emergency Rescue)",
+  "emergency112Label": "112 (Police)",
+  "emergency118Label": "118 (Cybercrime Report)",
+  "myRecordsTitle": "My Records",
+  "documentReadLabel": "Read Document",
+  "messageCheckLabel": "Check Message",
+  "infoTabTitle": "Info",
+  "infoTabEmptyMessage": "There's no information ready yet. We'll show you personalized info soon.",
+  "statisticsLabel": "Statistics",
+  "usefulInfoLabel": "Helpful Information",
+  "howToUseLabel": "How to Use",
+  "supportTitle": "Customer Support",
+  "moreTitle": "More",
+  "recordsLoadingMessage": "Loading your records",
+  "recordsLoadError": "Something went wrong while loading your records.",
+  "recordsEmptyMessage": "You don't have any analyzed records yet.\nTry scanning a document or checking a message.",
+  "helpRequestLabel": "Request Help",
+  "easyModeOnState": "On",
+  "easyModeOffState": "Off",
+  "easyModeToggleSemanticLabel": "Easy Mode, currently {state}",
+  "@easyModeToggleSemanticLabel": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "easyModeOnDescription": "On — Big buttons and simple screens",
+  "coreFeaturesTitle": "Key Features",
+  "recentRecordsTitle": "Recent Records",
+  "emergencyHelpRequestLabel": "Emergency Help Request",
+  "smsPermissionCheckError": "Couldn't check message permission.",
+  "smsPermissionRequestMessage": "To check your messages and warn you about dangerous ones,\nplease allow message access.",
+  "smsPermissionRequestButton": "Allow message permission",
+  "smsPermissionBlockedMessage": "Message permission is blocked.\nPlease allow it directly in device settings.",
+  "analysisGenericError": "Something went wrong during analysis.",
+  "unknownSenderLabel": "Unknown number",
+  "manualMessageInputPrompt": "Copy and paste a suspicious message,\nor type it in yourself.",
+  "pasteFromClipboardButton": "Paste from clipboard",
+  "messageContentLabel": "Message content",
+  "messageContentHint": "Enter the message content",
+  "recentSmsLoadingMessage": "Loading recent messages",
+  "smsLoadError": "Couldn't load messages.",
+  "recentSmsEmptyMessage": "You don't have any recent messages.",
+  "accessibilitySettingsTitle": "Accessibility Settings",
+  "guardianRegisterTitle": "Register Guardian",
+  "onboardingAccessibilityIntro": "Let's set things up first so it's comfortable to use.",
+  "nextButton": "Next",
+  "onboardingProfileIntro": "If you tell us, we can show you more helpful information. (Optional)",
+  "regionLabel": "Region",
+  "skipButton": "Skip",
+  "guardianConnectComingSoonMessage": "Guardian connection will be available soon. Once it's ready, you can connect anytime from the More menu.",
+  "saveAndStartButton": "Save and get started",
+  "textSizeTitle": "Text Size",
+  "voiceGuideTitle": "Voice Guide",
+  "voiceGuideDescription": "We'll also read the screen content aloud",
+  "feeStatisticsTitle": "Fee Statistics",
+  "feeStatisticsLoadingMessage": "Loading fee statistics",
+  "feeStatisticsLoadError": "Something went wrong while loading fee statistics.",
+  "privacyPinTitle": "Password (PIN)",
+  "privacyPinBody": "Your actual PIN, or anything that could be used to guess it, is never stored anywhere on this device. Even on the server, only an encrypted value is kept for verification only — there's no way for anyone else to see it.",
+  "privacyPhotoTitle": "Document Photos",
+  "privacyPhotoBody": "When you photograph a document for analysis, the original photo is deleted from the server as soon as the analysis finishes (whether it succeeds or fails). Only the analysis result remains.",
+  "privacySharedInfoTitle": "Information Shared with Guardians",
+  "privacySharedInfoBody": "Only guardians whose connection you've accepted can see your analysis results. Once you disconnect, they can no longer see them.",
+  "privacyRetentionTitle": "Retention Period for Analysis Records",
+  "privacyRetentionBody": "How long the summary and original text from message/document analysis will be kept hasn't been decided yet. We'll let you know here as soon as it's determined.",
+  "privacyInfoTitle": "Privacy & Data Retention",
+  "supportContactTitle": "Support Contact",
+  "supportContactComingSoon": "We're preparing phone and email contact information. We'll let you know soon.",
+  "privacyInfoDescription": "See how your information is kept",
+  "micPermissionCheckError": "Couldn't check microphone permission.",
+  "micPermissionRequestMessage": "To use the voice assistant,\nplease allow microphone access.",
+  "micPermissionRequestButton": "Allow microphone permission",
+  "micPermissionBlockedMessage": "Microphone permission is blocked.\nPlease allow it directly in device settings.",
+  "actionChecklistTitle": "To-Do",
+  "clarifyingQuestionsTitle": "Have a question?",
+  "askByVoiceButton": "Ask by voice",
+  "dateKindPaymentDue": "Payment Due",
+  "dateKindVisit": "Visit Date",
+  "dateKindApplicationPeriod": "Application Period",
+  "dateKindExpiration": "Expiration Date",
+  "dateKindReservation": "Reservation Date",
+  "dateKindOther": "Other Important Date",
+  "importantDatesTitle": "Important Dates",
+  "monthDayFormat": "{month}/{day}",
+  "@monthDayFormat": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "keyPointsTitle": "Key Points",
+  "analysisProgressSemanticLabel": "Analysis progress {percent} percent, {label}",
+  "@analysisProgressSemanticLabel": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "progressPreparing": "Preparing analysis",
+  "progressSending": "Sending your data",
+  "progressAnalyzing": "AI is checking it",
+  "progressFinishing": "Finishing up the results",
+  "detailsViewTitle": "View Details",
+  "reliabilityLabel": "Reliability",
+  "sourceTextLabel": "Original Text",
+  "askAboutThisButton": "Ask about this",
+  "confirmedDoneSemanticLabel": "Marked as confirmed",
+  "confirmedDoneMessage": "Confirmed",
+  "confirmDoneButton": "Mark as Confirmed",
+  "featureComingSoonMessage": "This feature isn't ready yet.",
+  "feeStatisticsEmptyMessage": "No fee statistics yet.\nAnalyze a bill or invoice to build your statistics.",
+  "totalFeeLabel": "Total fee",
+  "averageFeeLabel": "Average fee",
+  "maxFeeLabel": "Highest fee",
+  "feeRecordCountLabel": "Bill records",
+  "monthlyToggleLabel": "Monthly",
+  "yearlyToggleLabel": "Yearly",
+  "toggleViewSemanticLabel": "View {label}",
+  "@toggleViewSemanticLabel": {
+    "placeholders": { "label": { "type": "String" } }
+  },
+  "monthlyTrendTitle": "Monthly fee trend",
+  "yearlyTrendTitle": "Yearly fee trend",
+  "noDataInPeriodMessage": "No fee records for this period.",
+  "feeFootnote": "Calculated from the amounts on analyzed bills and invoices. Records where AI couldn't extract an amount are excluded.",
+  "feeChartEmptyMessage": "No fee statistics yet.",
+  "feeChartSemanticNoData": "Fee trend chart. No data yet.",
+  "feeChartSemanticSummary": "Fee trend chart. {summary}",
+  "@feeChartSemanticSummary": {
+    "placeholders": { "summary": { "type": "String" } }
+  },
+  "monthNumberLabel": "{month}",
+  "@monthNumberLabel": {
+    "placeholders": { "month": { "type": "int" } }
+  },
+  "yearNumberLabel": "{year}",
+  "@yearNumberLabel": {
+    "placeholders": { "year": { "type": "int" } }
+  },
+  "countUnitLabel": "{count}",
+  "@countUnitLabel": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

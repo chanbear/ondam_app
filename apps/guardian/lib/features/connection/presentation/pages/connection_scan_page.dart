@@ -5,6 +5,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/scan_connection_notifier.dart';
 
 /// 보호자 측 QR 스캔 화면(technical-decisions.md §1-6 v9,
@@ -45,13 +46,15 @@ class _ConnectionScanPageState extends ConsumerState<ConnectionScanPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(scanConnectionProvider);
 
     return AppScaffold(
-      title: '어르신 연결하기',
+      title: l10n.connectElderActionLong,
       onBack: () => Navigator.of(context).pop(),
       body: state.when(
-        loading: () => const AppLoading(message: '연결 요청을 보내고 있어요'),
+        loading: () =>
+            AppLoading(message: l10n.connectionRequestSendingMessage),
         error: (error, _) => _ScanErrorView(
           failure: error is Failure ? error : const UnknownFailure(),
           onRetry: _resetForRetry,
@@ -72,10 +75,11 @@ class _ScannerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
-        const Text(
-          '어르신 화면에 표시된 QR 코드를 비춰주세요',
+        Text(
+          l10n.qrScanInstructionMessage,
           textAlign: TextAlign.center,
           style: AppTextStyles.bodyLarge,
         ),
@@ -103,6 +107,7 @@ class _CameraPermissionDeniedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -111,13 +116,16 @@ class _CameraPermissionDeniedView extends StatelessWidget {
           children: [
             const Icon(Icons.no_photography_outlined, size: 40),
             const SizedBox(height: AppSpacing.sm),
-            const Text(
-              '카메라 권한이 필요해요',
+            Text(
+              l10n.cameraPermissionRequiredMessage,
               textAlign: TextAlign.center,
               style: AppTextStyles.bodyLarge,
             ),
             const SizedBox(height: AppSpacing.md),
-            AppButton(label: '설정으로 이동', onPressed: openAppSettings),
+            AppButton(
+              label: l10n.openSettingsAction,
+              onPressed: openAppSettings,
+            ),
           ],
         ),
       ),
@@ -144,6 +152,7 @@ class _ScanSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -156,20 +165,20 @@ class _ScanSuccessView extends StatelessWidget {
               color: AppColors.success,
             ),
             const SizedBox(height: AppSpacing.md),
-            const Text(
-              '연결 요청을 보냈어요',
+            Text(
+              l10n.connectionRequestSentTitle,
               style: AppTextStyles.titleMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.sm),
-            const Text(
-              '어르신이 요청을 수락하면 연결이 완료돼요.',
+            Text(
+              l10n.connectionRequestSentDescription,
               textAlign: TextAlign.center,
               style: AppTextStyles.bodyMedium,
             ),
             const SizedBox(height: AppSpacing.xl),
             AppButton(
-              label: '확인',
+              label: l10n.okButtonLabel,
               size: AppButtonSize.large,
               onPressed: onDone,
             ),

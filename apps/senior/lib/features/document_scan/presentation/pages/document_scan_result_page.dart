@@ -10,6 +10,7 @@ import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/widgets/analysis_progress_indicator.dart';
 import '../../../../core/widgets/analysis_progress_step.dart';
 import '../../../../core/widgets/analysis_result_view.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/presentation/pages/analysis_record_detail_page.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
 import '../../../analysis/presentation/widgets/analysis_record_card.dart';
@@ -118,15 +119,16 @@ class _DocumentScanResultPageState
   @override
   Widget build(BuildContext context) {
     final easyMode = ref.watch(easyModeProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return AppScaffold(
-      title: '분석 결과',
+      title: l10n.analysisResultTitle,
       onBack: () => Navigator.of(context).pop(),
-      body: _buildBody(easyMode),
+      body: _buildBody(easyMode, l10n),
     );
   }
 
-  Widget _buildBody(bool easyMode) {
+  Widget _buildBody(bool easyMode, AppLocalizations l10n) {
     if (_loading) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +137,10 @@ class _DocumentScanResultPageState
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: Text(
-                '${_currentIndex + 1}/${widget.photos.length} 문서 분석 중',
+                l10n.documentAnalyzingProgress(
+                  _currentIndex + 1,
+                  widget.photos.length,
+                ),
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -171,7 +176,10 @@ class _DocumentScanResultPageState
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        Text('문서 ${_results.length}건을 분석했어요', style: AppTextStyles.titleMedium),
+        Text(
+          l10n.documentsAnalyzedCount(_results.length),
+          style: AppTextStyles.titleMedium,
+        ),
         const SizedBox(height: AppSpacing.md),
         for (final result in _results) ...[
           AnalysisRecordCard(

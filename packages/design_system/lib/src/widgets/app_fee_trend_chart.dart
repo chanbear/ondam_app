@@ -41,12 +41,29 @@ class AppFeeTrendChart extends StatelessWidget {
   const AppFeeTrendChart({
     super.key,
     required this.points,
+    required this.emptyMessage,
+    required this.semanticNoDataLabel,
+    required this.semanticSummaryBuilder,
     this.selectedIndex,
     this.onSelect,
     this.height = 220,
   });
 
   final List<FeeChartPoint> points;
+
+  /// Shown in the chart area itself when there's no data at all yet.
+  final String emptyMessage;
+
+  /// Screen-reader label when there's no data at all yet.
+  final String semanticNoDataLabel;
+
+  /// Screen-reader label builder — receives a caller-formatted summary of
+  /// each data point (e.g. "1월 45,300원, 2월 62,100원") and returns the
+  /// full sentence (e.g. "요금 추이 그래프. 1월 45,300원, 2월 62,100원").
+  /// Passed in rather than hardcoded so this shared widget (Senior + Guardian)
+  /// doesn't bake in one app's `AppLocalizations`.
+  final String Function(String pointsSummary) semanticSummaryBuilder;
+
   final int? selectedIndex;
   final ValueChanged<int>? onSelect;
   final double height;
@@ -56,8 +73,13 @@ class AppFeeTrendChart extends StatelessWidget {
     final hasAnyData = points.any((p) => p.hasData);
 
     final semanticLabel = hasAnyData
-        ? '요금 추이 그래프. ${points.where((p) => p.hasData).map((p) => '${p.label} ${formatKrw(p.amountKrw!)}').join(', ')}'
-        : '요금 추이 그래프. 아직 데이터가 없습니다.';
+        ? semanticSummaryBuilder(
+            points
+                .where((p) => p.hasData)
+                .map((p) => '${p.label} ${formatKrw(p.amountKrw!)}')
+                .join(', '),
+          )
+        : semanticNoDataLabel;
 
     return Semantics(
       label: semanticLabel,
@@ -73,7 +95,7 @@ class AppFeeTrendChart extends StatelessWidget {
   Widget _buildEmpty(BuildContext context) {
     return Center(
       child: Text(
-        '아직 요금 통계가 없습니다.',
+        emptyMessage,
         style: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.textSecondary,
         ),

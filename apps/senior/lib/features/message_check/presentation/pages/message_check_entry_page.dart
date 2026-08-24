@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart'
     show openAppSettings;
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/sms_message.dart';
 import '../../domain/entities/sms_permission_status.dart';
 import '../providers/sms_permission_provider.dart';
@@ -24,15 +25,16 @@ class MessageCheckEntryPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final easyMode = ref.watch(easyModeProvider);
     final permissionAsync = ref.watch(smsPermissionProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return AppScaffold(
-      title: '문자 확인',
+      title: l10n.messageCheckLabel,
       onBack: () => Navigator.of(context).pop(),
       scrollable: false,
       body: permissionAsync.when(
         loading: () => const AppLoading(),
         error: (error, _) => AppError(
-          message: '문자 권한을 확인하지 못했어요.',
+          message: l10n.smsPermissionCheckError,
           onRetry: () => ref.invalidate(smsPermissionProvider),
         ),
         data: (status) {
@@ -43,8 +45,9 @@ class MessageCheckEntryPage extends ConsumerWidget {
               onRequest: () =>
                   ref.read(smsPermissionProvider.notifier).request(),
             ),
-            SmsPermissionStatus.permanentlyDenied =>
-              const _PermissionBlockedView(),
+            SmsPermissionStatus.permanentlyDenied => _PermissionBlockedView(
+              easyMode: easyMode,
+            ),
             SmsPermissionStatus.unsupported => ManualMessageInputView(
               easyMode: easyMode,
               onAnalyze: (text) => _openResult(context, text),
@@ -88,13 +91,13 @@ class _PermissionRequestView extends StatelessWidget {
           const Icon(Icons.sms_outlined, size: 48),
           const SizedBox(height: AppSpacing.md),
           Text(
-            '받은 문자를 확인해 위험한 문자인지 알려드리려면\n문자 접근을 허용해주세요.',
+            AppLocalizations.of(context)!.smsPermissionRequestMessage,
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyLarge,
           ),
           const SizedBox(height: AppSpacing.xl),
           AppButton(
-            label: '문자 권한 허용하기',
+            label: AppLocalizations.of(context)!.smsPermissionRequestButton,
             size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
             onPressed: onRequest,
           ),
@@ -105,7 +108,9 @@ class _PermissionRequestView extends StatelessWidget {
 }
 
 class _PermissionBlockedView extends StatelessWidget {
-  const _PermissionBlockedView();
+  const _PermissionBlockedView({required this.easyMode});
+
+  final bool easyMode;
 
   @override
   Widget build(BuildContext context) {
@@ -117,12 +122,16 @@ class _PermissionBlockedView extends StatelessWidget {
           const Icon(Icons.block_outlined, size: 48),
           const SizedBox(height: AppSpacing.md),
           Text(
-            '문자 권한이 차단되어 있어요.\n기기 설정에서 직접 허용해주셔야 해요.',
+            AppLocalizations.of(context)!.smsPermissionBlockedMessage,
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyLarge,
           ),
           const SizedBox(height: AppSpacing.xl),
-          AppButton(label: '설정 열기', onPressed: openAppSettings),
+          AppButton(
+            label: AppLocalizations.of(context)!.openSettingsButton,
+            size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
+            onPressed: openAppSettings,
+          ),
         ],
       ),
     );

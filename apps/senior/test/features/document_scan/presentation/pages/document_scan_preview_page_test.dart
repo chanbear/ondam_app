@@ -7,6 +7,7 @@ import 'package:ondam_senior/features/document_scan/domain/entities/captured_pho
 import 'package:ondam_senior/features/document_scan/presentation/pages/document_scan_preview_page.dart';
 import 'package:ondam_senior/features/document_scan/presentation/pages/document_scan_result_page.dart';
 import 'package:ondam_senior/features/document_scan/presentation/providers/document_scan_di_providers.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../domain/fakes/fake_analysis_repository.dart';
 
@@ -115,7 +116,12 @@ void main() {
   ) async {
     await tester.pumpWidget(
       ProviderScope(
-        child: MaterialApp(home: DocumentScanPreviewPage(photos: [photo])),
+        child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: DocumentScanPreviewPage(photos: [photo]),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -130,6 +136,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) => Scaffold(
               body: Center(
@@ -170,7 +179,12 @@ void main() {
             FakeAnalysisRepository(),
           ),
         ],
-        child: MaterialApp(home: DocumentScanPreviewPage(photos: [photo])),
+        child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: DocumentScanPreviewPage(photos: [photo]),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -186,6 +200,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: DocumentScanPreviewPage(photos: [photo, photo2]),
           ),
         ),
@@ -200,6 +217,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: DocumentScanPreviewPage(photos: [photo, photo2]),
           ),
         ),
@@ -216,7 +236,12 @@ void main() {
     testWidgets('사진이 1장뿐이면 삭제할 수 없다(최소 1장 유지)', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
-          child: MaterialApp(home: DocumentScanPreviewPage(photos: [photo])),
+          child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: DocumentScanPreviewPage(photos: [photo]),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -233,6 +258,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: DocumentScanPreviewPage(photos: [photo, photo2]),
           ),
         ),
@@ -253,6 +281,9 @@ void main() {
             ),
           ],
           child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: DocumentScanPreviewPage(photos: [photo, photo2]),
           ),
         ),

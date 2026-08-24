@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/onboarding_status_provider.dart';
 import '../widgets/accessibility_settings_form.dart';
 
@@ -40,11 +41,12 @@ class _OnboardingFlowPageState extends ConsumerState<OnboardingFlowPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AppScaffold(
       title: switch (_step) {
-        _Step.accessibility => '접근성 설정',
-        _Step.profile => '내 정보',
-        _Step.guardian => '보호자 등록',
+        _Step.accessibility => l10n.accessibilitySettingsTitle,
+        _Step.profile => l10n.profileTitle,
+        _Step.guardian => l10n.guardianRegisterTitle,
       },
       scrollable: true,
       body: switch (_step) {
@@ -63,14 +65,19 @@ class _AccessibilityStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('편하게 사용하실 수 있도록 먼저 설정할게요.', style: AppTextStyles.bodyLarge),
+        Text(l10n.onboardingAccessibilityIntro, style: AppTextStyles.bodyLarge),
         const SizedBox(height: AppSpacing.xl),
         const AccessibilitySettingsForm(),
         const SizedBox(height: AppSpacing.xxl),
-        AppButton(label: '다음', size: AppButtonSize.large, onPressed: onNext),
+        AppButton(
+          label: l10n.nextButton,
+          size: AppButtonSize.large,
+          onPressed: onNext,
+        ),
       ],
     );
   }
@@ -100,31 +107,29 @@ class _ProfileStepState extends State<_ProfileStep> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '알려주시면 더 도움이 되는 정보를 보여드릴 수 있어요. (선택 입력)',
-          style: AppTextStyles.bodyLarge,
-        ),
+        Text(l10n.onboardingProfileIntro, style: AppTextStyles.bodyLarge),
         const SizedBox(height: AppSpacing.lg),
-        AppTextField(label: '이름', controller: _nameController),
+        AppTextField(label: l10n.nameLabel, controller: _nameController),
         const SizedBox(height: AppSpacing.md),
         AppTextField(
-          label: '나이',
+          label: l10n.ageLabel,
           controller: _ageController,
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: AppSpacing.md),
-        AppTextField(label: '지역', controller: _regionController),
+        AppTextField(label: l10n.regionLabel, controller: _regionController),
         const SizedBox(height: AppSpacing.xxl),
         AppButton(
-          label: '다음',
+          label: l10n.nextButton,
           size: AppButtonSize.large,
           onPressed: widget.onNext,
         ),
         const SizedBox(height: AppSpacing.sm),
-        TextButton(onPressed: widget.onNext, child: const Text('건너뛰기')),
+        TextButton(onPressed: widget.onNext, child: Text(l10n.skipButton)),
       ],
     );
   }
@@ -137,16 +142,17 @@ class _GuardianStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '보호자 연결은 곧 제공될 예정이에요. 준비되면 더보기 메뉴에서 언제든 연결하실 수 있어요.',
+          l10n.guardianConnectComingSoonMessage,
           style: AppTextStyles.bodyLarge,
         ),
         const SizedBox(height: AppSpacing.xxl),
         AppButton(
-          label: '저장하고 시작하기',
+          label: l10n.saveAndStartButton,
           size: AppButtonSize.large,
           onPressed: onFinish,
         ),

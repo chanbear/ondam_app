@@ -40,10 +40,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneStartTitle => 'Get started with your phone number';
 
   @override
-  String get phoneStartSubtitle => 'Enter your name and phone number.';
-
-  @override
-  String get nameLabel => 'Name';
+  String get phoneStartSubtitle => 'Enter your phone number and password.';
 
   @override
   String get phoneNumberLabel => 'Phone number';
@@ -52,7 +49,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneNumberHint => '010-0000-0000';
 
   @override
+  String get pinLabel => 'Password';
+
+  @override
+  String get pinHint => '4-digit number';
+
+  @override
   String get startButton => 'Get started';
+
+  @override
+  String get forgotPinLink => 'Forgot your password?';
+
+  @override
+  String pinWrongWithCount(int count) {
+    return 'Incorrect password. ($count failed attempts)';
+  }
+
+  @override
+  String get pinWrong => 'Incorrect password.';
+
+  @override
+  String pinLockedWithTime(String time) {
+    return 'Too many attempts. Please try again at $time.';
+  }
+
+  @override
+  String get pinLockedNoTime =>
+      'Too many attempts. Your account is temporarily locked — please try again shortly.';
+
+  @override
+  String get pinNotSet => 'No password has been set.';
+
+  @override
+  String get pinInvalidFormat => 'Your password must be a 4-digit number.';
+
+  @override
+  String get pinUnknownError => 'Something went wrong. Please try again.';
 
   @override
   String get navHome => 'Home';
@@ -109,4 +141,308 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noActivityRecords => 'No activity records yet.';
+
+  @override
+  String get recentNotificationsTitle => 'Recent alerts';
+
+  @override
+  String get viewAllAction => 'View all';
+
+  @override
+  String get noRecentNotifications => 'No alerts yet.';
+
+  @override
+  String get recentNotificationsLoadError => 'We couldn\'t load alerts.';
+
+  @override
+  String get notificationUnreadLabel => 'New';
+
+  @override
+  String get notificationReadLabel => 'Checked';
+
+  @override
+  String get documentDetailTitle => 'Document analysis details';
+
+  @override
+  String get messageDetailTitle => 'Message check details';
+
+  @override
+  String get detailsToggleTitle => 'View details';
+
+  @override
+  String get reliabilityLabel => 'Reliability';
+
+  @override
+  String get sourceTextLabel => 'Original text';
+
+  @override
+  String get confirmButtonLabel => 'Confirm';
+
+  @override
+  String get confirmedBannerLabel => 'Marked as confirmed';
+
+  @override
+  String get realtimeAlertsTitle => 'Live alerts';
+
+  @override
+  String get riskRecordsTitle => 'Risk records';
+
+  @override
+  String get riskRecordsLoadError => 'We couldn\'t load records.';
+
+  @override
+  String get noRiskRecords => 'No risk records yet.';
+
+  @override
+  String get riskSafeLabel => 'Safe';
+
+  @override
+  String get riskCautionLabel => 'Caution';
+
+  @override
+  String get riskDangerousLabel => 'Danger detected';
+
+  @override
+  String get analysisTypeDocumentLabel => 'Document analysis';
+
+  @override
+  String get analysisTypeMessageLabel => 'Message check';
+
+  @override
+  String get connectAnotherElderAction => 'Connect another elder';
+
+  @override
+  String get supportTitle => 'Support';
+
+  @override
+  String get pinForgotTitle => 'Reset PIN';
+
+  @override
+  String get pinForgotReauthFailedTitle => 'We couldn\'t verify your identity';
+
+  @override
+  String get retryButtonLabel => 'Try again';
+
+  @override
+  String get pinForgotNewPinTitle => 'Please set a new 4-digit PIN';
+
+  @override
+  String get pinKeypadClearLabel => 'Clear';
+
+  @override
+  String get recordsLoadError => 'We couldn\'t load the analysis records.';
+
+  @override
+  String get recordsEmptyMessage => 'No analysis records yet.';
+
+  @override
+  String get statisticsLoadError => 'We couldn\'t load the statistics.';
+
+  @override
+  String get statisticsEmptyMessage => 'No data to show statistics for yet.';
+
+  @override
+  String get thisMonthCountLabel => 'Analyses this month';
+
+  @override
+  String get riskyThisMonthCountLabel => 'Risky messages this month';
+
+  @override
+  String countUnitLabel(int count) {
+    return '$count';
+  }
+
+  @override
+  String get feeStatisticsSectionTitle => 'Fee Statistics';
+
+  @override
+  String get billingInfoSectionTitle => 'Bill Information';
+
+  @override
+  String get billingInfoUndecidedNotice =>
+      'We haven\'t finalized which bill fields to summarize yet — showing the raw info from each record.';
+
+  @override
+  String get billingInfoEmptyMessage => 'No bill information yet.';
+
+  @override
+  String get trendSameAsLastMonth => 'Same as last month';
+
+  @override
+  String trendIncreasedLabel(int count) {
+    return '$count more than last month';
+  }
+
+  @override
+  String trendDecreasedLabel(int count) {
+    return '$count fewer than last month';
+  }
+
+  @override
+  String get feeStatisticsEmptyMessage =>
+      'No fee statistics yet.\nAnalyze a bill or invoice to build your statistics.';
+
+  @override
+  String get totalFeeLabel => 'Total fee';
+
+  @override
+  String get averageFeeLabel => 'Average fee';
+
+  @override
+  String get maxFeeLabel => 'Highest fee';
+
+  @override
+  String get feeRecordCountLabel => 'Bill records';
+
+  @override
+  String get monthlyToggleLabel => 'Monthly';
+
+  @override
+  String get yearlyToggleLabel => 'Yearly';
+
+  @override
+  String toggleViewSemanticLabel(String label) {
+    return 'View $label';
+  }
+
+  @override
+  String get monthlyTrendTitle => 'Monthly fee trend';
+
+  @override
+  String get yearlyTrendTitle => 'Yearly fee trend';
+
+  @override
+  String get noDataInPeriodMessage => 'No fee records for this period.';
+
+  @override
+  String get feeFootnote =>
+      'Calculated from the amounts on analyzed bills and invoices. Records where AI couldn\'t extract an amount are excluded.';
+
+  @override
+  String get feeChartEmptyMessage => 'No fee statistics yet.';
+
+  @override
+  String get feeChartSemanticNoData => 'Fee trend chart. No data yet.';
+
+  @override
+  String feeChartSemanticSummary(String summary) {
+    return 'Fee trend chart. $summary';
+  }
+
+  @override
+  String monthNumberLabel(int month) {
+    return '$month';
+  }
+
+  @override
+  String yearNumberLabel(int year) {
+    return '$year';
+  }
+
+  @override
+  String get structuredFieldRiskTypeLabel => 'Risk type';
+
+  @override
+  String get riskTypeVoicePhishingLure => 'Voice phishing lure';
+
+  @override
+  String get riskTypeSmishing => 'Smishing (text scam)';
+
+  @override
+  String get riskTypeLoanScam => 'Loan scam';
+
+  @override
+  String get riskTypeImpersonationAuthority => 'Authority impersonation';
+
+  @override
+  String get riskTypeDeliveryScam => 'Delivery scam';
+
+  @override
+  String get riskTypeInvestmentScam => 'Investment scam';
+
+  @override
+  String get riskTypeRomanceScam => 'Romance scam';
+
+  @override
+  String get riskTypeOtherScam => 'Other scam';
+
+  @override
+  String get riskTypeNone => 'None';
+
+  @override
+  String get notificationTypeRiskyDocument => 'Risk detected in a document';
+
+  @override
+  String get notificationTypeRiskyMessage => 'Risk detected in a message';
+
+  @override
+  String get guardianConnectionManageTitle => 'Manage Elder Connections';
+
+  @override
+  String get connectElderActionLong => 'Connect with an elder';
+
+  @override
+  String get connectionListLoadError =>
+      'We couldn\'t load the connection list.';
+
+  @override
+  String get connectionListEmptyMessage =>
+      'No elders connected yet\nTap Connect with an elder to scan a QR code';
+
+  @override
+  String elderPlaceholderName(String id) {
+    return 'Elder ($id)';
+  }
+
+  @override
+  String get elderRevokeConfirmTitle => 'Disconnect this elder?';
+
+  @override
+  String get elderRevokeConfirmMessage =>
+      'Once disconnected, you\'ll no longer be able to see this elder\'s information.';
+
+  @override
+  String get elderRevokeConfirmLabel => 'Disconnect';
+
+  @override
+  String get elderRevokeAction => 'Disconnect';
+
+  @override
+  String get elderLinkStatusPending => 'Waiting for the elder to accept';
+
+  @override
+  String get elderLinkStatusAccepted => 'Connected';
+
+  @override
+  String get elderLinkStatusRejected => 'Declined';
+
+  @override
+  String get elderLinkStatusRevoked => 'Disconnected';
+
+  @override
+  String get connectionRequestSendingMessage =>
+      'Sending the connection request';
+
+  @override
+  String get qrScanInstructionMessage =>
+      'Point your camera at the QR code on the elder\'s screen';
+
+  @override
+  String get cameraPermissionRequiredMessage => 'Camera permission is required';
+
+  @override
+  String get openSettingsAction => 'Go to settings';
+
+  @override
+  String get connectionRequestSentTitle => 'Connection request sent';
+
+  @override
+  String get connectionRequestSentDescription =>
+      'The connection will complete once the elder accepts the request.';
+
+  @override
+  String get okButtonLabel => 'OK';
+
+  @override
+  String get comingSoonMessage => 'This feature is still being built.';
 }

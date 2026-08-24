@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../l10n/generated/app_localizations.dart';
+
 /// Generic placeholder for menu destinations whose feature doesn't have a
 /// domain/data layer yet (welfare_center, analysis, schedule, connection,
 /// support 등 — Phase 4~6+ 예정). Shows a genuine "not built yet" state, not
@@ -16,9 +18,9 @@ class ComingSoonPage extends StatelessWidget {
     return AppScaffold(
       title: title,
       onBack: () => Navigator.of(context).pop(),
-      body: const AppEmptyState(
+      body: AppEmptyState(
         icon: Icons.construction_outlined,
-        message: '이 기능은 아직 준비 중이에요.',
+        message: AppLocalizations.of(context)!.featureComingSoonMessage,
       ),
     );
   }

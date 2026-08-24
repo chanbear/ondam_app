@@ -17,16 +17,11 @@ class AnalysisStats {
   final int lastMonthCount;
   final int riskyThisMonthCount;
 
+  /// Positive = grew vs last month, negative = shrank, zero = unchanged.
+  /// The plain-language sentence built from this is a presentation-layer
+  /// concern (needs `AppLocalizations`, which this domain class must not
+  /// depend on) — see `StatisticsTabPage._trendSentence`.
   int get trendDelta => thisMonthCount - lastMonthCount;
-
-  /// Plain-language trend sentence — never a raw percentage
-  /// (`ui-spec.md` 답변 신뢰도/추세 표현 원칙과 동일하게 문장형 우선).
-  String get trendSentence {
-    if (trendDelta == 0) return '지난달과 동일해요';
-    return trendDelta > 0
-        ? '지난달보다 $trendDelta건 늘었어요'
-        : '지난달보다 ${-trendDelta}건 줄었어요';
-  }
 
   static AnalysisStats compute(List<AnalysisResult> records, DateTime now) {
     final lastMonth = DateTime(now.year, now.month - 1);

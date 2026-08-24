@@ -22,12 +22,20 @@
   "forgotPinLink": "パスワードをお忘れですか？",
   "pinWrongWithCount": "パスワードが正しくありません。（{count}回失敗）",
   "@pinWrongWithCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "pinWrong": "パスワードが正しくありません。",
   "pinLockedWithTime": "失敗回数が多すぎます。{time}に再度お試しください。",
   "@pinLockedWithTime": {
-    "placeholders": { "time": { "type": "String" } }
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   },
   "pinLockedNoTime": "失敗回数が多すぎるため、一時的にロックされました。しばらくしてから再度お試しください。",
   "pinNotSet": "パスワードが設定されていません。",
@@ -77,5 +85,272 @@
   "voiceListening": "聞いています…",
   "voiceStartSemanticLabel": "話しはじめる",
   "voiceUnrecognizedAnswer": "おっしゃったことをうまく聞き取れませんでした。「문서 찍어줘」（書類撮影）、「문자 확인해줘」（メッセージ確認）、「긴급 도움」（緊急ヘルプ）のように話してみてください。",
-  "voiceRetryButton": "もう一度お話しください"
+  "voiceRetryButton": "もう一度お話しください",
+  "riskSafeLabel": "安全",
+  "riskCautionLabel": "注意",
+  "riskDangerousLabel": "危険を検知",
+  "analysisTypeDocumentLabel": "書類分析",
+  "analysisTypeMessageLabel": "メッセージ確認",
+  "analysisResultTitle": "分析結果",
+  "pinEntryPrompt": "PINを入力してください",
+  "pinForgotLink": "PINをお忘れですか？",
+  "pinResetTitle": "PIN再設定",
+  "identityVerifyFailedTitle": "本人確認に失敗しました",
+  "retryButton": "もう一度試す",
+  "pinNewSetupPrompt": "新しい4桁のPINを設定してください",
+  "pinMismatchError": "PINが一致しません。最初からもう一度入力してください。",
+  "pinConfirmPrompt": "もう一度入力してください",
+  "pinSetupPrompt": "使用する4桁のPINを設定してください",
+  "pinSetupDescription": "次回からアプリを開くときにこのPINで確認します。",
+  "roleSelectTitle": "どちらとしてご利用になりますか？",
+  "roleSelectSubtitle": "ご利用目的に合わせて画面をご用意します。",
+  "roleAlreadyRegisteredNotice": "この番号はすでに別の役割で登録されています。続行するとこの役割も追加登録されます。",
+  "roleElderButton": "私は高齢者です",
+  "roleGuardianButton": "私は家族（保護者）です",
+  "pinKeypadClearLabel": "消去",
+  "guardianConnectTitle": "保護者連携",
+  "qrGeneratingMessage": "QRコードを作成しています",
+  "qrGenerateError": "QRコードを作成できませんでした。もう一度お試しください。",
+  "qrShowGuardianPrompt": "この QR コードを保護者に見せてください",
+  "qrScanExplanation": "保護者がこのQRコードをスキャンすると連携リクエストが届きます。",
+  "qrExpiredMessage": "QRコードの有効期限が切れました。",
+  "qrRegenerateButton": "QRコードを再作成",
+  "guardianListTitle": "連携中の保護者一覧",
+  "guardianConnectButton": "保護者と連携する",
+  "guardianListLoadError": "保護者一覧を読み込めませんでした。",
+  "guardianListEmptyMessage": "まだ連携している保護者がいません\n「保護者と連携する」でQRコードを表示してください",
+  "guardianRequestLabelWithId": "保護者連携リクエスト（{id}）",
+  "@guardianRequestLabelWithId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "acceptButton": "承認",
+  "rejectButton": "拒否",
+  "guardianRevokeConfirmTitle": "連携を解除しますか？",
+  "guardianRevokeConfirmMessage": "解除すると、この保護者はお客様の情報を閲覧できなくなります。",
+  "guardianRevokeConfirmLabel": "解除",
+  "guardianRevokeAction": "連携解除",
+  "guardianStatusPending": "リクエスト待ち",
+  "guardianStatusAccepted": "連携済み",
+  "guardianStatusRejected": "拒否済み",
+  "guardianStatusRevoked": "連携解除済み",
+  "documentScanTitle": "書類撮影",
+  "cameraPermissionCheckError": "カメラの権限を確認できませんでした。",
+  "cameraPermissionRequestMessage": "書類やメッセージを撮影して分析するには\nカメラへのアクセスを許可してください。",
+  "cameraPermissionRequestButton": "カメラの権限を許可する",
+  "cameraPermissionBlockedMessage": "カメラの権限がブロックされています。\n端末の設定から直接許可してください。",
+  "openSettingsButton": "設定を開く",
+  "scanPreviewTitle": "撮影結果の確認",
+  "retakeLabel": "撮り直し",
+  "scannedDocumentsCount": "撮影した書類（{count}枚）",
+  "@scannedDocumentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "addAnotherPhotoButton": "追加撮影",
+  "analyzeButton": "分析する",
+  "documentIndexLabel": "書類 {index}",
+  "@documentIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "deletePhotoAtIndexLabel": "{index}枚目の写真を削除",
+  "@deletePhotoAtIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "documentAnalyzingProgress": "書類分析中 {current}/{total}",
+  "@documentAnalyzingProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "documentsAnalyzedCount": "{count}件の書類を分析しました",
+  "@documentsAnalyzedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noCameraAvailableError": "利用可能なカメラがありません。",
+  "cameraStartError": "カメラを起動できませんでした。",
+  "flashUnavailableError": "この端末ではフラッシュを使用できません。",
+  "captureFailedError": "撮影に失敗しました。もう一度お試しください。",
+  "cameraPreparingMessage": "カメラを準備しています",
+  "documentFrameGuideMessage": "書類を画面内に収めてください",
+  "captureButtonLabel": "撮影する",
+  "noGuardianConnectedError": "まだ連携している保護者がいません。",
+  "emergencyHelpTitle": "お困りですか？",
+  "callGuardianLabel": "保護者に電話",
+  "emergency119Label": "119（救急）",
+  "emergency112Label": "112（警察）",
+  "emergency118Label": "118（サイバー通報）",
+  "myRecordsTitle": "マイ記録",
+  "documentReadLabel": "書類を読む",
+  "messageCheckLabel": "メッセージ確認",
+  "infoTabTitle": "情報",
+  "infoTabEmptyMessage": "まだ準備された情報がありません。まもなくおすすめ情報をお届けします。",
+  "statisticsLabel": "統計",
+  "usefulInfoLabel": "知っておくと便利な情報",
+  "howToUseLabel": "使い方案内",
+  "supportTitle": "カスタマーサポート",
+  "moreTitle": "その他",
+  "recordsLoadingMessage": "記録を読み込んでいます",
+  "recordsLoadError": "記録の読み込み中に問題が発生しました。",
+  "recordsEmptyMessage": "まだ分析した記録がありません。\n書類撮影やメッセージ確認をご利用ください。",
+  "helpRequestLabel": "助けを求める",
+  "easyModeOnState": "オン",
+  "easyModeOffState": "オフ",
+  "easyModeToggleSemanticLabel": "かんたんモード、現在{state}",
+  "@easyModeToggleSemanticLabel": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "easyModeOnDescription": "オン — 大きなボタンとシンプルな画面",
+  "coreFeaturesTitle": "主要機能",
+  "recentRecordsTitle": "最近の記録",
+  "emergencyHelpRequestLabel": "緊急ヘルプ要請",
+  "smsPermissionCheckError": "メッセージの権限を確認できませんでした。",
+  "smsPermissionRequestMessage": "受信メッセージを確認して危険なメッセージかお知らせするために\nメッセージへのアクセスを許可してください。",
+  "smsPermissionRequestButton": "メッセージの権限を許可する",
+  "smsPermissionBlockedMessage": "メッセージの権限がブロックされています。\n端末の設定から直接許可してください。",
+  "analysisGenericError": "分析中に問題が発生しました。",
+  "unknownSenderLabel": "不明な番号",
+  "manualMessageInputPrompt": "不審なメッセージをコピー＆ペーストするか\n直接入力してください。",
+  "pasteFromClipboardButton": "クリップボードから貼り付け",
+  "messageContentLabel": "メッセージ内容",
+  "messageContentHint": "メッセージ内容を入力してください",
+  "recentSmsLoadingMessage": "最近のメッセージを読み込んでいます",
+  "smsLoadError": "メッセージを読み込めませんでした。",
+  "recentSmsEmptyMessage": "最近受信したメッセージがありません。",
+  "accessibilitySettingsTitle": "アクセシビリティ設定",
+  "guardianRegisterTitle": "保護者登録",
+  "onboardingAccessibilityIntro": "快適にご利用いただけるよう、まず設定を行います。",
+  "nextButton": "次へ",
+  "onboardingProfileIntro": "教えていただくと、より役立つ情報をお届けできます。（任意入力）",
+  "regionLabel": "地域",
+  "skipButton": "スキップ",
+  "guardianConnectComingSoonMessage": "保護者連携は近日提供予定です。準備が整い次第、その他メニューからいつでも連携できます。",
+  "saveAndStartButton": "保存して始める",
+  "textSizeTitle": "文字サイズ",
+  "voiceGuideTitle": "音声案内",
+  "voiceGuideDescription": "画面の内容を音声でもご案内します",
+  "feeStatisticsTitle": "料金統計",
+  "feeStatisticsLoadingMessage": "料金統計を読み込んでいます",
+  "feeStatisticsLoadError": "料金統計の読み込み中に問題が発生しました。",
+  "privacyPinTitle": "パスワード（PIN）",
+  "privacyPinBody": "PINの原文やそれを推測できる値は、この端末のどこにも保存されません。サーバー上でも暗号化された値のみを検証専用に保管しており、他人が閲覧できる経路はありません。",
+  "privacyPhotoTitle": "書類撮影写真",
+  "privacyPhotoBody": "書類を撮影して分析を依頼すると、分析が終わり次第（成功・失敗を問わず）元の写真はサーバーから削除されます。分析結果のみが残ります。",
+  "privacySharedInfoTitle": "保護者と共有される情報",
+  "privacySharedInfoBody": "分析結果は、連携を承認した保護者のみが閲覧できます。連携を解除すると、それ以降は閲覧できなくなります。",
+  "privacyRetentionTitle": "分析結果原文の保管期間",
+  "privacyRetentionBody": "メッセージ・書類の分析結果に残る要約／原文をどのくらい保管するかはまだ決まっていません。決まり次第、この画面でご案内します。",
+  "privacyInfoTitle": "個人情報保管について",
+  "supportContactTitle": "サポート連絡先",
+  "supportContactComingSoon": "電話・メールの連絡先を準備しています。まもなくご案内します。",
+  "privacyInfoDescription": "自分の情報がどのように保管されているか確認する",
+  "micPermissionCheckError": "マイクの権限を確認できませんでした。",
+  "micPermissionRequestMessage": "音声アシスタントを使用するには\nマイクへのアクセスを許可してください。",
+  "micPermissionRequestButton": "マイクの権限を許可する",
+  "micPermissionBlockedMessage": "マイクの権限がブロックされています。\n端末の設定から直接許可してください。",
+  "actionChecklistTitle": "やるべきこと",
+  "clarifyingQuestionsTitle": "気になることはありますか？",
+  "askByVoiceButton": "音声で質問する",
+  "dateKindPaymentDue": "支払期限",
+  "dateKindVisit": "訪問日",
+  "dateKindApplicationPeriod": "申請期間",
+  "dateKindExpiration": "有効期限",
+  "dateKindReservation": "予約日",
+  "dateKindOther": "その他の重要な日付",
+  "importantDatesTitle": "重要な日付",
+  "monthDayFormat": "{month}月{day}日",
+  "@monthDayFormat": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "keyPointsTitle": "主な内容",
+  "analysisProgressSemanticLabel": "分析進捗{percent}パーセント、{label}",
+  "@analysisProgressSemanticLabel": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "progressPreparing": "分析を準備しています",
+  "progressSending": "データを送信しています",
+  "progressAnalyzing": "AIが確認しています",
+  "progressFinishing": "結果をまとめています",
+  "detailsViewTitle": "詳細を見る",
+  "reliabilityLabel": "信頼度",
+  "sourceTextLabel": "原文",
+  "askAboutThisButton": "この内容について質問する",
+  "confirmedDoneSemanticLabel": "確認完了としてマークしました",
+  "confirmedDoneMessage": "確認完了しました",
+  "confirmDoneButton": "確認完了",
+  "featureComingSoonMessage": "この機能はまだ準備中です。",
+  "feeStatisticsEmptyMessage": "まだ料金統計がありません。\n請求書や料金明細を分析すると統計が作成されます。",
+  "totalFeeLabel": "総額",
+  "averageFeeLabel": "平均額",
+  "maxFeeLabel": "最高額",
+  "feeRecordCountLabel": "料金内訳件数",
+  "monthlyToggleLabel": "月別",
+  "yearlyToggleLabel": "年別",
+  "toggleViewSemanticLabel": "{label}を見る",
+  "@toggleViewSemanticLabel": {
+    "placeholders": { "label": { "type": "String" } }
+  },
+  "monthlyTrendTitle": "月別料金推移",
+  "yearlyTrendTitle": "年別料金推移",
+  "noDataInPeriodMessage": "この期間には料金記録がありません。",
+  "feeFootnote": "分析された請求書・料金明細の金額をもとに計算します。AIが金額を抽出できなかった記録は除外されます。",
+  "feeChartEmptyMessage": "まだ料金統計がありません。",
+  "feeChartSemanticNoData": "料金推移グラフ。まだデータがありません。",
+  "feeChartSemanticSummary": "料金推移グラフ。{summary}",
+  "@feeChartSemanticSummary": {
+    "placeholders": { "summary": { "type": "String" } }
+  },
+  "monthNumberLabel": "{month}月",
+  "@monthNumberLabel": {
+    "placeholders": { "month": { "type": "int" } }
+  },
+  "yearNumberLabel": "{year}年",
+  "@yearNumberLabel": {
+    "placeholders": { "year": { "type": "int" } }
+  },
+  "countUnitLabel": "{count}件",
+  "@countUnitLabel": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

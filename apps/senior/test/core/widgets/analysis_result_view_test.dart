@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_models/ondam_models.dart';
 import 'package:ondam_senior/core/widgets/analysis_result_view.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 void main() {
   Widget wrap(
@@ -12,6 +13,9 @@ void main() {
     bool easyMode = false,
   }) {
     return MaterialApp(
+      locale: const Locale('ko'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: AnalysisResultView(
           result: result,
@@ -30,6 +34,7 @@ void main() {
     List<ActionItem>? actionItems,
     List<ImportantDate>? importantDates,
     List<String>? clarifyingQuestions,
+    String? sourceExcerpt,
     String summary = '전기요금 고지서예요.',
     DateTime? confirmedAt,
   }) {
@@ -45,14 +50,14 @@ void main() {
       actionItems: actionItems,
       importantDates: importantDates,
       clarifyingQuestions: clarifyingQuestions,
+      sourceExcerpt: sourceExcerpt,
       confirmedAt: confirmedAt,
     );
   }
 
-  // ONDAM 2.0 요구사항 13: reliability는 이제 문장과 함께 매핑된 표시용
-  // 퍼센트("답변 신뢰도 NN%")도 항상 보여준다 — 실제 AI 확률이 아니라는
-  // 점은 AppConfidenceIndicator의 doc comment로 별도 명시되어 있다.
-  testWidgets('high reliability shows the plain-language sentence and 90%', (
+  // Phase 44: 신뢰도는 문장 하나만 상단에 보여준다 — 퍼센트는 "상세정보
+  // 보기"를 펼쳐야 보인다(아래 '상세정보' 그룹에서 검증).
+  testWidgets('high reliability shows the plain-language sentence', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -60,10 +65,9 @@ void main() {
     );
 
     expect(find.text('이 답변은 비교적 확실해요.'), findsOneWidget);
-    expect(find.text('답변 신뢰도 90%'), findsOneWidget);
   });
 
-  testWidgets('medium reliability shows the "조금 더 확인" sentence and 70%', (
+  testWidgets('medium reliability shows the "조금 더 확인" sentence', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -71,10 +75,9 @@ void main() {
     );
 
     expect(find.text('조금 더 확인이 필요해요.'), findsOneWidget);
-    expect(find.text('답변 신뢰도 70%'), findsOneWidget);
   });
 
-  testWidgets('low reliability shows the "정확하지 않을 수 있어요" sentence and 40%', (
+  testWidgets('low reliability shows the "정확하지 않을 수 있어요" sentence', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -82,7 +85,6 @@ void main() {
     );
 
     expect(find.text('정확하지 않을 수 있어요.'), findsOneWidget);
-    expect(find.text('답변 신뢰도 40%'), findsOneWidget);
   });
 
   group('riskLevel', () {
@@ -125,9 +127,7 @@ void main() {
       expect(find.text('위험 감지'), findsOneWidget);
     });
 
-    testWidgets('null renders normally without any risk badge/card', (
-      tester,
-    ) async {
+    testWidgets('null renders normally without any risk badge', (tester) async {
       await tester.pumpWidget(
         wrap(buildResult(reliability: ReliabilityLevel.high)),
       );
@@ -135,10 +135,7 @@ void main() {
       expect(find.text('위험 감지'), findsNothing);
       expect(find.text('안전'), findsNothing);
       expect(find.text('주의'), findsNothing);
-      // summary는 riskLevel이 없어도 여전히 보여야 한다(AppStatusCard로 대체).
-      // 문장 구분 부호가 없는 짧은 summary라 "주요 내용"과 "AI 요약" 두
-      // 곳에서 동일한 문자열이 그대로 보인다(extractKeyPoint 폴백).
-      expect(find.text('전기요금 고지서예요.'), findsWidgets);
+      expect(find.text('전기요금 고지서예요.'), findsOneWidget);
     });
 
     testWidgets('caution + low reliability는 서로 영향을 주지 않고 둘 다 그대로 표시된다', (
@@ -158,32 +155,60 @@ void main() {
     });
   });
 
-  testWidgets('renders every structuredFields entry as a labeled row', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      wrap(
-        buildResult(
-          reliability: ReliabilityLevel.high,
-          structuredFields: const {'금액': '32,000원', '납부기한': '2026-01-31'},
+  group('상세정보 (기본 접힘)', () {
+    testWidgets('기본적으로 접혀 있어 신뢰도/필드/원문이 보이지 않는다', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          buildResult(
+            reliability: ReliabilityLevel.high,
+            structuredFields: const {'금액': '32,000원'},
+            sourceExcerpt: '전기요금 32,000원을 8월 25일까지 납부해주세요.',
+          ),
         ),
-      ),
-    );
+      );
 
-    expect(find.text('금액'), findsOneWidget);
-    expect(find.text('32,000원'), findsOneWidget);
-    expect(find.text('납부기한'), findsOneWidget);
-    expect(find.text('2026-01-31'), findsOneWidget);
-  });
+      expect(find.text('상세정보 보기'), findsOneWidget);
+      expect(find.text('80%'), findsNothing);
+      expect(find.text('금액'), findsNothing);
+      expect(find.text('원문'), findsNothing);
+    });
 
-  testWidgets('shows no structured-field section when the map is empty/null', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      wrap(buildResult(reliability: ReliabilityLevel.high)),
-    );
+    testWidgets('펼치면 신뢰도(%)/구조화 필드/원문을 모두 보여준다', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          buildResult(
+            reliability: ReliabilityLevel.high,
+            structuredFields: const {'금액': '32,000원', '납부기한': '2026-01-31'},
+            sourceExcerpt: '전기요금 32,000원을 8월 25일까지 납부해주세요.',
+          ),
+        ),
+      );
 
-    expect(find.text('문서 정보'), findsNothing);
+      await tester.tap(find.text('상세정보 보기'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('신뢰도'), findsOneWidget);
+      expect(find.text('90%'), findsOneWidget);
+      expect(find.text('금액'), findsOneWidget);
+      expect(find.text('32,000원'), findsOneWidget);
+      expect(find.text('납부기한'), findsOneWidget);
+      expect(find.text('2026-01-31'), findsOneWidget);
+      expect(find.text('원문'), findsOneWidget);
+      expect(find.text('전기요금 32,000원을 8월 25일까지 납부해주세요.'), findsOneWidget);
+    });
+
+    testWidgets('구조화 필드/원문이 없어도 신뢰도는 펼치면 항상 보인다', (tester) async {
+      await tester.pumpWidget(
+        wrap(buildResult(reliability: ReliabilityLevel.medium)),
+      );
+
+      await tester.tap(find.text('상세정보 보기'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('신뢰도'), findsOneWidget);
+      expect(find.text('70%'), findsOneWidget);
+      expect(find.text('원문'), findsNothing);
+    });
   });
 
   group('importantDates', () {
@@ -226,6 +251,31 @@ void main() {
       );
 
       expect(find.text('중요한 날짜'), findsNothing);
+    });
+
+    testWidgets('AI 요약에 같은 날짜가 포함돼 있으면 표시 단계에서만 중복을 걷어낸다', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          buildResult(
+            reliability: ReliabilityLevel.high,
+            summary: '8월 20일까지 전기요금을 납부해주세요.',
+            importantDates: [
+              ImportantDate(
+                date: DateTime(2026, 8, 20),
+                kind: ImportantDateKind.paymentDue,
+              ),
+            ],
+          ),
+        ),
+      );
+
+      // 날짜 카드에는 그대로 "8월 20일"이 보이지만, 요약 문단에서는 같은
+      // 표현이 제거된 채로 보인다 — AI 원본 summary 자체는 바뀌지 않는다
+      // (buildResult에 넘긴 문자열 그대로가 위젯 트리에 다시 나타나지
+      // 않아야 한다는 뜻).
+      expect(find.text('8월 20일'), findsOneWidget); // 날짜 카드에서 1번만.
+      expect(find.text('8월 20일까지 전기요금을 납부해주세요.'), findsNothing);
+      expect(find.textContaining('전기요금을 납부해주세요.'), findsOneWidget);
     });
   });
 
@@ -295,8 +345,8 @@ void main() {
     });
   });
 
-  group('clarifyingQuestions / 음성 비서 진입', () {
-    testWidgets('질문이 있으면 목록으로 보여준다', (tester) async {
+  group('음성 질문', () {
+    testWidgets('AI가 준 질문이 있으면 목록으로 보여주고, 진입 버튼도 함께 보인다', (tester) async {
       await tester.pumpWidget(
         wrap(
           buildResult(
@@ -306,11 +356,11 @@ void main() {
         ),
       );
 
-      expect(find.text('궁금한 점이 있나요?'), findsOneWidget);
       expect(find.textContaining('이 고지서가 본인 명의가 맞나요?'), findsOneWidget);
+      expect(find.text('이 내용 물어보기'), findsOneWidget);
     });
 
-    testWidgets('질문이 없어도 음성으로 물어보기 버튼은 항상 보여준다', (tester) async {
+    testWidgets('질문이 없어도 진입 버튼은 항상 보여준다', (tester) async {
       var tapped = false;
       await tester.pumpWidget(
         wrap(
@@ -319,10 +369,9 @@ void main() {
         ),
       );
 
-      expect(find.text('궁금한 점이 있나요?'), findsOneWidget);
-      expect(find.text('음성으로 물어보기'), findsOneWidget);
+      expect(find.text('이 내용 물어보기'), findsOneWidget);
 
-      await tester.tap(find.text('음성으로 물어보기'));
+      await tester.tap(find.text('이 내용 물어보기'));
       expect(tapped, isTrue);
     });
   });
@@ -334,13 +383,13 @@ void main() {
       );
 
       expect(find.text('확인 완료'), findsOneWidget);
-      expect(find.text('확인했어요'), findsNothing);
+      expect(find.text('확인 완료했어요'), findsNothing);
 
       await tester.tap(find.text('확인 완료'));
       await tester.pump();
 
       expect(find.text('확인 완료'), findsNothing);
-      expect(find.text('확인했어요'), findsOneWidget);
+      expect(find.text('확인 완료했어요'), findsOneWidget);
     });
   });
 
@@ -358,34 +407,10 @@ void main() {
       ),
     );
 
-    expect(find.text('오래된 분석 결과예요.'), findsWidgets);
+    expect(find.text('오래된 분석 결과예요.'), findsOneWidget);
     expect(find.text('중요한 날짜'), findsNothing);
     expect(find.text('해야 할 일'), findsNothing);
-    expect(find.text('문서 정보'), findsNothing);
-    expect(find.text('음성으로 물어보기'), findsOneWidget);
-  });
-
-  group('주요 내용 / AI 요약 분리', () {
-    testWidgets('문장이 여러 개면 주요 내용(첫 문장)과 AI 요약(전체)이 서로 다르게 보인다', (tester) async {
-      await tester.pumpWidget(
-        wrap(
-          buildResult(
-            reliability: ReliabilityLevel.high,
-            summary: '이 메시지는 우리카드에서 보낸 CU 쿠폰 안내입니다. 광고성 문자이며 위험하지 않습니다.',
-          ),
-        ),
-      );
-
-      expect(find.text('주요 내용'), findsOneWidget);
-      expect(find.text('AI 요약'), findsOneWidget);
-      // 주요 내용은 첫 문장만 — 전체 summary 문자열 그대로는 한 곳(AI
-      // 요약)에만 나타난다.
-      expect(find.text('이 메시지는 우리카드에서 보낸 CU 쿠폰 안내입니다.'), findsOneWidget);
-      expect(
-        find.text('이 메시지는 우리카드에서 보낸 CU 쿠폰 안내입니다. 광고성 문자이며 위험하지 않습니다.'),
-        findsOneWidget,
-      );
-    });
+    expect(find.text('이 내용 물어보기'), findsOneWidget);
   });
 
   group('확인 완료 — 서버 저장(onConfirm)', () {
@@ -399,7 +424,7 @@ void main() {
         ),
       );
 
-      expect(find.text('확인했어요'), findsOneWidget);
+      expect(find.text('확인 완료했어요'), findsOneWidget);
       expect(find.text('확인 완료'), findsNothing);
     });
 
@@ -415,7 +440,7 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.text('확인했어요'), findsOneWidget);
+      expect(find.text('확인 완료했어요'), findsOneWidget);
     });
 
     testWidgets('onConfirm이 실패하면 오류 메시지를 보여주고 완료로 바뀌지 않는다', (tester) async {
@@ -430,7 +455,7 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.text('확인했어요'), findsNothing);
+      expect(find.text('확인 완료했어요'), findsNothing);
       expect(find.text('확인 완료'), findsOneWidget);
       expect(find.text(const NetworkFailure().message), findsOneWidget);
     });

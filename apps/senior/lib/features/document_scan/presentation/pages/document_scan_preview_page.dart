@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/captured_photo.dart';
 import 'document_scan_camera_page.dart';
 import 'document_scan_result_page.dart';
@@ -59,48 +60,44 @@ class _DocumentScanPreviewPageState extends State<DocumentScanPreviewPage> {
     return Consumer(
       builder: (context, ref, _) {
         final easyMode = ref.watch(easyModeProvider);
+        final l10n = AppLocalizations.of(context)!;
 
         return AppScaffold(
-          title: '촬영 결과 확인',
+          title: l10n.scanPreviewTitle,
           onBack: () => Navigator.of(context).pop(),
-          backLabel: '재촬영',
+          backLabel: l10n.retakeLabel,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '촬영한 문서 (${_photos.length}장)',
+                l10n.scannedDocumentsCount(_photos.length),
                 style: AppTextStyles.titleMedium,
               ),
               const SizedBox(height: AppSpacing.sm),
               Expanded(
-                child: _PhotoThumbnailList(photos: _photos, onRemove: _remove),
+                child: _PhotoThumbnailList(
+                  photos: _photos,
+                  easyMode: easyMode,
+                  onRemove: _remove,
+                ),
               ),
               const SizedBox(height: AppSpacing.md),
-              OutlinedButton.icon(
+              AppButton(
+                label: l10n.addAnotherPhotoButton,
+                icon: Icons.add_a_photo_outlined,
+                variant: AppButtonVariant.secondary,
+                size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
                 onPressed: _addAnother,
-                icon: const Icon(Icons.add_a_photo_outlined),
-                label: const Text('추가 촬영'),
               ),
               const SizedBox(height: AppSpacing.lg),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('재촬영'),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: AppButton(
-                      label: '분석하기',
-                      size: easyMode
-                          ? AppButtonSize.large
-                          : AppButtonSize.standard,
-                      onPressed: _photos.isEmpty ? null : _analyze,
-                    ),
-                  ),
-                ],
+              // "재촬영"은 헤더의 뒤로가기 링크(backLabel)가 이미 같은 동작을
+              // 제공한다 — 여기서는 "분석하기"만 전체 너비 주 CTA로 명확하게
+              // 보여준다(prototype `documentPreview()`의 fixedBottom과 동일한
+              // 단일 CTA 구조).
+              AppButton(
+                label: l10n.analyzeButton,
+                size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
+                onPressed: _photos.isEmpty ? null : _analyze,
               ),
             ],
           ),
@@ -111,13 +108,24 @@ class _DocumentScanPreviewPageState extends State<DocumentScanPreviewPage> {
 }
 
 class _PhotoThumbnailList extends StatelessWidget {
-  const _PhotoThumbnailList({required this.photos, required this.onRemove});
+  const _PhotoThumbnailList({
+    required this.photos,
+    required this.onRemove,
+    this.easyMode = false,
+  });
 
   final List<CapturedPhoto> photos;
   final ValueChanged<int> onRemove;
+  final bool easyMode;
 
   @override
   Widget build(BuildContext context) {
+    // Easy Mode는 한 번에 보이는 정보량을 줄인다는 원칙(ui-principles.md)에
+    // 따라 썸네일을 더 크게 보여준다(스크롤로 넘기는 개수는 줄고, 하나하나는
+    // 더 뚜렷해진다) — 목록/삭제/추가 동작 자체는 바뀌지 않는다.
+    final width = easyMode ? 150.0 : 120.0;
+    final height = easyMode ? 200.0 : 160.0;
+
     return ListView.separated(
       scrollDirection: Axis.horizontal,
       itemCount: photos.length,
@@ -130,9 +138,29 @@ class _PhotoThumbnailList extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.md),
               child: Image.file(
                 File(photo.localPath),
-                width: 120,
-                height: 160,
+                width: width,
+                height: height,
                 fit: BoxFit.cover,
+              ),
+            ),
+            // 각 사진이 몇 번째인지 명확히 — prototype `documentPreview()`의
+            // "문서 N" 라벨과 동일.
+            Positioned(
+              left: AppSpacing.xs,
+              bottom: AppSpacing.xs,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.documentIndexLabel(index + 1),
+                  style: AppTextStyles.labelSmall.copyWith(color: Colors.white),
+                ),
               ),
             ),
             Positioned(
@@ -140,7 +168,9 @@ class _PhotoThumbnailList extends StatelessWidget {
               right: 4,
               child: Semantics(
                 button: true,
-                label: '${index + 1}번째 사진 삭제',
+                label: AppLocalizations.of(
+                  context,
+                )!.deletePhotoAtIndexLabel(index + 1),
                 child: Material(
                   color: Colors.black.withValues(alpha: 0.6),
                   shape: const CircleBorder(),
@@ -151,10 +181,17 @@ class _PhotoThumbnailList extends StatelessWidget {
                     // ui-design.md "탭 가능한 요소는 최소 44x44 논리 픽셀
                     // 터치 영역을 확보한다" — 아이콘(18) + 패딩만으로는
                     // 26x26에 그쳐 기준에 못 미쳤다(ONDAM 2.0 PHASE 31에서
-                    // 발견). AppSpacing.md 패딩으로 50x50을 확보한다.
-                    child: const Padding(
-                      padding: EdgeInsets.all(AppSpacing.md),
-                      child: Icon(Icons.close, color: Colors.white, size: 18),
+                    // 발견). AppSpacing.md 패딩으로 50x50을 확보한다. Easy
+                    // Mode는 AppTouch.easy(56)에 맞춰 한 단계 더 키운다.
+                    child: Padding(
+                      padding: EdgeInsets.all(
+                        easyMode ? AppSpacing.lg : AppSpacing.md,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: easyMode ? 22 : 18,
+                      ),
                     ),
                   ),
                 ),

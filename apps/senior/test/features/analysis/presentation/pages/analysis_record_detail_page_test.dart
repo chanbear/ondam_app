@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_models/ondam_models.dart';
 import 'package:ondam_senior/features/analysis/presentation/pages/analysis_record_detail_page.dart';
 import 'package:ondam_senior/features/voice_assistant/presentation/pages/voice_assistant_page.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 void main() {
   AnalysisResult buildResult() {
@@ -20,7 +21,12 @@ void main() {
 
   Widget wrap(AnalysisResult result) {
     return ProviderScope(
-      child: MaterialApp(home: AnalysisRecordDetailPage(result: result)),
+      child: MaterialApp(
+        locale: const Locale('ko'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: AnalysisRecordDetailPage(result: result),
+      ),
     );
   }
 
@@ -28,20 +34,17 @@ void main() {
     await tester.pumpWidget(wrap(buildResult()));
     await tester.pumpAndSettle();
 
-    // 문장 구분 부호가 없는 짧은 summary라 "주요 내용"과 "AI 요약" 두
-    // 곳에서 동일한 문자열이 그대로 보인다(extractKeyPoint 폴백, ONDAM
-    // 2.0 요구사항 14).
-    expect(find.text('전기요금 고지서예요.'), findsWidgets);
+    expect(find.text('전기요금 고지서예요.'), findsOneWidget);
     expect(find.text('안전'), findsOneWidget);
   });
 
-  testWidgets('"음성으로 물어보기" 버튼을 누르면 기존 VoiceAssistantPage로 이동한다', (
+  testWidgets('"이 내용 물어보기" 버튼을 누르면 기존 VoiceAssistantPage로 이동한다', (
     tester,
   ) async {
     await tester.pumpWidget(wrap(buildResult()));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('음성으로 물어보기'));
+    await tester.tap(find.text('이 내용 물어보기'));
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump(const Duration(milliseconds: 100));
 

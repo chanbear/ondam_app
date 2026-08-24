@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/guardian_links_notifier.dart';
 import 'connection_qr_page.dart';
 
@@ -44,21 +45,22 @@ class _GuardianListPageState extends ConsumerState<GuardianListPage> {
   @override
   Widget build(BuildContext context) {
     final linksState = ref.watch(guardianLinksProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return AppScaffold(
-      title: '연결된 보호자 목록',
+      title: l10n.guardianListTitle,
       onBack: () => Navigator.of(context).pop(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (_) => const ConnectionQrPage())),
-        label: const Text('보호자 연결하기'),
+        label: Text(l10n.guardianConnectButton),
         icon: const Icon(Icons.qr_code),
       ),
       body: linksState.when(
         loading: () => const AppLoading(),
         error: (error, _) => AppError(
-          message: '보호자 목록을 불러오지 못했어요.',
+          message: l10n.guardianListLoadError,
           onRetry: () => ref.invalidate(guardianLinksProvider),
         ),
         data: (links) {
@@ -67,9 +69,9 @@ class _GuardianListPageState extends ConsumerState<GuardianListPage> {
               .toList();
           if (visible.isEmpty) {
             return AppEmptyState(
-              message: '아직 연결된 보호자가 없습니다\n보호자 연결하기로 QR을 보여주세요',
+              message: l10n.guardianListEmptyMessage,
               icon: Icons.family_restroom_outlined,
-              actionLabel: '보호자 연결하기',
+              actionLabel: l10n.guardianConnectButton,
               onAction: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const ConnectionQrPage()),
               ),
@@ -95,6 +97,7 @@ class _GuardianLinkCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +108,7 @@ class _GuardianLinkCard extends ConsumerWidget {
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
-                  '보호자 연결 요청 (${_shortId(link.guardianId)})',
+                  l10n.guardianRequestLabelWithId(_shortId(link.guardianId)),
                   style: AppTextStyles.bodyLarge,
                 ),
               ),
@@ -118,7 +121,7 @@ class _GuardianLinkCard extends ConsumerWidget {
               children: [
                 Expanded(
                   child: AppButton(
-                    label: '수락',
+                    label: l10n.acceptButton,
                     onPressed: () => ref
                         .read(guardianLinksProvider.notifier)
                         .respond(linkId: link.id, accept: true),
@@ -130,7 +133,7 @@ class _GuardianLinkCard extends ConsumerWidget {
                     onPressed: () => ref
                         .read(guardianLinksProvider.notifier)
                         .respond(linkId: link.id, accept: false),
-                    child: const Text('거절'),
+                    child: Text(l10n.rejectButton),
                   ),
                 ),
               ],
@@ -143,9 +146,9 @@ class _GuardianLinkCard extends ConsumerWidget {
                 onPressed: () async {
                   final confirmed = await AppConfirmDialog.show(
                     context,
-                    title: '연결을 해제할까요?',
-                    message: '해제하면 이 보호자는 더 이상 회원님의 정보를 볼 수 없습니다.',
-                    confirmLabel: '해제',
+                    title: l10n.guardianRevokeConfirmTitle,
+                    message: l10n.guardianRevokeConfirmMessage,
+                    confirmLabel: l10n.guardianRevokeConfirmLabel,
                     destructive: true,
                   );
                   if (confirmed) {
@@ -155,7 +158,7 @@ class _GuardianLinkCard extends ConsumerWidget {
                   }
                 },
                 child: Text(
-                  '연결 해제',
+                  l10n.guardianRevokeAction,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.error,
                   ),
@@ -178,11 +181,12 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final label = switch (status) {
-      GuardianLinkStatus.pending => '요청 대기 중',
-      GuardianLinkStatus.accepted => '연결됨',
-      GuardianLinkStatus.rejected => '거절함',
-      GuardianLinkStatus.revoked => '연결 해제됨',
+      GuardianLinkStatus.pending => l10n.guardianStatusPending,
+      GuardianLinkStatus.accepted => l10n.guardianStatusAccepted,
+      GuardianLinkStatus.rejected => l10n.guardianStatusRejected,
+      GuardianLinkStatus.revoked => l10n.guardianStatusRevoked,
     };
     return Text(label, style: AppTextStyles.labelSmall);
   }

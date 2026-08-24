@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
+
 /// Large numeric keypad for PIN entry — sized for elderly users (the Senior
 /// app's entire audience, not gated behind the easy-mode toggle, per
 /// technical-decisions.md UI 결정: 쉬운 모드 is the app's core UX baseline).
@@ -70,7 +72,9 @@ class PinKeypad extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
               child: _KeypadButton(
                 icon: Icons.backspace_outlined,
-                semanticLabel: '지우기',
+                semanticLabel: AppLocalizations.of(
+                  context,
+                )!.pinKeypadClearLabel,
                 onTap: enabled ? onBackspace : null,
               ),
             ),

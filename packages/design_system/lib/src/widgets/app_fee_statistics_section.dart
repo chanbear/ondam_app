@@ -14,6 +14,63 @@ import 'app_stat_card.dart';
 
 enum _FeePeriodView { monthly, yearly }
 
+/// User-facing strings for [AppFeeStatisticsSection] — passed in by the
+/// caller (each app's own `AppLocalizations`) rather than hardcoded here,
+/// since this widget has no `AppLocalizations` of its own (Senior/Guardian
+/// each generate a separate one).
+class AppFeeStatisticsLabels {
+  const AppFeeStatisticsLabels({
+    required this.emptyMessage,
+    required this.totalFeeLabel,
+    required this.averageFeeLabel,
+    required this.maxFeeLabel,
+    required this.recordCountLabel,
+    required this.monthlyToggleLabel,
+    required this.yearlyToggleLabel,
+    required this.toggleSemanticSuffix,
+    required this.monthlyTrendTitle,
+    required this.yearlyTrendTitle,
+    required this.noDataInPeriodMessage,
+    required this.footnote,
+    required this.chartEmptyMessage,
+    required this.chartSemanticNoDataLabel,
+    required this.chartSemanticSummaryBuilder,
+    required this.monthLabelBuilder,
+    required this.yearLabelBuilder,
+    required this.countLabelBuilder,
+  });
+
+  final String emptyMessage;
+  final String totalFeeLabel;
+  final String averageFeeLabel;
+  final String maxFeeLabel;
+  final String recordCountLabel;
+  final String monthlyToggleLabel;
+  final String yearlyToggleLabel;
+
+  /// e.g. "{label} 보기" — appended after the toggle label for screen
+  /// readers ("월별 보기"/"연별 보기").
+  final String Function(String label) toggleSemanticSuffix;
+
+  final String monthlyTrendTitle;
+  final String yearlyTrendTitle;
+  final String noDataInPeriodMessage;
+  final String footnote;
+
+  final String chartEmptyMessage;
+  final String chartSemanticNoDataLabel;
+  final String Function(String pointsSummary) chartSemanticSummaryBuilder;
+
+  /// x축 라벨 (예: ko "1월", en "Jan").
+  final String Function(DateTime month) monthLabelBuilder;
+
+  /// x축 라벨 (예: ko "2026년", en "2026").
+  final String Function(DateTime year) yearLabelBuilder;
+
+  /// e.g. ko "{count}건", en "{count} records".
+  final String Function(int count) countLabelBuilder;
+}
+
 /// 요금 통계 섹션 (PHASE 37) — Senior(본인 통계)/Guardian(연결된 어르신
 /// 통계) 양쪽이 그대로 재사용한다. 계산은 `FeeStatisticsCalculator`
 /// (ondam_models, 순수 Dart)가 담당하고, 이 위젯은 표시만 한다
@@ -25,9 +82,14 @@ enum _FeePeriodView { monthly, yearly }
 /// 월별/연별 전환은 이 화면 안에서만 쓰는 단순 UI 상태라 전역 Provider로
 /// 만들지 않는다.
 class AppFeeStatisticsSection extends StatefulWidget {
-  const AppFeeStatisticsSection({super.key, required this.records});
+  const AppFeeStatisticsSection({
+    super.key,
+    required this.records,
+    required this.labels,
+  });
 
   final List<AnalysisResult> records;
+  final AppFeeStatisticsLabels labels;
 
   @override
   State<AppFeeStatisticsSection> createState() =>
@@ -40,15 +102,14 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final labels = widget.labels;
     final now = DateTime.now();
     final overall = FeeStatisticsCalculator.overall(widget.records);
 
     if (overall.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-        child: AppEmptyState(
-          message: '아직 요금 통계가 없습니다.\n고지서나 요금서를 분석하면 통계가 만들어집니다.',
-        ),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        child: AppEmptyState(message: labels.emptyMessage),
       );
     }
 
@@ -60,9 +121,9 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
     final points = monthly
         .map(
           (m) => FeeChartPoint(
-            label: '${m.month}월',
+            label: labels.monthLabelBuilder(DateTime(m.year, m.month)),
             amountKrw: m.hasData ? m.summary.totalKrw : null,
-            detail: '${m.summary.count}건',
+            detail: labels.countLabelBuilder(m.summary.count),
           ),
         )
         .toList();
@@ -81,9 +142,9 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
     final yearlyPoints = yearly
         .map(
           (y) => FeeChartPoint(
-            label: '${y.year}년',
+            label: labels.yearLabelBuilder(DateTime(y.year)),
             amountKrw: y.hasData ? y.summary.totalKrw : null,
-            detail: '${y.summary.count}건',
+            detail: labels.countLabelBuilder(y.summary.count),
           ),
         )
         .toList();
@@ -104,14 +165,14 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
           children: [
             Expanded(
               child: AppStatCard(
-                label: '총 요금',
+                label: labels.totalFeeLabel,
                 value: formatKrw(overall.totalKrw),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: AppStatCard(
-                label: '평균 요금',
+                label: labels.averageFeeLabel,
                 value: formatKrw(overall.averageKrw),
               ),
             ),
@@ -122,13 +183,16 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
           children: [
             Expanded(
               child: AppStatCard(
-                label: '최고 요금',
+                label: labels.maxFeeLabel,
                 value: formatKrw(overall.maxKrw),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: AppStatCard(label: '요금 내역', value: '${overall.count}건'),
+              child: AppStatCard(
+                label: labels.recordCountLabel,
+                value: labels.countLabelBuilder(overall.count),
+              ),
             ),
           ],
         ),
@@ -137,7 +201,10 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
           children: [
             Expanded(
               child: _PeriodToggleButton(
-                label: '월별',
+                label: labels.monthlyToggleLabel,
+                semanticLabel: labels.toggleSemanticSuffix(
+                  labels.monthlyToggleLabel,
+                ),
                 selected: isMonthly,
                 onTap: () => setState(() {
                   _view = _FeePeriodView.monthly;
@@ -148,7 +215,10 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: _PeriodToggleButton(
-                label: '연별',
+                label: labels.yearlyToggleLabel,
+                semanticLabel: labels.toggleSemanticSuffix(
+                  labels.yearlyToggleLabel,
+                ),
                 selected: !isMonthly,
                 onTap: () => setState(() {
                   _view = _FeePeriodView.yearly;
@@ -160,12 +230,15 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          isMonthly ? '월별 요금 추이' : '연별 요금 추이',
+          isMonthly ? labels.monthlyTrendTitle : labels.yearlyTrendTitle,
           style: AppTextStyles.titleMedium,
         ),
         const SizedBox(height: AppSpacing.sm),
         AppFeeTrendChart(
           points: currentPoints,
+          emptyMessage: labels.chartEmptyMessage,
+          semanticNoDataLabel: labels.chartSemanticNoDataLabel,
+          semanticSummaryBuilder: labels.chartSemanticSummaryBuilder,
           selectedIndex: _selectedIndex,
           onSelect: (index) => setState(() => _selectedIndex = index),
         ),
@@ -179,13 +252,16 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
                 const SizedBox(height: AppSpacing.xs),
                 if (selected.hasData) ...[
                   AppInfoRow(
-                    label: '총 요금',
+                    label: labels.totalFeeLabel,
                     value: formatKrw(selected.amountKrw!),
                   ),
-                  AppInfoRow(label: '건수', value: selected.detail ?? ''),
+                  AppInfoRow(
+                    label: labels.recordCountLabel,
+                    value: selected.detail ?? '',
+                  ),
                 ] else
                   Text(
-                    '이 기간에는 요금 기록이 없습니다.',
+                    labels.noDataInPeriodMessage,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -196,7 +272,7 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
         ],
         const SizedBox(height: AppSpacing.sm),
         Text(
-          '분석된 고지서/요금서의 금액을 기준으로 계산합니다. AI가 금액을 추출하지 못한 기록은 제외됩니다.',
+          labels.footnote,
           style: AppTextStyles.labelSmall.copyWith(
             color: AppColors.textSecondary,
           ),
@@ -209,11 +285,13 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
 class _PeriodToggleButton extends StatelessWidget {
   const _PeriodToggleButton({
     required this.label,
+    required this.semanticLabel,
     required this.selected,
     required this.onTap,
   });
 
   final String label;
+  final String semanticLabel;
   final bool selected;
   final VoidCallback onTap;
 
@@ -223,7 +301,7 @@ class _PeriodToggleButton extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: '$label 보기',
+      label: semanticLabel,
       child: Material(
         color: selected ? AppColors.primary : AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.md),

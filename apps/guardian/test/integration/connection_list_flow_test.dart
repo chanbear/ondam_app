@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_guardian/features/connection/presentation/pages/connection_list_page.dart';
 import 'package:ondam_guardian/features/connection/presentation/providers/connection_di_providers.dart';
+import 'package:ondam_guardian/l10n/generated/app_localizations.dart';
 import 'package:ondam_models/ondam_models.dart';
 
 import '../features/connection/domain/fakes/fake_connection_repository.dart';
@@ -38,7 +39,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
-        child: const MaterialApp(home: ConnectionListPage()),
+        child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ConnectionListPage(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -58,7 +64,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
-        child: const MaterialApp(home: ConnectionListPage()),
+        child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ConnectionListPage(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -88,7 +99,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
-        child: const MaterialApp(home: ConnectionListPage()),
+        child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ConnectionListPage(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -112,7 +128,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
-        child: const MaterialApp(home: ConnectionListPage()),
+        child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ConnectionListPage(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

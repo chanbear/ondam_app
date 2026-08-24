@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../core/widgets/coming_soon_page.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../connection/presentation/pages/guardian_list_page.dart';
 import '../../../onboarding/presentation/pages/onboarding_flow_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
@@ -21,28 +22,43 @@ class MoreTabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    // 순서는 HTML prototype `more()`을 기준으로, 이번 phase 지시(§3)의
+    // 정보/사용법 → 고객지원 → 설정(마지막) 순서를 반영한다.
     final items = <(IconData, String, Widget Function())>[
-      (Icons.person_outline, '내 정보', () => const ProfilePage()),
+      (Icons.person_outline, l10n.profileTitle, () => const ProfilePage()),
       (
         Icons.family_restroom_outlined,
-        '연결된 보호자 목록',
+        l10n.guardianListTitle,
         () => const GuardianListPage(),
       ),
-      (Icons.bar_chart_outlined, '통계', () => const FeeStatisticsPage()),
+      (
+        Icons.bar_chart_outlined,
+        l10n.statisticsLabel,
+        () => const FeeStatisticsPage(),
+      ),
       (
         Icons.lightbulb_outline,
-        '알아두면 좋은 정보',
-        () => const ComingSoonPage(title: '알아두면 좋은 정보'),
+        l10n.usefulInfoLabel,
+        () => ComingSoonPage(title: l10n.usefulInfoLabel),
       ),
-      (Icons.menu_book_outlined, '사용 방법 안내', () => const OnboardingFlowPage()),
-      (Icons.settings_outlined, '설정', () => const SettingsPage()),
-      (Icons.support_agent_outlined, '고객 지원', () => const SupportPage()),
+      (
+        Icons.menu_book_outlined,
+        l10n.howToUseLabel,
+        () => const OnboardingFlowPage(),
+      ),
+      (
+        Icons.support_agent_outlined,
+        l10n.supportTitle,
+        () => const SupportPage(),
+      ),
+      (Icons.settings_outlined, l10n.settingsTitle, () => const SettingsPage()),
     ];
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        AppSectionHeader(title: '더보기'),
+        AppSectionHeader(title: l10n.moreTitle),
         for (final (icon, label, pageBuilder) in items)
           AppCard(
             onTap: () => _push(context, pageBuilder()),

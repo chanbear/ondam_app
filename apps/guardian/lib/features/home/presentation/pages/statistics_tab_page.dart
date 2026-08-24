@@ -3,9 +3,41 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/domain/analysis_stats.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
+import '../../../analysis/presentation/widgets/analysis_record_card.dart'
+    show structuredFieldLabel, structuredFieldValue;
 import '../../../connection/presentation/providers/connected_elders_provider.dart';
+
+/// [AppFeeStatisticsSection]은 앱 무관 공용 위젯이라 자체 `AppLocalizations`가
+/// 없다 — 이 앱의 l10n에서 라벨 번들을 만들어 전달한다(Statistics/Records
+/// Localization Round).
+AppFeeStatisticsLabels _feeStatisticsLabels(AppLocalizations l10n) {
+  String monthLabel(DateTime date) => l10n.monthNumberLabel(date.month);
+  String yearLabel(DateTime date) => l10n.yearNumberLabel(date.year);
+  return AppFeeStatisticsLabels(
+    emptyMessage: l10n.feeStatisticsEmptyMessage,
+    totalFeeLabel: l10n.totalFeeLabel,
+    averageFeeLabel: l10n.averageFeeLabel,
+    maxFeeLabel: l10n.maxFeeLabel,
+    recordCountLabel: l10n.feeRecordCountLabel,
+    monthlyToggleLabel: l10n.monthlyToggleLabel,
+    yearlyToggleLabel: l10n.yearlyToggleLabel,
+    toggleSemanticSuffix: (label) => l10n.toggleViewSemanticLabel(label),
+    monthlyTrendTitle: l10n.monthlyTrendTitle,
+    yearlyTrendTitle: l10n.yearlyTrendTitle,
+    noDataInPeriodMessage: l10n.noDataInPeriodMessage,
+    footnote: l10n.feeFootnote,
+    chartEmptyMessage: l10n.feeChartEmptyMessage,
+    chartSemanticNoDataLabel: l10n.feeChartSemanticNoData,
+    chartSemanticSummaryBuilder: (summary) =>
+        l10n.feeChartSemanticSummary(summary),
+    monthLabelBuilder: monthLabel,
+    yearLabelBuilder: yearLabel,
+    countLabelBuilder: (count) => l10n.countUnitLabel(count),
+  );
+}
 
 /// 통계 탭. 원래 차트 라이브러리를 선택하지 않고(ui-component-spec.md
 /// Decision 3) 고지서 구조화 필드도 원본 나열만 했던 이유는
@@ -20,6 +52,7 @@ class StatisticsTabPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final elders = ref.watch(connectedEldersProvider);
     final recordsState = ref.watch(analysisRecordsProvider);
 
@@ -32,7 +65,7 @@ class StatisticsTabPage extends ConsumerWidget {
             AppSpacing.lg,
             0,
           ),
-          child: AppSectionHeader(title: '통계'),
+          child: AppSectionHeader(title: l10n.navStatistics),
         ),
         if (elders.isNotEmpty)
           AppElderSwitcher(
@@ -43,11 +76,11 @@ class StatisticsTabPage extends ConsumerWidget {
           ),
         Expanded(
           child: elders.isEmpty
-              ? const AppEmptyState(message: '아직 연결된 어르신이 없습니다.')
+              ? AppEmptyState(message: l10n.noConnectedEldersMessage)
               : recordsState.when(
                   loading: () => const AppLoading(),
                   error: (error, _) => AppError(
-                    message: '통계를 불러오지 못했어요.',
+                    message: l10n.statisticsLoadError,
                     onRetry: () => ref.invalidate(analysisRecordsProvider),
                   ),
                   data: (records) => _StatisticsContent(records: records),
@@ -63,10 +96,18 @@ class _StatisticsContent extends StatelessWidget {
 
   final List<AnalysisResult> records;
 
+  String _trendSentence(AppLocalizations l10n, int delta) {
+    if (delta == 0) return l10n.trendSameAsLastMonth;
+    return delta > 0
+        ? l10n.trendIncreasedLabel(delta)
+        : l10n.trendDecreasedLabel(-delta);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (records.isEmpty) {
-      return const AppEmptyState(message: '아직 통계로 보여드릴 데이터가 없습니다.');
+      return AppEmptyState(message: l10n.statisticsEmptyMessage);
     }
 
     final stats = AnalysisStats.compute(records, DateTime.now());
@@ -84,35 +125,38 @@ class _StatisticsContent extends StatelessWidget {
           children: [
             Expanded(
               child: AppStatCard(
-                label: '이번 달 분석 건수',
-                value: '${stats.thisMonthCount}건',
-                trend: stats.trendSentence,
+                label: l10n.thisMonthCountLabel,
+                value: l10n.countUnitLabel(stats.thisMonthCount),
+                trend: _trendSentence(l10n, stats.trendDelta),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: AppStatCard(
-                label: '위험 문자 건수',
-                value: '${stats.riskyThisMonthCount}건',
+                label: l10n.riskyThisMonthCountLabel,
+                value: l10n.countUnitLabel(stats.riskyThisMonthCount),
               ),
             ),
           ],
         ),
         const SizedBox(height: AppSpacing.xl),
-        AppSectionHeader(title: '요금 통계'),
+        AppSectionHeader(title: l10n.feeStatisticsSectionTitle),
         const SizedBox(height: AppSpacing.sm),
-        AppFeeStatisticsSection(records: records),
+        AppFeeStatisticsSection(
+          records: records,
+          labels: _feeStatisticsLabels(l10n),
+        ),
         const SizedBox(height: AppSpacing.xl),
-        AppSectionHeader(title: '고지서 정보'),
+        AppSectionHeader(title: l10n.billingInfoSectionTitle),
         Text(
-          '고지서 통계 항목은 아직 결정되지 않았어요. 기록에 담긴 원본 정보만 보여드려요.',
+          l10n.billingInfoUndecidedNotice,
           style: AppTextStyles.bodyMedium.copyWith(
             color: AppColors.textSecondary,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
         if (billRecords.isEmpty)
-          const AppEmptyState(message: '아직 고지서 정보가 없습니다.')
+          AppEmptyState(message: l10n.billingInfoEmptyMessage)
         else
           for (final record in billRecords)
             Padding(
@@ -127,7 +171,14 @@ class _StatisticsContent extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     for (final entry in record.structuredFields!.entries)
-                      AppInfoRow(label: entry.key, value: '${entry.value}'),
+                      AppInfoRow(
+                        label: structuredFieldLabel(l10n, entry.key),
+                        value: structuredFieldValue(
+                          l10n,
+                          entry.key,
+                          entry.value,
+                        ),
+                      ),
                   ],
                 ),
               ),

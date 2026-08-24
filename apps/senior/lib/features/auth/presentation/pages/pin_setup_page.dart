@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/pin_notifier.dart';
 import '../widgets/pin_keypad.dart';
 
@@ -44,7 +45,7 @@ class _PinSetupPageState extends ConsumerState<PinSetupPage> {
           ref.read(pinNotifierProvider.notifier).setPin(_currentEntry);
         } else {
           setState(() {
-            _mismatchMessage = 'PIN이 일치하지 않아요. 처음부터 다시 입력해주세요.';
+            _mismatchMessage = AppLocalizations.of(context)!.pinMismatchError;
             _firstEntry = '';
             _confirming = false;
             _currentEntry = '';
@@ -66,6 +67,7 @@ class _PinSetupPageState extends ConsumerState<PinSetupPage> {
     final pinState = ref.watch(pinNotifierProvider);
     final isLoading = pinState.isLoading;
     final failure = pinState.hasError ? pinState.error as Failure : null;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -75,13 +77,13 @@ class _PinSetupPageState extends ConsumerState<PinSetupPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                _confirming ? '한 번 더 입력해주세요' : '사용하실 PIN 4자리를 정해주세요',
+                _confirming ? l10n.pinConfirmPrompt : l10n.pinSetupPrompt,
                 style: AppTextStyles.headlineMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                '다음부터 앱을 열 때 이 PIN으로 확인해요.',
+                l10n.pinSetupDescription,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),

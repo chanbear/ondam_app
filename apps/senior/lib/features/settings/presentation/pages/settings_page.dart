@@ -84,35 +84,45 @@ class SettingsPage extends ConsumerWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppSectionHeader(title: l10n.easyModeSectionTitle),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.easyModeTitle),
-            subtitle: Text(l10n.easyModeSubtitle),
-            value: easyMode,
-            onChanged: (_) => ref.read(easyModeProvider.notifier).toggle(),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          const AccessibilitySettingsForm(),
-          const SizedBox(height: AppSpacing.xl),
-          AppSectionHeader(title: l10n.settingsLanguage),
-          const LanguagePickerTile(),
-          const SizedBox(height: AppSpacing.xl),
-          AppSectionHeader(title: l10n.accountSectionTitle),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.logout),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => _signOut(ref),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              l10n.deleteAccount,
-              style: AppTextStyles.bodyLarge.copyWith(color: AppColors.error),
+          // 쉬운 모드/글자 크기/음성 안내/언어를 하나의 카드로 묶는다 —
+          // HTML prototype `settings()`의 단일 설정 카드(구분선으로 항목
+          // 분리) 구조와 동일. 각 항목 자체의 위젯/로직은 그대로다.
+          AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppSectionHeader(title: l10n.easyModeSectionTitle),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.easyModeTitle),
+                  subtitle: Text(l10n.easyModeSubtitle),
+                  value: easyMode,
+                  onChanged: (_) =>
+                      ref.read(easyModeProvider.notifier).toggle(),
+                ),
+                const Divider(color: AppColors.divider),
+                const AccessibilitySettingsForm(),
+                const Divider(color: AppColors.divider),
+                AppSectionHeader(title: l10n.settingsLanguage),
+                const LanguagePickerTile(),
+              ],
             ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => _confirmDeleteAccount(context, ref),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          // 로그아웃/회원탈퇴는 prototype처럼 전체 너비 버튼으로 — 회원탈퇴는
+          // destructive variant로 시각적으로 명확히 구분한다(Phase 45-C
+          // §11). `_signOut`/`_confirmDeleteAccount` 호출은 그대로다.
+          AppButton(
+            label: l10n.logout,
+            variant: AppButtonVariant.secondary,
+            onPressed: () => _signOut(ref),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          AppButton(
+            label: l10n.deleteAccount,
+            variant: AppButtonVariant.destructive,
+            onPressed: () => _confirmDeleteAccount(context, ref),
           ),
         ],
       ),

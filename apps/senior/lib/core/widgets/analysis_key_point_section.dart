@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../l10n/generated/app_localizations.dart';
+
 const _keyPointMaxLength = 60;
 
 /// summary에서 첫 문장만 뽑아 "주요 내용"으로 짧게 보여준다 — 새 문장을
@@ -38,7 +40,7 @@ class AnalysisKeyPointSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppSectionHeader(title: '주요 내용'),
+        AppSectionHeader(title: AppLocalizations.of(context)!.keyPointsTitle),
         Text(keyPoint, style: AppTextStyles.titleMedium),
       ],
     );

@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart'
     show openAppSettings;
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../document_scan/presentation/pages/document_scan_camera_page.dart';
 import '../../../emergency_help/presentation/widgets/emergency_help_sheet.dart';
 import '../../../message_check/presentation/pages/message_check_entry_page.dart';
@@ -28,14 +29,15 @@ class VoiceAssistantPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final easyMode = ref.watch(easyModeProvider);
     final permissionAsync = ref.watch(micPermissionProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return AppScaffold(
-      title: '음성 비서',
+      title: l10n.voiceAssistantLabel,
       onBack: () => Navigator.of(context).pop(),
       body: permissionAsync.when(
         loading: () => const AppLoading(),
         error: (error, _) => AppError(
-          message: '마이크 권한을 확인하지 못했어요.',
+          message: l10n.micPermissionCheckError,
           onRetry: () => ref.invalidate(micPermissionProvider),
         ),
         data: (status) {
@@ -98,13 +100,13 @@ class _PermissionRequestView extends StatelessWidget {
           const Icon(Icons.mic_none_outlined, size: 48),
           const SizedBox(height: AppSpacing.md),
           Text(
-            '음성 비서를 사용하려면\n마이크 접근을 허용해주세요.',
+            AppLocalizations.of(context)!.micPermissionRequestMessage,
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyLarge,
           ),
           const SizedBox(height: AppSpacing.xl),
           AppButton(
-            label: '마이크 권한 허용하기',
+            label: AppLocalizations.of(context)!.micPermissionRequestButton,
             size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
             onPressed: onRequest,
           ),
@@ -127,12 +129,15 @@ class _PermissionBlockedView extends StatelessWidget {
           const Icon(Icons.mic_off_outlined, size: 48),
           const SizedBox(height: AppSpacing.md),
           Text(
-            '마이크 권한이 차단되어 있어요.\n기기 설정에서 직접 허용해주셔야 해요.',
+            AppLocalizations.of(context)!.micPermissionBlockedMessage,
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyLarge,
           ),
           const SizedBox(height: AppSpacing.xl),
-          AppButton(label: '설정 열기', onPressed: openAppSettings),
+          AppButton(
+            label: AppLocalizations.of(context)!.openSettingsButton,
+            onPressed: openAppSettings,
+          ),
         ],
       ),
     );

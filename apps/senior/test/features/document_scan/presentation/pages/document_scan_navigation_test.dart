@@ -42,9 +42,9 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('문서 촬영'), findsOneWidget);
+      expect(find.text('문서 읽기'), findsOneWidget);
 
-      await tester.tap(find.text('문서 촬영'));
+      await tester.tap(find.text('문서 읽기'));
       await tester.pumpAndSettle();
 
       expect(find.byType(DocumentScanCameraPage), findsOneWidget);

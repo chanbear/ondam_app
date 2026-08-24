@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_senior/features/message_check/domain/entities/sms_message.dart';
 import 'package:ondam_senior/features/message_check/presentation/widgets/sms_message_tile.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 void main() {
-  Widget wrap(Widget child) => MaterialApp(home: Scaffold(body: child));
+  Widget wrap(Widget child) => MaterialApp(
+    locale: const Locale('ko'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(body: child),
+  );
 
   testWidgets('shows the sender and a body preview', (tester) async {
     final message = SmsMessage(

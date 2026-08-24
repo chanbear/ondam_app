@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_senior/features/analysis/domain/usecases/get_my_analysis_records_usecase.dart';
 import 'package:ondam_senior/features/analysis/presentation/providers/analysis_records_di_providers.dart';
 import 'package:ondam_senior/features/home/presentation/pages/more_tab_page.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../../analysis/domain/fakes/fake_analysis_records_repository.dart';
 
@@ -14,7 +15,12 @@ Widget _wrap(FakeAnalysisRecordsRepository repository) {
         GetMyAnalysisRecordsUseCase(repository),
       ),
     ],
-    child: const MaterialApp(home: MoreTabPage()),
+    child: MaterialApp(
+      locale: const Locale('ko'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const MoreTabPage(),
+    ),
   );
 }
 

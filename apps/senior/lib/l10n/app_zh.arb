@@ -22,12 +22,20 @@
   "forgotPinLink": "忘记密码了吗？",
   "pinWrongWithCount": "密码不正确。（已失败{count}次）",
   "@pinWrongWithCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "pinWrong": "密码不正确。",
   "pinLockedWithTime": "尝试次数过多。请在{time}后重试。",
   "@pinLockedWithTime": {
-    "placeholders": { "time": { "type": "String" } }
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   },
   "pinLockedNoTime": "尝试次数过多，账户已暂时锁定。请稍后重试。",
   "pinNotSet": "尚未设置密码。",
@@ -77,5 +85,272 @@
   "voiceListening": "正在聆听…",
   "voiceStartSemanticLabel": "开始说话",
   "voiceUnrecognizedAnswer": "没能听清楚您说的话。请尝试说\"문서 찍어줘\"（拍摄文件）、\"문자 확인해줘\"（查看短信）或\"긴급 도움\"（紧急帮助）。",
-  "voiceRetryButton": "请再说一次"
+  "voiceRetryButton": "请再说一次",
+  "riskSafeLabel": "安全",
+  "riskCautionLabel": "注意",
+  "riskDangerousLabel": "检测到危险",
+  "analysisTypeDocumentLabel": "文件分析",
+  "analysisTypeMessageLabel": "短信核查",
+  "analysisResultTitle": "分析结果",
+  "pinEntryPrompt": "请输入PIN码",
+  "pinForgotLink": "忘记PIN码了吗？",
+  "pinResetTitle": "重置PIN码",
+  "identityVerifyFailedTitle": "身份验证失败了",
+  "retryButton": "重试",
+  "pinNewSetupPrompt": "请设置新的4位PIN码",
+  "pinMismatchError": "PIN码不一致，请重新输入。",
+  "pinConfirmPrompt": "请再输入一次",
+  "pinSetupPrompt": "请设置将要使用的4位PIN码",
+  "pinSetupDescription": "从下次开始，打开应用时将使用此PIN码验证。",
+  "roleSelectTitle": "您想以什么身份使用？",
+  "roleSelectSubtitle": "我们将根据使用目的为您准备相应的界面。",
+  "roleAlreadyRegisteredNotice": "此号码已以其他身份注册。继续操作将同时添加此身份。",
+  "roleElderButton": "我是老年人",
+  "roleGuardianButton": "我是家人（监护人）",
+  "pinKeypadClearLabel": "清除",
+  "guardianConnectTitle": "连接监护人",
+  "qrGeneratingMessage": "正在生成QR码",
+  "qrGenerateError": "QR码生成失败，请重试。",
+  "qrShowGuardianPrompt": "请将此QR码展示给监护人",
+  "qrScanExplanation": "监护人扫描此QR码后，连接请求将会发送。",
+  "qrExpiredMessage": "QR码已过期。",
+  "qrRegenerateButton": "重新生成QR码",
+  "guardianListTitle": "已连接的监护人列表",
+  "guardianConnectButton": "连接监护人",
+  "guardianListLoadError": "无法加载监护人列表。",
+  "guardianListEmptyMessage": "还没有已连接的监护人\n点击“连接监护人”显示QR码",
+  "guardianRequestLabelWithId": "监护人连接请求（{id}）",
+  "@guardianRequestLabelWithId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "acceptButton": "接受",
+  "rejectButton": "拒绝",
+  "guardianRevokeConfirmTitle": "要解除连接吗？",
+  "guardianRevokeConfirmMessage": "解除后，此监护人将无法再查看您的信息。",
+  "guardianRevokeConfirmLabel": "解除",
+  "guardianRevokeAction": "解除连接",
+  "guardianStatusPending": "请求待处理",
+  "guardianStatusAccepted": "已连接",
+  "guardianStatusRejected": "已拒绝",
+  "guardianStatusRevoked": "已解除连接",
+  "documentScanTitle": "拍摄文件",
+  "cameraPermissionCheckError": "无法确认相机权限。",
+  "cameraPermissionRequestMessage": "要拍摄并分析文件和短信，\n请允许访问相机。",
+  "cameraPermissionRequestButton": "允许相机权限",
+  "cameraPermissionBlockedMessage": "相机权限已被阻止。\n请在设备设置中直接允许。",
+  "openSettingsButton": "打开设置",
+  "scanPreviewTitle": "确认拍摄结果",
+  "retakeLabel": "重新拍摄",
+  "scannedDocumentsCount": "已拍摄文件（{count}张）",
+  "@scannedDocumentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "addAnotherPhotoButton": "追加拍摄",
+  "analyzeButton": "开始分析",
+  "documentIndexLabel": "文件 {index}",
+  "@documentIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "deletePhotoAtIndexLabel": "删除第{index}张照片",
+  "@deletePhotoAtIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "documentAnalyzingProgress": "正在分析文件 {current}/{total}",
+  "@documentAnalyzingProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "documentsAnalyzedCount": "已分析 {count} 份文件",
+  "@documentsAnalyzedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noCameraAvailableError": "没有可用的相机。",
+  "cameraStartError": "无法启动相机。",
+  "flashUnavailableError": "此设备无法使用闪光灯。",
+  "captureFailedError": "拍摄失败，请重试。",
+  "cameraPreparingMessage": "正在准备相机",
+  "documentFrameGuideMessage": "请将文件对准画面内",
+  "captureButtonLabel": "拍摄",
+  "noGuardianConnectedError": "还没有已连接的监护人。",
+  "emergencyHelpTitle": "您需要帮助吗？",
+  "callGuardianLabel": "拨打监护人电话",
+  "emergency119Label": "119（紧急救援）",
+  "emergency112Label": "112（警察）",
+  "emergency118Label": "118（网络举报）",
+  "myRecordsTitle": "我的记录",
+  "documentReadLabel": "阅读文件",
+  "messageCheckLabel": "查看短信",
+  "infoTabTitle": "信息",
+  "infoTabEmptyMessage": "目前还没有准备好的信息，敬请期待个性化推荐信息。",
+  "statisticsLabel": "统计",
+  "usefulInfoLabel": "实用信息",
+  "howToUseLabel": "使用方法说明",
+  "supportTitle": "客户支持",
+  "moreTitle": "更多",
+  "recordsLoadingMessage": "正在加载记录",
+  "recordsLoadError": "加载记录时出现问题。",
+  "recordsEmptyMessage": "还没有分析记录。\n请尝试拍摄文件或查看短信。",
+  "helpRequestLabel": "请求帮助",
+  "easyModeOnState": "开启",
+  "easyModeOffState": "关闭",
+  "easyModeToggleSemanticLabel": "简易模式，当前{state}",
+  "@easyModeToggleSemanticLabel": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "easyModeOnDescription": "开启 — 大按钮和简洁界面",
+  "coreFeaturesTitle": "核心功能",
+  "recentRecordsTitle": "最近记录",
+  "emergencyHelpRequestLabel": "紧急求助",
+  "smsPermissionCheckError": "无法确认短信权限。",
+  "smsPermissionRequestMessage": "要查看您收到的短信并判断是否为危险短信，\n请允许访问短信。",
+  "smsPermissionRequestButton": "允许短信权限",
+  "smsPermissionBlockedMessage": "短信权限已被阻止。\n请在设备设置中直接允许。",
+  "analysisGenericError": "分析过程中出现问题。",
+  "unknownSenderLabel": "未知号码",
+  "manualMessageInputPrompt": "请复制粘贴可疑短信，\n或直接手动输入。",
+  "pasteFromClipboardButton": "从剪贴板粘贴",
+  "messageContentLabel": "短信内容",
+  "messageContentHint": "请输入短信内容",
+  "recentSmsLoadingMessage": "正在加载最近短信",
+  "smsLoadError": "无法加载短信。",
+  "recentSmsEmptyMessage": "没有最近收到的短信。",
+  "accessibilitySettingsTitle": "无障碍设置",
+  "guardianRegisterTitle": "登记监护人",
+  "onboardingAccessibilityIntro": "为了让您使用更方便，我们先进行一些设置。",
+  "nextButton": "下一步",
+  "onboardingProfileIntro": "告诉我们后，我们可以为您展示更有用的信息。（选填）",
+  "regionLabel": "地区",
+  "skipButton": "跳过",
+  "guardianConnectComingSoonMessage": "监护人连接功能即将上线。准备就绪后，您可以随时在“更多”菜单中连接。",
+  "saveAndStartButton": "保存并开始",
+  "textSizeTitle": "字体大小",
+  "voiceGuideTitle": "语音引导",
+  "voiceGuideDescription": "屏幕内容也会以语音形式为您播报",
+  "feeStatisticsTitle": "费用统计",
+  "feeStatisticsLoadingMessage": "正在加载费用统计",
+  "feeStatisticsLoadError": "加载费用统计时出现问题。",
+  "privacyPinTitle": "密码（PIN码）",
+  "privacyPinBody": "PIN原文或可推测出PIN的信息不会存储在本设备的任何位置。服务器上也仅保存加密后的验证专用值，没有任何途径可供他人查看。",
+  "privacyPhotoTitle": "文件拍摄照片",
+  "privacyPhotoBody": "拍摄文件请求分析后，分析结束（无论成功或失败）会立即从服务器删除原始照片，仅保留分析结果。",
+  "privacySharedInfoTitle": "与监护人共享的信息",
+  "privacySharedInfoBody": "分析结果仅您接受连接的监护人可查看。解除连接后将无法再查看。",
+  "privacyRetentionTitle": "分析结果原文保留期限",
+  "privacyRetentionBody": "短信·文件分析结果中留存的摘要/原文保留时长目前尚未确定，确定后将在此页面告知您。",
+  "privacyInfoTitle": "个人信息保管说明",
+  "supportContactTitle": "客服联系方式",
+  "supportContactComingSoon": "正在准备电话·邮箱联系方式，敬请期待。",
+  "privacyInfoDescription": "查看我的信息是如何保管的",
+  "micPermissionCheckError": "无法确认麦克风权限。",
+  "micPermissionRequestMessage": "要使用语音助手，\n请允许访问麦克风。",
+  "micPermissionRequestButton": "允许麦克风权限",
+  "micPermissionBlockedMessage": "麦克风权限已被阻止。\n请在设备设置中直接允许。",
+  "actionChecklistTitle": "待办事项",
+  "clarifyingQuestionsTitle": "有疑问吗？",
+  "askByVoiceButton": "语音提问",
+  "dateKindPaymentDue": "缴费期限",
+  "dateKindVisit": "访问日期",
+  "dateKindApplicationPeriod": "申请期限",
+  "dateKindExpiration": "到期日",
+  "dateKindReservation": "预约日期",
+  "dateKindOther": "其他重要日期",
+  "importantDatesTitle": "重要日期",
+  "monthDayFormat": "{month}月{day}日",
+  "@monthDayFormat": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "keyPointsTitle": "主要内容",
+  "analysisProgressSemanticLabel": "分析进度{percent}％，{label}",
+  "@analysisProgressSemanticLabel": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "progressPreparing": "正在准备分析",
+  "progressSending": "正在发送数据",
+  "progressAnalyzing": "AI正在检查",
+  "progressFinishing": "正在整理结果",
+  "detailsViewTitle": "查看详情",
+  "reliabilityLabel": "可信度",
+  "sourceTextLabel": "原文",
+  "askAboutThisButton": "针对此内容提问",
+  "confirmedDoneSemanticLabel": "已标记为确认完成",
+  "confirmedDoneMessage": "已确认完成",
+  "confirmDoneButton": "确认完成",
+  "featureComingSoonMessage": "此功能尚在筹备中。",
+  "feeStatisticsEmptyMessage": "尚无费用统计。\n分析账单或缴费通知单后将生成统计数据。",
+  "totalFeeLabel": "总费用",
+  "averageFeeLabel": "平均费用",
+  "maxFeeLabel": "最高费用",
+  "feeRecordCountLabel": "账单记录数",
+  "monthlyToggleLabel": "按月",
+  "yearlyToggleLabel": "按年",
+  "toggleViewSemanticLabel": "查看{label}",
+  "@toggleViewSemanticLabel": {
+    "placeholders": { "label": { "type": "String" } }
+  },
+  "monthlyTrendTitle": "月度费用趋势",
+  "yearlyTrendTitle": "年度费用趋势",
+  "noDataInPeriodMessage": "该时间段内没有费用记录。",
+  "feeFootnote": "根据已分析账单/缴费通知单中的金额计算。AI未能提取金额的记录将被排除。",
+  "feeChartEmptyMessage": "尚无费用统计。",
+  "feeChartSemanticNoData": "费用趋势图。尚无数据。",
+  "feeChartSemanticSummary": "费用趋势图。{summary}",
+  "@feeChartSemanticSummary": {
+    "placeholders": { "summary": { "type": "String" } }
+  },
+  "monthNumberLabel": "{month}月",
+  "@monthNumberLabel": {
+    "placeholders": { "month": { "type": "int" } }
+  },
+  "yearNumberLabel": "{year}年",
+  "@yearNumberLabel": {
+    "placeholders": { "year": { "type": "int" } }
+  },
+  "countUnitLabel": "{count}件",
+  "@countUnitLabel": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

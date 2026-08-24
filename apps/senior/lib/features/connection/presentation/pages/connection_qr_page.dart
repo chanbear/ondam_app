@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/connection_token_notifier.dart';
 
 /// 어르신이 보호자에게 보여줄 QR 코드 화면(technical-decisions.md §1-6 v9,
@@ -14,14 +15,15 @@ class ConnectionQrPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokenState = ref.watch(connectionTokenProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return AppScaffold(
-      title: '보호자 연결',
+      title: l10n.guardianConnectTitle,
       onBack: () => Navigator.of(context).pop(),
       body: tokenState.when(
-        loading: () => const AppLoading(message: 'QR 코드를 만들고 있어요'),
+        loading: () => AppLoading(message: l10n.qrGeneratingMessage),
         error: (error, _) => AppError(
-          message: 'QR 코드를 만들지 못했어요. 다시 시도해주세요.',
+          message: l10n.qrGenerateError,
           onRetry: () =>
               ref.read(connectionTokenProvider.notifier).regenerate(),
         ),
@@ -41,19 +43,20 @@ class _QrContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isExpired = DateTime.now().isAfter(expiresAt);
+    final l10n = AppLocalizations.of(context)!;
 
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            '보호자에게 이 QR을 보여주세요',
+          Text(
+            l10n.qrShowGuardianPrompt,
             textAlign: TextAlign.center,
             style: AppTextStyles.titleMedium,
           ),
           const SizedBox(height: AppSpacing.sm),
-          const Text(
-            '보호자가 이 QR을 스캔하면 연결 요청이 도착합니다.',
+          Text(
+            l10n.qrScanExplanation,
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyMedium,
           ),
@@ -64,10 +67,10 @@ class _QrContent extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           if (isExpired) ...[
-            const Text('QR이 만료되었어요.', style: AppTextStyles.bodyMedium),
+            Text(l10n.qrExpiredMessage, style: AppTextStyles.bodyMedium),
             const SizedBox(height: AppSpacing.md),
             AppButton(
-              label: 'QR 다시 만들기',
+              label: l10n.qrRegenerateButton,
               size: AppButtonSize.large,
               onPressed: () =>
                   ref.read(connectionTokenProvider.notifier).regenerate(),

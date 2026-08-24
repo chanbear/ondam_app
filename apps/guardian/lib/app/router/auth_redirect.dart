@@ -5,6 +5,15 @@ import 'auth_routes.dart';
 /// model (technical-decisions.md §1-3-A) is unit-testable without faking
 /// Supabase/Riverpod. Returns the path to redirect to, or `null` to allow
 /// [location] as-is.
+///
+/// Guardian UI Application Round 1 §4 — Senior와 동일하게 휴대폰 번호+
+/// 비밀번호(PIN) 입력, PIN 최초 설정, PIN 확인을 모두 [AuthRoutes.phoneInput]
+/// 하나의 화면에서 처리한다(LoginNotifier가 순서대로 호출). 이전에는 이
+/// 세 가지가 각각 `/auth/pin/setup`/`/auth/pin/entry`로 갈라지는 별도
+/// 화면이었다. 마찬가지로 역할은 Guardian 앱에서 자동으로 결정되므로
+/// (LoginNotifier) `roleSelect` 화면으로도 더 이상 보내지 않는다 — 역할이
+/// 비어있는 짧은 순간에는 [AuthRoutes.sessionLoading]에서 대기하다가,
+/// 자동 등록이 끝나면 이 redirect가 다시 평가되어 홈으로 넘어간다.
 String? decideAuthRedirect({
   required bool hasSession,
   required bool? hasPin,
@@ -13,12 +22,7 @@ String? decideAuthRedirect({
   required String location,
 }) {
   final onPhoneInput = location == AuthRoutes.phoneInput;
-  final onPinSetup = location == AuthRoutes.pinSetup;
-  final onPinEntry = location == AuthRoutes.pinEntry;
   final onPinForgot = location == AuthRoutes.pinForgot;
-  final onRoleSelect = location == AuthRoutes.roleSelect;
-  final onAuthFlow =
-      onPhoneInput || onPinSetup || onPinEntry || onPinForgot || onRoleSelect;
 
   if (!hasSession) {
     if (onPhoneInput) return null;
@@ -34,14 +38,9 @@ String? decideAuthRedirect({
     return AuthRoutes.sessionLoading;
   }
 
-  if (!hasPin) {
-    if (onPinSetup) return null;
-    return AuthRoutes.pinSetup;
-  }
-
-  if (!pinVerified) {
-    if (onPinEntry) return null;
-    return AuthRoutes.pinEntry;
+  if (!hasPin || !pinVerified) {
+    if (onPhoneInput) return null;
+    return AuthRoutes.phoneInput;
   }
 
   if (roles == null) {
@@ -49,10 +48,9 @@ String? decideAuthRedirect({
   }
 
   if (roles.isEmpty) {
-    if (onRoleSelect) return null;
-    return AuthRoutes.roleSelect;
+    return AuthRoutes.sessionLoading;
   }
 
-  if (onAuthFlow) return AuthRoutes.home;
+  if (onPhoneInput) return AuthRoutes.home;
   return null;
 }

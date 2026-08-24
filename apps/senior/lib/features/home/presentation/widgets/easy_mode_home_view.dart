@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import 'home_feature_card.dart';
 
 /// Easy Mode home content — Easy Mode is the app's core UX, not a settings
@@ -19,17 +20,23 @@ class EasyModeHomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ListView(
       children: [
         for (final item in features) ...[
           HomeFeatureLargeButton(item: item),
           const SizedBox(height: AppSpacing.md),
         ],
+        // prototype `easyHome()`의 도움 요청 버튼은 다른 easy-btn과 달리
+        // solid danger가 아니라 tonal(soft) danger다 — Easy Mode는 "정보량
+        // 최소화"가 원칙이라 화면당 가장 눈에 띄는 색을 아껴 쓰기 위함으로
+        // 보인다(다른 easy-btn은 흰 배경, primary 항목만 solid green).
+        // Normal Mode `_EmergencyButton`(solid)과 의도적으로 다른 스타일.
         Semantics(
           button: true,
-          label: '긴급 도움',
+          label: l10n.helpRequestLabel,
           child: Material(
-            color: AppColors.error,
+            color: AppColors.error.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(AppRadius.lg),
             child: InkWell(
               onTap: onEmergencyTap,
@@ -41,12 +48,16 @@ class EasyModeHomeView extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.emergency, color: Colors.white, size: 28),
+                    const Icon(
+                      Icons.emergency,
+                      color: AppColors.error,
+                      size: 28,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
-                      '긴급 도움',
+                      l10n.helpRequestLabel,
                       style: AppTextStyles.titleMedium.copyWith(
-                        color: Colors.white,
+                        color: AppColors.error,
                       ),
                     ),
                   ],

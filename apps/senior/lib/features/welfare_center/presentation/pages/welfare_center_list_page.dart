@@ -27,9 +27,7 @@ class WelfareCenterListPage extends ConsumerWidget {
     final launched = await launchUrl(Uri(scheme: 'tel', path: phoneNumber));
     if (!launched && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.phoneLaunchError),
-        ),
+        SnackBar(content: Text(AppLocalizations.of(context)!.phoneLaunchError)),
       );
     }
   }

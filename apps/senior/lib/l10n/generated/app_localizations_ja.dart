@@ -229,4 +229,587 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get voiceRetryButton => 'もう一度お話しください';
+
+  @override
+  String get riskSafeLabel => '安全';
+
+  @override
+  String get riskCautionLabel => '注意';
+
+  @override
+  String get riskDangerousLabel => '危険を検知';
+
+  @override
+  String get analysisTypeDocumentLabel => '書類分析';
+
+  @override
+  String get analysisTypeMessageLabel => 'メッセージ確認';
+
+  @override
+  String get analysisResultTitle => '分析結果';
+
+  @override
+  String get pinEntryPrompt => 'PINを入力してください';
+
+  @override
+  String get pinForgotLink => 'PINをお忘れですか？';
+
+  @override
+  String get pinResetTitle => 'PIN再設定';
+
+  @override
+  String get identityVerifyFailedTitle => '本人確認に失敗しました';
+
+  @override
+  String get retryButton => 'もう一度試す';
+
+  @override
+  String get pinNewSetupPrompt => '新しい4桁のPINを設定してください';
+
+  @override
+  String get pinMismatchError => 'PINが一致しません。最初からもう一度入力してください。';
+
+  @override
+  String get pinConfirmPrompt => 'もう一度入力してください';
+
+  @override
+  String get pinSetupPrompt => '使用する4桁のPINを設定してください';
+
+  @override
+  String get pinSetupDescription => '次回からアプリを開くときにこのPINで確認します。';
+
+  @override
+  String get roleSelectTitle => 'どちらとしてご利用になりますか？';
+
+  @override
+  String get roleSelectSubtitle => 'ご利用目的に合わせて画面をご用意します。';
+
+  @override
+  String get roleAlreadyRegisteredNotice =>
+      'この番号はすでに別の役割で登録されています。続行するとこの役割も追加登録されます。';
+
+  @override
+  String get roleElderButton => '私は高齢者です';
+
+  @override
+  String get roleGuardianButton => '私は家族（保護者）です';
+
+  @override
+  String get pinKeypadClearLabel => '消去';
+
+  @override
+  String get guardianConnectTitle => '保護者連携';
+
+  @override
+  String get qrGeneratingMessage => 'QRコードを作成しています';
+
+  @override
+  String get qrGenerateError => 'QRコードを作成できませんでした。もう一度お試しください。';
+
+  @override
+  String get qrShowGuardianPrompt => 'この QR コードを保護者に見せてください';
+
+  @override
+  String get qrScanExplanation => '保護者がこのQRコードをスキャンすると連携リクエストが届きます。';
+
+  @override
+  String get qrExpiredMessage => 'QRコードの有効期限が切れました。';
+
+  @override
+  String get qrRegenerateButton => 'QRコードを再作成';
+
+  @override
+  String get guardianListTitle => '連携中の保護者一覧';
+
+  @override
+  String get guardianConnectButton => '保護者と連携する';
+
+  @override
+  String get guardianListLoadError => '保護者一覧を読み込めませんでした。';
+
+  @override
+  String get guardianListEmptyMessage =>
+      'まだ連携している保護者がいません\n「保護者と連携する」でQRコードを表示してください';
+
+  @override
+  String guardianRequestLabelWithId(String id) {
+    return '保護者連携リクエスト（$id）';
+  }
+
+  @override
+  String get acceptButton => '承認';
+
+  @override
+  String get rejectButton => '拒否';
+
+  @override
+  String get guardianRevokeConfirmTitle => '連携を解除しますか？';
+
+  @override
+  String get guardianRevokeConfirmMessage => '解除すると、この保護者はお客様の情報を閲覧できなくなります。';
+
+  @override
+  String get guardianRevokeConfirmLabel => '解除';
+
+  @override
+  String get guardianRevokeAction => '連携解除';
+
+  @override
+  String get guardianStatusPending => 'リクエスト待ち';
+
+  @override
+  String get guardianStatusAccepted => '連携済み';
+
+  @override
+  String get guardianStatusRejected => '拒否済み';
+
+  @override
+  String get guardianStatusRevoked => '連携解除済み';
+
+  @override
+  String get documentScanTitle => '書類撮影';
+
+  @override
+  String get cameraPermissionCheckError => 'カメラの権限を確認できませんでした。';
+
+  @override
+  String get cameraPermissionRequestMessage =>
+      '書類やメッセージを撮影して分析するには\nカメラへのアクセスを許可してください。';
+
+  @override
+  String get cameraPermissionRequestButton => 'カメラの権限を許可する';
+
+  @override
+  String get cameraPermissionBlockedMessage =>
+      'カメラの権限がブロックされています。\n端末の設定から直接許可してください。';
+
+  @override
+  String get openSettingsButton => '設定を開く';
+
+  @override
+  String get scanPreviewTitle => '撮影結果の確認';
+
+  @override
+  String get retakeLabel => '撮り直し';
+
+  @override
+  String scannedDocumentsCount(int count) {
+    return '撮影した書類（$count枚）';
+  }
+
+  @override
+  String get addAnotherPhotoButton => '追加撮影';
+
+  @override
+  String get analyzeButton => '分析する';
+
+  @override
+  String documentIndexLabel(int index) {
+    return '書類 $index';
+  }
+
+  @override
+  String deletePhotoAtIndexLabel(int index) {
+    return '$index枚目の写真を削除';
+  }
+
+  @override
+  String documentAnalyzingProgress(int current, int total) {
+    return '書類分析中 $current/$total';
+  }
+
+  @override
+  String documentsAnalyzedCount(int count) {
+    return '$count件の書類を分析しました';
+  }
+
+  @override
+  String get noCameraAvailableError => '利用可能なカメラがありません。';
+
+  @override
+  String get cameraStartError => 'カメラを起動できませんでした。';
+
+  @override
+  String get flashUnavailableError => 'この端末ではフラッシュを使用できません。';
+
+  @override
+  String get captureFailedError => '撮影に失敗しました。もう一度お試しください。';
+
+  @override
+  String get cameraPreparingMessage => 'カメラを準備しています';
+
+  @override
+  String get documentFrameGuideMessage => '書類を画面内に収めてください';
+
+  @override
+  String get captureButtonLabel => '撮影する';
+
+  @override
+  String get noGuardianConnectedError => 'まだ連携している保護者がいません。';
+
+  @override
+  String get emergencyHelpTitle => 'お困りですか？';
+
+  @override
+  String get callGuardianLabel => '保護者に電話';
+
+  @override
+  String get emergency119Label => '119（救急）';
+
+  @override
+  String get emergency112Label => '112（警察）';
+
+  @override
+  String get emergency118Label => '118（サイバー通報）';
+
+  @override
+  String get myRecordsTitle => 'マイ記録';
+
+  @override
+  String get documentReadLabel => '書類を読む';
+
+  @override
+  String get messageCheckLabel => 'メッセージ確認';
+
+  @override
+  String get infoTabTitle => '情報';
+
+  @override
+  String get infoTabEmptyMessage => 'まだ準備された情報がありません。まもなくおすすめ情報をお届けします。';
+
+  @override
+  String get statisticsLabel => '統計';
+
+  @override
+  String get usefulInfoLabel => '知っておくと便利な情報';
+
+  @override
+  String get howToUseLabel => '使い方案内';
+
+  @override
+  String get supportTitle => 'カスタマーサポート';
+
+  @override
+  String get moreTitle => 'その他';
+
+  @override
+  String get recordsLoadingMessage => '記録を読み込んでいます';
+
+  @override
+  String get recordsLoadError => '記録の読み込み中に問題が発生しました。';
+
+  @override
+  String get recordsEmptyMessage => 'まだ分析した記録がありません。\n書類撮影やメッセージ確認をご利用ください。';
+
+  @override
+  String get helpRequestLabel => '助けを求める';
+
+  @override
+  String get easyModeOnState => 'オン';
+
+  @override
+  String get easyModeOffState => 'オフ';
+
+  @override
+  String easyModeToggleSemanticLabel(String state) {
+    return 'かんたんモード、現在$state';
+  }
+
+  @override
+  String get easyModeOnDescription => 'オン — 大きなボタンとシンプルな画面';
+
+  @override
+  String get coreFeaturesTitle => '主要機能';
+
+  @override
+  String get recentRecordsTitle => '最近の記録';
+
+  @override
+  String get emergencyHelpRequestLabel => '緊急ヘルプ要請';
+
+  @override
+  String get smsPermissionCheckError => 'メッセージの権限を確認できませんでした。';
+
+  @override
+  String get smsPermissionRequestMessage =>
+      '受信メッセージを確認して危険なメッセージかお知らせするために\nメッセージへのアクセスを許可してください。';
+
+  @override
+  String get smsPermissionRequestButton => 'メッセージの権限を許可する';
+
+  @override
+  String get smsPermissionBlockedMessage =>
+      'メッセージの権限がブロックされています。\n端末の設定から直接許可してください。';
+
+  @override
+  String get analysisGenericError => '分析中に問題が発生しました。';
+
+  @override
+  String get unknownSenderLabel => '不明な番号';
+
+  @override
+  String get manualMessageInputPrompt => '不審なメッセージをコピー＆ペーストするか\n直接入力してください。';
+
+  @override
+  String get pasteFromClipboardButton => 'クリップボードから貼り付け';
+
+  @override
+  String get messageContentLabel => 'メッセージ内容';
+
+  @override
+  String get messageContentHint => 'メッセージ内容を入力してください';
+
+  @override
+  String get recentSmsLoadingMessage => '最近のメッセージを読み込んでいます';
+
+  @override
+  String get smsLoadError => 'メッセージを読み込めませんでした。';
+
+  @override
+  String get recentSmsEmptyMessage => '最近受信したメッセージがありません。';
+
+  @override
+  String get accessibilitySettingsTitle => 'アクセシビリティ設定';
+
+  @override
+  String get guardianRegisterTitle => '保護者登録';
+
+  @override
+  String get onboardingAccessibilityIntro => '快適にご利用いただけるよう、まず設定を行います。';
+
+  @override
+  String get nextButton => '次へ';
+
+  @override
+  String get onboardingProfileIntro => '教えていただくと、より役立つ情報をお届けできます。（任意入力）';
+
+  @override
+  String get regionLabel => '地域';
+
+  @override
+  String get skipButton => 'スキップ';
+
+  @override
+  String get guardianConnectComingSoonMessage =>
+      '保護者連携は近日提供予定です。準備が整い次第、その他メニューからいつでも連携できます。';
+
+  @override
+  String get saveAndStartButton => '保存して始める';
+
+  @override
+  String get textSizeTitle => '文字サイズ';
+
+  @override
+  String get voiceGuideTitle => '音声案内';
+
+  @override
+  String get voiceGuideDescription => '画面の内容を音声でもご案内します';
+
+  @override
+  String get feeStatisticsTitle => '料金統計';
+
+  @override
+  String get feeStatisticsLoadingMessage => '料金統計を読み込んでいます';
+
+  @override
+  String get feeStatisticsLoadError => '料金統計の読み込み中に問題が発生しました。';
+
+  @override
+  String get privacyPinTitle => 'パスワード（PIN）';
+
+  @override
+  String get privacyPinBody =>
+      'PINの原文やそれを推測できる値は、この端末のどこにも保存されません。サーバー上でも暗号化された値のみを検証専用に保管しており、他人が閲覧できる経路はありません。';
+
+  @override
+  String get privacyPhotoTitle => '書類撮影写真';
+
+  @override
+  String get privacyPhotoBody =>
+      '書類を撮影して分析を依頼すると、分析が終わり次第（成功・失敗を問わず）元の写真はサーバーから削除されます。分析結果のみが残ります。';
+
+  @override
+  String get privacySharedInfoTitle => '保護者と共有される情報';
+
+  @override
+  String get privacySharedInfoBody =>
+      '分析結果は、連携を承認した保護者のみが閲覧できます。連携を解除すると、それ以降は閲覧できなくなります。';
+
+  @override
+  String get privacyRetentionTitle => '分析結果原文の保管期間';
+
+  @override
+  String get privacyRetentionBody =>
+      'メッセージ・書類の分析結果に残る要約／原文をどのくらい保管するかはまだ決まっていません。決まり次第、この画面でご案内します。';
+
+  @override
+  String get privacyInfoTitle => '個人情報保管について';
+
+  @override
+  String get supportContactTitle => 'サポート連絡先';
+
+  @override
+  String get supportContactComingSoon => '電話・メールの連絡先を準備しています。まもなくご案内します。';
+
+  @override
+  String get privacyInfoDescription => '自分の情報がどのように保管されているか確認する';
+
+  @override
+  String get micPermissionCheckError => 'マイクの権限を確認できませんでした。';
+
+  @override
+  String get micPermissionRequestMessage =>
+      '音声アシスタントを使用するには\nマイクへのアクセスを許可してください。';
+
+  @override
+  String get micPermissionRequestButton => 'マイクの権限を許可する';
+
+  @override
+  String get micPermissionBlockedMessage =>
+      'マイクの権限がブロックされています。\n端末の設定から直接許可してください。';
+
+  @override
+  String get actionChecklistTitle => 'やるべきこと';
+
+  @override
+  String get clarifyingQuestionsTitle => '気になることはありますか？';
+
+  @override
+  String get askByVoiceButton => '音声で質問する';
+
+  @override
+  String get dateKindPaymentDue => '支払期限';
+
+  @override
+  String get dateKindVisit => '訪問日';
+
+  @override
+  String get dateKindApplicationPeriod => '申請期間';
+
+  @override
+  String get dateKindExpiration => '有効期限';
+
+  @override
+  String get dateKindReservation => '予約日';
+
+  @override
+  String get dateKindOther => 'その他の重要な日付';
+
+  @override
+  String get importantDatesTitle => '重要な日付';
+
+  @override
+  String monthDayFormat(int month, int day) {
+    return '$month月$day日';
+  }
+
+  @override
+  String get keyPointsTitle => '主な内容';
+
+  @override
+  String analysisProgressSemanticLabel(int percent, String label) {
+    return '分析進捗$percentパーセント、$label';
+  }
+
+  @override
+  String get progressPreparing => '分析を準備しています';
+
+  @override
+  String get progressSending => 'データを送信しています';
+
+  @override
+  String get progressAnalyzing => 'AIが確認しています';
+
+  @override
+  String get progressFinishing => '結果をまとめています';
+
+  @override
+  String get detailsViewTitle => '詳細を見る';
+
+  @override
+  String get reliabilityLabel => '信頼度';
+
+  @override
+  String get sourceTextLabel => '原文';
+
+  @override
+  String get askAboutThisButton => 'この内容について質問する';
+
+  @override
+  String get confirmedDoneSemanticLabel => '確認完了としてマークしました';
+
+  @override
+  String get confirmedDoneMessage => '確認完了しました';
+
+  @override
+  String get confirmDoneButton => '確認完了';
+
+  @override
+  String get featureComingSoonMessage => 'この機能はまだ準備中です。';
+
+  @override
+  String get feeStatisticsEmptyMessage =>
+      'まだ料金統計がありません。\n請求書や料金明細を分析すると統計が作成されます。';
+
+  @override
+  String get totalFeeLabel => '総額';
+
+  @override
+  String get averageFeeLabel => '平均額';
+
+  @override
+  String get maxFeeLabel => '最高額';
+
+  @override
+  String get feeRecordCountLabel => '料金内訳件数';
+
+  @override
+  String get monthlyToggleLabel => '月別';
+
+  @override
+  String get yearlyToggleLabel => '年別';
+
+  @override
+  String toggleViewSemanticLabel(String label) {
+    return '$labelを見る';
+  }
+
+  @override
+  String get monthlyTrendTitle => '月別料金推移';
+
+  @override
+  String get yearlyTrendTitle => '年別料金推移';
+
+  @override
+  String get noDataInPeriodMessage => 'この期間には料金記録がありません。';
+
+  @override
+  String get feeFootnote =>
+      '分析された請求書・料金明細の金額をもとに計算します。AIが金額を抽出できなかった記録は除外されます。';
+
+  @override
+  String get feeChartEmptyMessage => 'まだ料金統計がありません。';
+
+  @override
+  String get feeChartSemanticNoData => '料金推移グラフ。まだデータがありません。';
+
+  @override
+  String feeChartSemanticSummary(String summary) {
+    return '料金推移グラフ。$summary';
+  }
+
+  @override
+  String monthNumberLabel(int month) {
+    return '$month月';
+  }
+
+  @override
+  String yearNumberLabel(int year) {
+    return '$year年';
+  }
+
+  @override
+  String countUnitLabel(int count) {
+    return '$count件';
+  }
 }

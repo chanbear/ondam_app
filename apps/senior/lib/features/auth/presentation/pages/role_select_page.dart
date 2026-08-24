@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/role_notifier.dart';
 
 /// Onboarding role choice — role is never inferred from which app you
@@ -23,6 +24,7 @@ class RoleSelectPage extends ConsumerWidget {
     final existingRoles = rolesAsync.value ?? const <UserRole>[];
     final hasOppositeRole = existingRoles.isNotEmpty;
     final isLoading = rolesAsync.isLoading && rolesAsync.hasValue;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -32,10 +34,10 @@ class RoleSelectPage extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('어떤 분으로 이용하실까요?', style: AppTextStyles.headlineMedium),
+              Text(l10n.roleSelectTitle, style: AppTextStyles.headlineMedium),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                '이용 목적에 맞게 화면을 준비해드릴게요.',
+                l10n.roleSelectSubtitle,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -49,14 +51,14 @@ class RoleSelectPage extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
                   child: Text(
-                    '이 번호는 이미 다른 역할로 등록되어 있어요. 계속 진행하면 이 역할도 함께 등록돼요.',
+                    l10n.roleAlreadyRegisteredNotice,
                     style: AppTextStyles.bodyMedium,
                   ),
                 ),
               ],
               const SizedBox(height: AppSpacing.xl),
               AppButton(
-                label: '저는 어르신이에요',
+                label: l10n.roleElderButton,
                 isLoading: isLoading,
                 onPressed: isLoading
                     ? null
@@ -64,7 +66,7 @@ class RoleSelectPage extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.md),
               AppButton(
-                label: '저는 가족(보호자)이에요',
+                label: l10n.roleGuardianButton,
                 isLoading: isLoading,
                 onPressed: isLoading
                     ? null

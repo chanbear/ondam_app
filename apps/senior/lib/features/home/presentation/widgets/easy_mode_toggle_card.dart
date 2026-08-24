@@ -16,11 +16,14 @@ class EasyModeToggleCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final easyMode = ref.watch(easyModeProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Semantics(
       button: true,
       toggled: easyMode,
-      label: '쉬운 모드, 현재 ${easyMode ? '켜짐' : '꺼짐'}',
+      label: l10n.easyModeToggleSemanticLabel(
+        easyMode ? l10n.easyModeOnState : l10n.easyModeOffState,
+      ),
       child: Material(
         color: easyMode
             ? AppColors.primary.withValues(alpha: 0.08)
@@ -49,11 +52,13 @@ class EasyModeToggleCard extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.easyModeTitle,
+                        l10n.easyModeTitle,
                         style: AppTextStyles.titleMedium,
                       ),
                       Text(
-                        easyMode ? '켜짐 — 큰 버튼과 단순한 화면' : '꺼짐',
+                        easyMode
+                            ? l10n.easyModeOnDescription
+                            : l10n.easyModeOffState,
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.textSecondary,
                         ),

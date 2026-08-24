@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../l10n/generated/app_localizations.dart';
 import 'analysis_progress_step.dart';
 
 /// 문서/문자 분석 중 진행 상태를 보여준다(ONDAM 2.0 요구사항 12/21) —
@@ -14,11 +15,13 @@ class AnalysisProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final percent = step.percent;
+    final l10n = AppLocalizations.of(context)!;
+    final label = step.label(l10n);
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Semantics(
-        label: '분석 진행률 $percent퍼센트, ${step.label}',
+        label: l10n.analysisProgressSemanticLabel(percent, label),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -40,7 +43,7 @@ class AnalysisProgressIndicator extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             ExcludeSemantics(
               child: Text(
-                step.label,
+                label,
                 style: AppTextStyles.bodyLarge,
                 textAlign: TextAlign.center,
               ),

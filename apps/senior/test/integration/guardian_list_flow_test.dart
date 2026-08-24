@@ -5,6 +5,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_models/ondam_models.dart';
 import 'package:ondam_senior/features/connection/presentation/pages/guardian_list_page.dart';
 import 'package:ondam_senior/features/connection/presentation/providers/connection_di_providers.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../features/connection/domain/fakes/fake_connection_repository.dart';
 
@@ -22,6 +23,13 @@ void main() {
         createdAt: DateTime(2026, 1, 1),
       );
 
+  const wrapped = MaterialApp(
+    locale: Locale('ko'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: GuardianListPage(),
+  );
+
   testWidgets('pending 요청을 수락하면 accepted로 바뀐 목록이 다시 표시된다', (tester) async {
     // GuardianListPage는 BUG 1 수정으로 화면이 떠 있는 동안 주기적으로
     // 재조회하는 Timer.periodic을 시작한다 — 테스트 종료 시 위젯을
@@ -37,7 +45,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
-        child: const MaterialApp(home: GuardianListPage()),
+        child: wrapped,
       ),
     );
     await tester.pumpAndSettle();
@@ -72,7 +80,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
-        child: const MaterialApp(home: GuardianListPage()),
+        child: wrapped,
       ),
     );
     await tester.pumpAndSettle();
@@ -101,7 +109,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
-        child: const MaterialApp(home: GuardianListPage()),
+        child: wrapped,
       ),
     );
     await tester.pumpAndSettle();
@@ -130,7 +138,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [connectionRepositoryProvider.overrideWithValue(fake)],
-        child: const MaterialApp(home: GuardianListPage()),
+        child: wrapped,
       ),
     );
     await tester.pumpAndSettle();

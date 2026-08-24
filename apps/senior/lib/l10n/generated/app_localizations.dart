@@ -533,6 +533,1086 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'다시 말씀해주세요'**
   String get voiceRetryButton;
+
+  /// No description provided for @riskSafeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'안전'**
+  String get riskSafeLabel;
+
+  /// No description provided for @riskCautionLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'주의'**
+  String get riskCautionLabel;
+
+  /// No description provided for @riskDangerousLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'위험 감지'**
+  String get riskDangerousLabel;
+
+  /// No description provided for @analysisTypeDocumentLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서 분석'**
+  String get analysisTypeDocumentLabel;
+
+  /// No description provided for @analysisTypeMessageLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자 확인'**
+  String get analysisTypeMessageLabel;
+
+  /// No description provided for @analysisResultTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 결과'**
+  String get analysisResultTitle;
+
+  /// No description provided for @pinEntryPrompt.
+  ///
+  /// In ko, this message translates to:
+  /// **'PIN을 입력해주세요'**
+  String get pinEntryPrompt;
+
+  /// No description provided for @pinForgotLink.
+  ///
+  /// In ko, this message translates to:
+  /// **'PIN을 잊으셨나요?'**
+  String get pinForgotLink;
+
+  /// No description provided for @pinResetTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'PIN 재설정'**
+  String get pinResetTitle;
+
+  /// No description provided for @identityVerifyFailedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'본인 확인에 실패했어요'**
+  String get identityVerifyFailedTitle;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 시도'**
+  String get retryButton;
+
+  /// No description provided for @pinNewSetupPrompt.
+  ///
+  /// In ko, this message translates to:
+  /// **'새로운 PIN 4자리를 정해주세요'**
+  String get pinNewSetupPrompt;
+
+  /// No description provided for @pinMismatchError.
+  ///
+  /// In ko, this message translates to:
+  /// **'PIN이 일치하지 않아요. 처음부터 다시 입력해주세요.'**
+  String get pinMismatchError;
+
+  /// No description provided for @pinConfirmPrompt.
+  ///
+  /// In ko, this message translates to:
+  /// **'한 번 더 입력해주세요'**
+  String get pinConfirmPrompt;
+
+  /// No description provided for @pinSetupPrompt.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용하실 PIN 4자리를 정해주세요'**
+  String get pinSetupPrompt;
+
+  /// No description provided for @pinSetupDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음부터 앱을 열 때 이 PIN으로 확인해요.'**
+  String get pinSetupDescription;
+
+  /// No description provided for @roleSelectTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'어떤 분으로 이용하실까요?'**
+  String get roleSelectTitle;
+
+  /// No description provided for @roleSelectSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이용 목적에 맞게 화면을 준비해드릴게요.'**
+  String get roleSelectSubtitle;
+
+  /// No description provided for @roleAlreadyRegisteredNotice.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 번호는 이미 다른 역할로 등록되어 있어요. 계속 진행하면 이 역할도 함께 등록돼요.'**
+  String get roleAlreadyRegisteredNotice;
+
+  /// No description provided for @roleElderButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'저는 어르신이에요'**
+  String get roleElderButton;
+
+  /// No description provided for @roleGuardianButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'저는 가족(보호자)이에요'**
+  String get roleGuardianButton;
+
+  /// No description provided for @pinKeypadClearLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'지우기'**
+  String get pinKeypadClearLabel;
+
+  /// No description provided for @guardianConnectTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자 연결'**
+  String get guardianConnectTitle;
+
+  /// No description provided for @qrGeneratingMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'QR 코드를 만들고 있어요'**
+  String get qrGeneratingMessage;
+
+  /// No description provided for @qrGenerateError.
+  ///
+  /// In ko, this message translates to:
+  /// **'QR 코드를 만들지 못했어요. 다시 시도해주세요.'**
+  String get qrGenerateError;
+
+  /// No description provided for @qrShowGuardianPrompt.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자에게 이 QR을 보여주세요'**
+  String get qrShowGuardianPrompt;
+
+  /// No description provided for @qrScanExplanation.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자가 이 QR을 스캔하면 연결 요청이 도착합니다.'**
+  String get qrScanExplanation;
+
+  /// No description provided for @qrExpiredMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'QR이 만료되었어요.'**
+  String get qrExpiredMessage;
+
+  /// No description provided for @qrRegenerateButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'QR 다시 만들기'**
+  String get qrRegenerateButton;
+
+  /// No description provided for @guardianListTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결된 보호자 목록'**
+  String get guardianListTitle;
+
+  /// No description provided for @guardianConnectButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자 연결하기'**
+  String get guardianConnectButton;
+
+  /// No description provided for @guardianListLoadError.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자 목록을 불러오지 못했어요.'**
+  String get guardianListLoadError;
+
+  /// No description provided for @guardianListEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 연결된 보호자가 없습니다\n보호자 연결하기로 QR을 보여주세요'**
+  String get guardianListEmptyMessage;
+
+  /// No description provided for @guardianRequestLabelWithId.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자 연결 요청 ({id})'**
+  String guardianRequestLabelWithId(String id);
+
+  /// No description provided for @acceptButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'수락'**
+  String get acceptButton;
+
+  /// No description provided for @rejectButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'거절'**
+  String get rejectButton;
+
+  /// No description provided for @guardianRevokeConfirmTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결을 해제할까요?'**
+  String get guardianRevokeConfirmTitle;
+
+  /// No description provided for @guardianRevokeConfirmMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'해제하면 이 보호자는 더 이상 회원님의 정보를 볼 수 없습니다.'**
+  String get guardianRevokeConfirmMessage;
+
+  /// No description provided for @guardianRevokeConfirmLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'해제'**
+  String get guardianRevokeConfirmLabel;
+
+  /// No description provided for @guardianRevokeAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결 해제'**
+  String get guardianRevokeAction;
+
+  /// No description provided for @guardianStatusPending.
+  ///
+  /// In ko, this message translates to:
+  /// **'요청 대기 중'**
+  String get guardianStatusPending;
+
+  /// No description provided for @guardianStatusAccepted.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결됨'**
+  String get guardianStatusAccepted;
+
+  /// No description provided for @guardianStatusRejected.
+  ///
+  /// In ko, this message translates to:
+  /// **'거절함'**
+  String get guardianStatusRejected;
+
+  /// No description provided for @guardianStatusRevoked.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결 해제됨'**
+  String get guardianStatusRevoked;
+
+  /// No description provided for @documentScanTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서 촬영'**
+  String get documentScanTitle;
+
+  /// No description provided for @cameraPermissionCheckError.
+  ///
+  /// In ko, this message translates to:
+  /// **'카메라 권한을 확인하지 못했어요.'**
+  String get cameraPermissionCheckError;
+
+  /// No description provided for @cameraPermissionRequestMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서와 문자를 촬영해 분석하려면\n카메라 접근을 허용해주세요.'**
+  String get cameraPermissionRequestMessage;
+
+  /// No description provided for @cameraPermissionRequestButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'카메라 권한 허용하기'**
+  String get cameraPermissionRequestButton;
+
+  /// No description provided for @cameraPermissionBlockedMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'카메라 권한이 차단되어 있어요.\n기기 설정에서 직접 허용해주셔야 해요.'**
+  String get cameraPermissionBlockedMessage;
+
+  /// No description provided for @openSettingsButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정 열기'**
+  String get openSettingsButton;
+
+  /// No description provided for @scanPreviewTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'촬영 결과 확인'**
+  String get scanPreviewTitle;
+
+  /// No description provided for @retakeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'재촬영'**
+  String get retakeLabel;
+
+  /// No description provided for @scannedDocumentsCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'촬영한 문서 ({count}장)'**
+  String scannedDocumentsCount(int count);
+
+  /// No description provided for @addAnotherPhotoButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'추가 촬영'**
+  String get addAnotherPhotoButton;
+
+  /// No description provided for @analyzeButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석하기'**
+  String get analyzeButton;
+
+  /// No description provided for @documentIndexLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서 {index}'**
+  String documentIndexLabel(int index);
+
+  /// No description provided for @deletePhotoAtIndexLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'{index}번째 사진 삭제'**
+  String deletePhotoAtIndexLabel(int index);
+
+  /// No description provided for @documentAnalyzingProgress.
+  ///
+  /// In ko, this message translates to:
+  /// **'{current}/{total} 문서 분석 중'**
+  String documentAnalyzingProgress(int current, int total);
+
+  /// No description provided for @documentsAnalyzedCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서 {count}건을 분석했어요'**
+  String documentsAnalyzedCount(int count);
+
+  /// No description provided for @noCameraAvailableError.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용 가능한 카메라가 없어요.'**
+  String get noCameraAvailableError;
+
+  /// No description provided for @cameraStartError.
+  ///
+  /// In ko, this message translates to:
+  /// **'카메라를 시작하지 못했어요.'**
+  String get cameraStartError;
+
+  /// No description provided for @flashUnavailableError.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 기기에서는 플래시를 사용할 수 없어요.'**
+  String get flashUnavailableError;
+
+  /// No description provided for @captureFailedError.
+  ///
+  /// In ko, this message translates to:
+  /// **'촬영에 실패했어요. 다시 시도해주세요.'**
+  String get captureFailedError;
+
+  /// No description provided for @cameraPreparingMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'카메라를 준비하고 있어요'**
+  String get cameraPreparingMessage;
+
+  /// No description provided for @documentFrameGuideMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서를 화면 안에 맞춰주세요'**
+  String get documentFrameGuideMessage;
+
+  /// No description provided for @captureButtonLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'촬영하기'**
+  String get captureButtonLabel;
+
+  /// No description provided for @noGuardianConnectedError.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 연결된 보호자가 없어요.'**
+  String get noGuardianConnectedError;
+
+  /// No description provided for @emergencyHelpTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'도움이 필요하신가요?'**
+  String get emergencyHelpTitle;
+
+  /// No description provided for @callGuardianLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자에게 전화'**
+  String get callGuardianLabel;
+
+  /// No description provided for @emergency119Label.
+  ///
+  /// In ko, this message translates to:
+  /// **'119 (응급구조)'**
+  String get emergency119Label;
+
+  /// No description provided for @emergency112Label.
+  ///
+  /// In ko, this message translates to:
+  /// **'112 (경찰)'**
+  String get emergency112Label;
+
+  /// No description provided for @emergency118Label.
+  ///
+  /// In ko, this message translates to:
+  /// **'118 (사이버 신고)'**
+  String get emergency118Label;
+
+  /// No description provided for @myRecordsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 기록'**
+  String get myRecordsTitle;
+
+  /// No description provided for @documentReadLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서 읽기'**
+  String get documentReadLabel;
+
+  /// No description provided for @messageCheckLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자 확인'**
+  String get messageCheckLabel;
+
+  /// No description provided for @infoTabTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'정보'**
+  String get infoTabTitle;
+
+  /// No description provided for @infoTabEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 준비된 정보가 없어요. 곧 맞춤 정보를 보여드릴게요.'**
+  String get infoTabEmptyMessage;
+
+  /// No description provided for @statisticsLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'통계'**
+  String get statisticsLabel;
+
+  /// No description provided for @usefulInfoLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'알아두면 좋은 정보'**
+  String get usefulInfoLabel;
+
+  /// No description provided for @howToUseLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용 방법 안내'**
+  String get howToUseLabel;
+
+  /// No description provided for @supportTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'고객 지원'**
+  String get supportTitle;
+
+  /// No description provided for @moreTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'더보기'**
+  String get moreTitle;
+
+  /// No description provided for @recordsLoadingMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'기록을 불러오고 있어요'**
+  String get recordsLoadingMessage;
+
+  /// No description provided for @recordsLoadError.
+  ///
+  /// In ko, this message translates to:
+  /// **'기록을 불러오는 중 문제가 발생했어요.'**
+  String get recordsLoadError;
+
+  /// No description provided for @recordsEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 분석한 기록이 없습니다.\n문서 찍기나 문자 보기를 이용해보세요.'**
+  String get recordsEmptyMessage;
+
+  /// No description provided for @helpRequestLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'도움 요청'**
+  String get helpRequestLabel;
+
+  /// No description provided for @easyModeOnState.
+  ///
+  /// In ko, this message translates to:
+  /// **'켜짐'**
+  String get easyModeOnState;
+
+  /// No description provided for @easyModeOffState.
+  ///
+  /// In ko, this message translates to:
+  /// **'꺼짐'**
+  String get easyModeOffState;
+
+  /// No description provided for @easyModeToggleSemanticLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'쉬운 모드, 현재 {state}'**
+  String easyModeToggleSemanticLabel(String state);
+
+  /// No description provided for @easyModeOnDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'켜짐 — 큰 버튼과 단순한 화면'**
+  String get easyModeOnDescription;
+
+  /// No description provided for @coreFeaturesTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'핵심 기능'**
+  String get coreFeaturesTitle;
+
+  /// No description provided for @recentRecordsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 기록'**
+  String get recentRecordsTitle;
+
+  /// No description provided for @emergencyHelpRequestLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'긴급 도움 요청'**
+  String get emergencyHelpRequestLabel;
+
+  /// No description provided for @smsPermissionCheckError.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자 권한을 확인하지 못했어요.'**
+  String get smsPermissionCheckError;
+
+  /// No description provided for @smsPermissionRequestMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'받은 문자를 확인해 위험한 문자인지 알려드리려면\n문자 접근을 허용해주세요.'**
+  String get smsPermissionRequestMessage;
+
+  /// No description provided for @smsPermissionRequestButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자 권한 허용하기'**
+  String get smsPermissionRequestButton;
+
+  /// No description provided for @smsPermissionBlockedMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자 권한이 차단되어 있어요.\n기기 설정에서 직접 허용해주셔야 해요.'**
+  String get smsPermissionBlockedMessage;
+
+  /// No description provided for @analysisGenericError.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 중 문제가 발생했어요.'**
+  String get analysisGenericError;
+
+  /// No description provided for @unknownSenderLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'알 수 없는 번호'**
+  String get unknownSenderLabel;
+
+  /// No description provided for @manualMessageInputPrompt.
+  ///
+  /// In ko, this message translates to:
+  /// **'의심스러운 문자를 복사해서 붙여넣거나\n직접 입력해주세요.'**
+  String get manualMessageInputPrompt;
+
+  /// No description provided for @pasteFromClipboardButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'클립보드에서 붙여넣기'**
+  String get pasteFromClipboardButton;
+
+  /// No description provided for @messageContentLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자 내용'**
+  String get messageContentLabel;
+
+  /// No description provided for @messageContentHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자 내용을 입력해주세요'**
+  String get messageContentHint;
+
+  /// No description provided for @recentSmsLoadingMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 문자를 불러오고 있어요'**
+  String get recentSmsLoadingMessage;
+
+  /// No description provided for @smsLoadError.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자를 불러오지 못했어요.'**
+  String get smsLoadError;
+
+  /// No description provided for @recentSmsEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 받은 문자가 없어요.'**
+  String get recentSmsEmptyMessage;
+
+  /// No description provided for @accessibilitySettingsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'접근성 설정'**
+  String get accessibilitySettingsTitle;
+
+  /// No description provided for @guardianRegisterTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자 등록'**
+  String get guardianRegisterTitle;
+
+  /// No description provided for @onboardingAccessibilityIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'편하게 사용하실 수 있도록 먼저 설정할게요.'**
+  String get onboardingAccessibilityIntro;
+
+  /// No description provided for @nextButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음'**
+  String get nextButton;
+
+  /// No description provided for @onboardingProfileIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'알려주시면 더 도움이 되는 정보를 보여드릴 수 있어요. (선택 입력)'**
+  String get onboardingProfileIntro;
+
+  /// No description provided for @regionLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'지역'**
+  String get regionLabel;
+
+  /// No description provided for @skipButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'건너뛰기'**
+  String get skipButton;
+
+  /// No description provided for @guardianConnectComingSoonMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자 연결은 곧 제공될 예정이에요. 준비되면 더보기 메뉴에서 언제든 연결하실 수 있어요.'**
+  String get guardianConnectComingSoonMessage;
+
+  /// No description provided for @saveAndStartButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'저장하고 시작하기'**
+  String get saveAndStartButton;
+
+  /// No description provided for @textSizeTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'글자 크기'**
+  String get textSizeTitle;
+
+  /// No description provided for @voiceGuideTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성 안내'**
+  String get voiceGuideTitle;
+
+  /// No description provided for @voiceGuideDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'화면 내용을 음성으로도 안내해드려요'**
+  String get voiceGuideDescription;
+
+  /// No description provided for @feeStatisticsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'요금 통계'**
+  String get feeStatisticsTitle;
+
+  /// No description provided for @feeStatisticsLoadingMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'요금 통계를 불러오고 있어요'**
+  String get feeStatisticsLoadingMessage;
+
+  /// No description provided for @feeStatisticsLoadError.
+  ///
+  /// In ko, this message translates to:
+  /// **'요금 통계를 불러오는 중 문제가 발생했어요.'**
+  String get feeStatisticsLoadError;
+
+  /// No description provided for @privacyPinTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호(PIN)'**
+  String get privacyPinTitle;
+
+  /// No description provided for @privacyPinBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'PIN 원문이나 이를 유추할 수 있는 값은 이 기기 어디에도 저장하지 않아요. 서버에서도 암호화된 값만 검증 전용으로 보관하고, 다른 사람이 들여다볼 수 있는 경로가 없어요.'**
+  String get privacyPinBody;
+
+  /// No description provided for @privacyPhotoTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서 촬영 사진'**
+  String get privacyPhotoTitle;
+
+  /// No description provided for @privacyPhotoBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서를 촬영해 분석을 요청하면, 분석이 끝나는 즉시(성공하든 실패하든) 원본 사진은 서버에서 삭제돼요. 분석 결과만 남아요.'**
+  String get privacyPhotoBody;
+
+  /// No description provided for @privacySharedInfoTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자와 공유되는 정보'**
+  String get privacySharedInfoTitle;
+
+  /// No description provided for @privacySharedInfoBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 결과는 내가 연결을 수락한 보호자만 볼 수 있어요. 연결을 해제하면 더 이상 볼 수 없어요.'**
+  String get privacySharedInfoBody;
+
+  /// No description provided for @privacyRetentionTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 결과 원문 보관 기간'**
+  String get privacyRetentionTitle;
+
+  /// No description provided for @privacyRetentionBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자·문서 분석 결과에 남는 요약/원문을 얼마나 오래 보관할지는 아직 정해지지 않았어요. 정해지는 대로 이 화면에 안내할게요.'**
+  String get privacyRetentionBody;
+
+  /// No description provided for @privacyInfoTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'개인정보 보관 안내'**
+  String get privacyInfoTitle;
+
+  /// No description provided for @supportContactTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'고객센터 연락처'**
+  String get supportContactTitle;
+
+  /// No description provided for @supportContactComingSoon.
+  ///
+  /// In ko, this message translates to:
+  /// **'전화·이메일 연락처를 준비하고 있어요. 곧 안내해드릴게요.'**
+  String get supportContactComingSoon;
+
+  /// No description provided for @privacyInfoDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 정보가 어떻게 보관되는지 확인해요'**
+  String get privacyInfoDescription;
+
+  /// No description provided for @micPermissionCheckError.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이크 권한을 확인하지 못했어요.'**
+  String get micPermissionCheckError;
+
+  /// No description provided for @micPermissionRequestMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성 비서를 사용하려면\n마이크 접근을 허용해주세요.'**
+  String get micPermissionRequestMessage;
+
+  /// No description provided for @micPermissionRequestButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이크 권한 허용하기'**
+  String get micPermissionRequestButton;
+
+  /// No description provided for @micPermissionBlockedMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이크 권한이 차단되어 있어요.\n기기 설정에서 직접 허용해주셔야 해요.'**
+  String get micPermissionBlockedMessage;
+
+  /// No description provided for @actionChecklistTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'해야 할 일'**
+  String get actionChecklistTitle;
+
+  /// No description provided for @clarifyingQuestionsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'궁금한 점이 있나요?'**
+  String get clarifyingQuestionsTitle;
+
+  /// No description provided for @askByVoiceButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성으로 물어보기'**
+  String get askByVoiceButton;
+
+  /// No description provided for @dateKindPaymentDue.
+  ///
+  /// In ko, this message translates to:
+  /// **'납부 기한'**
+  String get dateKindPaymentDue;
+
+  /// No description provided for @dateKindVisit.
+  ///
+  /// In ko, this message translates to:
+  /// **'방문 날짜'**
+  String get dateKindVisit;
+
+  /// No description provided for @dateKindApplicationPeriod.
+  ///
+  /// In ko, this message translates to:
+  /// **'신청 기간'**
+  String get dateKindApplicationPeriod;
+
+  /// No description provided for @dateKindExpiration.
+  ///
+  /// In ko, this message translates to:
+  /// **'만료일'**
+  String get dateKindExpiration;
+
+  /// No description provided for @dateKindReservation.
+  ///
+  /// In ko, this message translates to:
+  /// **'예약 날짜'**
+  String get dateKindReservation;
+
+  /// No description provided for @dateKindOther.
+  ///
+  /// In ko, this message translates to:
+  /// **'기타 중요한 날짜'**
+  String get dateKindOther;
+
+  /// No description provided for @importantDatesTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'중요한 날짜'**
+  String get importantDatesTitle;
+
+  /// No description provided for @monthDayFormat.
+  ///
+  /// In ko, this message translates to:
+  /// **'{month}월 {day}일'**
+  String monthDayFormat(int month, int day);
+
+  /// No description provided for @keyPointsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'주요 내용'**
+  String get keyPointsTitle;
+
+  /// No description provided for @analysisProgressSemanticLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 진행률 {percent}퍼센트, {label}'**
+  String analysisProgressSemanticLabel(int percent, String label);
+
+  /// No description provided for @progressPreparing.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석을 준비하고 있어요'**
+  String get progressPreparing;
+
+  /// No description provided for @progressSending.
+  ///
+  /// In ko, this message translates to:
+  /// **'자료를 보내고 있어요'**
+  String get progressSending;
+
+  /// No description provided for @progressAnalyzing.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI가 확인하고 있어요'**
+  String get progressAnalyzing;
+
+  /// No description provided for @progressFinishing.
+  ///
+  /// In ko, this message translates to:
+  /// **'결과를 정리하고 있어요'**
+  String get progressFinishing;
+
+  /// No description provided for @detailsViewTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'상세정보 보기'**
+  String get detailsViewTitle;
+
+  /// No description provided for @reliabilityLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'신뢰도'**
+  String get reliabilityLabel;
+
+  /// No description provided for @sourceTextLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'원문'**
+  String get sourceTextLabel;
+
+  /// No description provided for @askAboutThisButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 내용 물어보기'**
+  String get askAboutThisButton;
+
+  /// No description provided for @confirmedDoneSemanticLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인 완료로 표시했어요'**
+  String get confirmedDoneSemanticLabel;
+
+  /// No description provided for @confirmedDoneMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인 완료했어요'**
+  String get confirmedDoneMessage;
+
+  /// No description provided for @confirmDoneButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인 완료'**
+  String get confirmDoneButton;
+
+  /// No description provided for @featureComingSoonMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 기능은 아직 준비 중이에요.'**
+  String get featureComingSoonMessage;
+
+  /// No description provided for @feeStatisticsEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 요금 통계가 없습니다.\n고지서나 요금서를 분석하면 통계가 만들어집니다.'**
+  String get feeStatisticsEmptyMessage;
+
+  /// No description provided for @totalFeeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'총 요금'**
+  String get totalFeeLabel;
+
+  /// No description provided for @averageFeeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'평균 요금'**
+  String get averageFeeLabel;
+
+  /// No description provided for @maxFeeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'최고 요금'**
+  String get maxFeeLabel;
+
+  /// No description provided for @feeRecordCountLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'요금 내역'**
+  String get feeRecordCountLabel;
+
+  /// No description provided for @monthlyToggleLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'월별'**
+  String get monthlyToggleLabel;
+
+  /// No description provided for @yearlyToggleLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'연별'**
+  String get yearlyToggleLabel;
+
+  /// No description provided for @toggleViewSemanticLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'{label} 보기'**
+  String toggleViewSemanticLabel(String label);
+
+  /// No description provided for @monthlyTrendTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'월별 요금 추이'**
+  String get monthlyTrendTitle;
+
+  /// No description provided for @yearlyTrendTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'연별 요금 추이'**
+  String get yearlyTrendTitle;
+
+  /// No description provided for @noDataInPeriodMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 기간에는 요금 기록이 없습니다.'**
+  String get noDataInPeriodMessage;
+
+  /// No description provided for @feeFootnote.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석된 고지서/요금서의 금액을 기준으로 계산합니다. AI가 금액을 추출하지 못한 기록은 제외됩니다.'**
+  String get feeFootnote;
+
+  /// No description provided for @feeChartEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 요금 통계가 없습니다.'**
+  String get feeChartEmptyMessage;
+
+  /// No description provided for @feeChartSemanticNoData.
+  ///
+  /// In ko, this message translates to:
+  /// **'요금 추이 그래프. 아직 데이터가 없습니다.'**
+  String get feeChartSemanticNoData;
+
+  /// No description provided for @feeChartSemanticSummary.
+  ///
+  /// In ko, this message translates to:
+  /// **'요금 추이 그래프. {summary}'**
+  String feeChartSemanticSummary(String summary);
+
+  /// No description provided for @monthNumberLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'{month}월'**
+  String monthNumberLabel(int month);
+
+  /// No description provided for @yearNumberLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'{year}년'**
+  String yearNumberLabel(int year);
+
+  /// No description provided for @countUnitLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}건'**
+  String countUnitLabel(int count);
 }
 
 class _AppLocalizationsDelegate

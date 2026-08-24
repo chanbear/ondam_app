@@ -11,17 +11,23 @@ import '../tokens/app_text_styles.dart';
 /// color family that [AppConfidenceIndicator] deliberately does NOT share,
 /// so "risky content" and "uncertain AI answer" are never visually confused
 /// (ui-research.md 9).
+///
+/// [label] is passed in already localized by the caller — this package has
+/// no `AppLocalizations` of its own (senior/guardian each generate their
+/// own), so it follows the same convention as [AppAlertCard]/[AppStatusCard]
+/// (message/title params, no strings baked in here).
 class AppRiskBadge extends StatelessWidget {
-  const AppRiskBadge({super.key, required this.level});
+  const AppRiskBadge({super.key, required this.level, required this.label});
 
   final RiskLevel level;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
-    final (color, icon, label) = switch (level) {
-      RiskLevel.safe => (AppColors.success, Icons.check_circle, '안전'),
-      RiskLevel.caution => (AppColors.warning, Icons.error_outline, '주의'),
-      RiskLevel.dangerous => (AppColors.error, Icons.warning_amber, '위험 감지'),
+    final (color, icon) = switch (level) {
+      RiskLevel.safe => (AppColors.success, Icons.check_circle),
+      RiskLevel.caution => (AppColors.warning, Icons.error_outline),
+      RiskLevel.dangerous => (AppColors.error, Icons.warning_amber),
     };
 
     return Container(

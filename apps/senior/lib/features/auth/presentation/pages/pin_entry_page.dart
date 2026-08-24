@@ -5,6 +5,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../app/router/auth_routes.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/pin_verify_result.dart';
 import '../providers/pin_notifier.dart';
 import '../widgets/pin_keypad.dart';
@@ -62,22 +63,22 @@ class _PinEntryPageState extends ConsumerState<PinEntryPage> {
     });
   }
 
-  String? get _guidanceMessage {
+  String? _guidanceMessage(AppLocalizations l10n) {
     if (_lastFailure != null) return _lastFailure!.message;
     final result = _lastResult;
     if (result == null || result.ok) return null;
     return switch (result.reason!) {
       PinVerifyFailureReason.wrongPin =>
         result.failedAttempts != null
-            ? 'PIN이 올바르지 않아요. (${result.failedAttempts}회 실패)'
-            : 'PIN이 올바르지 않아요.',
+            ? l10n.pinWrongWithCount(result.failedAttempts!)
+            : l10n.pinWrong,
       PinVerifyFailureReason.locked =>
         result.lockedUntil != null
-            ? '너무 여러 번 틀렸어요. ${_formatLockedUntil(result.lockedUntil!)}에 다시 시도해주세요.'
-            : '너무 여러 번 틀려서 잠시 잠겼어요. 잠시 후 다시 시도해주세요.',
-      PinVerifyFailureReason.pinNotSet => 'PIN이 설정되어 있지 않아요.',
-      PinVerifyFailureReason.invalidFormat => 'PIN은 4자리 숫자예요.',
-      PinVerifyFailureReason.unknown => '확인 중 문제가 발생했어요. 다시 시도해주세요.',
+            ? l10n.pinLockedWithTime(_formatLockedUntil(result.lockedUntil!))
+            : l10n.pinLockedNoTime,
+      PinVerifyFailureReason.pinNotSet => l10n.pinNotSet,
+      PinVerifyFailureReason.invalidFormat => l10n.pinInvalidFormat,
+      PinVerifyFailureReason.unknown => l10n.pinUnknownError,
     };
   }
 
@@ -92,7 +93,8 @@ class _PinEntryPageState extends ConsumerState<PinEntryPage> {
   Widget build(BuildContext context) {
     final pinState = ref.watch(pinNotifierProvider);
     final isLoading = pinState.isLoading;
-    final guidance = _guidanceMessage;
+    final l10n = AppLocalizations.of(context)!;
+    final guidance = _guidanceMessage(l10n);
     final isLocked = _lastResult?.reason == PinVerifyFailureReason.locked;
 
     return Scaffold(
@@ -103,7 +105,7 @@ class _PinEntryPageState extends ConsumerState<PinEntryPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'PIN을 입력해주세요',
+                l10n.pinEntryPrompt,
                 style: AppTextStyles.headlineMedium,
                 textAlign: TextAlign.center,
               ),
@@ -131,7 +133,7 @@ class _PinEntryPageState extends ConsumerState<PinEntryPage> {
               const SizedBox(height: AppSpacing.lg),
               TextButton(
                 onPressed: () => context.push(AuthRoutes.pinForgot),
-                child: const Text('PIN을 잊으셨나요?'),
+                child: Text(l10n.pinForgotLink),
               ),
             ],
           ),

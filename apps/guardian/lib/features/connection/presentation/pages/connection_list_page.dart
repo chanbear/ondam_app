@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/my_links_notifier.dart';
 import 'connection_scan_page.dart';
 
@@ -42,22 +43,23 @@ class _ConnectionListPageState extends ConsumerState<ConnectionListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final linksState = ref.watch(myLinksProvider);
 
     return AppScaffold(
-      title: '어르신 연결 관리',
+      title: l10n.guardianConnectionManageTitle,
       onBack: () => Navigator.of(context).pop(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (_) => const ConnectionScanPage())),
-        label: const Text('어르신 연결하기'),
+        label: Text(l10n.connectElderActionLong),
         icon: const Icon(Icons.qr_code_scanner),
       ),
       body: linksState.when(
         loading: () => const AppLoading(),
         error: (error, _) => AppError(
-          message: '연결 목록을 불러오지 못했어요.',
+          message: l10n.connectionListLoadError,
           onRetry: () => ref.invalidate(myLinksProvider),
         ),
         data: (links) {
@@ -66,9 +68,9 @@ class _ConnectionListPageState extends ConsumerState<ConnectionListPage> {
               .toList();
           if (visible.isEmpty) {
             return AppEmptyState(
-              message: '아직 연결된 어르신이 없습니다\n어르신 연결하기로 QR을 스캔해주세요',
+              message: l10n.connectionListEmptyMessage,
               icon: Icons.person_add_alt_outlined,
-              actionLabel: '어르신 연결하기',
+              actionLabel: l10n.connectElderActionLong,
               onAction: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const ConnectionScanPage()),
               ),
@@ -93,6 +95,7 @@ class _LinkCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return AppCard(
       child: Row(
         children: [
@@ -103,11 +106,11 @@ class _LinkCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '어르신 (${_shortId(link.elderId)})',
+                  l10n.elderPlaceholderName(_shortId(link.elderId)),
                   style: AppTextStyles.bodyLarge,
                 ),
                 Text(
-                  _statusLabel(link.status),
+                  _statusLabel(l10n, link.status),
                   style: AppTextStyles.labelSmall,
                 ),
               ],
@@ -118,9 +121,9 @@ class _LinkCard extends ConsumerWidget {
               onPressed: () async {
                 final confirmed = await AppConfirmDialog.show(
                   context,
-                  title: '연결을 해제할까요?',
-                  message: '해제하면 이 어르신의 정보를 더 이상 볼 수 없습니다.',
-                  confirmLabel: '해제',
+                  title: l10n.elderRevokeConfirmTitle,
+                  message: l10n.elderRevokeConfirmMessage,
+                  confirmLabel: l10n.elderRevokeConfirmLabel,
                   destructive: true,
                 );
                 if (confirmed) {
@@ -128,7 +131,7 @@ class _LinkCard extends ConsumerWidget {
                 }
               },
               child: Text(
-                '연결 해제',
+                l10n.elderRevokeAction,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.error,
                 ),
@@ -141,10 +144,11 @@ class _LinkCard extends ConsumerWidget {
 
   String _shortId(String id) => id.length > 8 ? id.substring(0, 8) : id;
 
-  String _statusLabel(GuardianLinkStatus status) => switch (status) {
-    GuardianLinkStatus.pending => '어르신 수락 대기 중',
-    GuardianLinkStatus.accepted => '연결됨',
-    GuardianLinkStatus.rejected => '거절됨',
-    GuardianLinkStatus.revoked => '연결 해제됨',
-  };
+  String _statusLabel(AppLocalizations l10n, GuardianLinkStatus status) =>
+      switch (status) {
+        GuardianLinkStatus.pending => l10n.elderLinkStatusPending,
+        GuardianLinkStatus.accepted => l10n.elderLinkStatusAccepted,
+        GuardianLinkStatus.rejected => l10n.elderLinkStatusRejected,
+        GuardianLinkStatus.revoked => l10n.elderLinkStatusRevoked,
+      };
 }

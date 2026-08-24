@@ -5,6 +5,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_senior/features/message_check/domain/entities/sms_message.dart';
 import 'package:ondam_senior/features/message_check/presentation/providers/sms_inbox_notifier.dart';
 import 'package:ondam_senior/features/message_check/presentation/widgets/sms_recent_list_view.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 class _FixedSmsInboxNotifier extends SmsInboxNotifier {
   _FixedSmsInboxNotifier(this._build);
@@ -15,6 +16,12 @@ class _FixedSmsInboxNotifier extends SmsInboxNotifier {
 }
 
 void main() {
+  Widget wrap(Widget child) => MaterialApp(
+    locale: const Locale('ko'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(body: child),
+  );
   testWidgets(
     'shows a plain-language empty state for an empty inbox — never a fake message',
     (tester) async {
@@ -25,7 +32,7 @@ void main() {
               () => _FixedSmsInboxNotifier(() async => const <SmsMessage>[]),
             ),
           ],
-          child: const MaterialApp(home: Scaffold(body: SmsRecentListView())),
+          child: wrap(const SmsRecentListView()),
         ),
       );
       await tester.pumpAndSettle();
@@ -46,7 +53,7 @@ void main() {
             ),
           ),
         ],
-        child: const MaterialApp(home: Scaffold(body: SmsRecentListView())),
+        child: wrap(const SmsRecentListView()),
       ),
     );
     await tester.pumpAndSettle();
@@ -68,7 +75,7 @@ void main() {
             () => _FixedSmsInboxNotifier(() async => messages),
           ),
         ],
-        child: const MaterialApp(home: Scaffold(body: SmsRecentListView())),
+        child: wrap(const SmsRecentListView()),
       ),
     );
     await tester.pumpAndSettle();

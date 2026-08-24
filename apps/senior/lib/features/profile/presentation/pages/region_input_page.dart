@@ -91,7 +91,9 @@ class _RegionInputPageState extends ConsumerState<RegionInputPage> {
       unawaited(Geolocator.openLocationSettings().catchError((_) => false));
       setState(() {
         _locating = false;
-        _locationError = AppLocalizations.of(context)!.locationServiceDisabledError;
+        _locationError = AppLocalizations.of(
+          context,
+        )!.locationServiceDisabledError;
       });
       return;
     }
@@ -99,7 +101,9 @@ class _RegionInputPageState extends ConsumerState<RegionInputPage> {
       unawaited(Geolocator.openAppSettings().catchError((_) => false));
       setState(() {
         _locating = false;
-        _locationError = AppLocalizations.of(context)!.locationPermissionDeniedError;
+        _locationError = AppLocalizations.of(
+          context,
+        )!.locationPermissionDeniedError;
       });
       return;
     }
@@ -110,7 +114,9 @@ class _RegionInputPageState extends ConsumerState<RegionInputPage> {
     if (status != LocationPermissionStatus.granted) {
       setState(() {
         _locating = false;
-        _locationError = AppLocalizations.of(context)!.locationPermissionRequiredError;
+        _locationError = AppLocalizations.of(
+          context,
+        )!.locationPermissionRequiredError;
       });
       return;
     }
@@ -196,12 +202,17 @@ class _RegionInputPageState extends ConsumerState<RegionInputPage> {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          AppTextField(label: l10n.sigunguLabel, controller: _sigunguController),
+          AppTextField(
+            label: l10n.sigunguLabel,
+            controller: _sigunguController,
+          ),
           const SizedBox(height: AppSpacing.md),
           AppTextField(label: l10n.dongLabel, controller: _dongController),
           const SizedBox(height: AppSpacing.lg),
           AppButton(
-            label: _locating ? l10n.locatingButton : l10n.useCurrentLocationButton,
+            label: _locating
+                ? l10n.locatingButton
+                : l10n.useCurrentLocationButton,
             isLoading: _locating,
             size: AppButtonSize.large,
             onPressed: _locating ? null : _useCurrentLocation,

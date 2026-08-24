@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/presentation/pages/analysis_record_detail_page.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
 import '../../../analysis/presentation/widgets/analysis_record_card.dart';
@@ -15,6 +16,7 @@ class RecordsTabPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final elders = ref.watch(connectedEldersProvider);
     final recordsState = ref.watch(analysisRecordsProvider);
 
@@ -27,20 +29,20 @@ class RecordsTabPage extends ConsumerWidget {
             AppSpacing.lg,
             0,
           ),
-          child: AppSectionHeader(title: '기록'),
+          child: AppSectionHeader(title: l10n.navRecords),
         ),
         Expanded(
           child: elders.isEmpty
-              ? const AppEmptyState(message: '아직 연결된 어르신이 없습니다.')
+              ? AppEmptyState(message: l10n.noConnectedEldersMessage)
               : recordsState.when(
                   loading: () => const AppLoading(),
                   error: (error, _) => AppError(
-                    message: '분석 기록을 불러오지 못했어요.',
+                    message: l10n.recordsLoadError,
                     onRetry: () => ref.invalidate(analysisRecordsProvider),
                   ),
                   data: (records) {
                     if (records.isEmpty) {
-                      return const AppEmptyState(message: '아직 분석 기록이 없습니다.');
+                      return AppEmptyState(message: l10n.recordsEmptyMessage);
                     }
                     return ListView.separated(
                       padding: const EdgeInsets.all(AppSpacing.lg),

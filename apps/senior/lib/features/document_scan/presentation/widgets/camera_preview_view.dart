@@ -2,6 +2,7 @@ import 'package:camera/camera.dart' as camera_pkg;
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/camera_flash_mode.dart';
 import '../../domain/entities/captured_photo.dart';
 import 'flash_toggle_button.dart';
@@ -42,7 +43,13 @@ class _CameraPreviewViewState extends State<CameraPreviewView> {
     try {
       final cameras = await camera_pkg.availableCameras();
       if (cameras.isEmpty) {
-        if (mounted) setState(() => _initError = '사용 가능한 카메라가 없어요.');
+        if (mounted) {
+          setState(
+            () => _initError = AppLocalizations.of(
+              context,
+            )!.noCameraAvailableError,
+          );
+        }
         return;
       }
       final controller = camera_pkg.CameraController(
@@ -61,7 +68,11 @@ class _CameraPreviewViewState extends State<CameraPreviewView> {
         _initError = null;
       });
     } catch (_) {
-      if (mounted) setState(() => _initError = '카메라를 시작하지 못했어요.');
+      if (mounted) {
+        setState(
+          () => _initError = AppLocalizations.of(context)!.cameraStartError,
+        );
+      }
     }
   }
 
@@ -87,9 +98,11 @@ class _CameraPreviewViewState extends State<CameraPreviewView> {
       if (mounted) setState(() => _flashMode = next);
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('이 기기에서는 플래시를 사용할 수 없어요.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.flashUnavailableError),
+        ),
+      );
     }
   }
 
@@ -104,9 +117,11 @@ class _CameraPreviewViewState extends State<CameraPreviewView> {
       );
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('촬영에 실패했어요. 다시 시도해주세요.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.captureFailedError),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _capturing = false);
@@ -128,13 +143,30 @@ class _CameraPreviewViewState extends State<CameraPreviewView> {
 
     final controller = _controller;
     if (controller == null || !controller.value.isInitialized) {
-      return const AppLoading(message: '카메라를 준비하고 있어요');
+      return AppLoading(
+        message: AppLocalizations.of(context)!.cameraPreparingMessage,
+      );
     }
 
     return Stack(
       fit: StackFit.expand,
       children: [
         camera_pkg.CameraPreview(controller),
+        // 촬영 가이드 문구 — HTML prototype `documentCamera()`와 동일한 안내
+        // ("문서를 화면 안에 맞춰주세요"). 실제 촬영 로직에는 관여하지 않는
+        // 순수 안내 오버레이다.
+        Positioned(
+          // 우상단 FlashToggleButton(최대 56px 높이 + 상단 여백)과 겹치지
+          // 않도록 그 아래에 둔다.
+          top: AppSpacing.xxl + AppSpacing.xl,
+          left: AppSpacing.lg,
+          right: AppSpacing.lg,
+          child: Text(
+            AppLocalizations.of(context)!.documentFrameGuideMessage,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
+          ),
+        ),
         Positioned(
           top: AppSpacing.md,
           right: AppSpacing.md,
@@ -167,7 +199,7 @@ class _ShutterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: '촬영하기',
+      label: AppLocalizations.of(context)!.captureButtonLabel,
       child: Material(
         color: Colors.white,
         shape: const CircleBorder(),

@@ -6,6 +6,7 @@ import 'package:ondam_models/ondam_models.dart';
 import 'package:ondam_senior/features/analysis/domain/usecases/get_my_analysis_records_usecase.dart';
 import 'package:ondam_senior/features/analysis/presentation/providers/analysis_records_di_providers.dart';
 import 'package:ondam_senior/features/statistics/presentation/pages/fee_statistics_page.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../../analysis/domain/fakes/fake_analysis_records_repository.dart';
 
@@ -29,7 +30,12 @@ Widget wrap(FakeAnalysisRecordsRepository repository) {
         GetMyAnalysisRecordsUseCase(repository),
       ),
     ],
-    child: const MaterialApp(home: FeeStatisticsPage()),
+    child: MaterialApp(
+      locale: const Locale('ko'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const FeeStatisticsPage(),
+    ),
   );
 }
 

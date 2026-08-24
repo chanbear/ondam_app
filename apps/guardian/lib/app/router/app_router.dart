@@ -6,10 +6,7 @@ import '../../core/auth/auth_state_provider.dart';
 import '../../core/auth/pin_verified_provider.dart';
 import '../../core/auth/supabase_client_provider.dart';
 import '../../features/auth/presentation/pages/phone_input_page.dart';
-import '../../features/auth/presentation/pages/pin_entry_page.dart';
 import '../../features/auth/presentation/pages/pin_forgot_page.dart';
-import '../../features/auth/presentation/pages/pin_setup_page.dart';
-import '../../features/auth/presentation/pages/role_select_page.dart';
 import '../../features/auth/presentation/pages/session_loading_page.dart';
 import '../../features/auth/presentation/providers/has_pin_provider.dart';
 import '../../features/auth/presentation/providers/role_notifier.dart';
@@ -18,13 +15,18 @@ import 'auth_redirect.dart';
 import 'auth_routes.dart';
 import 'root_navigator_key.dart';
 
-/// Central route table for the Guardian app, gated by the 3-state auth
-/// model (technical-decisions.md §1-3-A):
-///   No Session            -> phone input (name + phone, no OTP)
-///   Session, PIN unset    -> PIN setup
-///   Session, PIN unverified -> PIN entry
-///   Session, PIN verified, no role -> role selection
-///   Session, PIN verified, has role -> home
+/// Central route table for the Guardian app, gated by the 3-state auth model
+/// (technical-decisions.md §1-3-A), simplified in Guardian UI Application
+/// Round 1 §4 to match the Senior app — phone+password login, first-time PIN
+/// setup and PIN re-entry all happen on the SAME `phoneInput` screen
+/// (LoginNotifier orchestrates them internally), and role is decided
+/// automatically instead of a separate selection screen:
+///   No session, or session but PIN not set/verified -> phone input (login)
+///   Session, PIN verified, role not yet auto-added -> session loading
+///   Session, PIN verified, role present -> home
+/// `pin_setup_page.dart`/`pin_entry_page.dart`/`role_select_page.dart` are
+/// intentionally left in place (unregistered) rather than deleted — same
+/// precedent as the Senior app's router.
 /// This router is independent from the Senior app's — the two apps never
 /// share a router (architecture.md).
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -46,20 +48,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const PhoneInputPage(),
       ),
       GoRoute(
-        path: AuthRoutes.pinSetup,
-        builder: (context, state) => const PinSetupPage(),
-      ),
-      GoRoute(
-        path: AuthRoutes.pinEntry,
-        builder: (context, state) => const PinEntryPage(),
-      ),
-      GoRoute(
         path: AuthRoutes.pinForgot,
         builder: (context, state) => const PinForgotPage(),
-      ),
-      GoRoute(
-        path: AuthRoutes.roleSelect,
-        builder: (context, state) => const RoleSelectPage(),
       ),
       GoRoute(
         path: AuthRoutes.sessionLoading,

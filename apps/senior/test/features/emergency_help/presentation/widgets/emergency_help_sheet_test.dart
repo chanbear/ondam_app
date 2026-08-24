@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_senior/features/emergency_help/presentation/providers/emergency_help_di_providers.dart';
 import 'package:ondam_senior/features/emergency_help/presentation/widgets/emergency_help_sheet.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../domain/fakes/fake_dialer_repository.dart';
 import '../../domain/fakes/fake_guardian_contact_repository.dart';
@@ -22,6 +23,9 @@ void main() {
           ),
         ],
         child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) => Scaffold(
               body: Center(

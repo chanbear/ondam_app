@@ -22,12 +22,20 @@
   "forgotPinLink": "비밀번호를 잊으셨나요?",
   "pinWrongWithCount": "비밀번호가 올바르지 않아요. ({count}회 실패)",
   "@pinWrongWithCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "pinWrong": "비밀번호가 올바르지 않아요.",
   "pinLockedWithTime": "너무 여러 번 틀렸어요. {time}에 다시 시도해주세요.",
   "@pinLockedWithTime": {
-    "placeholders": { "time": { "type": "String" } }
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   },
   "pinLockedNoTime": "너무 여러 번 틀려서 잠시 잠겼어요. 잠시 후 다시 시도해주세요.",
   "pinNotSet": "비밀번호가 설정되어 있지 않아요.",
@@ -77,5 +85,272 @@
   "voiceListening": "듣고 있어요",
   "voiceStartSemanticLabel": "말하기 시작",
   "voiceUnrecognizedAnswer": "무슨 말씀인지 잘 이해하지 못했어요. \"문서 찍어줘\", \"문자 확인해줘\", \"긴급 도움\"처럼 말씀해주세요.",
-  "voiceRetryButton": "다시 말씀해주세요"
+  "voiceRetryButton": "다시 말씀해주세요",
+  "riskSafeLabel": "안전",
+  "riskCautionLabel": "주의",
+  "riskDangerousLabel": "위험 감지",
+  "analysisTypeDocumentLabel": "문서 분석",
+  "analysisTypeMessageLabel": "문자 확인",
+  "analysisResultTitle": "분석 결과",
+  "pinEntryPrompt": "PIN을 입력해주세요",
+  "pinForgotLink": "PIN을 잊으셨나요?",
+  "pinResetTitle": "PIN 재설정",
+  "identityVerifyFailedTitle": "본인 확인에 실패했어요",
+  "retryButton": "다시 시도",
+  "pinNewSetupPrompt": "새로운 PIN 4자리를 정해주세요",
+  "pinMismatchError": "PIN이 일치하지 않아요. 처음부터 다시 입력해주세요.",
+  "pinConfirmPrompt": "한 번 더 입력해주세요",
+  "pinSetupPrompt": "사용하실 PIN 4자리를 정해주세요",
+  "pinSetupDescription": "다음부터 앱을 열 때 이 PIN으로 확인해요.",
+  "roleSelectTitle": "어떤 분으로 이용하실까요?",
+  "roleSelectSubtitle": "이용 목적에 맞게 화면을 준비해드릴게요.",
+  "roleAlreadyRegisteredNotice": "이 번호는 이미 다른 역할로 등록되어 있어요. 계속 진행하면 이 역할도 함께 등록돼요.",
+  "roleElderButton": "저는 어르신이에요",
+  "roleGuardianButton": "저는 가족(보호자)이에요",
+  "pinKeypadClearLabel": "지우기",
+  "guardianConnectTitle": "보호자 연결",
+  "qrGeneratingMessage": "QR 코드를 만들고 있어요",
+  "qrGenerateError": "QR 코드를 만들지 못했어요. 다시 시도해주세요.",
+  "qrShowGuardianPrompt": "보호자에게 이 QR을 보여주세요",
+  "qrScanExplanation": "보호자가 이 QR을 스캔하면 연결 요청이 도착합니다.",
+  "qrExpiredMessage": "QR이 만료되었어요.",
+  "qrRegenerateButton": "QR 다시 만들기",
+  "guardianListTitle": "연결된 보호자 목록",
+  "guardianConnectButton": "보호자 연결하기",
+  "guardianListLoadError": "보호자 목록을 불러오지 못했어요.",
+  "guardianListEmptyMessage": "아직 연결된 보호자가 없습니다\n보호자 연결하기로 QR을 보여주세요",
+  "guardianRequestLabelWithId": "보호자 연결 요청 ({id})",
+  "@guardianRequestLabelWithId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "acceptButton": "수락",
+  "rejectButton": "거절",
+  "guardianRevokeConfirmTitle": "연결을 해제할까요?",
+  "guardianRevokeConfirmMessage": "해제하면 이 보호자는 더 이상 회원님의 정보를 볼 수 없습니다.",
+  "guardianRevokeConfirmLabel": "해제",
+  "guardianRevokeAction": "연결 해제",
+  "guardianStatusPending": "요청 대기 중",
+  "guardianStatusAccepted": "연결됨",
+  "guardianStatusRejected": "거절함",
+  "guardianStatusRevoked": "연결 해제됨",
+  "documentScanTitle": "문서 촬영",
+  "cameraPermissionCheckError": "카메라 권한을 확인하지 못했어요.",
+  "cameraPermissionRequestMessage": "문서와 문자를 촬영해 분석하려면\n카메라 접근을 허용해주세요.",
+  "cameraPermissionRequestButton": "카메라 권한 허용하기",
+  "cameraPermissionBlockedMessage": "카메라 권한이 차단되어 있어요.\n기기 설정에서 직접 허용해주셔야 해요.",
+  "openSettingsButton": "설정 열기",
+  "scanPreviewTitle": "촬영 결과 확인",
+  "retakeLabel": "재촬영",
+  "scannedDocumentsCount": "촬영한 문서 ({count}장)",
+  "@scannedDocumentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "addAnotherPhotoButton": "추가 촬영",
+  "analyzeButton": "분석하기",
+  "documentIndexLabel": "문서 {index}",
+  "@documentIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "deletePhotoAtIndexLabel": "{index}번째 사진 삭제",
+  "@deletePhotoAtIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "documentAnalyzingProgress": "{current}/{total} 문서 분석 중",
+  "@documentAnalyzingProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "documentsAnalyzedCount": "문서 {count}건을 분석했어요",
+  "@documentsAnalyzedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noCameraAvailableError": "사용 가능한 카메라가 없어요.",
+  "cameraStartError": "카메라를 시작하지 못했어요.",
+  "flashUnavailableError": "이 기기에서는 플래시를 사용할 수 없어요.",
+  "captureFailedError": "촬영에 실패했어요. 다시 시도해주세요.",
+  "cameraPreparingMessage": "카메라를 준비하고 있어요",
+  "documentFrameGuideMessage": "문서를 화면 안에 맞춰주세요",
+  "captureButtonLabel": "촬영하기",
+  "noGuardianConnectedError": "아직 연결된 보호자가 없어요.",
+  "emergencyHelpTitle": "도움이 필요하신가요?",
+  "callGuardianLabel": "보호자에게 전화",
+  "emergency119Label": "119 (응급구조)",
+  "emergency112Label": "112 (경찰)",
+  "emergency118Label": "118 (사이버 신고)",
+  "myRecordsTitle": "내 기록",
+  "documentReadLabel": "문서 읽기",
+  "messageCheckLabel": "문자 확인",
+  "infoTabTitle": "정보",
+  "infoTabEmptyMessage": "아직 준비된 정보가 없어요. 곧 맞춤 정보를 보여드릴게요.",
+  "statisticsLabel": "통계",
+  "usefulInfoLabel": "알아두면 좋은 정보",
+  "howToUseLabel": "사용 방법 안내",
+  "supportTitle": "고객 지원",
+  "moreTitle": "더보기",
+  "recordsLoadingMessage": "기록을 불러오고 있어요",
+  "recordsLoadError": "기록을 불러오는 중 문제가 발생했어요.",
+  "recordsEmptyMessage": "아직 분석한 기록이 없습니다.\n문서 찍기나 문자 보기를 이용해보세요.",
+  "helpRequestLabel": "도움 요청",
+  "easyModeOnState": "켜짐",
+  "easyModeOffState": "꺼짐",
+  "easyModeToggleSemanticLabel": "쉬운 모드, 현재 {state}",
+  "@easyModeToggleSemanticLabel": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "easyModeOnDescription": "켜짐 — 큰 버튼과 단순한 화면",
+  "coreFeaturesTitle": "핵심 기능",
+  "recentRecordsTitle": "최근 기록",
+  "emergencyHelpRequestLabel": "긴급 도움 요청",
+  "smsPermissionCheckError": "문자 권한을 확인하지 못했어요.",
+  "smsPermissionRequestMessage": "받은 문자를 확인해 위험한 문자인지 알려드리려면\n문자 접근을 허용해주세요.",
+  "smsPermissionRequestButton": "문자 권한 허용하기",
+  "smsPermissionBlockedMessage": "문자 권한이 차단되어 있어요.\n기기 설정에서 직접 허용해주셔야 해요.",
+  "analysisGenericError": "분석 중 문제가 발생했어요.",
+  "unknownSenderLabel": "알 수 없는 번호",
+  "manualMessageInputPrompt": "의심스러운 문자를 복사해서 붙여넣거나\n직접 입력해주세요.",
+  "pasteFromClipboardButton": "클립보드에서 붙여넣기",
+  "messageContentLabel": "문자 내용",
+  "messageContentHint": "문자 내용을 입력해주세요",
+  "recentSmsLoadingMessage": "최근 문자를 불러오고 있어요",
+  "smsLoadError": "문자를 불러오지 못했어요.",
+  "recentSmsEmptyMessage": "최근 받은 문자가 없어요.",
+  "accessibilitySettingsTitle": "접근성 설정",
+  "guardianRegisterTitle": "보호자 등록",
+  "onboardingAccessibilityIntro": "편하게 사용하실 수 있도록 먼저 설정할게요.",
+  "nextButton": "다음",
+  "onboardingProfileIntro": "알려주시면 더 도움이 되는 정보를 보여드릴 수 있어요. (선택 입력)",
+  "regionLabel": "지역",
+  "skipButton": "건너뛰기",
+  "guardianConnectComingSoonMessage": "보호자 연결은 곧 제공될 예정이에요. 준비되면 더보기 메뉴에서 언제든 연결하실 수 있어요.",
+  "saveAndStartButton": "저장하고 시작하기",
+  "textSizeTitle": "글자 크기",
+  "voiceGuideTitle": "음성 안내",
+  "voiceGuideDescription": "화면 내용을 음성으로도 안내해드려요",
+  "feeStatisticsTitle": "요금 통계",
+  "feeStatisticsLoadingMessage": "요금 통계를 불러오고 있어요",
+  "feeStatisticsLoadError": "요금 통계를 불러오는 중 문제가 발생했어요.",
+  "privacyPinTitle": "비밀번호(PIN)",
+  "privacyPinBody": "PIN 원문이나 이를 유추할 수 있는 값은 이 기기 어디에도 저장하지 않아요. 서버에서도 암호화된 값만 검증 전용으로 보관하고, 다른 사람이 들여다볼 수 있는 경로가 없어요.",
+  "privacyPhotoTitle": "문서 촬영 사진",
+  "privacyPhotoBody": "문서를 촬영해 분석을 요청하면, 분석이 끝나는 즉시(성공하든 실패하든) 원본 사진은 서버에서 삭제돼요. 분석 결과만 남아요.",
+  "privacySharedInfoTitle": "보호자와 공유되는 정보",
+  "privacySharedInfoBody": "분석 결과는 내가 연결을 수락한 보호자만 볼 수 있어요. 연결을 해제하면 더 이상 볼 수 없어요.",
+  "privacyRetentionTitle": "분석 결과 원문 보관 기간",
+  "privacyRetentionBody": "문자·문서 분석 결과에 남는 요약/원문을 얼마나 오래 보관할지는 아직 정해지지 않았어요. 정해지는 대로 이 화면에 안내할게요.",
+  "privacyInfoTitle": "개인정보 보관 안내",
+  "supportContactTitle": "고객센터 연락처",
+  "supportContactComingSoon": "전화·이메일 연락처를 준비하고 있어요. 곧 안내해드릴게요.",
+  "privacyInfoDescription": "내 정보가 어떻게 보관되는지 확인해요",
+  "micPermissionCheckError": "마이크 권한을 확인하지 못했어요.",
+  "micPermissionRequestMessage": "음성 비서를 사용하려면\n마이크 접근을 허용해주세요.",
+  "micPermissionRequestButton": "마이크 권한 허용하기",
+  "micPermissionBlockedMessage": "마이크 권한이 차단되어 있어요.\n기기 설정에서 직접 허용해주셔야 해요.",
+  "actionChecklistTitle": "해야 할 일",
+  "clarifyingQuestionsTitle": "궁금한 점이 있나요?",
+  "askByVoiceButton": "음성으로 물어보기",
+  "dateKindPaymentDue": "납부 기한",
+  "dateKindVisit": "방문 날짜",
+  "dateKindApplicationPeriod": "신청 기간",
+  "dateKindExpiration": "만료일",
+  "dateKindReservation": "예약 날짜",
+  "dateKindOther": "기타 중요한 날짜",
+  "importantDatesTitle": "중요한 날짜",
+  "monthDayFormat": "{month}월 {day}일",
+  "@monthDayFormat": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "keyPointsTitle": "주요 내용",
+  "analysisProgressSemanticLabel": "분석 진행률 {percent}퍼센트, {label}",
+  "@analysisProgressSemanticLabel": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "progressPreparing": "분석을 준비하고 있어요",
+  "progressSending": "자료를 보내고 있어요",
+  "progressAnalyzing": "AI가 확인하고 있어요",
+  "progressFinishing": "결과를 정리하고 있어요",
+  "detailsViewTitle": "상세정보 보기",
+  "reliabilityLabel": "신뢰도",
+  "sourceTextLabel": "원문",
+  "askAboutThisButton": "이 내용 물어보기",
+  "confirmedDoneSemanticLabel": "확인 완료로 표시했어요",
+  "confirmedDoneMessage": "확인 완료했어요",
+  "confirmDoneButton": "확인 완료",
+  "featureComingSoonMessage": "이 기능은 아직 준비 중이에요.",
+  "feeStatisticsEmptyMessage": "아직 요금 통계가 없습니다.\n고지서나 요금서를 분석하면 통계가 만들어집니다.",
+  "totalFeeLabel": "총 요금",
+  "averageFeeLabel": "평균 요금",
+  "maxFeeLabel": "최고 요금",
+  "feeRecordCountLabel": "요금 내역",
+  "monthlyToggleLabel": "월별",
+  "yearlyToggleLabel": "연별",
+  "toggleViewSemanticLabel": "{label} 보기",
+  "@toggleViewSemanticLabel": {
+    "placeholders": { "label": { "type": "String" } }
+  },
+  "monthlyTrendTitle": "월별 요금 추이",
+  "yearlyTrendTitle": "연별 요금 추이",
+  "noDataInPeriodMessage": "이 기간에는 요금 기록이 없습니다.",
+  "feeFootnote": "분석된 고지서/요금서의 금액을 기준으로 계산합니다. AI가 금액을 추출하지 못한 기록은 제외됩니다.",
+  "feeChartEmptyMessage": "아직 요금 통계가 없습니다.",
+  "feeChartSemanticNoData": "요금 추이 그래프. 아직 데이터가 없습니다.",
+  "feeChartSemanticSummary": "요금 추이 그래프. {summary}",
+  "@feeChartSemanticSummary": {
+    "placeholders": { "summary": { "type": "String" } }
+  },
+  "monthNumberLabel": "{month}월",
+  "@monthNumberLabel": {
+    "placeholders": { "month": { "type": "int" } }
+  },
+  "yearNumberLabel": "{year}년",
+  "@yearNumberLabel": {
+    "placeholders": { "year": { "type": "int" } }
+  },
+  "countUnitLabel": "{count}건",
+  "@countUnitLabel": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

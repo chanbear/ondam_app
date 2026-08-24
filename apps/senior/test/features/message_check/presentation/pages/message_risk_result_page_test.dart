@@ -7,6 +7,7 @@ import 'package:ondam_senior/features/message_check/domain/entities/sms_message.
 import 'package:ondam_senior/features/message_check/presentation/pages/message_risk_result_page.dart';
 import 'package:ondam_senior/features/message_check/presentation/providers/message_check_di_providers.dart';
 import 'package:ondam_senior/features/voice_assistant/presentation/pages/voice_assistant_page.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../domain/fakes/fake_message_risk_repository.dart';
 
@@ -38,7 +39,12 @@ void main() {
                 ),
             ),
           ],
-          child: MaterialApp(home: MessageRiskResultPage(message: message)),
+          child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: MessageRiskResultPage(message: message),
+          ),
         ),
       );
 
@@ -56,7 +62,7 @@ void main() {
   );
 
   testWidgets(
-    'Phase 6: 결과 화면의 "음성으로 물어보기" 버튼을 누르면 기존 VoiceAssistantPage로 이동한다',
+    'Phase 6: 결과 화면의 "이 내용 물어보기" 버튼을 누르면 기존 VoiceAssistantPage로 이동한다',
     (tester) async {
       final message = SmsMessage(
         sender: '010-1234-5678',
@@ -82,15 +88,20 @@ void main() {
                 ),
             ),
           ],
-          child: MaterialApp(home: MessageRiskResultPage(message: message)),
+          child: MaterialApp(
+            locale: const Locale('ko'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: MessageRiskResultPage(message: message),
+          ),
         ),
       );
 
       await tester.pumpAndSettle();
 
-      expect(find.text('음성으로 물어보기'), findsOneWidget);
+      expect(find.text('이 내용 물어보기'), findsOneWidget);
 
-      await tester.tap(find.text('음성으로 물어보기'));
+      await tester.tap(find.text('이 내용 물어보기'));
       // MaterialPageRoute push는 한 프레임 안에 완전히 반영되지 않는다 —
       // pumpAndSettle()은 VoiceAssistantPage 내부의 micPermissionProvider가
       // 이 테스트 환경(플랫폼 채널 mock 없음)에서 계속 재빌드를 유발하면

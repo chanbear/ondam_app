@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../core/widgets/coming_soon_page.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../connection/presentation/pages/connection_list_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
 
@@ -17,37 +18,50 @@ class MoreTabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final items = <(IconData, String, Widget Function())>[
       (
         Icons.person_add_alt_outlined,
-        '다른 어르신 연결',
+        l10n.connectAnotherElderAction,
         () => const ConnectionListPage(),
       ),
-      (Icons.settings_outlined, '설정', () => const SettingsPage()),
+      (Icons.settings_outlined, l10n.settingsTitle, () => const SettingsPage()),
       (
         Icons.support_agent_outlined,
-        '고객 지원',
-        () => const ComingSoonPage(title: '고객 지원'),
+        l10n.supportTitle,
+        () => ComingSoonPage(title: l10n.supportTitle),
       ),
     ];
 
-    return ListView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+    // Home P0(Guardian UI Application Round 1)와 동일한 원인 — IndexedStack
+    // 자식으로 ListView를 곧바로 반환하면 최초 프레임(뷰포트 메트릭 도착
+    // 전 0x0 constraint)에 레이아웃이 굳어 본문이 비어버릴 수 있다. 다른
+    // 탭들처럼 Expanded로 명시적 bounded height를 준다.
+    return Column(
       children: [
-        AppSectionHeader(title: '더보기'),
-        for (final (icon, label, pageBuilder) in items)
-          AppCard(
-            onTap: () => _push(context, pageBuilder()),
-            child: Row(
-              children: [
-                Icon(icon, color: AppColors.primary),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(child: Text(label, style: AppTextStyles.bodyLarge)),
-                const Icon(Icons.chevron_right),
-              ],
-            ),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            children: [
+              AppSectionHeader(title: l10n.navMore),
+              for (final (icon, label, pageBuilder) in items)
+                AppCard(
+                  onTap: () => _push(context, pageBuilder()),
+                  child: Row(
+                    children: [
+                      Icon(icon, color: AppColors.primary),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Text(label, style: AppTextStyles.bodyLarge),
+                      ),
+                      const Icon(Icons.chevron_right),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: AppSpacing.sm),
+            ],
           ),
-        const SizedBox(height: AppSpacing.sm),
+        ),
       ],
     );
   }

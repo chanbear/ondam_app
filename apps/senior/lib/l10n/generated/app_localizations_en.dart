@@ -238,4 +238,603 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceRetryButton => 'Please try again';
+
+  @override
+  String get riskSafeLabel => 'Safe';
+
+  @override
+  String get riskCautionLabel => 'Caution';
+
+  @override
+  String get riskDangerousLabel => 'Danger detected';
+
+  @override
+  String get analysisTypeDocumentLabel => 'Document analysis';
+
+  @override
+  String get analysisTypeMessageLabel => 'Message check';
+
+  @override
+  String get analysisResultTitle => 'Analysis Result';
+
+  @override
+  String get pinEntryPrompt => 'Please enter your PIN';
+
+  @override
+  String get pinForgotLink => 'Forgot your PIN?';
+
+  @override
+  String get pinResetTitle => 'Reset PIN';
+
+  @override
+  String get identityVerifyFailedTitle => 'We couldn\'t verify your identity';
+
+  @override
+  String get retryButton => 'Try again';
+
+  @override
+  String get pinNewSetupPrompt => 'Please set a new 4-digit PIN';
+
+  @override
+  String get pinMismatchError => 'The PINs don\'t match. Please start over.';
+
+  @override
+  String get pinConfirmPrompt => 'Please enter it one more time';
+
+  @override
+  String get pinSetupPrompt => 'Please set a 4-digit PIN to use';
+
+  @override
+  String get pinSetupDescription =>
+      'From now on, you\'ll use this PIN to open the app.';
+
+  @override
+  String get roleSelectTitle => 'How would you like to use the app?';
+
+  @override
+  String get roleSelectSubtitle =>
+      'We\'ll prepare the screens to fit your purpose.';
+
+  @override
+  String get roleAlreadyRegisteredNotice =>
+      'This number is already registered with another role. If you continue, this role will be added too.';
+
+  @override
+  String get roleElderButton => 'I\'m a senior';
+
+  @override
+  String get roleGuardianButton => 'I\'m a family member (guardian)';
+
+  @override
+  String get pinKeypadClearLabel => 'Clear';
+
+  @override
+  String get guardianConnectTitle => 'Connect Guardian';
+
+  @override
+  String get qrGeneratingMessage => 'Creating the QR code';
+
+  @override
+  String get qrGenerateError =>
+      'Couldn\'t create the QR code. Please try again.';
+
+  @override
+  String get qrShowGuardianPrompt => 'Show this QR code to your guardian';
+
+  @override
+  String get qrScanExplanation =>
+      'When your guardian scans this QR code, a connection request will be sent.';
+
+  @override
+  String get qrExpiredMessage => 'The QR code has expired.';
+
+  @override
+  String get qrRegenerateButton => 'Create QR code again';
+
+  @override
+  String get guardianListTitle => 'Connected Guardians';
+
+  @override
+  String get guardianConnectButton => 'Connect a guardian';
+
+  @override
+  String get guardianListLoadError => 'Couldn\'t load the guardian list.';
+
+  @override
+  String get guardianListEmptyMessage =>
+      'You don\'t have any connected guardians yet\nTap Connect a Guardian to show your QR code';
+
+  @override
+  String guardianRequestLabelWithId(String id) {
+    return 'Guardian connection request ($id)';
+  }
+
+  @override
+  String get acceptButton => 'Accept';
+
+  @override
+  String get rejectButton => 'Decline';
+
+  @override
+  String get guardianRevokeConfirmTitle => 'Disconnect this guardian?';
+
+  @override
+  String get guardianRevokeConfirmMessage =>
+      'Once disconnected, this guardian will no longer be able to see your information.';
+
+  @override
+  String get guardianRevokeConfirmLabel => 'Disconnect';
+
+  @override
+  String get guardianRevokeAction => 'Disconnect';
+
+  @override
+  String get guardianStatusPending => 'Request pending';
+
+  @override
+  String get guardianStatusAccepted => 'Connected';
+
+  @override
+  String get guardianStatusRejected => 'Declined';
+
+  @override
+  String get guardianStatusRevoked => 'Disconnected';
+
+  @override
+  String get documentScanTitle => 'Scan Document';
+
+  @override
+  String get cameraPermissionCheckError => 'Couldn\'t check camera permission.';
+
+  @override
+  String get cameraPermissionRequestMessage =>
+      'To photograph and analyze documents and messages,\nplease allow camera access.';
+
+  @override
+  String get cameraPermissionRequestButton => 'Allow camera permission';
+
+  @override
+  String get cameraPermissionBlockedMessage =>
+      'Camera permission is blocked.\nPlease allow it directly in device settings.';
+
+  @override
+  String get openSettingsButton => 'Open settings';
+
+  @override
+  String get scanPreviewTitle => 'Review Photos';
+
+  @override
+  String get retakeLabel => 'Retake';
+
+  @override
+  String scannedDocumentsCount(int count) {
+    return 'Photos taken ($count)';
+  }
+
+  @override
+  String get addAnotherPhotoButton => 'Take another photo';
+
+  @override
+  String get analyzeButton => 'Analyze';
+
+  @override
+  String documentIndexLabel(int index) {
+    return 'Document $index';
+  }
+
+  @override
+  String deletePhotoAtIndexLabel(int index) {
+    return 'Delete photo $index';
+  }
+
+  @override
+  String documentAnalyzingProgress(int current, int total) {
+    return 'Analyzing document $current/$total';
+  }
+
+  @override
+  String documentsAnalyzedCount(int count) {
+    return 'Analyzed $count documents';
+  }
+
+  @override
+  String get noCameraAvailableError => 'No camera is available.';
+
+  @override
+  String get cameraStartError => 'Couldn\'t start the camera.';
+
+  @override
+  String get flashUnavailableError => 'Flash isn\'t available on this device.';
+
+  @override
+  String get captureFailedError => 'The photo failed. Please try again.';
+
+  @override
+  String get cameraPreparingMessage => 'Preparing the camera';
+
+  @override
+  String get documentFrameGuideMessage => 'Fit the document within the frame';
+
+  @override
+  String get captureButtonLabel => 'Take photo';
+
+  @override
+  String get noGuardianConnectedError =>
+      'You don\'t have a connected guardian yet.';
+
+  @override
+  String get emergencyHelpTitle => 'Do you need help?';
+
+  @override
+  String get callGuardianLabel => 'Call guardian';
+
+  @override
+  String get emergency119Label => '119 (Emergency Rescue)';
+
+  @override
+  String get emergency112Label => '112 (Police)';
+
+  @override
+  String get emergency118Label => '118 (Cybercrime Report)';
+
+  @override
+  String get myRecordsTitle => 'My Records';
+
+  @override
+  String get documentReadLabel => 'Read Document';
+
+  @override
+  String get messageCheckLabel => 'Check Message';
+
+  @override
+  String get infoTabTitle => 'Info';
+
+  @override
+  String get infoTabEmptyMessage =>
+      'There\'s no information ready yet. We\'ll show you personalized info soon.';
+
+  @override
+  String get statisticsLabel => 'Statistics';
+
+  @override
+  String get usefulInfoLabel => 'Helpful Information';
+
+  @override
+  String get howToUseLabel => 'How to Use';
+
+  @override
+  String get supportTitle => 'Customer Support';
+
+  @override
+  String get moreTitle => 'More';
+
+  @override
+  String get recordsLoadingMessage => 'Loading your records';
+
+  @override
+  String get recordsLoadError =>
+      'Something went wrong while loading your records.';
+
+  @override
+  String get recordsEmptyMessage =>
+      'You don\'t have any analyzed records yet.\nTry scanning a document or checking a message.';
+
+  @override
+  String get helpRequestLabel => 'Request Help';
+
+  @override
+  String get easyModeOnState => 'On';
+
+  @override
+  String get easyModeOffState => 'Off';
+
+  @override
+  String easyModeToggleSemanticLabel(String state) {
+    return 'Easy Mode, currently $state';
+  }
+
+  @override
+  String get easyModeOnDescription => 'On — Big buttons and simple screens';
+
+  @override
+  String get coreFeaturesTitle => 'Key Features';
+
+  @override
+  String get recentRecordsTitle => 'Recent Records';
+
+  @override
+  String get emergencyHelpRequestLabel => 'Emergency Help Request';
+
+  @override
+  String get smsPermissionCheckError => 'Couldn\'t check message permission.';
+
+  @override
+  String get smsPermissionRequestMessage =>
+      'To check your messages and warn you about dangerous ones,\nplease allow message access.';
+
+  @override
+  String get smsPermissionRequestButton => 'Allow message permission';
+
+  @override
+  String get smsPermissionBlockedMessage =>
+      'Message permission is blocked.\nPlease allow it directly in device settings.';
+
+  @override
+  String get analysisGenericError => 'Something went wrong during analysis.';
+
+  @override
+  String get unknownSenderLabel => 'Unknown number';
+
+  @override
+  String get manualMessageInputPrompt =>
+      'Copy and paste a suspicious message,\nor type it in yourself.';
+
+  @override
+  String get pasteFromClipboardButton => 'Paste from clipboard';
+
+  @override
+  String get messageContentLabel => 'Message content';
+
+  @override
+  String get messageContentHint => 'Enter the message content';
+
+  @override
+  String get recentSmsLoadingMessage => 'Loading recent messages';
+
+  @override
+  String get smsLoadError => 'Couldn\'t load messages.';
+
+  @override
+  String get recentSmsEmptyMessage => 'You don\'t have any recent messages.';
+
+  @override
+  String get accessibilitySettingsTitle => 'Accessibility Settings';
+
+  @override
+  String get guardianRegisterTitle => 'Register Guardian';
+
+  @override
+  String get onboardingAccessibilityIntro =>
+      'Let\'s set things up first so it\'s comfortable to use.';
+
+  @override
+  String get nextButton => 'Next';
+
+  @override
+  String get onboardingProfileIntro =>
+      'If you tell us, we can show you more helpful information. (Optional)';
+
+  @override
+  String get regionLabel => 'Region';
+
+  @override
+  String get skipButton => 'Skip';
+
+  @override
+  String get guardianConnectComingSoonMessage =>
+      'Guardian connection will be available soon. Once it\'s ready, you can connect anytime from the More menu.';
+
+  @override
+  String get saveAndStartButton => 'Save and get started';
+
+  @override
+  String get textSizeTitle => 'Text Size';
+
+  @override
+  String get voiceGuideTitle => 'Voice Guide';
+
+  @override
+  String get voiceGuideDescription =>
+      'We\'ll also read the screen content aloud';
+
+  @override
+  String get feeStatisticsTitle => 'Fee Statistics';
+
+  @override
+  String get feeStatisticsLoadingMessage => 'Loading fee statistics';
+
+  @override
+  String get feeStatisticsLoadError =>
+      'Something went wrong while loading fee statistics.';
+
+  @override
+  String get privacyPinTitle => 'Password (PIN)';
+
+  @override
+  String get privacyPinBody =>
+      'Your actual PIN, or anything that could be used to guess it, is never stored anywhere on this device. Even on the server, only an encrypted value is kept for verification only — there\'s no way for anyone else to see it.';
+
+  @override
+  String get privacyPhotoTitle => 'Document Photos';
+
+  @override
+  String get privacyPhotoBody =>
+      'When you photograph a document for analysis, the original photo is deleted from the server as soon as the analysis finishes (whether it succeeds or fails). Only the analysis result remains.';
+
+  @override
+  String get privacySharedInfoTitle => 'Information Shared with Guardians';
+
+  @override
+  String get privacySharedInfoBody =>
+      'Only guardians whose connection you\'ve accepted can see your analysis results. Once you disconnect, they can no longer see them.';
+
+  @override
+  String get privacyRetentionTitle => 'Retention Period for Analysis Records';
+
+  @override
+  String get privacyRetentionBody =>
+      'How long the summary and original text from message/document analysis will be kept hasn\'t been decided yet. We\'ll let you know here as soon as it\'s determined.';
+
+  @override
+  String get privacyInfoTitle => 'Privacy & Data Retention';
+
+  @override
+  String get supportContactTitle => 'Support Contact';
+
+  @override
+  String get supportContactComingSoon =>
+      'We\'re preparing phone and email contact information. We\'ll let you know soon.';
+
+  @override
+  String get privacyInfoDescription => 'See how your information is kept';
+
+  @override
+  String get micPermissionCheckError =>
+      'Couldn\'t check microphone permission.';
+
+  @override
+  String get micPermissionRequestMessage =>
+      'To use the voice assistant,\nplease allow microphone access.';
+
+  @override
+  String get micPermissionRequestButton => 'Allow microphone permission';
+
+  @override
+  String get micPermissionBlockedMessage =>
+      'Microphone permission is blocked.\nPlease allow it directly in device settings.';
+
+  @override
+  String get actionChecklistTitle => 'To-Do';
+
+  @override
+  String get clarifyingQuestionsTitle => 'Have a question?';
+
+  @override
+  String get askByVoiceButton => 'Ask by voice';
+
+  @override
+  String get dateKindPaymentDue => 'Payment Due';
+
+  @override
+  String get dateKindVisit => 'Visit Date';
+
+  @override
+  String get dateKindApplicationPeriod => 'Application Period';
+
+  @override
+  String get dateKindExpiration => 'Expiration Date';
+
+  @override
+  String get dateKindReservation => 'Reservation Date';
+
+  @override
+  String get dateKindOther => 'Other Important Date';
+
+  @override
+  String get importantDatesTitle => 'Important Dates';
+
+  @override
+  String monthDayFormat(int month, int day) {
+    return '$month/$day';
+  }
+
+  @override
+  String get keyPointsTitle => 'Key Points';
+
+  @override
+  String analysisProgressSemanticLabel(int percent, String label) {
+    return 'Analysis progress $percent percent, $label';
+  }
+
+  @override
+  String get progressPreparing => 'Preparing analysis';
+
+  @override
+  String get progressSending => 'Sending your data';
+
+  @override
+  String get progressAnalyzing => 'AI is checking it';
+
+  @override
+  String get progressFinishing => 'Finishing up the results';
+
+  @override
+  String get detailsViewTitle => 'View Details';
+
+  @override
+  String get reliabilityLabel => 'Reliability';
+
+  @override
+  String get sourceTextLabel => 'Original Text';
+
+  @override
+  String get askAboutThisButton => 'Ask about this';
+
+  @override
+  String get confirmedDoneSemanticLabel => 'Marked as confirmed';
+
+  @override
+  String get confirmedDoneMessage => 'Confirmed';
+
+  @override
+  String get confirmDoneButton => 'Mark as Confirmed';
+
+  @override
+  String get featureComingSoonMessage => 'This feature isn\'t ready yet.';
+
+  @override
+  String get feeStatisticsEmptyMessage =>
+      'No fee statistics yet.\nAnalyze a bill or invoice to build your statistics.';
+
+  @override
+  String get totalFeeLabel => 'Total fee';
+
+  @override
+  String get averageFeeLabel => 'Average fee';
+
+  @override
+  String get maxFeeLabel => 'Highest fee';
+
+  @override
+  String get feeRecordCountLabel => 'Bill records';
+
+  @override
+  String get monthlyToggleLabel => 'Monthly';
+
+  @override
+  String get yearlyToggleLabel => 'Yearly';
+
+  @override
+  String toggleViewSemanticLabel(String label) {
+    return 'View $label';
+  }
+
+  @override
+  String get monthlyTrendTitle => 'Monthly fee trend';
+
+  @override
+  String get yearlyTrendTitle => 'Yearly fee trend';
+
+  @override
+  String get noDataInPeriodMessage => 'No fee records for this period.';
+
+  @override
+  String get feeFootnote =>
+      'Calculated from the amounts on analyzed bills and invoices. Records where AI couldn\'t extract an amount are excluded.';
+
+  @override
+  String get feeChartEmptyMessage => 'No fee statistics yet.';
+
+  @override
+  String get feeChartSemanticNoData => 'Fee trend chart. No data yet.';
+
+  @override
+  String feeChartSemanticSummary(String summary) {
+    return 'Fee trend chart. $summary';
+  }
+
+  @override
+  String monthNumberLabel(int month) {
+    return '$month';
+  }
+
+  @override
+  String yearNumberLabel(int year) {
+    return '$year';
+  }
+
+  @override
+  String countUnitLabel(int count) {
+    return '$count';
+  }
 }

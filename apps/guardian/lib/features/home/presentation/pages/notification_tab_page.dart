@@ -4,6 +4,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/presentation/pages/analysis_record_detail_page.dart';
 import '../../../analysis/presentation/providers/analysis_di_providers.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
@@ -28,6 +29,7 @@ class NotificationTabPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final elders = ref.watch(connectedEldersProvider);
     final notificationsState = ref.watch(notificationsProvider);
     final recordsState = ref.watch(analysisRecordsProvider);
@@ -41,28 +43,28 @@ class NotificationTabPage extends ConsumerWidget {
             AppSpacing.lg,
             0,
           ),
-          child: AppSectionHeader(title: '알림'),
+          child: AppSectionHeader(title: l10n.navNotification),
         ),
         Expanded(
           child: elders.isEmpty
-              ? const AppEmptyState(message: '아직 연결된 어르신이 없습니다.')
+              ? AppEmptyState(message: l10n.noConnectedEldersMessage)
               : ListView(
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   children: [
-                    AppSectionHeader(title: '실시간 알림'),
+                    AppSectionHeader(title: l10n.realtimeAlertsTitle),
                     const SizedBox(height: AppSpacing.sm),
                     ...notificationsState.when(
                       loading: () => const [AppLoading()],
                       error: (error, _) => [
                         AppError(
-                          message: '알림을 불러오지 못했어요.',
+                          message: l10n.recentNotificationsLoadError,
                           onRetry: () => ref.invalidate(notificationsProvider),
                         ),
                       ],
                       data: (notifications) {
                         if (notifications.isEmpty) {
-                          return const [
-                            AppEmptyState(message: '아직 받은 알림이 없습니다.'),
+                          return [
+                            AppEmptyState(message: l10n.noRecentNotifications),
                           ];
                         }
                         return [
@@ -78,13 +80,13 @@ class NotificationTabPage extends ConsumerWidget {
                       },
                     ),
                     const SizedBox(height: AppSpacing.xl),
-                    AppSectionHeader(title: '위험 기록'),
+                    AppSectionHeader(title: l10n.riskRecordsTitle),
                     const SizedBox(height: AppSpacing.sm),
                     ...recordsState.when(
                       loading: () => const [AppLoading()],
                       error: (error, _) => [
                         AppError(
-                          message: '기록을 불러오지 못했어요.',
+                          message: l10n.riskRecordsLoadError,
                           onRetry: () =>
                               ref.invalidate(analysisRecordsProvider),
                         ),
@@ -98,9 +100,7 @@ class NotificationTabPage extends ConsumerWidget {
                             )
                             .toList();
                         if (riskyRecords.isEmpty) {
-                          return const [
-                            AppEmptyState(message: '아직 위험 기록이 없습니다.'),
-                          ];
+                          return [AppEmptyState(message: l10n.noRiskRecords)];
                         }
                         return [
                           for (final record in riskyRecords) ...[
