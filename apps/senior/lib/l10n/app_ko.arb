@@ -246,6 +246,7 @@
   "recentSmsEmptyMessage": "최근 받은 문자가 없어요.",
   "accessibilitySettingsTitle": "접근성 설정",
   "guardianRegisterTitle": "보호자 등록",
+  "onboardingAccessibilityHeadline": "몇 가지만 정해주세요",
   "onboardingAccessibilityIntro": "편하게 사용하실 수 있도록 먼저 설정할게요.",
   "nextButton": "다음",
   "onboardingProfileIntro": "알려주시면 더 도움이 되는 정보를 보여드릴 수 있어요. (선택 입력)",

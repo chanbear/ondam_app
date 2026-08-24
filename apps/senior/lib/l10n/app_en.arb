@@ -246,6 +246,7 @@
   "recentSmsEmptyMessage": "You don't have any recent messages.",
   "accessibilitySettingsTitle": "Accessibility Settings",
   "guardianRegisterTitle": "Register Guardian",
+  "onboardingAccessibilityHeadline": "Just a few settings",
   "onboardingAccessibilityIntro": "Let's set things up first so it's comfortable to use.",
   "nextButton": "Next",
   "onboardingProfileIntro": "If you tell us, we can show you more helpful information. (Optional)",

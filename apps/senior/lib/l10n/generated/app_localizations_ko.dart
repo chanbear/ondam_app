@@ -576,6 +576,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get guardianRegisterTitle => '보호자 등록';
 
   @override
+  String get onboardingAccessibilityHeadline => '몇 가지만 정해주세요';
+
+  @override
   String get onboardingAccessibilityIntro => '편하게 사용하실 수 있도록 먼저 설정할게요.';
 
   @override

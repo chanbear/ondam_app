@@ -575,6 +575,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guardianRegisterTitle => '保護者登録';
 
   @override
+  String get onboardingAccessibilityHeadline => 'いくつか設定しましょう';
+
+  @override
   String get onboardingAccessibilityIntro => '快適にご利用いただけるよう、まず設定を行います。';
 
   @override

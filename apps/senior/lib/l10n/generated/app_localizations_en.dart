@@ -594,6 +594,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guardianRegisterTitle => 'Register Guardian';
 
   @override
+  String get onboardingAccessibilityHeadline => 'Just a few settings';
+
+  @override
   String get onboardingAccessibilityIntro =>
       'Let\'s set things up first so it\'s comfortable to use.';
 

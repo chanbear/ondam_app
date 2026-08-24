@@ -1182,6 +1182,12 @@ abstract class AppLocalizations {
   /// **'보호자 등록'**
   String get guardianRegisterTitle;
 
+  /// No description provided for @onboardingAccessibilityHeadline.
+  ///
+  /// In ko, this message translates to:
+  /// **'몇 가지만 정해주세요'**
+  String get onboardingAccessibilityHeadline;
+
   /// No description provided for @onboardingAccessibilityIntro.
   ///
   /// In ko, this message translates to:

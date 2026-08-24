@@ -246,6 +246,7 @@
   "recentSmsEmptyMessage": "没有最近收到的短信。",
   "accessibilitySettingsTitle": "无障碍设置",
   "guardianRegisterTitle": "登记监护人",
+  "onboardingAccessibilityHeadline": "只需设置几项",
   "onboardingAccessibilityIntro": "为了让您使用更方便，我们先进行一些设置。",
   "nextButton": "下一步",
   "onboardingProfileIntro": "告诉我们后，我们可以为您展示更有用的信息。（选填）",

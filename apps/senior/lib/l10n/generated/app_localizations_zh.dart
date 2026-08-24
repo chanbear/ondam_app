@@ -568,6 +568,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get guardianRegisterTitle => '登记监护人';
 
   @override
+  String get onboardingAccessibilityHeadline => '只需设置几项';
+
+  @override
   String get onboardingAccessibilityIntro => '为了让您使用更方便，我们先进行一些设置。';
 
   @override

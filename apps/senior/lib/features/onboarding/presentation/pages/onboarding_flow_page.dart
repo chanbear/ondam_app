@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../l10n/generated/app_localizations.dart';
+import '../../../settings/presentation/widgets/language_picker_tile.dart';
 import '../providers/onboarding_status_provider.dart';
 import '../widgets/accessibility_settings_form.dart';
 
@@ -69,9 +70,22 @@ class _AccessibilityStep extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.onboardingAccessibilityIntro, style: AppTextStyles.bodyLarge),
+        Text(
+          l10n.onboardingAccessibilityHeadline,
+          style: AppTextStyles.displayLarge,
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          l10n.onboardingAccessibilityIntro,
+          style: AppTextStyles.bodyLarge.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
         const SizedBox(height: AppSpacing.xl),
         const AccessibilitySettingsForm(),
+        const SizedBox(height: AppSpacing.xl),
+        AppSectionHeader(title: l10n.settingsLanguage),
+        const LanguagePickerTile(),
         const SizedBox(height: AppSpacing.xxl),
         AppButton(
           label: l10n.nextButton,

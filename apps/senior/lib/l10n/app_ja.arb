@@ -246,6 +246,7 @@
   "recentSmsEmptyMessage": "最近受信したメッセージがありません。",
   "accessibilitySettingsTitle": "アクセシビリティ設定",
   "guardianRegisterTitle": "保護者登録",
+  "onboardingAccessibilityHeadline": "いくつか設定しましょう",
   "onboardingAccessibilityIntro": "快適にご利用いただけるよう、まず設定を行います。",
   "nextButton": "次へ",
   "onboardingProfileIntro": "教えていただくと、より役立つ情報をお届けできます。（任意入力）",
