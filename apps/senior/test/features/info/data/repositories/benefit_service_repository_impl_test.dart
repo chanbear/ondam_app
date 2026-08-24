@@ -74,10 +74,7 @@ void main() {
 
       final result = await repository.search(demographics, region);
 
-      expect(
-        (result as Err<List<BenefitService>>).failure,
-        isA<AuthFailure>(),
-      );
+      expect((result as Err<List<BenefitService>>).failure, isA<AuthFailure>());
     });
   });
 

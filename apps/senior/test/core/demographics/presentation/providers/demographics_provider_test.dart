@@ -12,9 +12,7 @@ void main() {
     final repository = FakeDemographicsRepository();
     repository.getMyDemographicsResult = const Ok(null);
     final container = ProviderContainer(
-      overrides: [
-        demographicsRepositoryProvider.overrideWithValue(repository),
-      ],
+      overrides: [demographicsRepositoryProvider.overrideWithValue(repository)],
     );
     addTearDown(container.dispose);
 
@@ -39,9 +37,7 @@ void main() {
     repository.getMyDemographicsResult = const Ok(null);
     repository.saveDemographicsResult = const Err(ServerFailure());
     final container = ProviderContainer(
-      overrides: [
-        demographicsRepositoryProvider.overrideWithValue(repository),
-      ],
+      overrides: [demographicsRepositoryProvider.overrideWithValue(repository)],
     );
     addTearDown(container.dispose);
 

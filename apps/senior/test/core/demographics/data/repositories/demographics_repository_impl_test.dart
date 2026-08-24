@@ -50,9 +50,9 @@ void main() {
     });
 
     test('PostgrestException은 ServerFailure로 매핑한다', () async {
-      when(() => dataSource.fetchMine()).thenThrow(
-        const PostgrestException(message: 'boom', code: '500'),
-      );
+      when(
+        () => dataSource.fetchMine(),
+      ).thenThrow(const PostgrestException(message: 'boom', code: '500'));
 
       final result = await repository.getMyDemographics();
 
@@ -75,9 +75,9 @@ void main() {
     });
 
     test('권한 오류(RLS)는 AuthFailure로 매핑한다', () async {
-      when(() => dataSource.upsertMine(age: 72, gender: 'female')).thenThrow(
-        const PostgrestException(message: 'denied', code: '42501'),
-      );
+      when(
+        () => dataSource.upsertMine(age: 72, gender: 'female'),
+      ).thenThrow(const PostgrestException(message: 'denied', code: '42501'));
 
       final result = await repository.saveDemographics(demographics);
 
