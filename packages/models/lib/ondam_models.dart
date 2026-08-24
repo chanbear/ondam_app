@@ -10,4 +10,5 @@ export 'src/guardian_link_status.dart';
 export 'src/important_date.dart';
 export 'src/reliability_level.dart';
 export 'src/risk_level.dart';
+export 'src/schedule.dart';
 export 'src/user_role.dart';
