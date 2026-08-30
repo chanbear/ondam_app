@@ -32,7 +32,7 @@ class AppTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(label, style: AppTextStyles.titleMedium),
+        Text(label, style: AppTextStyles.labelSmall),
         const SizedBox(height: AppSpacing.sm),
         TextField(
           controller: controller,

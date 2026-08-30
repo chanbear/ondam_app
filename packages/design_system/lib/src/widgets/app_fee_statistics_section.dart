@@ -164,42 +164,6 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
         Row(
           children: [
             Expanded(
-              child: AppStatCard(
-                label: labels.totalFeeLabel,
-                value: formatKrw(overall.totalKrw),
-              ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: AppStatCard(
-                label: labels.averageFeeLabel,
-                value: formatKrw(overall.averageKrw),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Row(
-          children: [
-            Expanded(
-              child: AppStatCard(
-                label: labels.maxFeeLabel,
-                value: formatKrw(overall.maxKrw),
-              ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: AppStatCard(
-                label: labels.recordCountLabel,
-                value: labels.countLabelBuilder(overall.count),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.md),
-        Row(
-          children: [
-            Expanded(
               child: _PeriodToggleButton(
                 label: labels.monthlyToggleLabel,
                 semanticLabel: labels.toggleSemanticSuffix(
@@ -270,6 +234,42 @@ class _AppFeeStatisticsSectionState extends State<AppFeeStatisticsSection> {
             ),
           ),
         ],
+        const SizedBox(height: AppSpacing.md),
+        Row(
+          children: [
+            Expanded(
+              child: AppStatCard(
+                label: labels.totalFeeLabel,
+                value: formatKrw(overall.totalKrw),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: AppStatCard(
+                label: labels.averageFeeLabel,
+                value: formatKrw(overall.averageKrw),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Row(
+          children: [
+            Expanded(
+              child: AppStatCard(
+                label: labels.maxFeeLabel,
+                value: formatKrw(overall.maxKrw),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: AppStatCard(
+                label: labels.recordCountLabel,
+                value: labels.countLabelBuilder(overall.count),
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           labels.footnote,

@@ -14,8 +14,10 @@ enum AppButtonSize { standard, large }
 /// Visual weight — mirrors the Phase 42-approved HTML prototype's
 /// `.btn-primary`/`.btn-secondary`/`.btn-danger`/`.btn-ghost` (`ui-spec.md`).
 /// `destructive` uses a soft (tonal) error fill, not a solid one, matching
-/// the prototype's `--color-danger-bg`/`--color-danger` pair.
-enum AppButtonVariant { primary, secondary, destructive, text }
+/// the prototype's `--color-danger-bg`/`--color-danger` pair. `emergency`
+/// is a solid fill using the dedicated SOS-only `AppColors.emergency` token
+/// (separate from `error`) — `ui-prototype`'s `T.button({variant:"emergency"})`.
+enum AppButtonVariant { primary, secondary, destructive, text, emergency }
 
 /// Shared button — use instead of raw ElevatedButton/OutlinedButton/TextButton
 /// so styling stays consistent across features (colors come from AppTheme).
@@ -106,8 +108,19 @@ class AppButton extends StatelessWidget {
         style: FilledButton.styleFrom(
           minimumSize: Size(double.infinity, minHeight),
           shape: shape,
-          backgroundColor: AppColors.error.withValues(alpha: 0.08),
+          backgroundColor: AppColors.errorSoft,
           foregroundColor: AppColors.error,
+          textStyle: textStyle,
+        ),
+        onPressed: onPressedOrNull,
+        child: child,
+      ),
+      AppButtonVariant.emergency => FilledButton(
+        style: FilledButton.styleFrom(
+          minimumSize: Size(double.infinity, minHeight),
+          shape: shape,
+          backgroundColor: AppColors.emergency,
+          foregroundColor: AppColors.surface,
           textStyle: textStyle,
         ),
         onPressed: onPressedOrNull,
@@ -118,7 +131,7 @@ class AppButton extends StatelessWidget {
           minimumSize: Size(double.infinity, minHeight),
           shape: shape,
           foregroundColor: AppColors.textSecondary,
-          textStyle: textStyle,
+          textStyle: textStyle ?? AppTextStyles.bodyLarge,
         ),
         onPressed: onPressedOrNull,
         child: child,

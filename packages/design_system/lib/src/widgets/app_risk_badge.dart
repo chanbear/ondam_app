@@ -24,10 +24,22 @@ class AppRiskBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (color, icon) = switch (level) {
-      RiskLevel.safe => (AppColors.success, Icons.check_circle),
-      RiskLevel.caution => (AppColors.warning, Icons.error_outline),
-      RiskLevel.dangerous => (AppColors.error, Icons.warning_amber),
+    final (color, bgColor, icon) = switch (level) {
+      RiskLevel.safe => (
+        AppColors.success,
+        AppColors.successSoft,
+        Icons.check_circle,
+      ),
+      RiskLevel.caution => (
+        AppColors.warning,
+        AppColors.warningSoft,
+        Icons.error_outline,
+      ),
+      RiskLevel.dangerous => (
+        AppColors.error,
+        AppColors.errorSoft,
+        Icons.warning_amber,
+      ),
     };
 
     return Container(
@@ -36,7 +48,7 @@ class AppRiskBadge extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: bgColor,
         borderRadius: BorderRadius.circular(AppRadius.full),
         border: Border.all(color: color),
       ),

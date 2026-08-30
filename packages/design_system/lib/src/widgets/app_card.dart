@@ -41,7 +41,7 @@ class AppCard extends StatelessWidget {
       ),
     };
     final fillColor = variant == AppCardVariant.selected
-        ? AppColors.primary.withValues(alpha: 0.06)
+        ? AppColors.primarySoft
         : Theme.of(context).colorScheme.surface;
     final radius = BorderRadius.circular(AppRadius.lg);
 

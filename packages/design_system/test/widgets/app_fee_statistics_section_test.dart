@@ -8,8 +8,30 @@ import 'package:ondam_models/ondam_models.dart';
 // 컨테이너 안에서 사용한다 — 이 위젯 자체는 스크롤을 책임지지 않는다(파일
 // 상단 doc comment 참고). 스크롤 없는 고정 높이 컨테이너로 감싸면 선택
 // 상세 카드가 추가될 때 테스트 환경에서만 인위적으로 overflow가 발생한다.
-Widget _wrap(Widget child) =>
-    MaterialApp(home: Scaffold(body: SingleChildScrollView(child: child)));
+Widget _wrap(Widget child) => MaterialApp(
+  home: Scaffold(body: SingleChildScrollView(child: child)),
+);
+
+final _labels = AppFeeStatisticsLabels(
+  emptyMessage: '아직 요금 통계가 없습니다.\n고지서나 요금서를 분석하면 통계가 만들어집니다.',
+  totalFeeLabel: '총 요금',
+  averageFeeLabel: '평균 요금',
+  maxFeeLabel: '최고 요금',
+  recordCountLabel: '요금 내역',
+  monthlyToggleLabel: '월별',
+  yearlyToggleLabel: '연별',
+  toggleSemanticSuffix: (label) => '$label 보기',
+  monthlyTrendTitle: '월별 요금 추이',
+  yearlyTrendTitle: '연별 요금 추이',
+  noDataInPeriodMessage: '이 기간에는 기록이 없습니다.',
+  footnote: '표시된 금액은 분석된 고지서/요금서 기준입니다.',
+  chartEmptyMessage: '아직 요금 통계가 없습니다.',
+  chartSemanticNoDataLabel: '아직 요금 통계가 없습니다.',
+  chartSemanticSummaryBuilder: (summary) => '요금 추이 그래프. $summary',
+  monthLabelBuilder: (date) => '${date.month}월',
+  yearLabelBuilder: (date) => '${date.year}년',
+  countLabelBuilder: (count) => '$count건',
+);
 
 AnalysisResult _doc({
   required String id,
@@ -32,6 +54,7 @@ void main() {
     await tester.pumpWidget(
       _wrap(
         AppFeeStatisticsSection(
+          labels: _labels,
           records: [_doc(id: 'a1', createdAt: DateTime(2026, 8, 1))],
         ),
       ),
@@ -47,6 +70,7 @@ void main() {
     await tester.pumpWidget(
       _wrap(
         AppFeeStatisticsSection(
+          labels: _labels,
           records: [
             _doc(
               id: 'a1',
@@ -77,6 +101,7 @@ void main() {
     await tester.pumpWidget(
       _wrap(
         AppFeeStatisticsSection(
+          labels: _labels,
           records: [
             _doc(
               id: 'a1',
@@ -100,6 +125,7 @@ void main() {
     await tester.pumpWidget(
       _wrap(
         AppFeeStatisticsSection(
+          labels: _labels,
           records: [
             _doc(
               id: 'a1',
@@ -117,13 +143,16 @@ void main() {
     chart.onSelect!(chart.points.indexWhere((p) => p.hasData));
     await tester.pumpAndSettle();
 
-    expect(find.text('건수'), findsOneWidget);
+    // 선택 상세 카드의 두 번째 행도 위젯 코드상 `labels.recordCountLabel`을
+    // 그대로 재사용한다(총 요금 카드와 동일 라벨) — '요금 내역'.
+    expect(find.text('요금 내역'), findsWidgets);
   });
 
   testWidgets('월별/연별 전환 버튼은 최소 44x44 논리 픽셀 터치 영역을 확보한다', (tester) async {
     await tester.pumpWidget(
       _wrap(
         AppFeeStatisticsSection(
+          labels: _labels,
           records: [
             _doc(
               id: 'a1',

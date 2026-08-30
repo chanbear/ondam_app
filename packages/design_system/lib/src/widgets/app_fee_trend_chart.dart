@@ -139,7 +139,11 @@ class AppFeeTrendChart extends StatelessWidget {
           maxY: chartMaxY,
           minX: 0,
           maxX: (points.length - 1).clamp(0, double.infinity).toDouble(),
-          gridData: const FlGridData(drawVerticalLine: false),
+          gridData: FlGridData(
+            drawVerticalLine: false,
+            getDrawingHorizontalLine: (value) =>
+                FlLine(color: AppColors.divider, strokeWidth: 1),
+          ),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
             topTitles: const AxisTitles(),
@@ -207,6 +211,17 @@ class AppFeeTrendChart extends StatelessWidget {
                     strokeColor: AppColors.textPrimary,
                   );
                 },
+              ),
+              belowBarData: BarAreaData(
+                show: true,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.primarySoft,
+                    AppColors.primarySoft.withValues(alpha: 0),
+                  ],
+                ),
               ),
             ),
           ],

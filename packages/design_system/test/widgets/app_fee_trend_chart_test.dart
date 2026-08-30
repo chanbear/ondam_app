@@ -4,6 +4,10 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 
 Widget _wrap(Widget child) => MaterialApp(home: Scaffold(body: child));
 
+const _emptyMessage = '아직 요금 통계가 없습니다.';
+
+String _summaryBuilder(String pointsSummary) => '요금 추이 그래프. $pointsSummary';
+
 void main() {
   testWidgets('데이터가 하나도 없으면 Empty State 문구를 보여준다', (tester) async {
     await tester.pumpWidget(
@@ -13,6 +17,9 @@ void main() {
             FeeChartPoint(label: '1월', amountKrw: null),
             FeeChartPoint(label: '2월', amountKrw: null),
           ],
+          emptyMessage: _emptyMessage,
+          semanticNoDataLabel: _emptyMessage,
+          semanticSummaryBuilder: _summaryBuilder,
         ),
       ),
     );
@@ -25,6 +32,9 @@ void main() {
       _wrap(
         const AppFeeTrendChart(
           points: [FeeChartPoint(label: '8월', amountKrw: 30000)],
+          emptyMessage: _emptyMessage,
+          semanticNoDataLabel: _emptyMessage,
+          semanticSummaryBuilder: _summaryBuilder,
         ),
       ),
     );
@@ -42,6 +52,9 @@ void main() {
             FeeChartPoint(label: '2월', amountKrw: null),
             FeeChartPoint(label: '3월', amountKrw: 20000),
           ],
+          emptyMessage: _emptyMessage,
+          semanticNoDataLabel: _emptyMessage,
+          semanticSummaryBuilder: _summaryBuilder,
         ),
       ),
     );
@@ -62,6 +75,9 @@ void main() {
               FeeChartPoint(label: '1월', amountKrw: 999999999),
               FeeChartPoint(label: '2월', amountKrw: 1),
             ],
+            emptyMessage: _emptyMessage,
+            semanticNoDataLabel: _emptyMessage,
+            semanticSummaryBuilder: _summaryBuilder,
           ),
         ),
       ),
@@ -75,6 +91,9 @@ void main() {
       _wrap(
         const AppFeeTrendChart(
           points: [FeeChartPoint(label: '8월', amountKrw: 30000)],
+          emptyMessage: _emptyMessage,
+          semanticNoDataLabel: _emptyMessage,
+          semanticSummaryBuilder: _summaryBuilder,
         ),
       ),
     );
