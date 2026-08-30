@@ -1,0 +1,45 @@
+/* ---- public/QR deploy overrides ----
+   Hides the internal design-review tooling (screen-list sidebar, dev notes
+   panel, frame-size/overview/download controls) so a visitor lands on just
+   the app content, plus a top bar with a way back to the app picker. Every
+   existing data-nav/data-back/data-enter/data-exit click handler in app.js
+   still runs unchanged — this file only hides elements, never removes them
+   from the DOM (removing them would break app.js's unconditional
+   #devpanel/.nav-item lookups). */
+#navigator, #stage-top, #devpanel { display: none !important; }
+#workspace { grid-template-columns: 1fr !important; }
+#stage-body { padding: 16px; }
+#kioskBar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border-bottom: 1px solid var(--chrome-line);
+  background: var(--chrome-surface);
+}
+#kioskBar button {
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  color: var(--chrome-sage-deep); background: var(--chrome-mint);
+  border: none; border-radius: 999px; padding: 8px 14px; cursor: pointer;
+}
+#kioskBar .kiosk-title { font-family: var(--font-chrome-display); font-size: 14px; color: var(--chrome-ink-soft); }
+
+/* ---- phone-in-mockup -> full-bleed app on an actual phone screen ----
+   Same content/JS, just drops the desktop "phone mockup inside a browser"
+   framing so opening the link on a real device (e.g. after scanning the
+   QR code, or after "Add to Home Screen") feels like an app, not a design
+   tool. Desktop viewers still get the phone mockup preview. */
+@media (max-width: 480px) {
+  #stage { height: 100dvh; }
+  #stage-body { padding: 0 !important; align-items: stretch; justify-content: stretch; }
+  .phone { background: transparent; border-radius: 0; padding: 0; box-shadow: none; width: 100%; flex: 1; }
+  .phone-notch { display: none; }
+  .phone-screen,
+  .phone-screen.w-360, .phone-screen.w-390, .phone-screen.w-430 {
+    width: 100% !important; height: 100dvh; border-radius: 0;
+  }
+  .phone-statusbar { display: none; }
+  #kioskBar {
+    position: sticky; top: 0; z-index: 5;
+    padding-top: calc(10px + env(safe-area-inset-top));
+    padding-left: calc(16px + env(safe-area-inset-left));
+    padding-right: calc(16px + env(safe-area-inset-right));
+  }
+}
