@@ -94,6 +94,7 @@ body.in-app #landing{ display:none; }
 }
 .breadcrumb{ font-size:12.5px; color:var(--chrome-ink-faint); }
 .breadcrumb b{ color:var(--chrome-ink); }
+.stage-top-right{ display:flex; gap:12px; align-items:center; }
 .frame-size{ display:flex; gap:6px; align-items:center; }
 .frame-size button{
   padding:5px 10px; border-radius:7px; border:1px solid var(--chrome-line-strong); background:var(--chrome-paper);
@@ -101,7 +102,50 @@ body.in-app #landing{ display:none; }
 }
 .frame-size button.active{ background:var(--chrome-ink); border-color:var(--chrome-ink); color:var(--chrome-paper); }
 
+.dl-btn{
+  padding:6px 12px; border-radius:7px; border:1px solid var(--chrome-sage); background:var(--chrome-sage);
+  font-family:var(--font-chrome-body); font-size:12px; font-weight:700; color:#fff; cursor:pointer;
+}
+.dl-btn:hover{ background:var(--chrome-sage-deep); border-color:var(--chrome-sage-deep); }
+
+#overviewBtn{
+  padding:6px 12px; border-radius:7px; border:1px solid var(--chrome-line-strong); background:var(--chrome-paper);
+  font-family:var(--font-chrome-body); font-size:12px; font-weight:700; color:var(--chrome-ink-soft); cursor:pointer;
+}
+#overviewBtn.active{ background:var(--chrome-ink); border-color:var(--chrome-ink); color:var(--chrome-paper); }
+
 #stage-body{ flex:1; overflow:auto; display:flex; align-items:flex-start; justify-content:center; padding:32px 24px; gap:20px; }
+#stage-body.overview-mode{ display:block; padding:24px 28px 60px; }
+#stage-body.overview-mode .phone{ display:none; }
+
+#overviewGrid{ display:none; }
+#stage-body.overview-mode #overviewGrid{ display:block; }
+.ov-app-title{ font-family:var(--font-chrome-display); font-size:20px; font-weight:700; margin:0 0 2px; color:var(--chrome-ink); }
+.ov-app-title:not(:first-child){ margin-top:40px; }
+.ov-count{ font-family:var(--font-chrome-mono); font-size:12px; font-weight:400; color:var(--chrome-ink-faint); margin-left:8px; }
+.ov-cat{ font-size:12.5px; font-weight:600; color:var(--chrome-ink-soft); text-transform:uppercase; letter-spacing:.04em; margin:22px 0 10px; }
+.ov-row{ display:flex; flex-wrap:wrap; gap:16px; }
+.ov-item{ width:150px; cursor:pointer; }
+.ov-item .ov-frame{
+  width:150px; height:292px; border-radius:16px; overflow:hidden; background:#111411;
+  border:1px solid var(--chrome-line); position:relative; transition:border-color .15s ease, box-shadow .15s ease;
+}
+.ov-item .ov-frame .phone-screen{ transform:scale(0.3846); transform-origin:top left; border-radius:0; }
+.ov-item:hover .ov-frame{ border-color:var(--chrome-sage); box-shadow:0 4px 14px rgba(20,24,20,.15); }
+.ov-item .ov-label{
+  margin-top:6px; font-size:11px; color:var(--chrome-ink-soft); text-align:center;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* ---- 발표자료용 다운로드 — 인쇄 시 폰 목업만 남기고 에디터 UI는 숨김 ---- */
+@media print{
+  body{ background:#fff; }
+  #landing, #navigator, #stage-top, #devpanel{ display:none !important; }
+  #workspace{ display:block; }
+  #stage{ height:auto; overflow:visible; }
+  #stage-body{ padding:0; overflow:visible; }
+  .phone{ box-shadow:none; margin:0 auto; }
+}
 
 .phone{ background:#111411; border-radius:38px; padding:10px; box-shadow:0 20px 50px rgba(20,24,20,.25); flex:none; }
 .phone-notch{ height:22px; display:flex; align-items:center; justify-content:center; }
@@ -115,7 +159,8 @@ body.in-app #landing{ display:none; }
   flex:none; display:flex; justify-content:space-between; align-items:center; padding:8px 20px 2px;
   font-family:var(--font-chrome-mono); font-size:11px; font-weight:700; color:#1A1A1A;
 }
-.phone-content{ flex:1; overflow-y:auto; position:relative; }
+.phone-content{ flex:1; overflow-y:auto; position:relative; scrollbar-width:none; -ms-overflow-style:none; }
+.phone-content::-webkit-scrollbar{ display:none; width:0; height:0; }
 .state-tabs{
   flex:none; display:flex; gap:6px; padding:8px 14px; border-bottom:1px solid rgba(0,0,0,.06);
   overflow-x:auto; background:rgba(255,255,255,.6); backdrop-filter:blur(2px);

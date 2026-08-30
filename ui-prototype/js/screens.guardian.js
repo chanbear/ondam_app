@@ -77,33 +77,29 @@ G("onboard-done", "온보딩", "온보딩 완료", "63", "온보딩 종료.",
   </div>`);
 
 // ---------- Home ----------
+// 2026-08-27 — 사용자 제공 레퍼런스 이미지 기반 전체 리디자인. elder-hero(진한
+// 파란 히어로 카드) + 스탯 3개 그리드를 없애고, 브랜드 헤더 + 인사말 + "오늘
+// 확인해주세요" 위험 알림 카드 + 최근 활동 목록으로 단순화. 어르신 전환 탭은
+// 레퍼런스엔 없지만 다중 어르신 지원 유지 결정에 따라 인사말 위에 그대로 둠.
+// QR 연결 흐름(elder-add/qr-scan 등)은 손대지 않음.
 G("home", "홈", "홈 (어르신 없음 포함)", "64, 65", "\"지금 괜찮으신가\"에 최상단에서 답함(Guardian 원칙 1).",
-  "chanbear/gyeongjidaehoe3-main(codex/guardian-app) guardian.css — 색상 팔레트(#3D6BF5 계열) 채택 + senior-card 히어로 블록 구조 차용. WWIT 네이버페이/삼쩜삼 — 요약 카드 → 세부 순.",
-  "elder-hero(어르신 요약 블록) + 요약 스탯 3개 + 상태 카드 + 최근 활동 순으로 정보 계층화.", ["연결됨", "어르신 없음"], (ctx, state) => {
+  "사용자 제공 레퍼런스 이미지(온담 보호자 헤더 + 인사말 + 오늘 확인해주세요 카드 + 최근 활동) 그대로 반영.",
+  "브랜드 헤더 + 어르신 탭 + 인사말 + 위험 알림 카드 + 최근 활동 순으로 정보 계층화 — 요약 스탯은 통계 탭으로 이동.", ["연결됨", "어르신 없음"], (ctx, state) => {
     if (state === "어르신 없음") {
       return `${T.topBar("홈", { back: false })}<div class="scr">${T.emptyState("family_restroom", "아직 연결된 어르신이 없습니다.", "", "어르신 연결하기", "guardian.elder-add")}</div>${T.bottomNavGuardian("guardian.home")}`;
     }
     const elder = ONDAM_DATA.elders.find((e) => e.id === ctx.elderId) || ONDAM_DATA.elders[0];
     return `
-  ${T.topBar("홈", { back: false })}
-  <div class="scr flush" style="padding:0 var(--sp-lg) var(--sp-xxl)">
-    <div style="padding-top:8px">
-      ${T.chipRow(ctx.elderId)}
-      <div style="height:12px"></div>
-      <div class="elder-hero">
-        <div class="avatar">${elder.name[0]}</div>
-        <div class="info"><span class="lbl">돌봄 중인 가족</span><strong>${elder.name}</strong><small>최근 활동 ${elder.lastActive}</small></div>
-        <div class="call">${T.msi("call")}</div>
-      </div>
-      <div style="height:14px"></div>
-      ${T.statGrid([T.statCard("warning", "warning", "1", "주의 항목"), T.statCard("event_available", "primary", "3", "이번 주 확인"), T.statCard("favorite", "success", "D-4", "건강검진")])}
-      <div style="height:14px"></div>
-      ${T.alertCard("caution", "주의가 필요한 활동이 있어요", "기록 탭에서 자세한 내용을 확인해주세요.")}
-      <div style="height:20px"></div>
-      <div class="row between"><span class="section-title">최근 활동</span></div>
+  <div class="scr flush" style="padding-bottom:var(--sp-xxl)">
+    ${T.guardianTabHeader(ctx, elder)}
+    <div style="padding:16px var(--sp-lg) 0">
+      ${T.alertCard("dangerous", "오늘 확인해주세요", "개인정보를 요구하는 위험한 문자가 있어요.")}
+      <div style="height:22px"></div>
+      <div class="row between"><span class="section-title">최근 활동</span><button class="btn ghost" style="width:auto;padding:2px 4px;font-size:12.5px;color:var(--primary)" data-nav="guardian.records-all">전체보기</button></div>
       <div class="stack">
-        ${T.listRow({ leftBadge: T.iconBadgeTint("sms", "primary", "sm"), title: "모르는 번호 문자 — 계좌 확인 요청", sub: "오늘 오후 2:14", right: T.riskBadge("caution"), nav: "guardian.records-detail" })}
-        ${T.listRow({ leftBadge: T.iconBadgeTint("description", "primary", "sm"), title: "택배 안내 문자", sub: "오늘 오전 11:02", right: T.riskBadge("safe"), nav: "guardian.records-detail" })}
+        ${T.listRow({ leftBadge: T.iconBadgeTint("sms", "primary", "sm"), title: "개인정보를 요구하는 위험한 문자예요", sub: "출처가 불분명한 링크가 포함되어 있어 누르지 않는 것이 안전해요 · 2일 전", right: T.riskBadge("dangerous"), nav: "guardian.records-detail" })}
+        ${T.listRow({ leftBadge: T.iconBadgeTint("favorite", "primary", "sm"), title: "건강검진 예약 안내", sub: "가까운 건강기관에 예약하고 진단결과를 준비해주세요 · 3일 전", right: T.riskBadge("safe"), nav: "guardian.records-detail" })}
+        ${T.listRow({ leftBadge: T.iconBadgeTint("local_hospital", "primary", "sm"), title: "병원 진료 예약 안내예요", sub: "내일 오전 10시 진료 예약이 있어 방문 준비하시면 돼요 · 4일 전", right: T.riskBadge("safe"), nav: "guardian.records-detail" })}
       </div>
     </div>
   </div>
@@ -199,18 +195,26 @@ G("connect-remove", "어르신 관리", "연결 해제 확인", "74", "연결 �
   </div>`);
 
 // ---------- Records ----------
-G("records-all", "기록", "전체/문서/문자 기록", "75, 76, 77", "탭 화면 — 필터로 문서/문자 구분.",
-  "Senior 기록 화면과 동일 컴포넌트 공유(일관성).",
-  "필터 칩으로 목록 자체는 하나만 유지(별도 화면 3개 대신).", ["전체", "문서", "문자"], (ctx, state) => {
+// 2026-08-27 — 레퍼런스 이미지의 "분석 기록" 탭엔 전체/위험/문서/문자 4개
+// 필터가 있어 기존 3개(전체/문서/문자)에 "위험"을 추가.
+G("records-all", "기록", "전체/위험/문서/문자 기록", "75, 76, 77", "탭 화면 — 필터로 위험/문서/문자 구분.",
+  "Senior 기록 화면과 동일 컴포넌트 공유(일관성) + 레퍼런스 이미지의 4개 필터(전체/위험/문서/문자) 반영.",
+  "필터 칩으로 목록 자체는 하나만 유지(별도 화면 대신).", ["전체", "위험", "문서", "문자"], (ctx, state) => {
+    const elder = ONDAM_DATA.elders.find((e) => e.id === ctx.elderId) || ONDAM_DATA.elders[0];
     const docs = ONDAM_DATA.documents.map((d) => ({ ...d, kind: "문서" }));
     const msgs = ONDAM_DATA.messages.map((m) => ({ ...m, title: m.preview.slice(0, 16) + "…", kind: "문자" }));
     let items = [...docs, ...msgs];
-    if (state === "문서") items = docs; else if (state === "문자") items = msgs;
+    if (state === "문서") items = docs;
+    else if (state === "문자") items = msgs;
+    else if (state === "위험") items = items.filter((r) => r.risk === "dangerous");
     return `
-  ${T.topBar("기록", { back: false })}
-  <div class="scr flush" style="padding:0 var(--sp-lg)">
-    <div style="padding:var(--sp-sm) 0"><div class="chip-row">${["전체", "문서", "문자"].map((l) => `<button class="chip ${l === state ? "active" : ""}" data-state="${l}">${l}</button>`).join("")}</div></div>
-    <div class="stack">${items.map((r) => T.listRow({ leftBadge: T.iconBadgeTint(r.kind === "문서" ? "description" : "sms", "primary", "sm"), title: r.title, sub: r.date, right: T.riskBadge(r.risk), nav: "guardian.records-detail" })).join("")}</div>
+  <div class="scr flush" style="padding-bottom:var(--sp-xxl)">
+    ${T.guardianTabHeader(ctx, elder)}
+    <div style="padding:0 var(--sp-lg)">
+      <div class="section-title" style="margin:16px 0 8px">분석 기록</div>
+      <div class="chip-row">${["전체", "위험", "문서", "문자"].map((l) => `<button class="chip ${l === state ? "active" : ""}" data-state="${l}">${l}</button>`).join("")}</div>
+      <div class="stack" style="margin-top:12px">${items.length ? items.map((r) => T.listRow({ leftBadge: T.iconBadgeTint(r.kind === "문서" ? "description" : "sms", "primary", "sm"), title: r.title, sub: r.date, right: T.riskBadge(r.risk), nav: "guardian.records-detail" })).join("") : T.emptyState("history", "해당하는 기록이 없어요", "")}</div>
+    </div>
   </div>
   ${T.bottomNavGuardian("guardian.records-all")}`; });
 
@@ -227,17 +231,25 @@ G("records-detail", "기록", "기록 상세 (위험/확인 완료)", "78, 79, 8
     ${state !== "확인완료" ? `<div style="margin-top:20px">${T.button("확인 알림 다시 보내기", { variant: "secondary", nav: "guardian.records-detail", attrs: `data-state="확인완료"` })}</div>` : ""}
   </div>`; });
 
-// ---------- Notifications ----------
-G("notif-list", "알림", "알림 목록", "81", "탭 화면 — 위험도순 정렬.",
+// ---------- Notifications (bottom nav label: 받은 연락, 2026-08-27 리네이밍) ----------
+G("notif-list", "받은 연락", "받은 연락 목록", "81", "탭 화면 — 위험도순 정렬.",
   "시간순이 아니라 위험도순(Guardian 원칙 2).",
-  "안 읽음 항목을 배경색으로 구분.", ["목록", "빈 목록"], (ctx, state) => `
-  ${T.topBar("알림", { back: false })}
-  <div class="scr flush" style="padding:0 var(--sp-lg)">
-    ${state === "빈 목록" ? T.emptyState("notifications_off", "아직 알림이 없어요", "") : `<div class="stack" style="padding-top:8px">${ONDAM_DATA.notifications.map((n) => T.notifCard(n)).join("")}</div>`}
+  "레퍼런스 이미지의 '받은 연락' 탭(원래 이름 알림) 반영 — 상단에 안 읽은 연락 수 요약 카드, 빈 상태는 기능 설명 문구.", ["목록", "빈 목록"], (ctx, state) => {
+    const elder = ONDAM_DATA.elders.find((e) => e.id === ctx.elderId) || ONDAM_DATA.elders[0];
+    const unread = state === "빈 목록" ? 0 : ONDAM_DATA.notifications.filter((n) => !n.read).length;
+    return `
+  <div class="scr flush" style="padding-bottom:var(--sp-xxl)">
+    ${T.guardianTabHeader(ctx, elder)}
+    <div style="padding:16px var(--sp-lg) 0">
+      ${T.card(`<div class="row" style="gap:14px">${T.iconBadge("mail", unread ? "danger" : "success", "lg")}<div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700">${unread}</div><div class="body-sm">읽지 않은 연락</div></div></div>`)}
+      ${state === "빈 목록"
+        ? `<div style="margin-top:14px">${T.card(`<p class="body-sm">아직 부모님에게 받은 연락이 없어요. 부모님이 온담에서 "보호자에게 알리기"를 누른 결과가 도착하면 여기 표시돼요.</p>`)}</div>`
+        : `<div class="stack" style="margin-top:14px">${ONDAM_DATA.notifications.map((n) => T.notifCard(n)).join("")}</div>`}
+    </div>
   </div>
-  ${T.bottomNavGuardian("guardian.notif-list")}`);
+  ${T.bottomNavGuardian("guardian.notif-list")}`; });
 
-G("notif-detail", "알림", "알림 상세 (위험/주의/중요 문서)", "82, 83, 84, 85", "알림 상세 → 기록 상세로 연결.",
+G("notif-detail", "받은 연락", "알림 상세 (위험/주의/중요 문서)", "82, 83, 84, 85", "알림 상세 → 기록 상세로 연결.",
   "알림과 기록이 같은 데이터임을 UI로 명확히 연결(Guardian 원칙 6).",
   "\"기록에서 보기\" 버튼으로 항상 기록 상세와 연결.", ["위험", "주의", "중요 문서"], (ctx, state) => {
     const map = { 위험: "dangerous", 주의: "caution", "중요 문서": "safe" };
@@ -249,7 +261,7 @@ G("notif-detail", "알림", "알림 상세 (위험/주의/중요 문서)", "82, 
     <div style="margin-top:20px">${T.button("기록에서 자세히 보기", { variant: "primary", nav: "guardian.records-detail" })}</div>
   </div>`; });
 
-G("deeplink", "알림", "Deep Link 도착 화면", "86", "푸시 알림 탭 → 앱 진입 직후 화면.",
+G("deeplink", "받은 연락", "Deep Link 도착 화면", "86", "푸시 알림 탭 → 앱 진입 직후 화면.",
   "Apple HIG — 알림 탭 시 관련 화면으로 바로 이동, 중간 화면 없이.",
   "홈을 거치지 않고 알림 상세로 즉시 진입, 상단에 \"알림에서 이동함\" 배지.", null, (ctx) => `
   <div class="scr flush" style="padding:0 var(--sp-lg) var(--sp-xxl)">
@@ -259,22 +271,39 @@ G("deeplink", "알림", "Deep Link 도착 화면", "86", "푸시 알림 탭 → 
   </div>`);
 
 // ---------- Statistics ----------
-G("stats-home", "통계", "통계 홈 (빈 통계 포함)", "87, 91", "탭 화면 — 분석 건수/위험 건수 요약.",
-  "실제 코드 statistics_tab_page.dart 구조 그대로(AppStatCard 2개 + 요금 통계 섹션).",
-  "레이아웃 변경 없이 카드 시각만 정제.", ["기본", "빈 통계"], (ctx, state) => `
-  ${T.topBar("통계", { back: false })}
-  <div class="scr flush" style="padding:0 var(--sp-lg) var(--sp-xxl)">
-    ${state === "빈 통계" ? T.emptyState("bar_chart", "아직 통계로 보여드릴 데이터가 없습니다.", "") : `
-    <div style="padding-top:8px">
-      ${T.chipRow(ctx.elderId)}
-      <div style="height:14px"></div>
-      ${T.statGrid([T.statCard("insights", "primary", "8건", "이번 달 분석 건수"), T.statCard("warning", "warning", "1건", "위험 문자 건수")], true)}
+// 2026-08-27 — 레퍼런스 이미지의 "안심 통계" 탭 반영: 스탯 2개→4개(완료된
+// 일정/남은 일정 추가), 최근 4주 활동 막대그래프, 보호자 안심 요약 체크리스트
+// 추가. 요금 통계 진입 카드는 그대로 유지.
+G("stats-home", "통계", "통계 홈 (빈 통계 포함)", "87, 91", "탭 화면 — 분석 건수/위험 건수/일정 요약 + 최근 활동 추이.",
+  "실제 코드 statistics_tab_page.dart 구조(AppStatCard + 요금 통계 섹션) 기반, 레퍼런스 이미지의 4칸 스탯+막대그래프+안심 요약 카드로 확장.",
+  "한눈에 보는 이용 현황 → 스탯 4칸 → 최근 4주 활동 → 보호자 안심 요약 → 요금 통계 진입 순.", ["기본", "빈 통계"], (ctx, state) => {
+    const elder = ONDAM_DATA.elders.find((e) => e.id === ctx.elderId) || ONDAM_DATA.elders[0];
+    return `
+  <div class="scr flush" style="padding-bottom:var(--sp-xxl)">
+    ${T.guardianTabHeader(ctx, elder)}
+    <div style="padding:0 var(--sp-lg)">
+      <div class="section-title" style="margin:16px 0 10px">한눈에 보는 이용 현황</div>
+      ${state === "빈 통계" ? T.emptyState("bar_chart", "아직 통계로 보여드릴 데이터가 없습니다.", "") : `
+      ${T.statGrid([T.statCard("insights", "primary", "5건", "이번 달 분석"), T.statCard("warning", "warning", "1건", "위험 문자"), T.statCard("event_available", "success", "1건", "완료된 일정"), T.statCard("calendar_today", "secondary", "2건", "남은 일정")], true)}
+      <div style="height:18px"></div>
+      <div class="section-title">최근 4주 활동</div>
+      <div style="height:8px"></div>
+      ${T.barChart(ONDAM_DATA.guardianWeeklyActivity, "w")}
+      <div style="height:18px"></div>
+      <div class="section-title">보호자 안심 요약</div>
+      <div style="height:8px"></div>
+      ${T.card(`
+        <div class="g-summary-row">${T.msi("check_circle")}<span class="body-sm">확인이 필요한 위험 건 1건 있습니다.</span></div>
+        <div class="g-summary-row">${T.msi("check_circle")}<span class="body-sm">앞으로 해야 할 일정이 7일 남았습니다.</span></div>
+        <div class="g-summary-row">${T.msi("check_circle")}<span class="body-sm">부모님 안전 지표를 5일째 확인했습니다.</span></div>
+      `)}
       <div style="height:20px"></div>
       <div class="section-title">요금 통계</div>
       <div class="card" data-nav="guardian.stats-fee"><div class="row between"><span class="h-title">자세히 보기</span>${T.msi("chevron_right")}</div></div>
-    </div>`}
+      `}
+    </div>
   </div>
-  ${T.bottomNavGuardian("guardian.stats-home")}`);
+  ${T.bottomNavGuardian("guardian.stats-home")}`; });
 
 G("stats-fee", "통계", "요금 통계 (월별/연별)", "88, 89, 90", "어르신 이름 → 이번 달 요금 → 추이.",
   "사용자 지정 구조: 어르신 이름 → 이번 달 요금 → 월별 추이 → 연간 추이.",
@@ -312,20 +341,29 @@ G("stats-detail", "통계", "통계 상세", "93", "개별 고지서 원본 정�
     ${T.card(`<div class="body-sm">2026.08.25</div><div style="height:10px"></div><div class="row between"><span class="body-sm">항목명</span><span class="body">전기요금</span></div><div style="height:8px"></div><div class="row between"><span class="body-sm">금액</span><span class="body">87,500원</span></div>`)}
   </div>`);
 
-// ---------- Settings ----------
-G("settings", "설정", "설정", "94", "일반 설정 목록.",
-  "카테고리별로 묶어 스크롤 최소화.",
-  "Senior 설정과 동일한 정보구조, 항목만 다름(어르신 관리 추가).", null, (ctx) => `
-  ${T.topBar("설정", { back: false })}
-  <div class="scr flush" style="padding:0 var(--sp-lg)">
-    <div class="stack" style="padding-top:8px">
-      ${T.listRow({ title: "알림 설정", sub: "위험 알림, 다이제스트", nav: "guardian.notif-settings" })}
-      ${T.listRow({ title: "접근성", sub: "글자 크기", nav: "guardian.accessibility" })}
-      ${T.listRow({ title: "계정", sub: "전화번호, 비밀번호", nav: "guardian.account" })}
-      ${T.listRow({ title: "연결된 어르신 관리", sub: "2명", nav: "guardian.manage-elders" })}
+// ---------- More ----------
+// 2026-08-27 — id를 settings→more로 변경. bottomNavGuardian의 "더보기" 탭은
+// 원래부터 nav:"guardian.more"를 가리켰는데 실제 화면 id는 "guardian.settings"
+// 였어서 더보기 탭을 눌러도 아무 반응이 없던 버그였음(SCREEN_MAP에 guardian.more가
+// 없어 goTo()가 조용히 무시). id를 nav 타겟과 맞춰 고침 + 레퍼런스 이미지처럼
+// 항목마다 아이콘 배지를 추가.
+G("more", "더보기", "더보기", "94", "일반 설정 목록.",
+  "레퍼런스 이미지의 더보기 탭 — 브랜드 헤더 + 아이콘 배지가 있는 리스트.",
+  "Senior 설정과 동일한 정보구조, 항목만 다름(어르신 관리 추가) — 항목마다 아이콘 배지로 시각적 밀도 보완.", null, (ctx) => {
+    const elder = ONDAM_DATA.elders.find((e) => e.id === ctx.elderId) || ONDAM_DATA.elders[0];
+    return `
+  <div class="scr flush" style="padding-bottom:var(--sp-xxl)">
+    ${T.guardianTabHeader(ctx, elder)}
+    <div style="padding:16px var(--sp-lg) 0">
+      <div class="stack">
+        ${T.listRow({ leftBadge: T.iconBadgeTint("notifications", "primary", "sm"), title: "알림 설정", sub: "위험 알림, 다이제스트", nav: "guardian.notif-settings" })}
+        ${T.listRow({ leftBadge: T.iconBadgeTint("accessibility_new", "primary", "sm"), title: "접근성", sub: "글자 크기", nav: "guardian.accessibility" })}
+        ${T.listRow({ leftBadge: T.iconBadgeTint("person", "primary", "sm"), title: "계정", sub: "전화번호, 비밀번호", nav: "guardian.account" })}
+        ${T.listRow({ leftBadge: T.iconBadgeTint("family_restroom", "primary", "sm"), title: "연결된 어르신 관리", sub: "2명", nav: "guardian.manage-elders" })}
+      </div>
     </div>
   </div>
-  ${T.bottomNavGuardian("guardian.more")}`);
+  ${T.bottomNavGuardian("guardian.more")}`; });
 
 G("notif-settings", "설정", "알림 설정", "95", "알림 종류별 on/off.",
   "위험 알림은 즉시 발송(끌 수 없음), 그 외는 다이제스트 선택 가능(원칙 — 알림 심각도 표시 3단, 발송은 2단).",
@@ -339,16 +377,27 @@ G("notif-settings", "설정", "알림 설정", "95", "알림 종류별 on/off.",
     </div>
   </div>`);
 
+// 2026-08-27 — Senior settings-textsize와 같은 textsize-option 컴포넌트로
+// 교체. 이전엔 선택 상태가 전혀 안 보이는 정적 버튼 2개였다(class="btn
+// primary"는 실제 CSS 규칙이 없어 아무 효과도 없었음) — 같은 개념(글자
+// 크기)을 다루는 화면이 앱마다 다른 컴포넌트를 쓸 이유가 없어 통일한다.
 G("accessibility", "설정", "접근성", "96", "글자 크기 설정.",
   "Guardian도 정보 밀도가 높지만 접근성 옵션은 동일 제공.",
-  "Senior보다 옵션 단계는 단순화(2단계).", null, (ctx) => `
+  "Senior보다 옵션 단계는 단순화(2단계) — 컴포넌트는 Senior와 동일한 textsize-option 재사용.", ["보통", "큰 글자"], (ctx, state) => {
+    const descs = { "보통": "가장 많이 선택해요.", "큰 글자": "더 크게 보실 수 있어요." };
+    const sizes = { "보통": 22, "큰 글자": 28 };
+    return `
   ${T.topBar("접근성")}
   <div class="scr">
-    <div class="stack">
-      <button class="btn secondary">보통 글자 크기</button>
-      <button class="btn primary">큰 글자 크기</button>
+    <div class="stack md">
+      ${["보통", "큰 글자"].map((s) => `
+        <button class="textsize-option ${s === state ? "active" : ""}" data-state="${s}">
+          ${s === state ? `<span class="chk">${T.msi("check")}</span>` : `<span style="width:22px"></span>`}
+          <span class="txt"><span class="tt">${s}</span><span class="ds">${descs[s]}</span></span>
+          <span class="sample" style="font-size:${sizes[s]}px">A</span>
+        </button>`).join("")}
     </div>
-  </div>`);
+  </div>`; });
 
 G("account", "설정", "계정", "97", "계정 정보 확인.",
   "라벨-값 행 패턴 재사용.", "동일 컴포넌트.", null, (ctx) => `

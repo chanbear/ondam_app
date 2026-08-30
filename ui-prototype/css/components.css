@@ -11,10 +11,25 @@
 .scr.center{ display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100%; text-align:center; }
 
 /* ---- top bar ---- */
-.top-bar{ display:flex; align-items:center; gap:10px; padding:6px var(--sp-lg) var(--sp-md); }
+/* 2026-08-29 — 사용자 요청: 뒤로가기 화살표/닫기(X) 옆의 문구(타이틀)가
+   바로 붙어있지 않고 떠 보인다는 지적 — 원인은 .back 버튼이 터치 영역
+   확보를 위해 var(--touch-min, Senior 56px)만큼 너비를 차지하는데, 그 안의
+   아이콘 자체는 22px밖에 안 돼 buttons과 h1 사이에 빈 박스 공간이 생기고
+   거기에 .top-bar의 gap:10px까지 더해져 총 40px 넘게 떠 보이던 것.
+   실제 Flutter 코드에서는 IconButton이 터치 영역(48dp)과 시각적 아이콘
+   크기를 분리해서 처리하므로(터치 영역이 레이아웃 공간을 차지하지 않음),
+   여기서도 같은 방식으로 .back의 레이아웃 너비를 아이콘 크기에 맞춰
+   좁히고(width:auto) 터치 영역은 잃지 않도록 padding으로만 확보한다. */
+.top-bar{ display:flex; align-items:center; gap:4px; padding:6px var(--sp-lg) var(--sp-md); }
+/* 2026-08-29(2차) — 사용자 지적: msg-list처럼 아이콘 옆에 "홈으로" 같은
+   글자를 직접 넣는 .back 버튼에서 그 글자만 폰트가 달라 보였다 — .msi
+   아이콘은 자체 font-size(20px)를 갖고 있어 영향 없지만, 옆의 일반 텍스트는
+   버튼 기본값(브라우저 UI 폰트, font-size:22px)을 그대로 물려받고 있었다.
+   font-family:inherit로 앱 폰트를 쓰게 하고, 텍스트 크기도 아이콘용 22px이
+   아니라 라벨에 맞는 15px로 낮춘다. */
 .top-bar .back{
-  width:var(--touch-min); height:34px; margin-left:-8px; display:flex; align-items:center; justify-content:flex-start;
-  background:none; border:none; color:var(--text-primary); font-size:22px;
+  width:auto; height:34px; margin-left:-8px; padding:0 6px; display:flex; align-items:center; justify-content:flex-start; gap:2px;
+  background:none; border:none; color:var(--text-primary); font-family:inherit; font-size:15px; font-weight:600;
 }
 .top-bar h1{ font-size:var(--fs-title); font-weight:var(--fw-title); margin:0; flex:1; }
 .top-bar .right-action{ font-size:13px; color:var(--primary); font-weight:600; background:none; border:none; }
@@ -29,11 +44,14 @@
 .section-title{ font-size:15px; font-weight:700; margin:0 0 var(--sp-sm); }
 
 /* ---- card / section ---- */
-.card{ background:#fff; border:1px solid var(--divider); border-radius:var(--radius-card); padding:var(--sp-md); }
-.card.flat{ border-color:transparent; background:var(--surface); }
+/* 2026-08-27 — 테두리선 대신 옅은 그림자로 카드 경계를 표현(Toss류 flat-but-soft
+   카드 언어) — 화면에 카드가 여러 개 쌓일 때 선이 겹쳐 답답해 보이는 것 방지. */
+.card{ background:#fff; border-radius:var(--radius-card); padding:var(--sp-md); box-shadow:0 1px 2px rgba(35,41,33,.04), 0 6px 16px rgba(35,41,33,.05); }
+.card.flat{ box-shadow:none; background:var(--surface); }
 .section{ margin-bottom:var(--gap-section); }
 .stack{ display:flex; flex-direction:column; gap:var(--sp-sm); }
 .stack.md{ gap:var(--sp-md); }
+.stack.lg{ gap:var(--sp-lg); }
 .row{ display:flex; align-items:center; gap:var(--sp-sm); }
 .row.between{ justify-content:space-between; }
 .spacer{ flex:1; }
@@ -48,6 +66,7 @@
 .btn.accent{ background:var(--accent,var(--primary)); color:var(--on-accent,#fff); }
 .btn.emergency{ background:var(--emergency); color:var(--on-emergency); }
 .btn.ghost{ background:none; color:var(--primary); font-weight:600; }
+.btn.success{ background:var(--success); color:#fff; }
 .btn.large{ min-height:64px; font-size:18px; border-radius:var(--r-lg); }
 .btn:disabled{ background:var(--text-disabled); color:#fff; cursor:not-allowed; }
 .btn .msi{ font-size:20px; }
@@ -57,8 +76,8 @@
 .icon-badge.sm{ width:34px; height:34px; }
 .icon-badge.lg{ width:56px; height:56px; }
 .icon-badge .msi{ font-size:22px; color:#fff; }
-.icon-badge.tint-primary{ background:#E4E9FF; } .icon-badge.tint-primary .msi{ color:var(--primary); }
-.icon-badge.tint-secondary{ background:#DCF3EA; } .icon-badge.tint-secondary .msi{ color:#12876A; }
+.icon-badge.tint-primary{ background:var(--primary-soft); } .icon-badge.tint-primary .msi{ color:var(--primary); }
+.icon-badge.tint-secondary{ background:var(--success-soft); } .icon-badge.tint-secondary .msi{ color:var(--success); }
 .icon-badge.solid-primary{ background:var(--primary); }
 .icon-badge.solid-secondary{ background:var(--secondary); }
 .icon-badge.solid-success{ background:var(--success); }
@@ -67,25 +86,242 @@
 .icon-badge.solid-emergency{ background:var(--emergency); }
 .icon-badge.solid-accent{ background:var(--accent,var(--primary)); }
 
+/* ---- home greeting (Senior home) ---- */
+.home-greeting-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:var(--sp-sm); margin-bottom:var(--sp-lg); }
+.home-greeting{ margin-bottom:0; flex:1; }
+.home-greeting .h1{ margin-bottom:2px; }
+.voice-fab-inline{
+  flex:none; width:var(--touch-min); height:var(--touch-min); border-radius:50%; border:none;
+  background:var(--accent,var(--primary)); color:var(--on-accent,#fff); display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+.voice-fab-inline .msi{ font-size:22px; }
+
+/* 2026-08-28 — 사용자 요청: "말로 물어보기"를 홈 화면 목록 항목으로만 두지
+   말고, 홈을 제외한 어디서든 쓸 수 있게 별도 플로팅 버튼으로 뺀다. #phoneScreen
+   의 직속 자식(overflow:hidden 밖 X, phoneContent 밖)이라 스크롤과 무관하게
+   화면 우하단에 고정되고, app.js의 render()가 화면별로 표시 여부만 토글한다. */
+.voice-fab-floating{
+  position:absolute; right:20px; bottom:24px; z-index:6;
+  width:60px; height:60px; border-radius:50%; border:none;
+  background:var(--accent,var(--primary)); color:#fff; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 16px rgba(20,21,26,.25); cursor:pointer;
+}
+.voice-fab-floating .msi{ font-size:28px; }
+.voice-fab-floating.above-nav{ bottom:calc(var(--touch-min) + 34px); }
+
 /* ---- feature grid (Senior home) ---- */
-.feature-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--sp-sm); }
+.feature-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:var(--sp-md); }
 .feature-card{
   background:#fff; border:1px solid var(--divider); border-radius:var(--radius-card);
-  padding:var(--sp-md) var(--sp-xs); display:flex; flex-direction:column; align-items:center; gap:8px;
+  padding:var(--sp-lg) var(--sp-md); display:flex; flex-direction:column; align-items:center; gap:6px;
   box-shadow:0 2px 6px rgba(35,41,33,.05);
 }
-.feature-card span.lbl{ font-size:13px; font-weight:700; text-align:center; line-height:1.3; }
-[data-easy="true"] .feature-card{ padding:var(--sp-lg) var(--sp-sm); }
-[data-easy="true"] .feature-card span.lbl{ font-size:16px; }
-[data-easy="true"] .feature-grid{ grid-template-columns:1fr; }
+.feature-card span.lbl{ font-size:15px; font-weight:700; text-align:center; line-height:1.3; }
+.feature-card span.sub{ font-size:12px; color:var(--text-secondary); text-align:center; line-height:1.35; }
+
+/* 2026-08-29 — easy-mode-test 브랜치 홈 구조 이식: 핵심 기능이 2열 카드
+   그리드가 아니라 1열 큰 가로 카드(아이콘 좌측 + 제목/설명 좌측 정렬 +
+   화살표)다. 기존 2열 grid는 다른 화면(Guardian 등)에서 계속 쓰이므로
+   건드리지 않고, 1열 전용 modifier만 추가한다. */
+.feature-grid.cols-1{ grid-template-columns:1fr; }
+.feature-card.row{
+  flex-direction:row; align-items:center; text-align:left; gap:var(--sp-md);
+  padding:var(--sp-md) var(--sp-lg);
+}
+.feature-card.row span.lbl,
+.feature-card.row span.sub{ text-align:left; }
+.feature-card.row .txt{ flex:1; display:flex; flex-direction:column; gap:2px; }
+.feature-card.row .chev{ color:var(--text-disabled); flex:none; }
+
+/* 2026-08-27 — 쉬운 모드 전체 글자 크기 확대 + 가독성 강화(사용자 요청).
+   tokens.css의 --fs-*/--fw-* 확대만으로 안 잡히는, 사이즈를 직접 못박아둔
+   컴포넌트들을 [data-easy="true"] 스코프로 개별 확대한다. Senior의
+   analysisResultBody()/.rsl-* 카드는 Senior와 공유하는 화면이라 제외. */
+[data-easy="true"] .btn.large{ font-size:22px; min-height:68px; }
+[data-easy="true"] .btn .msi{ font-size:24px; }
+[data-easy="true"] .body-sm{ font-weight:600; }
+[data-easy="true"] .icon-badge.lg{ width:64px; height:64px; }
+[data-easy="true"] .icon-badge.lg .msi{ font-size:30px; }
+[data-easy="true"] .state-block .state-icon .msi{ font-size:32px; }
+[data-easy="true"] .state-block .t{ font-size:18px; }
+[data-easy="true"] .state-block .d{ font-size:15px; }
+[data-easy="true"] .dialog h3{ font-size:20px; }
+[data-easy="true"] .dialog p{ font-size:16px; }
+[data-easy="true"] .list-row .tt{ font-size:17px; }
+[data-easy="true"] .list-row .ts{ font-size:14px; }
+
+/* 2026-08-28 — 팀원 피드백("일반 모드에 배경·테두리만 씌운 것 같다, 작은
+   글씨는 여전히 작다") 반영: h1/title/body 토큰만 올리고 나머지는 개별
+   컴포넌트 CSS(px 직접 지정)가 새서 실제로는 화면 절반이 여전히 10~14px로
+   보이던 문제를 전수 조사해서 고친다 — "화면에 보이는 모든 글자 16px 이상"
+   을 기준으로 Easy 모드에서 실제 쓰이는 컴포넌트를 전부 다시 확대한다.
+   analysisResultBody() 전용인 .rsl-*/.g-*(Guardian)는 그대로 제외. */
+[data-easy="true"] .top-bar .right-action{ font-size:16px; }
+[data-easy="true"] .section-title{ font-size:18px; }
+[data-easy="true"] .or-div{ font-size:15px; }
+[data-easy="true"] .social-btn .badge{ width:26px; height:26px; font-size:13px; }
+[data-easy="true"] .easy-rsl-highlight .k,
+[data-easy="true"] .easy-rsl-highlight .note{ font-size:16px; }
+[data-easy="true"] .tag-pill{ font-size:14px; padding:5px 12px; }
+[data-easy="true"] .risk-badge{ font-size:15px; padding:5px 12px; }
+[data-easy="true"] .risk-badge .msi{ font-size:17px; }
+[data-easy="true"] .alert-card .t{ font-size:17px; }
+[data-easy="true"] .alert-card .d,
+[data-easy="true"] .alert-card .a{ font-size:15px; }
+[data-easy="true"] .fee-hero .lbl,
+[data-easy="true"] .fee-hero .delta{ font-size:15px; }
+[data-easy="true"] .fee-hero .amt{ font-size:36px; }
+[data-easy="true"] .field label{ font-size:16px; }
+[data-easy="true"] .field .err{ font-size:15px; }
+[data-easy="true"] .today-row .time,
+[data-easy="true"] .today-row .ttl{ font-size:17px; }
+[data-easy="true"] .today-row .loc{ font-size:15px; }
+[data-easy="true"] .badge-dot{ font-size:15px; }
+
+/* 2026-08-28 — 사용자 제공 참고 이미지 기반으로 카드/버튼마다 굵은 먹색
+   테두리를 둘렀던 규칙 — 2026-08-29 사용자 요청으로 전부 삭제. 원색 채도
+   조정(--success/--danger/--warning/--emergency, tokens.css)은 테두리와
+   무관하므로 그대로 둔다. */
+[data-easy="true"] .list-row{ border-radius:var(--r-lg); padding:16px; margin-bottom:10px; }
+[data-easy="true"] .btn.secondary{ background:var(--easy-surface); }
+
+/* 2026-08-28 — 팀원 피드백("테두리만 넣은 것 같다") 반영: 선택 칩(글자
+   크기/속도/언어 등)까지 카드·버튼과 똑같이 굵은 먹색 테두리를 두르면
+   화면의 모든 요소가 동일한 무게로 보여 정작 중요한 카드/버튼(CTA)이
+   묻힌다. 칩은 얇은 테두리(비선택)/색 채움(선택)만으로 상태를 표현해
+   "무게감 있는 카드·버튼" vs "가벼운 선택지"의 위계를 되살린다. */
+[data-easy="true"] .chip{ font-size:17px; padding:12px 18px; border-width:2px; border-color:var(--border); }
+[data-easy="true"] .chip.active{ border-color:var(--primary); }
+[data-easy="true"] .chip .msi{ font-size:19px; }
+
+[data-easy="true"] .toggle.on{ background:var(--success); }
+[data-easy="true"] .bottom-nav button.tab-danger{ background:var(--emergency); color:#fff; border-radius:var(--r-md) var(--r-md) 0 0; }
+[data-easy="true"] .bottom-nav button.tab-danger span{ color:#fff; }
 
 /* ---- easy-mode full-width buttons ---- */
+/* 2026-08-30 — 조원 피드백: 화면 배경(--background:#fff)과 easy-btn/
+   easy-tile 배경(#fff)이 같은 흰색이라 "이게 버튼이구나"가 그림자만으로는
+   잘 안 보인다는 지적. 새 hex 대신 이미 icon-badge.tint-primary가 쓰는
+   --primary-soft(옅은 블루 틴트)를 배경에 그대로 적용해 화면 흰 배경과
+   확실히 구분되게 한다 — 2026-08-29에 사용자 요청으로 뺀 굵은 먹색
+   테두리(outline)는 되살리지 않는다(테두리가 아니라 배경색 자체로 대비를 만듦). */
 .easy-btn{
-  background:#fff; border:1px solid var(--divider); border-radius:var(--r-lg); padding:18px 16px;
-  display:flex; align-items:center; gap:14px; min-height:var(--touch-min); box-shadow:0 2px 8px rgba(35,41,33,.06);
+  background:var(--primary-soft); border:1px solid var(--divider); border-radius:var(--r-lg); padding:20px 18px;
+  display:flex; align-items:center; gap:16px; min-height:var(--touch-min); box-shadow:0 2px 8px rgba(35,41,33,.06);
 }
-.easy-btn span.lbl{ font-size:19px; font-weight:800; }
-.easy-btn.coral{ background:#FFF1EC; border-color:#F7C7B4; color:var(--warm-accent); }
+.easy-btn span.lbl{ font-size:22px; font-weight:800; }
+
+/* 2026-08-30(2차) — 사용자 확정: easy-btn/easy-tile에 적용한 "배경색 자체로
+   대비" 원칙을 일반 .card/.btn.secondary(설정, 복지관, 보호자 연결 등)에도
+   넓힌다. .card는 --primary-soft를 쓰지 않는다 — .icon-badge.tint-primary가
+   이미 그 톤을 쓰고 있어(예: 설정 화면의 "보호자 알림" 카드), 카드 배경까지
+   같은 색이면 카드 안의 배지가 안 보이게 된다. 대신 처음부터 Easy Mode
+   전용으로 준비돼 있었지만 그동안 어디서도 안 쓰이던 --easy-surface(민트)를
+   쓴다 — primary-soft 계열과 겹치지 않으면서 흰 화면 배경과는 확실히
+   구분된다. */
+[data-easy="true"] .card{ background:var(--easy-surface); }
+
+/* 2026-08-28 — "더보기" 세로 리스트가 화면 대비 휑하다는 피드백으로
+   2열 큰 정사각 타일 그리드를 새로 만든다. 세로로 크게(min-height) 눌러서
+   화면을 꽉 채운다. */
+.easy-tile{
+  background:var(--primary-soft); border-radius:var(--r-lg); padding:28px 12px; min-height:140px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  box-shadow:0 2px 8px rgba(35,41,33,.06); text-align:center;
+}
+.easy-tile span.lbl{ font-size:19px; font-weight:800; }
+
+/* ---- 소셜 로그인 (2026-08-28) — legacy-cleaned/senior-easy.html의
+   로그인 화면과 동일한 톤(구글 흰색+4색 로고, 네이버 초록, 카카오 노랑).
+   easy.auth-login에서만 쓰이지만 범용 클래스로 둔다. */
+.or-div{ display:flex; align-items:center; gap:10px; margin:16px 0 4px; width:100%; color:var(--text-secondary); font-size:12.5px; font-weight:700; }
+.or-div::before,.or-div::after{ content:""; flex:1; height:1px; background:var(--divider); }
+.social-btn{ display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:56px; border-radius:999px; border:1px solid var(--border); font-family:inherit; font-size:16px; font-weight:800; margin-top:10px; padding:0 16px; background:#fff; color:var(--text-primary); cursor:pointer; }
+.social-btn .badge{ width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px; flex:none; }
+.social-btn.google{ border-color:#E3E1D8; }
+.social-btn.kakao{ background:#FEE500; border-color:#FEE500; color:#191600; }
+.social-btn.kakao .badge{ background:#191600; color:#FEE500; font-size:7px; letter-spacing:.02em; }
+.social-btn.naver{ background:#03C75A; border-color:#03C75A; color:#fff; }
+.social-btn.naver .badge{ background:#fff; color:#03C75A; }
+[data-easy="true"] .social-btn{ border-width:2.5px; min-height:var(--touch-min); font-size:18px; }
+
+/* ---- Easy 모드 전용 분석 결과 (2026-08-27) — Senior/Guardian이 공유하는
+   analysisResultBody()의 .rsl-*(3단 그리드/별점/체크박스/공유)는 그대로
+   두고 손대지 않는다. 여기는 완전히 별개 네임스페이스(.easy-rsl-*)로,
+   정보를 그리드 대신 세로로 하나씩 크게 쌓는다. */
+.easy-rsl-safe{ --risk:var(--success); --risk-soft:var(--success-soft); }
+.easy-rsl-caution{ --risk:var(--warning); --risk-soft:var(--warning-soft); }
+.easy-rsl-dangerous{ --risk:var(--danger); --risk-soft:var(--danger-soft); }
+
+/* 2026-08-28 — 결과 화면 스타일. 배지는 원색 꽉 채운 원 + 흰 아이콘, 카드
+   마다 굵은 먹색 테두리 — 나머지 Easy 화면과 같은 스타일 언어("쉬운 모드
+   같지 않다" 피드백). 2026-08-28(3차) — 사용자가 새 참고 이미지("건강검진
+   대상자 안내" 예시)를 보여주며 "이런 느낌으로, 완전히 똑같이는 하지 말고"
+   요청 — 기한/보낸사람 하이라이트 카드(.easy-rsl-highlight), 행동 카드
+   안 체크리스트(.easy-rsl-action .chk), 질문하기 행(.easy-rsl-ask) 추가. */
+.easy-rsl-illustration{ position:relative; width:180px; height:150px; margin:0 auto; }
+.easy-rsl-illustration svg{ display:block; width:100%; height:100%; }
+.easy-rsl-illustration-badge{
+  position:absolute; right:2px; bottom:2px; width:52px; height:52px; border-radius:50%;
+  background:var(--risk); display:flex; align-items:center; justify-content:center;
+}
+.easy-rsl-illustration-badge .msi{ font-size:26px; color:#fff; }
+
+/* 2026-08-28(5차) — 참고 이미지 구조 그대로: 작은 배지 → 헤드라인 →
+   일러스트 → 하이라이트 → 종류 태그 → AI 요약 → 체크리스트 → 물어보기. */
+.easy-rsl-head{ display:flex; justify-content:center; padding:var(--sp-sm) 0 0; }
+.easy-rsl-badge{ width:80px; height:80px; border-radius:50%; background:var(--risk); display:flex; align-items:center; justify-content:center; }
+.easy-rsl-badge.sm{ width:52px; height:52px; }
+.easy-rsl-badge .msi{ font-size:40px; color:#fff; }
+.easy-rsl-badge.sm .msi{ font-size:26px; }
+
+.easy-rsl-headline{ font-size:23px; font-weight:800; line-height:1.4; text-align:center; margin:var(--sp-sm) 0 var(--sp-lg); }
+
+/* 2026-08-28(7차) — "배경색만 바꿔서 똑같이" 요청: 참고 이미지는 굵은 먹색
+   테두리가 아니라 얇은 테두리 + 옅은 그림자의 부드러운 카드다. 나머지 Easy
+   화면(홈/더보기 등)의 2.5px 굵은 테두리 언어는 그대로 두고, 이 결과 화면
+   카드만 소프트 스타일로 바꾼다. */
+.easy-rsl-highlight{
+  margin-top:var(--sp-md); background:#fff; border:1px solid var(--border); border-radius:var(--radius-card);
+  box-shadow:0 2px 10px rgba(20,21,26,.06);
+  padding:var(--sp-lg); text-align:center;
+}
+.easy-rsl-highlight .k{ font-size:15px; font-weight:700; color:var(--text-secondary); }
+.easy-rsl-highlight .v{ font-size:26px; font-weight:800; margin-top:4px; }
+.easy-rsl-highlight .note{ font-size:15px; font-weight:700; color:var(--risk); margin-top:4px; }
+
+.easy-rsl-type{ display:flex; align-items:center; gap:10px; margin-top:var(--sp-lg); }
+.easy-rsl-type .k{ font-size:16px; font-weight:700; color:var(--text-secondary); }
+
+.easy-rsl-ai{
+  margin-top:var(--sp-md); background:#fff; border:1px solid var(--border); border-radius:var(--radius-card);
+  box-shadow:0 2px 10px rgba(20,21,26,.06);
+  padding:var(--sp-lg);
+}
+.easy-rsl-ai .hd{ display:flex; align-items:center; gap:8px; font-size:16px; font-weight:800; color:var(--primary); margin-bottom:8px; }
+.easy-rsl-ai .hd .msi{ font-size:20px; }
+.easy-rsl-ai p{ font-size:17px; font-weight:600; line-height:1.6; margin:0; }
+
+.easy-rsl-checklist{
+  margin-top:var(--sp-md); background:#fff; border:1px solid var(--border); border-radius:var(--radius-card);
+  box-shadow:0 2px 10px rgba(20,21,26,.06);
+  padding:6px var(--sp-lg);
+}
+.easy-rsl-checklist .row{ display:flex; align-items:flex-start; gap:10px; font-size:17px; font-weight:700; padding:14px 0; border-bottom:1px solid var(--divider); }
+.easy-rsl-checklist .row:last-child{ border-bottom:none; }
+.easy-rsl-checklist .row .msi{ color:var(--risk); font-size:22px; flex:none; margin-top:1px; }
+
+.easy-rsl-ask{
+  margin-top:var(--sp-md); display:flex; align-items:center; gap:12px; background:#fff;
+  border:1px solid var(--border); border-radius:var(--radius-card); box-shadow:0 2px 10px rgba(20,21,26,.06); padding:16px var(--sp-lg);
+  font-size:18px; font-weight:800; cursor:pointer;
+}
+.easy-rsl-ask > .msi:first-child{ color:var(--primary); font-size:26px; }
+.easy-rsl-ask .chev{ margin-left:auto; color:var(--text-disabled); }
+
+.btn.easy-rsl-confirm{ background:var(--success); color:#fff; }
+
 
 /* ---- toggle ---- */
 .toggle{ width:44px; height:26px; border-radius:999px; background:#E3E1D8; position:relative; flex:none; border:none; }
@@ -93,10 +329,13 @@
 .toggle.on{ background:var(--secondary); } .toggle.on::after{ left:20px; }
 
 /* ---- risk / status ---- */
+/* ---- 매칭 근거 태그 (정보 탭 맞춤 혜택) ---- */
+.tag-pill{ display:inline-flex; align-items:center; padding:3px 10px; border-radius:999px; background:var(--primary-soft); color:var(--primary); font-size:11px; font-weight:700; }
+
 .risk-badge{ display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:700; }
-.risk-badge.safe{ background:rgba(31,168,81,.12); border:1px solid var(--success); color:var(--success); }
-.risk-badge.caution{ background:rgba(249,168,37,.12); border:1px solid var(--warning); color:var(--on-warning-text); }
-.risk-badge.dangerous{ background:rgba(227,66,55,.12); border:1px solid var(--danger); color:var(--danger); }
+.risk-badge.safe{ background:var(--success-soft); border:1px solid var(--success); color:var(--success); }
+.risk-badge.caution{ background:var(--warning-soft); border:1px solid var(--warning); color:var(--on-warning-text); }
+.risk-badge.dangerous{ background:var(--danger-soft); border:1px solid var(--danger); color:var(--danger); }
 .risk-badge .msi{ font-size:14px; }
 
 .alert-card{ display:flex; gap:10px; align-items:flex-start; border-radius:var(--r-lg); padding:14px 15px; background:#fff; border:1px solid var(--divider); }
@@ -130,9 +369,21 @@
 .list-row .amt{ font-family:"JetBrains Mono",monospace; font-weight:700; font-size:14px; }
 .list-row .chev{ color:var(--text-disabled); font-size:18px; }
 
+/* Senior — "Large/Friendly/Accessible" 컨셉인데 정작 리스트 행(더보기/설정 등)은
+   Guardian(아래 min-height:64px)보다도 작고 여백이 좁아 휑해 보이던 역전 현상을
+   바로잡음(2026-08-27, 사용자 피드백: 더보기 쪽 여백은 많은데 글자는 작아 보임). */
+[data-app="senior"] .list-row{ min-height:var(--touch-min); padding:16px 0; gap:14px; }
+[data-app="senior"] .list-row .tt{ font-size:16px; font-weight:700; }
+[data-app="senior"] .list-row .ts{ font-size:13px; }
+[data-app="senior"] .list-row .icon-badge.sm{ width:44px; height:44px; }
+[data-app="senior"] .list-row .icon-badge.sm .msi{ font-size:22px; }
+
 /* ---- empty / error / loading ---- */
 .state-block{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:48px 20px; gap:10px; }
-.state-block .msi{ font-size:44px; color:var(--text-disabled); }
+.state-block .state-icon{ width:56px; height:56px; border-radius:50%; background:var(--primary-soft); display:flex; align-items:center; justify-content:center; margin-bottom:2px; }
+.state-block .state-icon .msi{ font-size:26px; color:var(--primary); }
+.state-block.error .state-icon{ background:var(--danger-soft); }
+.state-block.error .state-icon .msi{ color:var(--danger); }
 .state-block .t{ font-size:15px; font-weight:700; }
 .state-block .d{ font-size:13px; color:var(--text-secondary); max-width:240px; }
 .spinner{ width:32px; height:32px; border-radius:50%; border:3px solid var(--divider); border-top-color:var(--primary); animation:spin 0.8s linear infinite; }
@@ -145,12 +396,22 @@
 .bottom-nav button .msi{ font-size:22px; }
 .bottom-nav button span{ font-size:10.5px; font-weight:600; }
 .bottom-nav button.active{ color:var(--primary); }
-[data-easy="true"] .bottom-nav button .msi{ font-size:26px; }
-[data-easy="true"] .bottom-nav button span{ font-size:12.5px; }
+[data-easy="true"] .bottom-nav{ padding:10px 0 max(10px,env(safe-area-inset-bottom)); }
+[data-easy="true"] .bottom-nav button{ padding:8px 0; min-height:64px; border-left:1px solid var(--divider); gap:4px; }
+[data-easy="true"] .bottom-nav button:first-child{ border-left:none; }
+[data-easy="true"] .bottom-nav button .msi{ font-size:30px; }
+[data-easy="true"] .bottom-nav button span{ font-size:14.5px; font-weight:800; }
+[data-easy="true"] .icon-badge.sm{ width:44px; height:44px; }
+[data-easy="true"] .icon-badge.sm .msi{ font-size:22px; }
+.bottom-nav button.tab-danger{ color:var(--emergency); }
 
-.fab{ position:absolute; left:50%; transform:translateX(-50%); bottom:70px; width:56px; height:56px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 14px rgba(0,0,0,.2); border:none; }
-.fab .msi{ font-size:24px; }
-.fab.corner{ left:auto; right:16px; transform:none; bottom:86px; background:var(--emergency); }
+/* ---- 위험도 틴트 top-bar (2026-08-28, Easy 분석 결과 전용) — .easy-rsl-*
+   조상 요소가 세팅하는 --risk-soft를 그대로 물려받는다. */
+.top-bar-tone{ display:flex; align-items:center; gap:10px; padding:14px var(--sp-lg) 16px; background:var(--risk-soft); }
+.top-bar-tone .back, .top-bar-tone .right-action{ background:none; border:none; color:var(--text-primary); width:var(--touch-min); height:34px; display:flex; align-items:center; font-size:22px; flex:none; }
+.top-bar-tone .right-action{ justify-content:flex-end; }
+.top-bar-tone h1{ flex:1; font-size:var(--fs-title); font-weight:var(--fw-title); margin:0; }
+
 
 /* ---- inputs ---- */
 .field{ display:flex; flex-direction:column; gap:6px; }
@@ -169,12 +430,12 @@
 
 /* ---- elder switcher / chips ---- */
 .chip-row{ display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; }
-.chip{ display:inline-flex; align-items:center; gap:5px; padding:8px 14px; border-radius:999px; border:1px solid var(--border); background:#fff; font-size:13.5px; font-weight:700; flex:none; }
+.chip{ display:inline-flex; align-items:center; justify-content:center; gap:5px; padding:8px 14px; min-height:var(--touch-min); border-radius:999px; border:1px solid var(--border); background:#fff; font-size:13.5px; font-weight:700; flex:none; }
 .chip.active{ background:var(--primary); border-color:var(--primary); color:#fff; }
 .chip .msi{ font-size:16px; }
 
 /* ---- chart ---- */
-.chart-wrap{ background:#fff; border:1px solid var(--divider); border-radius:var(--r-lg); padding:14px; }
+.chart-wrap{ background:#fff; border:1px solid var(--divider); border-radius:var(--r-lg); padding:14px; box-shadow:0 2px 8px rgba(20,21,26,.05); }
 .chart-legend{ display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-top:6px; }
 
 /* ---- notification ---- */
@@ -201,10 +462,128 @@
 .steps-row .ln{ flex:1; height:2px; background:var(--divider); }
 .steps-row .ln.done{ background:var(--secondary); }
 
+/* ---- analysis result (2026-08-27, Claude 아티팩트 시안 이식) ---- */
+.icon-badge.tint-danger{ background:var(--danger-soft); } .icon-badge.tint-danger .msi{ color:var(--danger); }
+
+.rsl-safe{ --risk:var(--success); --risk-soft:var(--success-soft); }
+.rsl-caution{ --risk:var(--warning); --risk-soft:var(--warning-soft); }
+.rsl-dangerous{ --risk:var(--danger); --risk-soft:var(--danger-soft); }
+
+.rsl-card{ background:#fff; border-radius:var(--r-lg); padding:13px; margin-bottom:8px; box-shadow:0 1px 2px rgba(35,41,33,.04), 0 6px 16px rgba(35,41,33,.05); }
+.rsl-card .hd{ display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.rsl-card .hd .ttl{ font-size:13.5px; font-weight:800; flex:1; }
+.rsl-card .hd .chev{ font-size:18px; color:var(--text-disabled); transform:rotate(180deg); }
+
+.rsl-risk-row{ display:flex; align-items:stretch; gap:12px; }
+.rsl-risk-row .divider{ width:1px; background:var(--divider); }
+.rsl-risk-col{ flex:1; min-width:0; }
+.rsl-risk-col .lbl{ font-size:10.5px; font-weight:700; color:var(--text-secondary); }
+.rsl-icon-badge{ width:52px; height:52px; border-radius:16px; background:var(--risk-soft); display:flex; align-items:center; justify-content:center; flex:none; }
+.rsl-icon-badge .msi{ font-size:26px; color:var(--risk); }
+.rsl-risk-value{ font-size:19px; font-weight:800; color:var(--risk); margin-top:2px; }
+.rsl-risk-desc{ font-size:10.5px; color:var(--text-secondary); margin-top:2px; }
+.rsl-conf-value{ font-size:21px; font-weight:800; margin-top:2px; }
+.rsl-stars{ display:flex; gap:2px; margin-top:4px; }
+.rsl-stars .msi{ font-size:13px; }
+.rsl-stars .msi.on{ color:var(--text-primary); font-variation-settings:"FILL" 1; }
+.rsl-stars .msi.off{ color:var(--divider); font-variation-settings:"FILL" 1; }
+
+.rsl-info-grid{ display:flex; text-align:center; }
+.rsl-info-grid .col{ flex:1; padding:0 4px; }
+.rsl-info-grid .lbl{ font-size:10px; color:var(--text-secondary); }
+.rsl-info-grid .val{ font-size:11.5px; font-weight:700; margin-top:2px; line-height:1.35; }
+.rsl-info-grid .val.risk{ color:var(--danger); }
+.rsl-info-grid .vd{ width:1px; background:var(--divider); margin:2px 0; }
+
+.rsl-summary{ font-size:13.5px; font-weight:700; line-height:1.5; margin:0; }
+.rsl-summary b{ color:var(--risk); }
+.rsl-bullets{ margin-top:10px; display:flex; flex-direction:column; gap:6px; }
+.rsl-bullet{ display:flex; align-items:flex-start; gap:6px; font-size:12px; color:var(--text-secondary); }
+.rsl-bullet .msi{ font-size:15px; color:var(--risk); flex:none; margin-top:1px; }
+
+.rsl-check-row{ display:flex; align-items:center; gap:9px; padding:7px 0; font-size:12.5px; }
+.rsl-check-row input{ width:19px; height:19px; accent-color:var(--risk); flex:none; }
+.rsl-check-row .pri{ font-size:10px; font-weight:700; color:var(--risk); background:var(--risk-soft); border-radius:999px; padding:2px 8px; margin-left:auto; }
+.rsl-btn-row{ display:flex; gap:8px; margin-top:10px; }
+.rsl-btn-row .btn{ font-size:12.5px; min-height:42px; }
+.rsl-btn-row .btn.solid-risk{ background:var(--risk); color:#fff; }
+.rsl-btn-row .btn.outline-risk{ background:#fff; color:var(--risk); border:1.5px solid var(--risk); }
+
+.rsl-tip{ display:flex; align-items:flex-start; gap:8px; background:var(--warning-soft); border-radius:14px; padding:10px 12px; margin-top:12px; }
+.rsl-tip .msi{ font-size:16px; color:var(--warning); flex:none; margin-top:1px; }
+.rsl-tip .t{ font-size:12px; font-weight:700; }
+.rsl-tip .d{ font-size:10.5px; color:var(--text-secondary); margin-top:1px; line-height:1.4; }
+
+.rsl-voice{ display:flex; align-items:center; gap:12px; background:#fff; border:1px solid var(--divider); border-radius:var(--r-lg); padding:12px 14px; margin-bottom:14px; }
+.rsl-voice .ic{ width:38px; height:38px; border-radius:999px; background:var(--risk); color:#fff; display:flex; align-items:center; justify-content:center; flex:none; }
+.rsl-voice .t{ font-size:13px; font-weight:700; }
+.rsl-voice .d{ font-size:10.5px; color:var(--text-secondary); margin-top:1px; }
+.rsl-voice .chev{ margin-left:auto; color:var(--text-disabled); }
+
+.rsl-cta{ display:flex; align-items:center; gap:12px; width:100%; background:var(--risk); border:none; border-radius:var(--r-lg); padding:13px 16px; color:#fff; text-align:left; min-height:var(--touch-min); }
+.rsl-cta .ic{ width:30px; height:30px; border-radius:999px; background:rgba(255,255,255,.25); display:flex; align-items:center; justify-content:center; flex:none; }
+.rsl-cta .t{ font-size:14.5px; font-weight:800; }
+.rsl-cta .d{ font-size:11px; opacity:.9; margin-top:1px; }
+
+/* ---- Home 오늘의 일정 (2026-08-27, Claude 아티팩트 시안 이식) ---- */
+.today-row{ display:flex; align-items:flex-start; gap:12px; }
+.today-row .time{ font-size:14px; font-weight:800; color:var(--primary); flex:none; width:44px; padding-top:1px; }
+.today-row .txt{ flex:1; display:flex; flex-direction:column; gap:4px; }
+.today-row .ttl{ font-size:14px; font-weight:700; }
+.today-row .loc{ display:flex; align-items:center; gap:3px; font-size:12px; color:var(--text-secondary); }
+.today-row .loc .msi{ font-size:14px; }
+.cal-icon{ font-size:18px; color:var(--primary); }
+
+/* ---- voice listening pulse (2026-08-27) ---- */
+.voice-listen{ position:relative; width:96px; height:96px; display:flex; align-items:center; justify-content:center; margin:0 auto; }
+.voice-listen .ring{ position:absolute; inset:0; border-radius:50%; border:2px solid var(--primary); opacity:.55; animation:voicePulse 1.8s ease-out infinite; }
+.voice-listen .ring.r2{ animation-delay:.6s; }
+.voice-listen .badge{ position:relative; z-index:1; }
+@keyframes voicePulse{ 0%{ transform:scale(.7); opacity:.55; } 100%{ transform:scale(1.6); opacity:0; } }
+@media (prefers-reduced-motion:reduce){ .voice-listen .ring{ animation:none; display:none; } }
+
+/* ---- onboarding (2026-08-27, 사용자 제공 레퍼런스) ---- */
+.onb-dots{ display:flex; gap:6px; justify-content:center; margin:20px 0 0; }
+.onb-dots span{ width:6px; height:6px; border-radius:999px; background:var(--divider); }
+.onb-dots span.active{ width:16px; background:var(--primary); }
+
+.onb-illus{ position:relative; width:150px; height:150px; border-radius:50%; background:var(--primary-soft); display:flex; align-items:center; justify-content:center; margin:0 auto; flex:none; }
+.onb-illus .phone-mark{ width:78px; height:96px; border-radius:16px; background:#fff; box-shadow:0 6px 16px rgba(35,41,33,.08); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
+.onb-illus .phone-mark .msi{ font-size:26px; color:var(--primary); }
+.onb-illus .phone-mark b{ font-size:13px; font-weight:800; color:var(--text-primary); }
+.onb-illus .leaf{ position:absolute; width:26px; height:26px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(35,41,33,.1); }
+.onb-illus .leaf .msi{ font-size:15px; color:var(--primary); }
+.onb-illus .leaf.a{ top:6px; right:2px; }
+.onb-illus .leaf.b{ bottom:16px; left:-6px; }
+
+/* 완료 화면만 예외적으로 success 그린 유지 — 브랜드색(primary)과 별개로
+   "완료" 자체를 나타내는 의미색(AppColors.success)이라 앱 accent를 따르지
+   않는다(Modern Care 토큰 철학: primary와 success는 서로 다른 개념). */
+.onb-illus.done{ background:var(--success); }
+.onb-illus.done .msi{ font-size:64px; color:#fff; }
+.onb-illus .confetti{ position:absolute; width:9px; height:9px; border-radius:3px; }
+.onb-illus .confetti.c1{ top:2px; left:20px; background:var(--warning); transform:rotate(20deg); }
+.onb-illus .confetti.c2{ top:26px; right:-4px; background:var(--warm-accent); border-radius:50%; }
+.onb-illus .confetti.c3{ bottom:12px; left:-6px; background:var(--primary); transform:rotate(-15deg); }
+.onb-illus .confetti.c4{ bottom:-2px; right:22px; background:var(--secondary); border-radius:50%; }
+
+.textsize-option{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:#fff; border:2px solid var(--divider); border-radius:var(--r-lg); padding:14px 16px; }
+.textsize-option.active{ border-color:var(--primary); background:var(--primary-soft); }
+.textsize-option .chk{ width:22px; height:22px; border-radius:50%; background:var(--primary); flex:none; display:flex; align-items:center; justify-content:center; }
+.textsize-option .chk .msi{ font-size:14px; color:#fff; }
+/* 2026-08-29(2차) — 실제로는 .tt/.ds가 둘 다 inline span이라 margin-top이
+   레이아웃에 영향을 주지 못해(inline 요소는 세로 margin 무시) 글자가 한
+   줄에 붙어 있었다("보통가장 많이 선택해요."로 읽히던 버그) — .txt를
+   세로 flex로 바꿔 실제로 줄이 나뉘고 간격도 생기게 한다. */
+.textsize-option .txt{ flex:1; display:flex; flex-direction:column; gap:6px; }
+.textsize-option .txt .tt{ font-size:15px; font-weight:800; }
+.textsize-option .txt .ds{ font-size:12px; color:var(--text-secondary); }
+.textsize-option .sample{ font-weight:800; color:var(--text-secondary); flex:none; }
+
 /* ---- QR ---- */
-.qr-box{ width:200px; height:200px; margin:0 auto; border-radius:16px; background:
-  repeating-linear-gradient(45deg,#232921 0 6px,#fff 6px 12px) center/70% 70% no-repeat, #fff;
-  border:1px solid var(--divider); display:flex; align-items:center; justify-content:center; }
+/* 2026-08-27 — 줄무늬 자리표시자 대신 사용자 제공 QR 이미지(ONDAM_QR_DATA_URI)를 그대로 표시. */
+.qr-box{ width:200px; height:200px; margin:0 auto; border-radius:16px; padding:12px; box-sizing:border-box;
+  background:#fff; border:1px solid var(--divider); display:block; object-fit:contain; }
 
 .confidence-bar{ height:6px; border-radius:99px; background:var(--divider); overflow:hidden; }
 .confidence-bar > i{ display:block; height:100%; background:var(--primary); }
@@ -219,15 +598,18 @@
 [data-app="guardian"] .list-row,
 [data-app="guardian"] .easy-btn{ border-color:var(--border); box-shadow:var(--g-shadow); }
 
-[data-app="guardian"] .icon-badge.tint-primary{ background:var(--g-soft); }
-[data-app="guardian"] .icon-badge.tint-secondary{ background:var(--g-mint); }
+/* 2026-08-27: tint-primary/tint-secondary는 이제 Senior와 동일한 공유 규칙
+   (icon-badge.tint-primary → --primary-soft, tint-secondary → --success-soft,
+   위쪽 58번째 줄 근처)을 그대로 쓴다 — 예전엔 여기서 guardian 전용 blue/mint로
+   덮어써서 tint-secondary가 앱마다 다른 색(성공 초록 vs 민트 블루)을 의미했음. */
 
 /* status-card pattern: full soft-fill card + circular icon, no stripe (reference has no severity stripe — only safe/danger full-tint cards) */
 [data-app="guardian"] .alert-card{ border-radius:var(--r-lg); align-items:center; }
 [data-app="guardian"] .alert-card .stripe{ display:none; }
 [data-app="guardian"] .alert-card .icon-badge{ border-radius:50%; width:42px; height:42px; }
-[data-app="guardian"] .alert-card.safe{ background:var(--g-soft); border:1px solid var(--g-mint); }
-[data-app="guardian"] .alert-card.dangerous{ background:var(--g-danger-soft); border:1px solid #F4D3D1; }
+[data-app="guardian"] .alert-card.safe{ background:var(--success-soft); border:1px solid var(--success); }
+[data-app="guardian"] .alert-card.caution{ background:var(--warning-soft); border:1px solid var(--warning); }
+[data-app="guardian"] .alert-card.dangerous{ background:var(--danger-soft); border:1px solid var(--danger); }
 
 [data-app="guardian"] .stat-card .n{ font-size:26px; letter-spacing:-0.02em; }
 
@@ -235,15 +617,28 @@
 [data-app="guardian"] .list-row .icon-badge{ border-radius:13px; }
 [data-app="guardian"] .list-row{ min-height:64px; }
 
-/* elder-hero: dark accent summary block (reference .senior-card) */
-.elder-hero{ display:flex; align-items:center; gap:13px; background:var(--g-dark); color:#fff; border-radius:var(--r-lg); padding:var(--sp-md); box-shadow:var(--g-shadow); }
-.elder-hero .avatar{ width:52px; height:52px; border-radius:var(--r-lg); background:var(--g-soft); color:var(--g-dark); display:flex; align-items:center; justify-content:center; font-size:21px; font-weight:900; flex:none; }
-.elder-hero .info{ flex:1; min-width:0; }
-.elder-hero .info .lbl{ font-size:11px; color:var(--g-mint); }
-.elder-hero .info strong{ display:block; font-size:18px; margin:3px 0; }
-.elder-hero .info small{ display:block; font-size:11px; color:var(--g-mint); }
-.elder-hero .call{ width:44px; height:44px; border-radius:50%; background:#fff; color:var(--g-dark); display:flex; align-items:center; justify-content:center; flex:none; }
-.elder-hero .call .msi{ font-size:20px; }
+/* 2026-08-27 Guardian 리디자인 — 5개 탭 루트 화면 공통 헤더(T.guardianTabHeader).
+   기존 elder-hero(진한 파란 카드 블록)를 대체 — 레퍼런스 이미지는 히어로 카드
+   없이 "온담 보호자" 브랜드 헤더 + 아바타 + 인사말만으로 구성됨. */
+.g-header{ display:flex; align-items:center; justify-content:space-between; padding:14px var(--sp-lg) 6px; }
+.g-header-brand{ display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--text-secondary); }
+.g-header-brand .g-header-logo{ font-size:18px; color:var(--primary); }
+.g-avatar{ width:34px; height:34px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex:none; }
+.g-greeting-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:12px var(--sp-lg) 0; }
+.g-greeting .h1{ margin:0 0 6px; }
+.g-preview-badge{ display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:var(--text-secondary); background:var(--surface); border:1px solid var(--divider); border-radius:var(--r-full); padding:4px 10px; }
+.g-preview-badge .dot{ width:6px; height:6px; border-radius:50%; background:var(--success); }
+.g-call-btn{
+  flex:none; width:40px; height:40px; border-radius:50%; border:none; background:var(--primary); color:#fff;
+  display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,.12);
+}
+.g-call-btn .msi{ font-size:19px; }
+
+/* 안심 요약 카드(통계 탭) — .rsl-*(문서/문자 분석 결과 전용, 수정 금지)는
+   재사용하지 않고 별도 클래스로 둔다. */
+.g-summary-row{ display:flex; align-items:flex-start; gap:10px; padding:9px 0; }
+.g-summary-row:not(:last-child){ border-bottom:1px solid var(--divider); }
+.g-summary-row .msi{ color:var(--success); font-size:20px; flex:none; margin-top:1px; }
 
 /* bottom-nav unread badge (reference .nav-icon-wrap b) */
 .bottom-nav .nav-badge{ position:relative; display:inline-flex; }

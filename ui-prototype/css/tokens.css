@@ -6,24 +6,45 @@
    branch easy-mode-test (css/styles.css — shared Senior/Guardian design system). */
 
 :root{
-  /* ---- existing Flutter tokens (unchanged) ---- */
+  /* ---- Modern Care tokens ----
+     2026-08-27: synced to packages/design_system/lib/src/tokens/*.dart
+     (--primary was #1D61E7 here, matching the real Flutter app).
+     2026-08-29: 사용자 요청으로 chanbear/gyeongjidaehoe3-main
+     easy-mode-test 브랜치의 실제 블루(--accent:#3d6bf5)로 다시 전환.
+     ui-prototype이 Flutter 앱과 색이 달라지는 걸 알고 있는 상태에서
+     내린 결정 — Flutter 쪽 반영 여부는 별도 결정 사항.
+     2026-08-29(2차): 사용자가 게시한 easy-mode-test UI 카탈로그 아티팩트의
+     색 배치(중립 톤 배경+블루 accent)를 가져오되, "배경색은 다 흰색으로"
+     라는 명시적 지시에 따라 아티팩트 자체의 --bg(#f5f6f8, 옅은 회청색)
+     대신 순백(#FFFFFF)을 썼다. border/divider도 그 카탈로그의 --line
+     (#e2e5ea, 차가운 회색)에 맞춰 기존 크림톤(#E8E3DA)에서 교체 —
+     흰 배경 위에서 카드 경계가 자연스럽게 보이도록. ---- */
   --primary:#3D6BF5;
-  --secondary:#00BFA5;
+  --secondary:#12A594;
   --background:#FFFFFF;
-  --surface:#F5F7FB;
-  --text-primary:#171B2B;
-  --text-secondary:#646D7C;
+  --surface:#FFFFFF;
+  --text-primary:#14151A;
+  --text-secondary:#585C68;
   --text-disabled:#BDBDBD;
-  --border:#E9ECF2;
-  --divider:#E9ECF2;
-  --success:#1FA851;
-  --warning:#F9A825;
-  --danger:#E34237;
+  --border:#E2E5EA;
+  --divider:#E2E5EA;
+  --success:#1E8F5F;
+  --warning:#B7791F;
+  --danger:#C6362E;
   --background-dark:#121212;
   --surface-dark:#1E1E1E;
 
+  /* soft(tonal) pairs — AppColors.*Soft */
+  --primary-soft:#EAF0FE;
+  --success-soft:#E6F5EC;
+  --warning-soft:#FBF1DE;
+  --danger-soft:#FBEAE8;
+
   /* ---- proposed additions (design-token-refresh.md v2) ---- */
-  --emergency:#FF6B78;         /* SOS 전용 — danger(#E34237)와 분리 */
+  /* 2026-08-27 — 흰 텍스트 대비 2.75:1 → 4.96:1로 조정(WCAG AA 4.5:1 미달 수정).
+     같은 색상 계열(로즈/코랄) 유지하되 채도를 낮춰 danger(#C6362E, 더 진한
+     주황빛 빨강)와는 여전히 구분되게 함. */
+  --emergency:#B84D56;         /* SOS 전용 — danger(#E34237)와 분리 */
   --warm-accent:#E2714B;       /* Senior/Easy Mode 따뜻함 accent (Behance "툭,안부" 참고) */
   --easy-surface:#E9F3EE;      /* Easy Mode 전용 배경 (민트) */
   --easy-surface-cream:#FBF7EC;
@@ -51,7 +72,7 @@
   --sp-xs:4px; --sp-sm:8px; --sp-md:16px; --sp-lg:24px; --sp-xl:32px; --sp-xxl:48px;
 
   /* ---- radius scale (AppRadius) ---- */
-  --r-sm:4px; --r-md:8px; --r-lg:16px; --r-xl:24px; --r-full:999px;
+  --r-sm:10px; --r-md:16px; --r-lg:22px; --r-xl:28px; --r-full:999px;
 
   /* ---- app-level defaults (overridden per data-app below) ---- */
   --radius-card:var(--r-md);
@@ -61,41 +82,58 @@
 }
 
 /* Senior — Simple / Readable / Calm / Large / Friendly / Accessible */
+/* 2026-08-27 — 사용자 요청으로 CTA accent를 warm-accent(주황)에서 primary(파랑)로
+   통일. --accent 하나만 바꾸면 .btn.accent/.icon-badge.solid-accent를 쓰는 모든
+   화면(문서 분석 CTA, 온보딩, 프로필 등 14곳 이상)에 한 번에 적용된다 — 화면마다
+   개별로 고칠 필요 없음. warm-accent 토큰 자체는 온보딩 컨페티 장식에 남아있어 삭제하지 않음. */
+/* 2026-08-29 — 사용자 요청으로 Senior/Easy 체감 차이를 더 벌린다: Senior는
+   "좀 더 일반적인 앱" 쪽으로(터치타겟/여백/카드 radius를 표준 모바일
+   규모로 축소), Easy는 지금 값(더 큰 터치타겟·radius·여백)을 그대로
+   유지하되 이 블록 아래 [data-easy="true"] 오버라이드에서 명시적으로
+   다시 선언해 Senior가 줄어도 같이 줄지 않게 한다. */
 [data-app="senior"]{
-  --radius-card:var(--r-xl);
-  --touch-min:56px;
-  --gap-section:var(--sp-xl);
+  --radius-card:var(--r-lg);
+  --touch-min:48px;
+  --gap-section:var(--sp-lg);
   --app-bg:var(--background);
-  --accent:var(--warm-accent);
-  --on-accent:var(--on-warm-accent);
+  --accent:var(--primary);
+  --on-accent:var(--on-primary);
 }
 [data-app="senior"][data-easy="true"]{
-  --app-bg:var(--easy-surface);
-  --fs-body:20px; --fw-body:700;
-  --fs-title:22px; --fw-title:800;
+  --fs-h1:28px; --fw-h1:800;
+  --fs-title:24px; --fw-title:800;
+  --fs-body:22px; --fw-body:700;
+  --fs-body-sm:17px;
+  --fs-caption:15px;
   --touch-min:64px;
+  --radius-card:var(--r-xl);
+  --gap-section:var(--sp-xl);
+
+  /* 2026-08-28 — 쉬운 모드에서만 원색을 더 채도 높게 조정(레이아웃/배치는
+     그대로). Senior 일반 모드/Guardian은 이 블록 밖이라 영향 없음.
+     2026-08-29 — 카드/버튼마다 둘렀던 굵은 먹색 테두리(--easy-outline)는
+     사용자 요청으로 전부 삭제 — 토큰도 함께 제거(더 이상 쓰는 곳 없음). */
+  --success:#0F9D4E;
+  --danger:#E53228;
+  --warning:#F59E0B;
+  --emergency:#E5484D;
 }
 
 /* Guardian — Structured / Informative / Efficient / Data-oriented.
-   Palette below is lifted from chanbear/gyeongjidaehoe3-main
-   (codex/guardian-app branch, css/guardian.css, final cascaded :root —
-   "초기 Codex 파란색 테마 복원") per user request 2026-08-21: that link's
-   color array is now Guardian's main color, not just a loose reference. */
+   2026-08-27 리디자인 — 색상/톤은 Senior와 통일(같은 primary/text/surface 토큰
+   공유), 정보 밀도가 높은 레이아웃 구조(리스트/통계/그리드, 좁은 radius,
+   작은 touch-min)만 유지. 예전에 별도로 갖고 있던 g-dark/g-soft/g-mint/
+   g-danger-soft(chanbear/gyeongjidaehoe3-main에서 가져온 진한 블루 계열
+   커스텀 팔레트)는 폐기하고 공유 토큰(--primary, --primary-soft,
+   --success-soft 등)을 그대로 쓰도록 각 컴포넌트를 이전(components.css
+   [data-app="guardian"] 규칙 참고). */
 [data-app="guardian"]{
   --radius-card:var(--r-lg);
   --touch-min:48px;
   --gap-section:var(--sp-lg);
-  --app-bg:#F5F7FB;
+  --app-bg:var(--background);
   --accent:var(--primary);
   --on-accent:var(--on-primary);
-
-  --text-primary:#1B2440;
-  --surface:#EAF0FE;
-
-  --g-dark:#2648C4;
-  --g-soft:#EAF0FE;
-  --g-mint:#DCE6FF;
-  --g-danger-soft:#FDECEB;
   --g-shadow:0 1px 1px rgba(23,27,43,.04),0 2px 5px rgba(23,27,43,.05);
 }
 
