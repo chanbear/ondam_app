@@ -66,6 +66,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get startButton => '开始';
 
   @override
+  String get socialLoginDivider => '或';
+
+  @override
+  String get googleLoginButton => '使用谷歌登录';
+
+  @override
+  String get naverLoginButton => '使用Naver登录';
+
+  @override
+  String get kakaoLoginButton => '使用Kakao登录';
+
+  @override
+  String get guestSignInButton => '无需注册直接使用';
+
+  @override
+  String get socialLoginComingSoon => '该功能即将上线';
+
+  @override
+  String get oauthPinSetupTitle => '请设置PIN码';
+
+  @override
+  String get oauthPinSetupSubtitle => '以后将使用此PIN码登录。';
+
+  @override
+  String get oauthPinEntryTitle => '请输入PIN码';
+
+  @override
+  String get oauthPinEntrySubtitle => '请输入您设置的4位PIN码。';
+
+  @override
   String get forgotPinLink => '忘记密码了吗？';
 
   @override
@@ -181,6 +211,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get welfareCenterTitle => '查找老年活动中心';
 
   @override
+  String get publicFacilitySearchLabel => '查找公共设施';
+
+  @override
+  String get publicFacilitySearchSubtitle => '查找附近的公共设施';
+
+  @override
   String get welfareCenterRegionLoadError => '无法加载我的地区信息。';
 
   @override
@@ -199,7 +235,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get welfareCenterNoResults => '附近未找到老年活动中心。';
 
   @override
+  String welfareCenterResultsSummary(String region, int count) {
+    return '$region附近的老年活动中心$count处';
+  }
+
+  @override
   String get callButtonTooltip => '拨打电话';
+
+  @override
+  String get directionsButtonLabel => '查看路线';
 
   @override
   String get voiceUnavailableError => '此设备无法使用语音识别。';
@@ -246,6 +290,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get analysisResultTitle => '分析结果';
+
+  @override
+  String get shareButton => '分享';
 
   @override
   String get pinEntryPrompt => '请输入PIN码';
@@ -334,6 +381,16 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String guardianConnectedLabelWithId(String id) {
+    return '已连接的监护人（$id）';
+  }
+
+  @override
+  String guardianConnectedSince(String date) {
+    return '已连接 · $date';
+  }
+
+  @override
   String get acceptButton => '接受';
 
   @override
@@ -367,6 +424,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get documentScanTitle => '拍摄文件';
 
   @override
+  String get documentScanStartTitle => '文件分析';
+
+  @override
+  String get documentScanStartTakePhotoButton => '拍照';
+
+  @override
+  String get documentScanStartPickPhotoButton => '从相册选择';
+
+  @override
+  String get documentScanStartTipTitle => '请务必确认！';
+
+  @override
+  String get documentScanStartTipLine1 => '请确保文件文字清晰可见';
+
+  @override
+  String get documentScanStartTipLine2 => '在光线充足且反光较少的地方拍摄会更准确';
+
+  @override
+  String get photoLibraryUnavailableError => '无法加载照片。';
+
+  @override
   String get cameraPermissionCheckError => '无法确认相机权限。';
 
   @override
@@ -389,7 +467,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String scannedDocumentsCount(int count) {
-    return '已拍摄文件（$count张）';
+    return '已拍摄$count张';
+  }
+
+  @override
+  String photoCountBadge(int count) {
+    return '$count张';
   }
 
   @override
@@ -440,22 +523,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get captureButtonLabel => '拍摄';
 
   @override
+  String get closeCameraButtonLabel => '关闭';
+
+  @override
   String get noGuardianConnectedError => '还没有已连接的监护人。';
 
   @override
   String get emergencyHelpTitle => '您需要帮助吗？';
 
   @override
-  String get callGuardianLabel => '拨打监护人电话';
+  String get emergency119Label => '119报警（消防·急救）';
 
   @override
-  String get emergency119Label => '119（紧急救援）';
+  String get emergency112Label => '112报警（警察）';
 
   @override
-  String get emergency112Label => '112（警察）';
+  String get govComplaintLabel => '110咨询（政府投诉引导）';
 
   @override
-  String get emergency118Label => '118（网络举报）';
+  String get dasanCallCenterLabel => '120咨询（多山呼叫中心）';
+
+  @override
+  String get cancelButton => '取消';
 
   @override
   String get myRecordsTitle => '我的记录';
@@ -464,7 +553,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get documentReadLabel => '阅读文件';
 
   @override
+  String get documentReadSubtitle => '拍照即可为您读取文件';
+
+  @override
   String get messageCheckLabel => '查看短信';
+
+  @override
+  String get messageCheckSubtitle => '为您读取短信并简单说明';
+
+  @override
+  String get recentMessagesIntro => '已获取最近的短信。\n请点击想要查看的短信。';
 
   @override
   String get infoTabTitle => '信息';
@@ -511,16 +609,47 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get easyModeOnDescription => '开启 — 大按钮和简洁界面';
-
-  @override
-  String get coreFeaturesTitle => '核心功能';
+  String get easyModeDescription => '切换为更大更简单的界面';
 
   @override
   String get recentRecordsTitle => '最近记录';
 
   @override
-  String get emergencyHelpRequestLabel => '紧急求助';
+  String get todayScheduleTitle => '今日日程';
+
+  @override
+  String get emergencyHelpRequestLabel => '紧急求助（SOS）';
+
+  @override
+  String get emergencyHelpRequestSubtitle => '紧急情况下快速请求帮助';
+
+  @override
+  String homeGreetingWithName(String name) {
+    return '$name，您好！';
+  }
+
+  @override
+  String get homeGreetingSubtitle => '祝您今天平安舒心';
+
+  @override
+  String get easyHomeHeadline => '需要什么帮助？';
+
+  @override
+  String infoGreetingWithName(String name) {
+    return '为$name推荐的信息';
+  }
+
+  @override
+  String get recordsFilterAllLabel => '全部';
+
+  @override
+  String get recordsFilterEmptyMessage => '没有符合条件的记录。\n请尝试其他筛选条件。';
+
+  @override
+  String get moreAccountSectionTitle => '账户';
+
+  @override
+  String get moreUsageInfoSectionTitle => '使用信息';
 
   @override
   String get smsPermissionCheckError => '无法确认短信权限。';
@@ -600,6 +729,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get voiceGuideDescription => '屏幕内容也会以语音形式为您播报';
+
+  @override
+  String get voiceRateTitle => '语音提示速度';
+
+  @override
+  String get homeVoiceGuideEasy => '这是首页。请从阅读文件、查看短信、查找老年活动中心、我的记录中选择。';
+
+  @override
+  String get homeVoiceGuideNormal => '这是首页。请从阅读文件、查看短信、查找老年活动中心、紧急求助中选择。';
+
+  @override
+  String get easyResultVoiceGuidePrefix => '为您播报分析结果。';
 
   @override
   String get feeStatisticsTitle => '费用统计';
@@ -726,6 +867,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sourceTextLabel => '原文';
 
   @override
+  String get easyResultAiSummaryLabel => 'AI摘要';
+
+  @override
+  String get easyResultTypeLabel => '种类';
+
+  @override
+  String get easyResultReplayLabel => '再听一次';
+
+  @override
   String get askAboutThisButton => '针对此内容提问';
 
   @override
@@ -800,7 +950,49 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String feeHeroTitle(int month) {
+    return '$month月费用';
+  }
+
+  @override
+  String feeHeroLessThanLastMonth(String amount) {
+    return '比上个月少$amount';
+  }
+
+  @override
+  String feeHeroMoreThanLastMonth(String amount) {
+    return '比上个月多$amount';
+  }
+
+  @override
+  String get feeHeroSameAsLastMonth => '与上个月相同';
+
+  @override
+  String get recentBillsTitle => '最近账单';
+
+  @override
   String countUnitLabel(int count) {
     return '$count件';
   }
+
+  @override
+  String get notifSettingsTitle => '通知设置';
+
+  @override
+  String get dangerAlertLabel => '危险提醒';
+
+  @override
+  String get alwaysOnCaption => '始终开启';
+
+  @override
+  String get guardianNotifyLabel => '通知监护人';
+
+  @override
+  String get messageGuardianNoticeTitle => '已通知监护人';
+
+  @override
+  String get messageGuardianNoticeBody => '已把短信内容告诉监护人';
+
+  @override
+  String get goHomeButton => '回首页';
 }

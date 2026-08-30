@@ -172,4 +172,48 @@ void main() {
 
     expect((result as Err<AnalysisResult>).failure, isA<UnknownFailure>());
   });
+
+  test('notifyGuardian: 성공 응답이면 Ok를 반환한다', () async {
+    when(
+      () =>
+          dataSource.notifyGuardian(targetUserId: 'g1', analysisResultId: 'a1'),
+    ).thenAnswer((_) async => {'ok': true, 'notificationId': 'n1'});
+
+    final result = await repository.notifyGuardian(
+      targetUserId: 'g1',
+      analysisResultId: 'a1',
+    );
+
+    expect(result, isA<Ok<void>>());
+  });
+
+  test('notifyGuardian: not_linked이면 실패로 처리한다(가짜 성공 금지)', () async {
+    when(
+      () =>
+          dataSource.notifyGuardian(targetUserId: 'g1', analysisResultId: 'a1'),
+    ).thenAnswer((_) async => {'ok': false, 'reason': 'not_linked'});
+
+    final result = await repository.notifyGuardian(
+      targetUserId: 'g1',
+      analysisResultId: 'a1',
+    );
+
+    expect(result, isA<Err<void>>());
+  });
+
+  test('notifyGuardian: FunctionException은 UnknownFailure로 매핑한다', () async {
+    when(
+      () =>
+          dataSource.notifyGuardian(targetUserId: 'g1', analysisResultId: 'a1'),
+    ).thenThrow(
+      const FunctionException(status: 500, details: {'reason': 'server_error'}),
+    );
+
+    final result = await repository.notifyGuardian(
+      targetUserId: 'g1',
+      analysisResultId: 'a1',
+    );
+
+    expect((result as Err<void>).failure, isA<ServerFailure>());
+  });
 }

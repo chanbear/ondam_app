@@ -9,6 +9,7 @@ import '../../domain/repositories/sms_inbox_repository.dart';
 import '../../domain/usecases/check_message_risk_usecase.dart';
 import '../../domain/usecases/check_sms_permission_usecase.dart';
 import '../../domain/usecases/fetch_recent_sms_usecase.dart';
+import '../../domain/usecases/notify_guardian_usecase.dart';
 import '../../domain/usecases/request_sms_permission_usecase.dart';
 
 final smsInboxRepositoryProvider = Provider<SmsInboxRepository>((ref) {
@@ -39,4 +40,8 @@ final fetchRecentSmsUseCaseProvider = Provider(
 
 final checkMessageRiskUseCaseProvider = Provider(
   (ref) => CheckMessageRiskUseCase(ref.watch(messageRiskRepositoryProvider)),
+);
+
+final notifyGuardianUseCaseProvider = Provider(
+  (ref) => NotifyGuardianUseCase(ref.watch(messageRiskRepositoryProvider)),
 );

@@ -19,6 +19,16 @@
   "pinLabel": "パスワード",
   "pinHint": "4桁の数字",
   "startButton": "はじめる",
+  "socialLoginDivider": "または",
+  "googleLoginButton": "Googleでログイン",
+  "naverLoginButton": "Naverでログイン",
+  "kakaoLoginButton": "Kakaoでログイン",
+  "guestSignInButton": "会員登録なしで利用する",
+  "socialLoginComingSoon": "近日公開予定の機能です",
+  "oauthPinSetupTitle": "PINを設定してください",
+  "oauthPinSetupSubtitle": "次回からこのPINでログインします。",
+  "oauthPinEntryTitle": "PINを入力してください",
+  "oauthPinEntrySubtitle": "設定した4桁のPINを入力してください。",
   "forgotPinLink": "パスワードをお忘れですか？",
   "pinWrongWithCount": "パスワードが正しくありません。（{count}回失敗）",
   "@pinWrongWithCount": {
@@ -70,13 +80,23 @@
   "regionSaved": "地域を保存しました。",
   "sidoPickerTitle": "都道府県を選択",
   "welfareCenterTitle": "高齢者福祉センターを探す",
+  "publicFacilitySearchLabel": "公共施設を探す",
+  "publicFacilitySearchSubtitle": "近くの公共施設を探してみましょう",
   "welfareCenterRegionLoadError": "マイエリア情報を読み込めませんでした。",
   "welfareCenterEmptyRegionMessage": "高齢者福祉センターを探すには、まず地域を登録してください。",
   "searchNearbyButton": "近くの高齢者福祉センターを探す",
   "phoneLaunchError": "電話アプリを開けませんでした。",
   "welfareCenterSearchError": "検索中に問題が発生しました。",
   "welfareCenterNoResults": "近くに高齢者福祉センターが見つかりませんでした。",
+  "welfareCenterResultsSummary": "{region}周辺の高齢者福祉センター{count}件",
+  "@welfareCenterResultsSummary": {
+    "placeholders": {
+      "region": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
   "callButtonTooltip": "電話をかける",
+  "directionsButtonLabel": "経路を調べる",
   "voiceUnavailableError": "この端末では音声認識を利用できません。",
   "voiceInitError": "音声アシスタントを開始できませんでした。",
   "voicePreparing": "音声アシスタントを準備しています…",
@@ -92,6 +112,7 @@
   "analysisTypeDocumentLabel": "書類分析",
   "analysisTypeMessageLabel": "メッセージ確認",
   "analysisResultTitle": "分析結果",
+  "shareButton": "共有",
   "pinEntryPrompt": "PINを入力してください",
   "pinForgotLink": "PINをお忘れですか？",
   "pinResetTitle": "PIN再設定",
@@ -127,6 +148,22 @@
       }
     }
   },
+  "guardianConnectedLabelWithId": "連携済みの保護者（{id}）",
+  "@guardianConnectedLabelWithId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "guardianConnectedSince": "連携済み・{date}",
+  "@guardianConnectedSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "acceptButton": "承認",
   "rejectButton": "拒否",
   "guardianRevokeConfirmTitle": "連携を解除しますか？",
@@ -138,6 +175,13 @@
   "guardianStatusRejected": "拒否済み",
   "guardianStatusRevoked": "連携解除済み",
   "documentScanTitle": "書類撮影",
+  "documentScanStartTitle": "書類分析",
+  "documentScanStartTakePhotoButton": "写真を撮る",
+  "documentScanStartPickPhotoButton": "写真を選ぶ",
+  "documentScanStartTipTitle": "ご確認ください！",
+  "documentScanStartTipLine1": "文字がはっきり見えるように撮影してください",
+  "documentScanStartTipLine2": "光の反射が少ない明るい場所で撮影するとより正確です",
+  "photoLibraryUnavailableError": "写真を読み込めませんでした。",
   "cameraPermissionCheckError": "カメラの権限を確認できませんでした。",
   "cameraPermissionRequestMessage": "書類やメッセージを撮影して分析するには\nカメラへのアクセスを許可してください。",
   "cameraPermissionRequestButton": "カメラの権限を許可する",
@@ -145,8 +189,16 @@
   "openSettingsButton": "設定を開く",
   "scanPreviewTitle": "撮影結果の確認",
   "retakeLabel": "撮り直し",
-  "scannedDocumentsCount": "撮影した書類（{count}枚）",
+  "scannedDocumentsCount": "{count}枚撮影しました",
   "@scannedDocumentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "photoCountBadge": "{count}枚",
+  "@photoCountBadge": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -197,15 +249,20 @@
   "cameraPreparingMessage": "カメラを準備しています",
   "documentFrameGuideMessage": "書類を画面内に収めてください",
   "captureButtonLabel": "撮影する",
+  "closeCameraButtonLabel": "閉じる",
   "noGuardianConnectedError": "まだ連携している保護者がいません。",
   "emergencyHelpTitle": "お困りですか？",
-  "callGuardianLabel": "保護者に電話",
-  "emergency119Label": "119（救急）",
-  "emergency112Label": "112（警察）",
-  "emergency118Label": "118（サイバー通報）",
+  "emergency119Label": "119通報（消防・救急）",
+  "emergency112Label": "112通報（警察）",
+  "govComplaintLabel": "110相談（政府苦情案内）",
+  "dasanCallCenterLabel": "120相談（ダサンコールセンター）",
+  "cancelButton": "キャンセル",
   "myRecordsTitle": "マイ記録",
   "documentReadLabel": "書類を読む",
+  "documentReadSubtitle": "写真で書類を読み上げます",
   "messageCheckLabel": "メッセージ確認",
+  "messageCheckSubtitle": "メッセージを読んでわかりやすくお伝えします",
+  "recentMessagesIntro": "最近のメッセージを読み込みました。\n確認したいメッセージをタップしてください。",
   "infoTabTitle": "情報",
   "infoTabEmptyMessage": "まだ準備された情報がありません。まもなくおすすめ情報をお届けします。",
   "statisticsLabel": "統計",
@@ -227,10 +284,33 @@
       }
     }
   },
-  "easyModeOnDescription": "オン — 大きなボタンとシンプルな画面",
-  "coreFeaturesTitle": "主要機能",
+  "easyModeDescription": "大きくシンプルな画面で見る",
   "recentRecordsTitle": "最近の記録",
-  "emergencyHelpRequestLabel": "緊急ヘルプ要請",
+  "todayScheduleTitle": "今日の予定",
+  "emergencyHelpRequestLabel": "緊急ヘルプ（SOS）",
+  "emergencyHelpRequestSubtitle": "緊急時にすぐ助けを呼べます",
+  "homeGreetingWithName": "{name}様、こんにちは！",
+  "@homeGreetingWithName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGreetingSubtitle": "今日も安全で快適な一日をお過ごしください",
+  "easyHomeHeadline": "何をお手伝いしましょうか？",
+  "infoGreetingWithName": "{name}様のためのおすすめ情報です",
+  "@infoGreetingWithName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recordsFilterAllLabel": "すべて",
+  "recordsFilterEmptyMessage": "該当する記録がありません。\n別のフィルターを選んでみてください。",
+  "moreAccountSectionTitle": "アカウント",
+  "moreUsageInfoSectionTitle": "利用情報",
   "smsPermissionCheckError": "メッセージの権限を確認できませんでした。",
   "smsPermissionRequestMessage": "受信メッセージを確認して危険なメッセージかお知らせするために\nメッセージへのアクセスを許可してください。",
   "smsPermissionRequestButton": "メッセージの権限を許可する",
@@ -257,6 +337,10 @@
   "textSizeTitle": "文字サイズ",
   "voiceGuideTitle": "音声案内",
   "voiceGuideDescription": "画面の内容を音声でもご案内します",
+  "voiceRateTitle": "音声案内の速度",
+  "homeVoiceGuideEasy": "ホーム画面です。書類を読む、メッセージ確認、高齢者福祉センターを探す、マイ記録からお選びください。",
+  "homeVoiceGuideNormal": "ホーム画面です。書類を読む、メッセージ確認、高齢者福祉センターを探す、緊急ヘルプ要請からお選びください。",
+  "easyResultVoiceGuidePrefix": "分析結果をお知らせします。",
   "feeStatisticsTitle": "料金統計",
   "feeStatisticsLoadingMessage": "料金統計を読み込んでいます",
   "feeStatisticsLoadError": "料金統計の読み込み中に問題が発生しました。",
@@ -316,6 +400,9 @@
   "detailsViewTitle": "詳細を見る",
   "reliabilityLabel": "信頼度",
   "sourceTextLabel": "原文",
+  "easyResultAiSummaryLabel": "AI要約",
+  "easyResultTypeLabel": "種類",
+  "easyResultReplayLabel": "もう一度聞く",
   "askAboutThisButton": "この内容について質問する",
   "confirmedDoneSemanticLabel": "確認完了としてマークしました",
   "confirmedDoneMessage": "確認完了しました",
@@ -350,8 +437,29 @@
   "@yearNumberLabel": {
     "placeholders": { "year": { "type": "int" } }
   },
+  "feeHeroTitle": "{month}月の料金",
+  "@feeHeroTitle": {
+    "placeholders": { "month": { "type": "int" } }
+  },
+  "feeHeroLessThanLastMonth": "先月より{amount}少ないです",
+  "@feeHeroLessThanLastMonth": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "feeHeroMoreThanLastMonth": "先月より{amount}多いです",
+  "@feeHeroMoreThanLastMonth": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "feeHeroSameAsLastMonth": "先月と同じです",
+  "recentBillsTitle": "最近の請求書",
   "countUnitLabel": "{count}件",
   "@countUnitLabel": {
     "placeholders": { "count": { "type": "int" } }
-  }
+  },
+  "notifSettingsTitle": "通知設定",
+  "dangerAlertLabel": "危険通知",
+  "alwaysOnCaption": "常にオン",
+  "guardianNotifyLabel": "保護者に通知",
+  "messageGuardianNoticeTitle": "保護者にお知らせしました",
+  "messageGuardianNoticeBody": "メッセージの内容を保護者に伝えました",
+  "goHomeButton": "ホームへ"
 }

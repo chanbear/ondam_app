@@ -5,12 +5,23 @@ import 'package:ondam_senior/features/message_check/domain/repositories/message_
 
 class FakeMessageRiskRepository implements MessageRiskRepository {
   Result<AnalysisResult> result = const Err(UnavailableFailure());
+  Result<void> notifyGuardianResult = const Ok(null);
 
   final List<SmsMessage> calls = [];
+  final List<String> notifyGuardianCalls = [];
 
   @override
   Future<Result<AnalysisResult>> analyzeMessage(SmsMessage message) async {
     calls.add(message);
     return result;
+  }
+
+  @override
+  Future<Result<void>> notifyGuardian({
+    required String targetUserId,
+    required String analysisResultId,
+  }) async {
+    notifyGuardianCalls.add(targetUserId);
+    return notifyGuardianResult;
   }
 }

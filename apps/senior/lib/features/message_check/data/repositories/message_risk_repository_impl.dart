@@ -33,6 +33,29 @@ class MessageRiskRepositoryImpl implements MessageRiskRepository {
     }
   }
 
+  @override
+  Future<Result<void>> notifyGuardian({
+    required String targetUserId,
+    required String analysisResultId,
+  }) async {
+    try {
+      final data = await _dataSource.notifyGuardian(
+        targetUserId: targetUserId,
+        analysisResultId: analysisResultId,
+      );
+      if (data['ok'] != true) {
+        return Err(_mapReason(data['reason'] as String?));
+      }
+      return const Ok(null);
+    } on FunctionException catch (e) {
+      final details = e.details;
+      final reason = details is Map ? details['reason'] as String? : null;
+      return Err(_mapReason(reason));
+    } catch (_) {
+      return const Err(UnknownFailure());
+    }
+  }
+
   Failure _mapReason(String? reason) {
     return switch (reason) {
       'missing_authorization' || 'invalid_session' => const AuthFailure(),

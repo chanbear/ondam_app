@@ -67,6 +67,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startButton => 'Get started';
 
   @override
+  String get socialLoginDivider => 'or';
+
+  @override
+  String get googleLoginButton => 'Continue with Google';
+
+  @override
+  String get naverLoginButton => 'Continue with Naver';
+
+  @override
+  String get kakaoLoginButton => 'Continue with Kakao';
+
+  @override
+  String get guestSignInButton => 'Continue without signing up';
+
+  @override
+  String get socialLoginComingSoon => 'This feature is coming soon';
+
+  @override
+  String get oauthPinSetupTitle => 'Set up a PIN';
+
+  @override
+  String get oauthPinSetupSubtitle =>
+      'You\'ll use this PIN to log in from now on.';
+
+  @override
+  String get oauthPinEntryTitle => 'Enter your PIN';
+
+  @override
+  String get oauthPinEntrySubtitle => 'Enter the 4-digit PIN you set up.';
+
+  @override
   String get forgotPinLink => 'Forgot your password?';
 
   @override
@@ -186,6 +217,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welfareCenterTitle => 'Find a Senior Center';
 
   @override
+  String get publicFacilitySearchLabel => 'Find Public Facilities';
+
+  @override
+  String get publicFacilitySearchSubtitle =>
+      'Look for public facilities nearby';
+
+  @override
   String get welfareCenterRegionLoadError =>
       'We couldn\'t load your region info.';
 
@@ -208,7 +246,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'We couldn\'t find any senior centers nearby.';
 
   @override
+  String welfareCenterResultsSummary(String region, int count) {
+    return '$count senior centers near $region';
+  }
+
+  @override
   String get callButtonTooltip => 'Call';
+
+  @override
+  String get directionsButtonLabel => 'Directions';
 
   @override
   String get voiceUnavailableError =>
@@ -256,6 +302,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get analysisResultTitle => 'Analysis Result';
+
+  @override
+  String get shareButton => 'Share';
 
   @override
   String get pinEntryPrompt => 'Please enter your PIN';
@@ -350,6 +399,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String guardianConnectedLabelWithId(String id) {
+    return 'Connected guardian ($id)';
+  }
+
+  @override
+  String guardianConnectedSince(String date) {
+    return 'Connected · $date';
+  }
+
+  @override
   String get acceptButton => 'Accept';
 
   @override
@@ -384,6 +443,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get documentScanTitle => 'Scan Document';
 
   @override
+  String get documentScanStartTitle => 'Document Analysis';
+
+  @override
+  String get documentScanStartTakePhotoButton => 'Take a photo';
+
+  @override
+  String get documentScanStartPickPhotoButton => 'Choose from library';
+
+  @override
+  String get documentScanStartTipTitle => 'Please check before you start!';
+
+  @override
+  String get documentScanStartTipLine1 =>
+      'Make sure the text is clearly visible';
+
+  @override
+  String get documentScanStartTipLine2 =>
+      'Bright, glare-free lighting gives more accurate results';
+
+  @override
+  String get photoLibraryUnavailableError => 'Couldn\'t load the photo.';
+
+  @override
   String get cameraPermissionCheckError => 'Couldn\'t check camera permission.';
 
   @override
@@ -408,7 +490,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String scannedDocumentsCount(int count) {
-    return 'Photos taken ($count)';
+    return '$count photos taken';
+  }
+
+  @override
+  String photoCountBadge(int count) {
+    return '$count';
   }
 
   @override
@@ -459,6 +546,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get captureButtonLabel => 'Take photo';
 
   @override
+  String get closeCameraButtonLabel => 'Close';
+
+  @override
   String get noGuardianConnectedError =>
       'You don\'t have a connected guardian yet.';
 
@@ -466,16 +556,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emergencyHelpTitle => 'Do you need help?';
 
   @override
-  String get callGuardianLabel => 'Call guardian';
+  String get emergency119Label => '119 Report (Fire & Rescue)';
 
   @override
-  String get emergency119Label => '119 (Emergency Rescue)';
+  String get emergency112Label => '112 Report (Police)';
 
   @override
-  String get emergency112Label => '112 (Police)';
+  String get govComplaintLabel => '110 Consult (Government Complaints)';
 
   @override
-  String get emergency118Label => '118 (Cybercrime Report)';
+  String get dasanCallCenterLabel => '120 Consult (Dasan Call Center)';
+
+  @override
+  String get cancelButton => 'Cancel';
 
   @override
   String get myRecordsTitle => 'My Records';
@@ -484,7 +577,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get documentReadLabel => 'Read Document';
 
   @override
+  String get documentReadSubtitle => 'We\'ll read documents from a photo';
+
+  @override
   String get messageCheckLabel => 'Check Message';
+
+  @override
+  String get messageCheckSubtitle =>
+      'We\'ll read messages and explain them simply';
+
+  @override
+  String get recentMessagesIntro =>
+      'We\'ve pulled in your recent messages.\nTap the one you\'d like to check.';
 
   @override
   String get infoTabTitle => 'Info';
@@ -534,16 +638,48 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get easyModeOnDescription => 'On — Big buttons and simple screens';
-
-  @override
-  String get coreFeaturesTitle => 'Key Features';
+  String get easyModeDescription => 'Switch to bigger, simpler screens';
 
   @override
   String get recentRecordsTitle => 'Recent Records';
 
   @override
-  String get emergencyHelpRequestLabel => 'Emergency Help Request';
+  String get todayScheduleTitle => 'Today\'s Schedule';
+
+  @override
+  String get emergencyHelpRequestLabel => 'Emergency Help (SOS)';
+
+  @override
+  String get emergencyHelpRequestSubtitle => 'Get help quickly in an emergency';
+
+  @override
+  String homeGreetingWithName(String name) {
+    return 'Hello, $name!';
+  }
+
+  @override
+  String get homeGreetingSubtitle => 'Have a safe and comfortable day';
+
+  @override
+  String get easyHomeHeadline => 'What can we help you with?';
+
+  @override
+  String infoGreetingWithName(String name) {
+    return 'Personalized info for $name';
+  }
+
+  @override
+  String get recordsFilterAllLabel => 'All';
+
+  @override
+  String get recordsFilterEmptyMessage =>
+      'No records match this filter.\nTry a different filter.';
+
+  @override
+  String get moreAccountSectionTitle => 'Account';
+
+  @override
+  String get moreUsageInfoSectionTitle => 'Usage Info';
 
   @override
   String get smsPermissionCheckError => 'Couldn\'t check message permission.';
@@ -629,6 +765,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get voiceGuideDescription =>
       'We\'ll also read the screen content aloud';
+
+  @override
+  String get voiceRateTitle => 'Voice guide speed';
+
+  @override
+  String get homeVoiceGuideEasy =>
+      'This is the home screen. Choose from Read Document, Check Message, Find a Senior Center, or My Records.';
+
+  @override
+  String get homeVoiceGuideNormal =>
+      'This is the home screen. Choose from Read Document, Check Message, Find a Senior Center, or Emergency Help Request.';
+
+  @override
+  String get easyResultVoiceGuidePrefix => 'Here\'s your analysis result.';
 
   @override
   String get feeStatisticsTitle => 'Fee Statistics';
@@ -761,6 +911,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sourceTextLabel => 'Original Text';
 
   @override
+  String get easyResultAiSummaryLabel => 'AI Summary';
+
+  @override
+  String get easyResultTypeLabel => 'Type';
+
+  @override
+  String get easyResultReplayLabel => 'Listen again';
+
+  @override
   String get askAboutThisButton => 'Ask about this';
 
   @override
@@ -837,7 +996,50 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String feeHeroTitle(int month) {
+    return 'Month $month fees';
+  }
+
+  @override
+  String feeHeroLessThanLastMonth(String amount) {
+    return '$amount less than last month';
+  }
+
+  @override
+  String feeHeroMoreThanLastMonth(String amount) {
+    return '$amount more than last month';
+  }
+
+  @override
+  String get feeHeroSameAsLastMonth => 'Same as last month';
+
+  @override
+  String get recentBillsTitle => 'Recent bills';
+
+  @override
   String countUnitLabel(int count) {
     return '$count';
   }
+
+  @override
+  String get notifSettingsTitle => 'Notification settings';
+
+  @override
+  String get dangerAlertLabel => 'Danger alerts';
+
+  @override
+  String get alwaysOnCaption => 'Always on';
+
+  @override
+  String get guardianNotifyLabel => 'Notify guardian';
+
+  @override
+  String get messageGuardianNoticeTitle => 'Your guardian has been notified';
+
+  @override
+  String get messageGuardianNoticeBody =>
+      'We shared this message with your guardian';
+
+  @override
+  String get goHomeButton => 'Go home';
 }

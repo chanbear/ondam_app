@@ -67,6 +67,36 @@ class AppLocalizationsJa extends AppLocalizations {
   String get startButton => 'はじめる';
 
   @override
+  String get socialLoginDivider => 'または';
+
+  @override
+  String get googleLoginButton => 'Googleでログイン';
+
+  @override
+  String get naverLoginButton => 'Naverでログイン';
+
+  @override
+  String get kakaoLoginButton => 'Kakaoでログイン';
+
+  @override
+  String get guestSignInButton => '会員登録なしで利用する';
+
+  @override
+  String get socialLoginComingSoon => '近日公開予定の機能です';
+
+  @override
+  String get oauthPinSetupTitle => 'PINを設定してください';
+
+  @override
+  String get oauthPinSetupSubtitle => '次回からこのPINでログインします。';
+
+  @override
+  String get oauthPinEntryTitle => 'PINを入力してください';
+
+  @override
+  String get oauthPinEntrySubtitle => '設定した4桁のPINを入力してください。';
+
+  @override
   String get forgotPinLink => 'パスワードをお忘れですか？';
 
   @override
@@ -182,6 +212,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get welfareCenterTitle => '高齢者福祉センターを探す';
 
   @override
+  String get publicFacilitySearchLabel => '公共施設を探す';
+
+  @override
+  String get publicFacilitySearchSubtitle => '近くの公共施設を探してみましょう';
+
+  @override
   String get welfareCenterRegionLoadError => 'マイエリア情報を読み込めませんでした。';
 
   @override
@@ -200,7 +236,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get welfareCenterNoResults => '近くに高齢者福祉センターが見つかりませんでした。';
 
   @override
+  String welfareCenterResultsSummary(String region, int count) {
+    return '$region周辺の高齢者福祉センター$count件';
+  }
+
+  @override
   String get callButtonTooltip => '電話をかける';
+
+  @override
+  String get directionsButtonLabel => '経路を調べる';
 
   @override
   String get voiceUnavailableError => 'この端末では音声認識を利用できません。';
@@ -247,6 +291,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get analysisResultTitle => '分析結果';
+
+  @override
+  String get shareButton => '共有';
 
   @override
   String get pinEntryPrompt => 'PINを入力してください';
@@ -337,6 +384,16 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String guardianConnectedLabelWithId(String id) {
+    return '連携済みの保護者（$id）';
+  }
+
+  @override
+  String guardianConnectedSince(String date) {
+    return '連携済み・$date';
+  }
+
+  @override
   String get acceptButton => '承認';
 
   @override
@@ -370,6 +427,27 @@ class AppLocalizationsJa extends AppLocalizations {
   String get documentScanTitle => '書類撮影';
 
   @override
+  String get documentScanStartTitle => '書類分析';
+
+  @override
+  String get documentScanStartTakePhotoButton => '写真を撮る';
+
+  @override
+  String get documentScanStartPickPhotoButton => '写真を選ぶ';
+
+  @override
+  String get documentScanStartTipTitle => 'ご確認ください！';
+
+  @override
+  String get documentScanStartTipLine1 => '文字がはっきり見えるように撮影してください';
+
+  @override
+  String get documentScanStartTipLine2 => '光の反射が少ない明るい場所で撮影するとより正確です';
+
+  @override
+  String get photoLibraryUnavailableError => '写真を読み込めませんでした。';
+
+  @override
   String get cameraPermissionCheckError => 'カメラの権限を確認できませんでした。';
 
   @override
@@ -394,7 +472,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String scannedDocumentsCount(int count) {
-    return '撮影した書類（$count枚）';
+    return '$count枚撮影しました';
+  }
+
+  @override
+  String photoCountBadge(int count) {
+    return '$count枚';
   }
 
   @override
@@ -445,22 +528,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get captureButtonLabel => '撮影する';
 
   @override
+  String get closeCameraButtonLabel => '閉じる';
+
+  @override
   String get noGuardianConnectedError => 'まだ連携している保護者がいません。';
 
   @override
   String get emergencyHelpTitle => 'お困りですか？';
 
   @override
-  String get callGuardianLabel => '保護者に電話';
+  String get emergency119Label => '119通報（消防・救急）';
 
   @override
-  String get emergency119Label => '119（救急）';
+  String get emergency112Label => '112通報（警察）';
 
   @override
-  String get emergency112Label => '112（警察）';
+  String get govComplaintLabel => '110相談（政府苦情案内）';
 
   @override
-  String get emergency118Label => '118（サイバー通報）';
+  String get dasanCallCenterLabel => '120相談（ダサンコールセンター）';
+
+  @override
+  String get cancelButton => 'キャンセル';
 
   @override
   String get myRecordsTitle => 'マイ記録';
@@ -469,7 +558,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get documentReadLabel => '書類を読む';
 
   @override
+  String get documentReadSubtitle => '写真で書類を読み上げます';
+
+  @override
   String get messageCheckLabel => 'メッセージ確認';
+
+  @override
+  String get messageCheckSubtitle => 'メッセージを読んでわかりやすくお伝えします';
+
+  @override
+  String get recentMessagesIntro => '最近のメッセージを読み込みました。\n確認したいメッセージをタップしてください。';
 
   @override
   String get infoTabTitle => '情報';
@@ -516,16 +614,47 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get easyModeOnDescription => 'オン — 大きなボタンとシンプルな画面';
-
-  @override
-  String get coreFeaturesTitle => '主要機能';
+  String get easyModeDescription => '大きくシンプルな画面で見る';
 
   @override
   String get recentRecordsTitle => '最近の記録';
 
   @override
-  String get emergencyHelpRequestLabel => '緊急ヘルプ要請';
+  String get todayScheduleTitle => '今日の予定';
+
+  @override
+  String get emergencyHelpRequestLabel => '緊急ヘルプ（SOS）';
+
+  @override
+  String get emergencyHelpRequestSubtitle => '緊急時にすぐ助けを呼べます';
+
+  @override
+  String homeGreetingWithName(String name) {
+    return '$name様、こんにちは！';
+  }
+
+  @override
+  String get homeGreetingSubtitle => '今日も安全で快適な一日をお過ごしください';
+
+  @override
+  String get easyHomeHeadline => '何をお手伝いしましょうか？';
+
+  @override
+  String infoGreetingWithName(String name) {
+    return '$name様のためのおすすめ情報です';
+  }
+
+  @override
+  String get recordsFilterAllLabel => 'すべて';
+
+  @override
+  String get recordsFilterEmptyMessage => '該当する記録がありません。\n別のフィルターを選んでみてください。';
+
+  @override
+  String get moreAccountSectionTitle => 'アカウント';
+
+  @override
+  String get moreUsageInfoSectionTitle => '利用情報';
 
   @override
   String get smsPermissionCheckError => 'メッセージの権限を確認できませんでした。';
@@ -607,6 +736,20 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get voiceGuideDescription => '画面の内容を音声でもご案内します';
+
+  @override
+  String get voiceRateTitle => '音声案内の速度';
+
+  @override
+  String get homeVoiceGuideEasy =>
+      'ホーム画面です。書類を読む、メッセージ確認、高齢者福祉センターを探す、マイ記録からお選びください。';
+
+  @override
+  String get homeVoiceGuideNormal =>
+      'ホーム画面です。書類を読む、メッセージ確認、高齢者福祉センターを探す、緊急ヘルプ要請からお選びください。';
+
+  @override
+  String get easyResultVoiceGuidePrefix => '分析結果をお知らせします。';
 
   @override
   String get feeStatisticsTitle => '料金統計';
@@ -736,6 +879,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sourceTextLabel => '原文';
 
   @override
+  String get easyResultAiSummaryLabel => 'AI要約';
+
+  @override
+  String get easyResultTypeLabel => '種類';
+
+  @override
+  String get easyResultReplayLabel => 'もう一度聞く';
+
+  @override
   String get askAboutThisButton => 'この内容について質問する';
 
   @override
@@ -812,7 +964,49 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String feeHeroTitle(int month) {
+    return '$month月の料金';
+  }
+
+  @override
+  String feeHeroLessThanLastMonth(String amount) {
+    return '先月より$amount少ないです';
+  }
+
+  @override
+  String feeHeroMoreThanLastMonth(String amount) {
+    return '先月より$amount多いです';
+  }
+
+  @override
+  String get feeHeroSameAsLastMonth => '先月と同じです';
+
+  @override
+  String get recentBillsTitle => '最近の請求書';
+
+  @override
   String countUnitLabel(int count) {
     return '$count件';
   }
+
+  @override
+  String get notifSettingsTitle => '通知設定';
+
+  @override
+  String get dangerAlertLabel => '危険通知';
+
+  @override
+  String get alwaysOnCaption => '常にオン';
+
+  @override
+  String get guardianNotifyLabel => '保護者に通知';
+
+  @override
+  String get messageGuardianNoticeTitle => '保護者にお知らせしました';
+
+  @override
+  String get messageGuardianNoticeBody => 'メッセージの内容を保護者に伝えました';
+
+  @override
+  String get goHomeButton => 'ホームへ';
 }

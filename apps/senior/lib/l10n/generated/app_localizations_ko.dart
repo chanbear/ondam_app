@@ -67,6 +67,36 @@ class AppLocalizationsKo extends AppLocalizations {
   String get startButton => '시작하기';
 
   @override
+  String get socialLoginDivider => '또는';
+
+  @override
+  String get googleLoginButton => '구글 로그인';
+
+  @override
+  String get naverLoginButton => '네이버 로그인';
+
+  @override
+  String get kakaoLoginButton => '카카오 로그인';
+
+  @override
+  String get guestSignInButton => '회원가입 없이 사용하기';
+
+  @override
+  String get socialLoginComingSoon => '준비 중인 기능이에요';
+
+  @override
+  String get oauthPinSetupTitle => 'PIN을 새로 설정해주세요';
+
+  @override
+  String get oauthPinSetupSubtitle => '다음부터는 이 PIN으로 로그인해요.';
+
+  @override
+  String get oauthPinEntryTitle => 'PIN을 입력해주세요';
+
+  @override
+  String get oauthPinEntrySubtitle => '설정하신 4자리 PIN을 입력해주세요.';
+
+  @override
   String get forgotPinLink => '비밀번호를 잊으셨나요?';
 
   @override
@@ -182,6 +212,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get welfareCenterTitle => '경로당 찾기';
 
   @override
+  String get publicFacilitySearchLabel => '공공시설 찾기';
+
+  @override
+  String get publicFacilitySearchSubtitle => '주변 공공시설을 찾아보세요';
+
+  @override
   String get welfareCenterRegionLoadError => '내 지역 정보를 불러오지 못했어요.';
 
   @override
@@ -200,7 +236,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get welfareCenterNoResults => '근처에서 경로당을 찾지 못했어요.';
 
   @override
+  String welfareCenterResultsSummary(String region, int count) {
+    return '$region 근처 경로당 $count곳';
+  }
+
+  @override
   String get callButtonTooltip => '전화 걸기';
+
+  @override
+  String get directionsButtonLabel => '길 찾기';
 
   @override
   String get voiceUnavailableError => '이 기기에서는 음성 인식을 사용할 수 없어요.';
@@ -247,6 +291,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get analysisResultTitle => '분석 결과';
+
+  @override
+  String get shareButton => '공유';
 
   @override
   String get pinEntryPrompt => 'PIN을 입력해주세요';
@@ -337,6 +384,16 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String guardianConnectedLabelWithId(String id) {
+    return '연결된 보호자 ($id)';
+  }
+
+  @override
+  String guardianConnectedSince(String date) {
+    return '연결됨 · $date';
+  }
+
+  @override
   String get acceptButton => '수락';
 
   @override
@@ -371,6 +428,27 @@ class AppLocalizationsKo extends AppLocalizations {
   String get documentScanTitle => '문서 촬영';
 
   @override
+  String get documentScanStartTitle => '문서 분석';
+
+  @override
+  String get documentScanStartTakePhotoButton => '사진 촬영하기';
+
+  @override
+  String get documentScanStartPickPhotoButton => '사진 불러오기';
+
+  @override
+  String get documentScanStartTipTitle => '꼭 확인해 주세요!';
+
+  @override
+  String get documentScanStartTipLine1 => '문서의 글자가 선명하게 보이도록 촬영해 주세요';
+
+  @override
+  String get documentScanStartTipLine2 => '빛 반사가 적은 밝은 곳에서 촬영하면 더 정확해요';
+
+  @override
+  String get photoLibraryUnavailableError => '사진을 불러올 수 없어요.';
+
+  @override
   String get cameraPermissionCheckError => '카메라 권한을 확인하지 못했어요.';
 
   @override
@@ -395,7 +473,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String scannedDocumentsCount(int count) {
-    return '촬영한 문서 ($count장)';
+    return '$count장 촬영했어요';
+  }
+
+  @override
+  String photoCountBadge(int count) {
+    return '$count장';
   }
 
   @override
@@ -446,22 +529,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String get captureButtonLabel => '촬영하기';
 
   @override
+  String get closeCameraButtonLabel => '닫기';
+
+  @override
   String get noGuardianConnectedError => '아직 연결된 보호자가 없어요.';
 
   @override
   String get emergencyHelpTitle => '도움이 필요하신가요?';
 
   @override
-  String get callGuardianLabel => '보호자에게 전화';
+  String get emergency119Label => '119 신고하기 (소방·구급)';
 
   @override
-  String get emergency119Label => '119 (응급구조)';
+  String get emergency112Label => '112 신고하기 (경찰)';
 
   @override
-  String get emergency112Label => '112 (경찰)';
+  String get govComplaintLabel => '110 상담하기 (정부민원안내)';
 
   @override
-  String get emergency118Label => '118 (사이버 신고)';
+  String get dasanCallCenterLabel => '120 상담하기 (다산콜센터)';
+
+  @override
+  String get cancelButton => '취소';
 
   @override
   String get myRecordsTitle => '내 기록';
@@ -470,7 +559,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get documentReadLabel => '문서 읽기';
 
   @override
+  String get documentReadSubtitle => '사진으로 문서를 읽어드려요';
+
+  @override
   String get messageCheckLabel => '문자 확인';
+
+  @override
+  String get messageCheckSubtitle => '문자를 읽어주고 쉽게 알려드려요';
+
+  @override
+  String get recentMessagesIntro => '최근 문자를 가져왔어요.\n확인하고 싶은 문자를 눌러주세요.';
 
   @override
   String get infoTabTitle => '정보';
@@ -517,16 +615,47 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get easyModeOnDescription => '켜짐 — 큰 버튼과 단순한 화면';
-
-  @override
-  String get coreFeaturesTitle => '핵심 기능';
+  String get easyModeDescription => '더 크고 단순한 화면으로 보기';
 
   @override
   String get recentRecordsTitle => '최근 기록';
 
   @override
-  String get emergencyHelpRequestLabel => '긴급 도움 요청';
+  String get todayScheduleTitle => '오늘의 일정';
+
+  @override
+  String get emergencyHelpRequestLabel => '긴급 도움 (SOS)';
+
+  @override
+  String get emergencyHelpRequestSubtitle => '위급할 때 빠르게 도움을 요청해요';
+
+  @override
+  String homeGreetingWithName(String name) {
+    return '$name님, 안녕하세요!';
+  }
+
+  @override
+  String get homeGreetingSubtitle => '오늘도 편안하고 안전한 하루 되세요';
+
+  @override
+  String get easyHomeHeadline => '무엇을 도와드릴까요?';
+
+  @override
+  String infoGreetingWithName(String name) {
+    return '$name님을 위한 맞춤 정보예요';
+  }
+
+  @override
+  String get recordsFilterAllLabel => '전체';
+
+  @override
+  String get recordsFilterEmptyMessage => '해당하는 기록이 없어요.\n다른 필터를 선택해보세요.';
+
+  @override
+  String get moreAccountSectionTitle => '계정';
+
+  @override
+  String get moreUsageInfoSectionTitle => '이용 정보';
 
   @override
   String get smsPermissionCheckError => '문자 권한을 확인하지 못했어요.';
@@ -608,6 +737,20 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get voiceGuideDescription => '화면 내용을 음성으로도 안내해드려요';
+
+  @override
+  String get voiceRateTitle => '음성 안내 속도';
+
+  @override
+  String get homeVoiceGuideEasy =>
+      '홈 화면이에요. 문서 읽기, 문자 확인, 경로당 찾기, 내 기록 중에서 골라주세요.';
+
+  @override
+  String get homeVoiceGuideNormal =>
+      '홈 화면이에요. 문서 읽기, 문자 확인, 경로당 찾기, 긴급 도움 요청 중에서 골라주세요.';
+
+  @override
+  String get easyResultVoiceGuidePrefix => '분석 결과를 알려드릴게요.';
 
   @override
   String get feeStatisticsTitle => '요금 통계';
@@ -736,6 +879,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sourceTextLabel => '원문';
 
   @override
+  String get easyResultAiSummaryLabel => 'AI 요약';
+
+  @override
+  String get easyResultTypeLabel => '종류';
+
+  @override
+  String get easyResultReplayLabel => '다시 듣기';
+
+  @override
   String get askAboutThisButton => '이 내용 물어보기';
 
   @override
@@ -812,7 +964,49 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String feeHeroTitle(int month) {
+    return '$month월 요금';
+  }
+
+  @override
+  String feeHeroLessThanLastMonth(String amount) {
+    return '지난달보다 $amount 적어요';
+  }
+
+  @override
+  String feeHeroMoreThanLastMonth(String amount) {
+    return '지난달보다 $amount 많아요';
+  }
+
+  @override
+  String get feeHeroSameAsLastMonth => '지난달과 같아요';
+
+  @override
+  String get recentBillsTitle => '최근 고지서';
+
+  @override
   String countUnitLabel(int count) {
     return '$count건';
   }
+
+  @override
+  String get notifSettingsTitle => '알림 설정';
+
+  @override
+  String get dangerAlertLabel => '위험 알림';
+
+  @override
+  String get alwaysOnCaption => '항상 켜짐';
+
+  @override
+  String get guardianNotifyLabel => '보호자 알림';
+
+  @override
+  String get messageGuardianNoticeTitle => '보호자에게 알렸어요';
+
+  @override
+  String get messageGuardianNoticeBody => '문자 내용을 전달했어요';
+
+  @override
+  String get goHomeButton => '홈으로';
 }

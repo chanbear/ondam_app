@@ -19,6 +19,16 @@
   "pinLabel": "密码",
   "pinHint": "4位数字",
   "startButton": "开始",
+  "socialLoginDivider": "或",
+  "googleLoginButton": "使用谷歌登录",
+  "naverLoginButton": "使用Naver登录",
+  "kakaoLoginButton": "使用Kakao登录",
+  "guestSignInButton": "无需注册直接使用",
+  "socialLoginComingSoon": "该功能即将上线",
+  "oauthPinSetupTitle": "请设置PIN码",
+  "oauthPinSetupSubtitle": "以后将使用此PIN码登录。",
+  "oauthPinEntryTitle": "请输入PIN码",
+  "oauthPinEntrySubtitle": "请输入您设置的4位PIN码。",
   "forgotPinLink": "忘记密码了吗？",
   "pinWrongWithCount": "密码不正确。（已失败{count}次）",
   "@pinWrongWithCount": {
@@ -70,13 +80,23 @@
   "regionSaved": "我的地区已保存。",
   "sidoPickerTitle": "选择省/市",
   "welfareCenterTitle": "查找老年活动中心",
+  "publicFacilitySearchLabel": "查找公共设施",
+  "publicFacilitySearchSubtitle": "查找附近的公共设施",
   "welfareCenterRegionLoadError": "无法加载我的地区信息。",
   "welfareCenterEmptyRegionMessage": "要查找老年活动中心，请先登记您的地区。",
   "searchNearbyButton": "查找附近的老年活动中心",
   "phoneLaunchError": "无法打开电话应用。",
   "welfareCenterSearchError": "搜索时发生问题。",
   "welfareCenterNoResults": "附近未找到老年活动中心。",
+  "welfareCenterResultsSummary": "{region}附近的老年活动中心{count}处",
+  "@welfareCenterResultsSummary": {
+    "placeholders": {
+      "region": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
   "callButtonTooltip": "拨打电话",
+  "directionsButtonLabel": "查看路线",
   "voiceUnavailableError": "此设备无法使用语音识别。",
   "voiceInitError": "无法启动语音助手。",
   "voicePreparing": "正在准备语音助手…",
@@ -92,6 +112,7 @@
   "analysisTypeDocumentLabel": "文件分析",
   "analysisTypeMessageLabel": "短信核查",
   "analysisResultTitle": "分析结果",
+  "shareButton": "分享",
   "pinEntryPrompt": "请输入PIN码",
   "pinForgotLink": "忘记PIN码了吗？",
   "pinResetTitle": "重置PIN码",
@@ -127,6 +148,22 @@
       }
     }
   },
+  "guardianConnectedLabelWithId": "已连接的监护人（{id}）",
+  "@guardianConnectedLabelWithId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "guardianConnectedSince": "已连接 · {date}",
+  "@guardianConnectedSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "acceptButton": "接受",
   "rejectButton": "拒绝",
   "guardianRevokeConfirmTitle": "要解除连接吗？",
@@ -138,6 +175,13 @@
   "guardianStatusRejected": "已拒绝",
   "guardianStatusRevoked": "已解除连接",
   "documentScanTitle": "拍摄文件",
+  "documentScanStartTitle": "文件分析",
+  "documentScanStartTakePhotoButton": "拍照",
+  "documentScanStartPickPhotoButton": "从相册选择",
+  "documentScanStartTipTitle": "请务必确认！",
+  "documentScanStartTipLine1": "请确保文件文字清晰可见",
+  "documentScanStartTipLine2": "在光线充足且反光较少的地方拍摄会更准确",
+  "photoLibraryUnavailableError": "无法加载照片。",
   "cameraPermissionCheckError": "无法确认相机权限。",
   "cameraPermissionRequestMessage": "要拍摄并分析文件和短信，\n请允许访问相机。",
   "cameraPermissionRequestButton": "允许相机权限",
@@ -145,8 +189,16 @@
   "openSettingsButton": "打开设置",
   "scanPreviewTitle": "确认拍摄结果",
   "retakeLabel": "重新拍摄",
-  "scannedDocumentsCount": "已拍摄文件（{count}张）",
+  "scannedDocumentsCount": "已拍摄{count}张",
   "@scannedDocumentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "photoCountBadge": "{count}张",
+  "@photoCountBadge": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -197,15 +249,20 @@
   "cameraPreparingMessage": "正在准备相机",
   "documentFrameGuideMessage": "请将文件对准画面内",
   "captureButtonLabel": "拍摄",
+  "closeCameraButtonLabel": "关闭",
   "noGuardianConnectedError": "还没有已连接的监护人。",
   "emergencyHelpTitle": "您需要帮助吗？",
-  "callGuardianLabel": "拨打监护人电话",
-  "emergency119Label": "119（紧急救援）",
-  "emergency112Label": "112（警察）",
-  "emergency118Label": "118（网络举报）",
+  "emergency119Label": "119报警（消防·急救）",
+  "emergency112Label": "112报警（警察）",
+  "govComplaintLabel": "110咨询（政府投诉引导）",
+  "dasanCallCenterLabel": "120咨询（多山呼叫中心）",
+  "cancelButton": "取消",
   "myRecordsTitle": "我的记录",
   "documentReadLabel": "阅读文件",
+  "documentReadSubtitle": "拍照即可为您读取文件",
   "messageCheckLabel": "查看短信",
+  "messageCheckSubtitle": "为您读取短信并简单说明",
+  "recentMessagesIntro": "已获取最近的短信。\n请点击想要查看的短信。",
   "infoTabTitle": "信息",
   "infoTabEmptyMessage": "目前还没有准备好的信息，敬请期待个性化推荐信息。",
   "statisticsLabel": "统计",
@@ -227,10 +284,33 @@
       }
     }
   },
-  "easyModeOnDescription": "开启 — 大按钮和简洁界面",
-  "coreFeaturesTitle": "核心功能",
+  "easyModeDescription": "切换为更大更简单的界面",
   "recentRecordsTitle": "最近记录",
-  "emergencyHelpRequestLabel": "紧急求助",
+  "todayScheduleTitle": "今日日程",
+  "emergencyHelpRequestLabel": "紧急求助（SOS）",
+  "emergencyHelpRequestSubtitle": "紧急情况下快速请求帮助",
+  "homeGreetingWithName": "{name}，您好！",
+  "@homeGreetingWithName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGreetingSubtitle": "祝您今天平安舒心",
+  "easyHomeHeadline": "需要什么帮助？",
+  "infoGreetingWithName": "为{name}推荐的信息",
+  "@infoGreetingWithName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recordsFilterAllLabel": "全部",
+  "recordsFilterEmptyMessage": "没有符合条件的记录。\n请尝试其他筛选条件。",
+  "moreAccountSectionTitle": "账户",
+  "moreUsageInfoSectionTitle": "使用信息",
   "smsPermissionCheckError": "无法确认短信权限。",
   "smsPermissionRequestMessage": "要查看您收到的短信并判断是否为危险短信，\n请允许访问短信。",
   "smsPermissionRequestButton": "允许短信权限",
@@ -257,6 +337,10 @@
   "textSizeTitle": "字体大小",
   "voiceGuideTitle": "语音引导",
   "voiceGuideDescription": "屏幕内容也会以语音形式为您播报",
+  "voiceRateTitle": "语音提示速度",
+  "homeVoiceGuideEasy": "这是首页。请从阅读文件、查看短信、查找老年活动中心、我的记录中选择。",
+  "homeVoiceGuideNormal": "这是首页。请从阅读文件、查看短信、查找老年活动中心、紧急求助中选择。",
+  "easyResultVoiceGuidePrefix": "为您播报分析结果。",
   "feeStatisticsTitle": "费用统计",
   "feeStatisticsLoadingMessage": "正在加载费用统计",
   "feeStatisticsLoadError": "加载费用统计时出现问题。",
@@ -316,6 +400,9 @@
   "detailsViewTitle": "查看详情",
   "reliabilityLabel": "可信度",
   "sourceTextLabel": "原文",
+  "easyResultAiSummaryLabel": "AI摘要",
+  "easyResultTypeLabel": "种类",
+  "easyResultReplayLabel": "再听一次",
   "askAboutThisButton": "针对此内容提问",
   "confirmedDoneSemanticLabel": "已标记为确认完成",
   "confirmedDoneMessage": "已确认完成",
@@ -350,8 +437,29 @@
   "@yearNumberLabel": {
     "placeholders": { "year": { "type": "int" } }
   },
+  "feeHeroTitle": "{month}月费用",
+  "@feeHeroTitle": {
+    "placeholders": { "month": { "type": "int" } }
+  },
+  "feeHeroLessThanLastMonth": "比上个月少{amount}",
+  "@feeHeroLessThanLastMonth": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "feeHeroMoreThanLastMonth": "比上个月多{amount}",
+  "@feeHeroMoreThanLastMonth": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "feeHeroSameAsLastMonth": "与上个月相同",
+  "recentBillsTitle": "最近账单",
   "countUnitLabel": "{count}件",
   "@countUnitLabel": {
     "placeholders": { "count": { "type": "int" } }
-  }
+  },
+  "notifSettingsTitle": "通知设置",
+  "dangerAlertLabel": "危险提醒",
+  "alwaysOnCaption": "始终开启",
+  "guardianNotifyLabel": "通知监护人",
+  "messageGuardianNoticeTitle": "已通知监护人",
+  "messageGuardianNoticeBody": "已把短信内容告诉监护人",
+  "goHomeButton": "回首页"
 }

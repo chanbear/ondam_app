@@ -2,10 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_models/ondam_models.dart';
+import 'package:ondam_senior/core/notification_prefs/presentation/providers/notification_prefs_di_providers.dart';
+import 'package:ondam_senior/features/connection/presentation/providers/connection_di_providers.dart';
 import 'package:ondam_senior/features/message_check/domain/entities/sms_message.dart';
 import 'package:ondam_senior/features/message_check/presentation/providers/message_check_di_providers.dart';
 import 'package:ondam_senior/features/message_check/presentation/providers/message_risk_notifier.dart';
 
+import '../../../../core/notification_prefs/domain/fakes/fake_notification_prefs_repository.dart';
+import '../../../connection/domain/fakes/fake_connection_repository.dart';
 import '../../domain/fakes/fake_message_risk_repository.dart';
 
 void main() {
@@ -14,6 +18,131 @@ void main() {
     body: '[Web발신] 계좌 정지 안내',
     receivedAt: DateTime(2026, 1, 1),
   );
+
+  AnalysisResult resultWith(RiskLevel? riskLevel) => AnalysisResult(
+    id: 'a1',
+    elderId: 'e1',
+    type: AnalysisType.message,
+    reliability: ReliabilityLevel.high,
+    riskLevel: riskLevel,
+    summary: '요약',
+    createdAt: DateTime(2026, 1, 1),
+  );
+
+  final acceptedGuardian = GuardianLink(
+    id: 'link1',
+    elderId: 'e1',
+    guardianId: 'g1',
+    status: GuardianLinkStatus.accepted,
+    createdAt: DateTime(2026, 1, 1),
+  );
+
+  ({
+    ProviderContainer container,
+    FakeMessageRiskRepository messageRiskRepository,
+    FakeNotificationPrefsRepository notificationPrefsRepository,
+    FakeConnectionRepository connectionRepository,
+  })
+  buildContainer() {
+    final messageRiskRepository = FakeMessageRiskRepository();
+    final notificationPrefsRepository = FakeNotificationPrefsRepository();
+    final connectionRepository = FakeConnectionRepository();
+    final container = ProviderContainer(
+      overrides: [
+        messageRiskRepositoryProvider.overrideWithValue(messageRiskRepository),
+        notificationPrefsRepositoryProvider.overrideWithValue(
+          notificationPrefsRepository,
+        ),
+        connectionRepositoryProvider.overrideWithValue(connectionRepository),
+      ],
+    );
+    return (
+      container: container,
+      messageRiskRepository: messageRiskRepository,
+      notificationPrefsRepository: notificationPrefsRepository,
+      connectionRepository: connectionRepository,
+    );
+  }
+
+  test('안심(safe) 결과는 보호자 알림을 보내지 않는다', () async {
+    final ctx = buildContainer();
+    addTearDown(ctx.container.dispose);
+    ctx.notificationPrefsRepository.getGuardianNotifyEnabledResult = const Ok(
+      true,
+    );
+    ctx.connectionRepository.getGuardianLinksResult = Ok([acceptedGuardian]);
+
+    final notified = await ctx.container
+        .read(messageRiskNotifierProvider.notifier)
+        .notifyGuardianIfNeeded(resultWith(RiskLevel.safe));
+
+    expect(notified, false);
+    expect(ctx.messageRiskRepository.notifyGuardianCalls, isEmpty);
+  });
+
+  test('위험/주의 결과라도 "보호자 알림"이 꺼져 있으면 보내지 않는다', () async {
+    final ctx = buildContainer();
+    addTearDown(ctx.container.dispose);
+    ctx.notificationPrefsRepository.getGuardianNotifyEnabledResult = const Ok(
+      false,
+    );
+    ctx.connectionRepository.getGuardianLinksResult = Ok([acceptedGuardian]);
+
+    final notified = await ctx.container
+        .read(messageRiskNotifierProvider.notifier)
+        .notifyGuardianIfNeeded(resultWith(RiskLevel.dangerous));
+
+    expect(notified, false);
+    expect(ctx.messageRiskRepository.notifyGuardianCalls, isEmpty);
+  });
+
+  test('보호자 알림이 켜져 있어도 accepted 상태인 보호자가 없으면 보내지 않는다', () async {
+    final ctx = buildContainer();
+    addTearDown(ctx.container.dispose);
+    ctx.notificationPrefsRepository.getGuardianNotifyEnabledResult = const Ok(
+      true,
+    );
+    ctx.connectionRepository.getGuardianLinksResult = const Ok([]);
+
+    final notified = await ctx.container
+        .read(messageRiskNotifierProvider.notifier)
+        .notifyGuardianIfNeeded(resultWith(RiskLevel.dangerous));
+
+    expect(notified, false);
+    expect(ctx.messageRiskRepository.notifyGuardianCalls, isEmpty);
+  });
+
+  test('위험/주의 + 알림 켜짐 + accepted 보호자가 있으면 실제로 알림을 보내고 true를 반환한다', () async {
+    final ctx = buildContainer();
+    addTearDown(ctx.container.dispose);
+    ctx.notificationPrefsRepository.getGuardianNotifyEnabledResult = const Ok(
+      true,
+    );
+    ctx.connectionRepository.getGuardianLinksResult = Ok([acceptedGuardian]);
+
+    final notified = await ctx.container
+        .read(messageRiskNotifierProvider.notifier)
+        .notifyGuardianIfNeeded(resultWith(RiskLevel.caution));
+
+    expect(notified, true);
+    expect(ctx.messageRiskRepository.notifyGuardianCalls, ['g1']);
+  });
+
+  test('알림 전송 자체가 실패하면(Err) 성공했다고 알리지 않는다', () async {
+    final ctx = buildContainer();
+    addTearDown(ctx.container.dispose);
+    ctx.notificationPrefsRepository.getGuardianNotifyEnabledResult = const Ok(
+      true,
+    );
+    ctx.connectionRepository.getGuardianLinksResult = Ok([acceptedGuardian]);
+    ctx.messageRiskRepository.notifyGuardianResult = const Err(ServerFailure());
+
+    final notified = await ctx.container
+        .read(messageRiskNotifierProvider.notifier)
+        .notifyGuardianIfNeeded(resultWith(RiskLevel.dangerous));
+
+    expect(notified, false);
+  });
 
   test(
     'Case 5: re-analyzing does not let the previous result leak into the next one',

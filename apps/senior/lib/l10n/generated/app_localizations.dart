@@ -216,6 +216,66 @@ abstract class AppLocalizations {
   /// **'시작하기'**
   String get startButton;
 
+  /// No description provided for @socialLoginDivider.
+  ///
+  /// In ko, this message translates to:
+  /// **'또는'**
+  String get socialLoginDivider;
+
+  /// No description provided for @googleLoginButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'구글 로그인'**
+  String get googleLoginButton;
+
+  /// No description provided for @naverLoginButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'네이버 로그인'**
+  String get naverLoginButton;
+
+  /// No description provided for @kakaoLoginButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'카카오 로그인'**
+  String get kakaoLoginButton;
+
+  /// No description provided for @guestSignInButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원가입 없이 사용하기'**
+  String get guestSignInButton;
+
+  /// No description provided for @socialLoginComingSoon.
+  ///
+  /// In ko, this message translates to:
+  /// **'준비 중인 기능이에요'**
+  String get socialLoginComingSoon;
+
+  /// No description provided for @oauthPinSetupTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'PIN을 새로 설정해주세요'**
+  String get oauthPinSetupTitle;
+
+  /// No description provided for @oauthPinSetupSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음부터는 이 PIN으로 로그인해요.'**
+  String get oauthPinSetupSubtitle;
+
+  /// No description provided for @oauthPinEntryTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'PIN을 입력해주세요'**
+  String get oauthPinEntryTitle;
+
+  /// No description provided for @oauthPinEntrySubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정하신 4자리 PIN을 입력해주세요.'**
+  String get oauthPinEntrySubtitle;
+
   /// No description provided for @forgotPinLink.
   ///
   /// In ko, this message translates to:
@@ -438,6 +498,18 @@ abstract class AppLocalizations {
   /// **'경로당 찾기'**
   String get welfareCenterTitle;
 
+  /// No description provided for @publicFacilitySearchLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'공공시설 찾기'**
+  String get publicFacilitySearchLabel;
+
+  /// No description provided for @publicFacilitySearchSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'주변 공공시설을 찾아보세요'**
+  String get publicFacilitySearchSubtitle;
+
   /// No description provided for @welfareCenterRegionLoadError.
   ///
   /// In ko, this message translates to:
@@ -474,11 +546,23 @@ abstract class AppLocalizations {
   /// **'근처에서 경로당을 찾지 못했어요.'**
   String get welfareCenterNoResults;
 
+  /// No description provided for @welfareCenterResultsSummary.
+  ///
+  /// In ko, this message translates to:
+  /// **'{region} 근처 경로당 {count}곳'**
+  String welfareCenterResultsSummary(String region, int count);
+
   /// No description provided for @callButtonTooltip.
   ///
   /// In ko, this message translates to:
   /// **'전화 걸기'**
   String get callButtonTooltip;
+
+  /// No description provided for @directionsButtonLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'길 찾기'**
+  String get directionsButtonLabel;
 
   /// No description provided for @voiceUnavailableError.
   ///
@@ -569,6 +653,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'분석 결과'**
   String get analysisResultTitle;
+
+  /// No description provided for @shareButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'공유'**
+  String get shareButton;
 
   /// No description provided for @pinEntryPrompt.
   ///
@@ -738,6 +828,18 @@ abstract class AppLocalizations {
   /// **'보호자 연결 요청 ({id})'**
   String guardianRequestLabelWithId(String id);
 
+  /// No description provided for @guardianConnectedLabelWithId.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결된 보호자 ({id})'**
+  String guardianConnectedLabelWithId(String id);
+
+  /// No description provided for @guardianConnectedSince.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결됨 · {date}'**
+  String guardianConnectedSince(String date);
+
   /// No description provided for @acceptButton.
   ///
   /// In ko, this message translates to:
@@ -804,6 +906,48 @@ abstract class AppLocalizations {
   /// **'문서 촬영'**
   String get documentScanTitle;
 
+  /// No description provided for @documentScanStartTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서 분석'**
+  String get documentScanStartTitle;
+
+  /// No description provided for @documentScanStartTakePhotoButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진 촬영하기'**
+  String get documentScanStartTakePhotoButton;
+
+  /// No description provided for @documentScanStartPickPhotoButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진 불러오기'**
+  String get documentScanStartPickPhotoButton;
+
+  /// No description provided for @documentScanStartTipTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'꼭 확인해 주세요!'**
+  String get documentScanStartTipTitle;
+
+  /// No description provided for @documentScanStartTipLine1.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서의 글자가 선명하게 보이도록 촬영해 주세요'**
+  String get documentScanStartTipLine1;
+
+  /// No description provided for @documentScanStartTipLine2.
+  ///
+  /// In ko, this message translates to:
+  /// **'빛 반사가 적은 밝은 곳에서 촬영하면 더 정확해요'**
+  String get documentScanStartTipLine2;
+
+  /// No description provided for @photoLibraryUnavailableError.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진을 불러올 수 없어요.'**
+  String get photoLibraryUnavailableError;
+
   /// No description provided for @cameraPermissionCheckError.
   ///
   /// In ko, this message translates to:
@@ -849,8 +993,14 @@ abstract class AppLocalizations {
   /// No description provided for @scannedDocumentsCount.
   ///
   /// In ko, this message translates to:
-  /// **'촬영한 문서 ({count}장)'**
+  /// **'{count}장 촬영했어요'**
   String scannedDocumentsCount(int count);
+
+  /// No description provided for @photoCountBadge.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}장'**
+  String photoCountBadge(int count);
 
   /// No description provided for @addAnotherPhotoButton.
   ///
@@ -930,6 +1080,12 @@ abstract class AppLocalizations {
   /// **'촬영하기'**
   String get captureButtonLabel;
 
+  /// No description provided for @closeCameraButtonLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'닫기'**
+  String get closeCameraButtonLabel;
+
   /// No description provided for @noGuardianConnectedError.
   ///
   /// In ko, this message translates to:
@@ -942,29 +1098,35 @@ abstract class AppLocalizations {
   /// **'도움이 필요하신가요?'**
   String get emergencyHelpTitle;
 
-  /// No description provided for @callGuardianLabel.
-  ///
-  /// In ko, this message translates to:
-  /// **'보호자에게 전화'**
-  String get callGuardianLabel;
-
   /// No description provided for @emergency119Label.
   ///
   /// In ko, this message translates to:
-  /// **'119 (응급구조)'**
+  /// **'119 신고하기 (소방·구급)'**
   String get emergency119Label;
 
   /// No description provided for @emergency112Label.
   ///
   /// In ko, this message translates to:
-  /// **'112 (경찰)'**
+  /// **'112 신고하기 (경찰)'**
   String get emergency112Label;
 
-  /// No description provided for @emergency118Label.
+  /// No description provided for @govComplaintLabel.
   ///
   /// In ko, this message translates to:
-  /// **'118 (사이버 신고)'**
-  String get emergency118Label;
+  /// **'110 상담하기 (정부민원안내)'**
+  String get govComplaintLabel;
+
+  /// No description provided for @dasanCallCenterLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'120 상담하기 (다산콜센터)'**
+  String get dasanCallCenterLabel;
+
+  /// No description provided for @cancelButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'취소'**
+  String get cancelButton;
 
   /// No description provided for @myRecordsTitle.
   ///
@@ -978,11 +1140,29 @@ abstract class AppLocalizations {
   /// **'문서 읽기'**
   String get documentReadLabel;
 
+  /// No description provided for @documentReadSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진으로 문서를 읽어드려요'**
+  String get documentReadSubtitle;
+
   /// No description provided for @messageCheckLabel.
   ///
   /// In ko, this message translates to:
   /// **'문자 확인'**
   String get messageCheckLabel;
+
+  /// No description provided for @messageCheckSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자를 읽어주고 쉽게 알려드려요'**
+  String get messageCheckSubtitle;
+
+  /// No description provided for @recentMessagesIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 문자를 가져왔어요.\n확인하고 싶은 문자를 눌러주세요.'**
+  String get recentMessagesIntro;
 
   /// No description provided for @infoTabTitle.
   ///
@@ -1068,17 +1248,11 @@ abstract class AppLocalizations {
   /// **'쉬운 모드, 현재 {state}'**
   String easyModeToggleSemanticLabel(String state);
 
-  /// No description provided for @easyModeOnDescription.
+  /// No description provided for @easyModeDescription.
   ///
   /// In ko, this message translates to:
-  /// **'켜짐 — 큰 버튼과 단순한 화면'**
-  String get easyModeOnDescription;
-
-  /// No description provided for @coreFeaturesTitle.
-  ///
-  /// In ko, this message translates to:
-  /// **'핵심 기능'**
-  String get coreFeaturesTitle;
+  /// **'더 크고 단순한 화면으로 보기'**
+  String get easyModeDescription;
 
   /// No description provided for @recentRecordsTitle.
   ///
@@ -1086,11 +1260,71 @@ abstract class AppLocalizations {
   /// **'최근 기록'**
   String get recentRecordsTitle;
 
+  /// No description provided for @todayScheduleTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘의 일정'**
+  String get todayScheduleTitle;
+
   /// No description provided for @emergencyHelpRequestLabel.
   ///
   /// In ko, this message translates to:
-  /// **'긴급 도움 요청'**
+  /// **'긴급 도움 (SOS)'**
   String get emergencyHelpRequestLabel;
+
+  /// No description provided for @emergencyHelpRequestSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'위급할 때 빠르게 도움을 요청해요'**
+  String get emergencyHelpRequestSubtitle;
+
+  /// No description provided for @homeGreetingWithName.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name}님, 안녕하세요!'**
+  String homeGreetingWithName(String name);
+
+  /// No description provided for @homeGreetingSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘도 편안하고 안전한 하루 되세요'**
+  String get homeGreetingSubtitle;
+
+  /// No description provided for @easyHomeHeadline.
+  ///
+  /// In ko, this message translates to:
+  /// **'무엇을 도와드릴까요?'**
+  String get easyHomeHeadline;
+
+  /// No description provided for @infoGreetingWithName.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name}님을 위한 맞춤 정보예요'**
+  String infoGreetingWithName(String name);
+
+  /// No description provided for @recordsFilterAllLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체'**
+  String get recordsFilterAllLabel;
+
+  /// No description provided for @recordsFilterEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'해당하는 기록이 없어요.\n다른 필터를 선택해보세요.'**
+  String get recordsFilterEmptyMessage;
+
+  /// No description provided for @moreAccountSectionTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'계정'**
+  String get moreAccountSectionTitle;
+
+  /// No description provided for @moreUsageInfoSectionTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이용 정보'**
+  String get moreUsageInfoSectionTitle;
 
   /// No description provided for @smsPermissionCheckError.
   ///
@@ -1247,6 +1481,30 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'화면 내용을 음성으로도 안내해드려요'**
   String get voiceGuideDescription;
+
+  /// No description provided for @voiceRateTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성 안내 속도'**
+  String get voiceRateTitle;
+
+  /// No description provided for @homeVoiceGuideEasy.
+  ///
+  /// In ko, this message translates to:
+  /// **'홈 화면이에요. 문서 읽기, 문자 확인, 경로당 찾기, 내 기록 중에서 골라주세요.'**
+  String get homeVoiceGuideEasy;
+
+  /// No description provided for @homeVoiceGuideNormal.
+  ///
+  /// In ko, this message translates to:
+  /// **'홈 화면이에요. 문서 읽기, 문자 확인, 경로당 찾기, 긴급 도움 요청 중에서 골라주세요.'**
+  String get homeVoiceGuideNormal;
+
+  /// No description provided for @easyResultVoiceGuidePrefix.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 결과를 알려드릴게요.'**
+  String get easyResultVoiceGuidePrefix;
 
   /// No description provided for @feeStatisticsTitle.
   ///
@@ -1482,6 +1740,24 @@ abstract class AppLocalizations {
   /// **'원문'**
   String get sourceTextLabel;
 
+  /// No description provided for @easyResultAiSummaryLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 요약'**
+  String get easyResultAiSummaryLabel;
+
+  /// No description provided for @easyResultTypeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'종류'**
+  String get easyResultTypeLabel;
+
+  /// No description provided for @easyResultReplayLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 듣기'**
+  String get easyResultReplayLabel;
+
   /// No description provided for @askAboutThisButton.
   ///
   /// In ko, this message translates to:
@@ -1614,11 +1890,83 @@ abstract class AppLocalizations {
   /// **'{year}년'**
   String yearNumberLabel(int year);
 
+  /// No description provided for @feeHeroTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{month}월 요금'**
+  String feeHeroTitle(int month);
+
+  /// No description provided for @feeHeroLessThanLastMonth.
+  ///
+  /// In ko, this message translates to:
+  /// **'지난달보다 {amount} 적어요'**
+  String feeHeroLessThanLastMonth(String amount);
+
+  /// No description provided for @feeHeroMoreThanLastMonth.
+  ///
+  /// In ko, this message translates to:
+  /// **'지난달보다 {amount} 많아요'**
+  String feeHeroMoreThanLastMonth(String amount);
+
+  /// No description provided for @feeHeroSameAsLastMonth.
+  ///
+  /// In ko, this message translates to:
+  /// **'지난달과 같아요'**
+  String get feeHeroSameAsLastMonth;
+
+  /// No description provided for @recentBillsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 고지서'**
+  String get recentBillsTitle;
+
   /// No description provided for @countUnitLabel.
   ///
   /// In ko, this message translates to:
   /// **'{count}건'**
   String countUnitLabel(int count);
+
+  /// No description provided for @notifSettingsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'알림 설정'**
+  String get notifSettingsTitle;
+
+  /// No description provided for @dangerAlertLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'위험 알림'**
+  String get dangerAlertLabel;
+
+  /// No description provided for @alwaysOnCaption.
+  ///
+  /// In ko, this message translates to:
+  /// **'항상 켜짐'**
+  String get alwaysOnCaption;
+
+  /// No description provided for @guardianNotifyLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자 알림'**
+  String get guardianNotifyLabel;
+
+  /// No description provided for @messageGuardianNoticeTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자에게 알렸어요'**
+  String get messageGuardianNoticeTitle;
+
+  /// No description provided for @messageGuardianNoticeBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자 내용을 전달했어요'**
+  String get messageGuardianNoticeBody;
+
+  /// No description provided for @goHomeButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'홈으로'**
+  String get goHomeButton;
 }
 
 class _AppLocalizationsDelegate

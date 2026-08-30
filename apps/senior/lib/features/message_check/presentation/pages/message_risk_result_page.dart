@@ -4,16 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
+import 'package:ondam_models/ondam_models.dart';
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/widgets/analysis_progress_indicator.dart';
 import '../../../../core/widgets/analysis_progress_step.dart';
 import '../../../../core/widgets/analysis_result_view.dart';
+import '../../../../core/widgets/analysis_share_action.dart';
+import '../../../../core/widgets/easy_analysis_result_view.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
 import '../../../voice_assistant/presentation/pages/voice_assistant_page.dart';
 import '../../domain/entities/sms_message.dart';
 import '../providers/message_risk_notifier.dart';
+import 'message_guardian_notice_page.dart';
 
 /// 분석 요청 + 결과 — 백엔드가 아직 없으므로 지금은 항상 `UnavailableFailure`로
 /// 귀결된다. `document_scan_result_page.dart`와 동일한 이유로 이를 일반
@@ -69,15 +73,41 @@ class _MessageRiskResultPageState extends ConsumerState<MessageRiskResultPage> {
     ).push(MaterialPageRoute(builder: (_) => const VoiceAssistantPage()));
   }
 
+  // ui-prototype `E("msg-result")` decision: "확인은 easy.msg-guardian-notice로
+  // 이어진다" — 다만 실제로 보호자에게 알림을 보내는 데 성공했을 때만 그
+  // 화면을 보여준다(정직하게 안내). 실패/미대상이면 조용히 결과 화면에
+  // 남는다(기존 동작과 동일) — 이미 확인을 마친 사용자를 에러로 붙잡지
+  // 않는다.
+  Future<Result<void>> _confirmAndMaybeNotifyGuardian(
+    AnalysisResult result,
+  ) async {
+    final confirmResult = await ref
+        .read(analysisRecordsProvider.notifier)
+        .confirm(result.id);
+    if (confirmResult case Ok() when mounted) {
+      final notified = await ref
+          .read(messageRiskNotifierProvider.notifier)
+          .notifyGuardianIfNeeded(result);
+      if (notified && mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const MessageGuardianNoticePage()),
+        );
+      }
+    }
+    return confirmResult;
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(messageRiskNotifierProvider);
     final easyMode = ref.watch(easyModeProvider);
     final l10n = AppLocalizations.of(context)!;
+    final result = state.value;
 
     return AppScaffold(
       title: l10n.analysisResultTitle,
       onBack: () => Navigator.of(context).pop(),
+      headerActions: [if (result != null) AnalysisShareAction(result: result)],
       body: state.when(
         // A previous AnalysisResult must never remain visible while a new
         // analysis is in flight (riskLevel/reliability from a prior run
@@ -107,11 +137,17 @@ class _MessageRiskResultPageState extends ConsumerState<MessageRiskResultPage> {
           if (result == null) {
             return AnalysisProgressIndicator(step: _progressStep);
           }
+          if (easyMode) {
+            return EasyAnalysisResultView(
+              result: result,
+              onAskByVoice: _openVoiceAssistant,
+              onConfirm: () => _confirmAndMaybeNotifyGuardian(result),
+            );
+          }
           return AnalysisResultView(
             result: result,
             onAskByVoice: _openVoiceAssistant,
-            onConfirm: () =>
-                ref.read(analysisRecordsProvider.notifier).confirm(result.id),
+            onConfirm: () => _confirmAndMaybeNotifyGuardian(result),
             easyMode: easyMode,
           );
         },

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/easy_mode/easy_mode_outline_card.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/location/presentation/providers/region_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
@@ -11,14 +12,17 @@ import '../../../auth/presentation/providers/auth_di_providers.dart';
 import '../../../auth/presentation/providers/has_pin_provider.dart';
 import '../../../auth/presentation/providers/pin_notifier.dart';
 import '../../../auth/presentation/providers/role_notifier.dart';
+import '../../../connection/presentation/pages/guardian_list_page.dart';
 import '../../../connection/presentation/providers/guardian_links_notifier.dart';
 import '../../../onboarding/presentation/widgets/accessibility_settings_form.dart';
 import '../../../welfare_center/presentation/providers/welfare_center_notifier.dart';
 import '../widgets/language_picker_tile.dart';
+import 'notif_settings_page.dart';
 
-/// 설정 — 접근성, 쉬운 모드, 계정(로그아웃/탈퇴). `보호자 알림 설정`과
-/// `개인정보 공개 범위 안내`는 각각 `notification`/공지 문구 확정 이후로
-/// 미루고 이번에는 노출하지 않는다(있지도 않은 토글을 보여주지 않기 위함).
+/// 설정 — 접근성, 쉬운 모드, 알림, 계정(로그아웃/탈퇴). `보호자 알림 설정`은
+/// 2026-08-31 `NotifSettingsPage`(`users.guardian_notify_enabled` 연동)로
+/// 실제 구현됐다 — 더 이상 "있지도 않은 토글" 상태가 아니다.
+/// `개인정보 공개 범위 안내`는 여전히 공지 문구 확정 전이라 노출하지 않는다.
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
@@ -44,18 +48,10 @@ class SettingsPage extends ConsumerWidget {
   // 흐름 자체(login_notifier/auth_redirect/app_router의 redirect 판단
   // 로직)는 건드리지 않는다 — 여기서는 그 판단에 쓰일 입력값을 무효화만
   // 한다.
-  Future<void> _signOut(WidgetRef ref) async {
-    final result = await ref.read(signOutUseCaseProvider).call();
-    if (result case Ok()) {
-      ref.invalidate(regionProvider);
-      ref.invalidate(welfareCenterNotifierProvider);
-      ref.invalidate(analysisRecordsProvider);
-      ref.invalidate(guardianLinksProvider);
-      ref.invalidate(roleNotifierProvider);
-      ref.invalidate(hasPinProvider);
-    }
-  }
-
+  //
+  // 2026-08-30 — top-level 함수로 분리해 `MoreTabPage`의 독립 "로그아웃"
+  // 행(ui-prototype `S("more")`)도 이 로직을 그대로 재사용한다 — 세션 정리
+  // 로직을 두 곳에 복제하지 않는다.
   Future<void> _confirmDeleteAccount(
     BuildContext context,
     WidgetRef ref,
@@ -87,27 +83,13 @@ class SettingsPage extends ConsumerWidget {
           // 쉬운 모드/글자 크기/음성 안내/언어를 하나의 카드로 묶는다 —
           // HTML prototype `settings()`의 단일 설정 카드(구분선으로 항목
           // 분리) 구조와 동일. 각 항목 자체의 위젯/로직은 그대로다.
-          AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppSectionHeader(title: l10n.easyModeSectionTitle),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.easyModeTitle),
-                  subtitle: Text(l10n.easyModeSubtitle),
-                  value: easyMode,
-                  onChanged: (_) =>
-                      ref.read(easyModeProvider.notifier).toggle(),
-                ),
-                const Divider(color: AppColors.divider),
-                const AccessibilitySettingsForm(),
-                const Divider(color: AppColors.divider),
-                AppSectionHeader(title: l10n.settingsLanguage),
-                const LanguagePickerTile(),
-              ],
-            ),
+          // 2026-08-28 — 쉬운 모드일 때는 사용자 승인받은 굵은 테두리 카드
+          // (`EasyOutlineCard`)로 바꿔 낀다 — 내용/로직은 동일, 테두리만.
+          _buildSettingsBody(
+            context: context,
+            ref: ref,
+            easyMode: easyMode,
+            l10n: l10n,
           ),
           const SizedBox(height: AppSpacing.xl),
           // 로그아웃/회원탈퇴는 prototype처럼 전체 너비 버튼으로 — 회원탈퇴는
@@ -116,16 +98,117 @@ class SettingsPage extends ConsumerWidget {
           AppButton(
             label: l10n.logout,
             variant: AppButtonVariant.secondary,
-            onPressed: () => _signOut(ref),
+            size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
+            onPressed: () => signOutAndClearSession(ref),
           ),
           const SizedBox(height: AppSpacing.md),
           AppButton(
             label: l10n.deleteAccount,
             variant: AppButtonVariant.destructive,
+            size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
             onPressed: () => _confirmDeleteAccount(context, ref),
           ),
         ],
       ),
     );
+  }
+
+  // 2026-08-30 — ui-prototype `settings()`가 접근성/알림을 하나의 카드에
+  // 우겨넣지 않고 구분된 섹션(카드)으로 나눠 보여주는 것에 맞춰, 이 화면도
+  // 한 개의 거대한 카드 대신 섹션별 카드로 나눈다 — 내용/Provider 호출은
+  // 그대로, 카드 경계만 바뀐다(접근성/알림을 별도 "화면"으로 쪼개지는
+  // 않는다는 기존 결정은 유지).
+  // 2026-08-28 — 쉬운 모드일 때만 `EasyOutlineCard`(굵은 먹색 테두리)로
+  // 바꿔 낀다. 안의 위젯/Provider 호출은 Normal Mode와 완전히 동일 —
+  // `AppCard`/`EasyOutlineCard` 둘 다 동일한 `child`를 받는 껍데기 차이뿐.
+  Widget _buildSettingsBody({
+    required BuildContext context,
+    required WidgetRef ref,
+    required bool easyMode,
+    required AppLocalizations l10n,
+  }) {
+    Widget wrap(Widget child) =>
+        easyMode ? EasyOutlineCard(child: child) : AppCard(child: child);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        wrap(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppSectionHeader(title: l10n.easyModeSectionTitle),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.easyModeTitle),
+                subtitle: Text(l10n.easyModeSubtitle),
+                value: easyMode,
+                activeThumbColor: easyMode ? AppEasyMode.success : null,
+                onChanged: (_) => ref.read(easyModeProvider.notifier).toggle(),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        wrap(const AccessibilitySettingsForm()),
+        const SizedBox(height: AppSpacing.lg),
+        // ui-prototype `S("settings")` — 접근성 바로 아래 보호자 연결
+        // 진입 행. 별도 화면을 새로 만들지 않고 `MoreTabPage`에서 이미
+        // 쓰는 `GuardianListPage`로 그대로 연결한다(navigation만 추가).
+        wrap(
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.family_restroom_outlined),
+            title: Text(l10n.guardianListTitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const GuardianListPage())),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        // ui-prototype `E("notif-settings")` — 보호자 알림 진입 행. 별도
+        // 화면(NotifSettingsPage)으로 뺀다: 접근성 폼과 달리 서버 상태(토글)를
+        // 갖는 설정이라 같은 카드 안에 우겨넣지 않는다.
+        wrap(
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.notifications_outlined),
+            title: Text(l10n.notifSettingsTitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const NotifSettingsPage()),
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        wrap(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppSectionHeader(title: l10n.settingsLanguage),
+              const LanguagePickerTile(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// 로그아웃 + 계정-스코프 전역 상태 정리. [SettingsPage]와 `MoreTabPage`의
+/// 독립 "로그아웃" 행이 공유한다 — `_signOut` 문서 주석 참고(어떤 Provider를
+/// 왜 invalidate하는지).
+Future<void> signOutAndClearSession(WidgetRef ref) async {
+  final result = await ref.read(signOutUseCaseProvider).call();
+  if (result case Ok()) {
+    ref.invalidate(regionProvider);
+    ref.invalidate(welfareCenterNotifierProvider);
+    ref.invalidate(analysisRecordsProvider);
+    ref.invalidate(guardianLinksProvider);
+    ref.invalidate(roleNotifierProvider);
+    ref.invalidate(hasPinProvider);
   }
 }

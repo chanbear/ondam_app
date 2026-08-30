@@ -19,6 +19,16 @@
   "pinLabel": "비밀번호",
   "pinHint": "4자리 숫자",
   "startButton": "시작하기",
+  "socialLoginDivider": "또는",
+  "googleLoginButton": "구글 로그인",
+  "naverLoginButton": "네이버 로그인",
+  "kakaoLoginButton": "카카오 로그인",
+  "guestSignInButton": "회원가입 없이 사용하기",
+  "socialLoginComingSoon": "준비 중인 기능이에요",
+  "oauthPinSetupTitle": "PIN을 새로 설정해주세요",
+  "oauthPinSetupSubtitle": "다음부터는 이 PIN으로 로그인해요.",
+  "oauthPinEntryTitle": "PIN을 입력해주세요",
+  "oauthPinEntrySubtitle": "설정하신 4자리 PIN을 입력해주세요.",
   "forgotPinLink": "비밀번호를 잊으셨나요?",
   "pinWrongWithCount": "비밀번호가 올바르지 않아요. ({count}회 실패)",
   "@pinWrongWithCount": {
@@ -70,13 +80,23 @@
   "regionSaved": "내 지역이 저장되었어요.",
   "sidoPickerTitle": "시/도 선택",
   "welfareCenterTitle": "경로당 찾기",
+  "publicFacilitySearchLabel": "공공시설 찾기",
+  "publicFacilitySearchSubtitle": "주변 공공시설을 찾아보세요",
   "welfareCenterRegionLoadError": "내 지역 정보를 불러오지 못했어요.",
   "welfareCenterEmptyRegionMessage": "경로당을 찾으려면 먼저 내 지역을 등록해주세요.",
   "searchNearbyButton": "내 주변 경로당 찾기",
   "phoneLaunchError": "전화 앱을 열 수 없어요.",
   "welfareCenterSearchError": "경로당 검색 중 문제가 발생했어요.",
   "welfareCenterNoResults": "근처에서 경로당을 찾지 못했어요.",
+  "welfareCenterResultsSummary": "{region} 근처 경로당 {count}곳",
+  "@welfareCenterResultsSummary": {
+    "placeholders": {
+      "region": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
   "callButtonTooltip": "전화 걸기",
+  "directionsButtonLabel": "길 찾기",
   "voiceUnavailableError": "이 기기에서는 음성 인식을 사용할 수 없어요.",
   "voiceInitError": "음성 비서를 시작하지 못했어요.",
   "voicePreparing": "음성 비서를 준비하고 있어요",
@@ -92,6 +112,7 @@
   "analysisTypeDocumentLabel": "문서 분석",
   "analysisTypeMessageLabel": "문자 확인",
   "analysisResultTitle": "분석 결과",
+  "shareButton": "공유",
   "pinEntryPrompt": "PIN을 입력해주세요",
   "pinForgotLink": "PIN을 잊으셨나요?",
   "pinResetTitle": "PIN 재설정",
@@ -127,6 +148,22 @@
       }
     }
   },
+  "guardianConnectedLabelWithId": "연결된 보호자 ({id})",
+  "@guardianConnectedLabelWithId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "guardianConnectedSince": "연결됨 · {date}",
+  "@guardianConnectedSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "acceptButton": "수락",
   "rejectButton": "거절",
   "guardianRevokeConfirmTitle": "연결을 해제할까요?",
@@ -138,6 +175,13 @@
   "guardianStatusRejected": "거절함",
   "guardianStatusRevoked": "연결 해제됨",
   "documentScanTitle": "문서 촬영",
+  "documentScanStartTitle": "문서 분석",
+  "documentScanStartTakePhotoButton": "사진 촬영하기",
+  "documentScanStartPickPhotoButton": "사진 불러오기",
+  "documentScanStartTipTitle": "꼭 확인해 주세요!",
+  "documentScanStartTipLine1": "문서의 글자가 선명하게 보이도록 촬영해 주세요",
+  "documentScanStartTipLine2": "빛 반사가 적은 밝은 곳에서 촬영하면 더 정확해요",
+  "photoLibraryUnavailableError": "사진을 불러올 수 없어요.",
   "cameraPermissionCheckError": "카메라 권한을 확인하지 못했어요.",
   "cameraPermissionRequestMessage": "문서와 문자를 촬영해 분석하려면\n카메라 접근을 허용해주세요.",
   "cameraPermissionRequestButton": "카메라 권한 허용하기",
@@ -145,8 +189,16 @@
   "openSettingsButton": "설정 열기",
   "scanPreviewTitle": "촬영 결과 확인",
   "retakeLabel": "재촬영",
-  "scannedDocumentsCount": "촬영한 문서 ({count}장)",
+  "scannedDocumentsCount": "{count}장 촬영했어요",
   "@scannedDocumentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "photoCountBadge": "{count}장",
+  "@photoCountBadge": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -197,15 +249,20 @@
   "cameraPreparingMessage": "카메라를 준비하고 있어요",
   "documentFrameGuideMessage": "문서를 화면 안에 맞춰주세요",
   "captureButtonLabel": "촬영하기",
+  "closeCameraButtonLabel": "닫기",
   "noGuardianConnectedError": "아직 연결된 보호자가 없어요.",
   "emergencyHelpTitle": "도움이 필요하신가요?",
-  "callGuardianLabel": "보호자에게 전화",
-  "emergency119Label": "119 (응급구조)",
-  "emergency112Label": "112 (경찰)",
-  "emergency118Label": "118 (사이버 신고)",
+  "emergency119Label": "119 신고하기 (소방·구급)",
+  "emergency112Label": "112 신고하기 (경찰)",
+  "govComplaintLabel": "110 상담하기 (정부민원안내)",
+  "dasanCallCenterLabel": "120 상담하기 (다산콜센터)",
+  "cancelButton": "취소",
   "myRecordsTitle": "내 기록",
   "documentReadLabel": "문서 읽기",
+  "documentReadSubtitle": "사진으로 문서를 읽어드려요",
   "messageCheckLabel": "문자 확인",
+  "messageCheckSubtitle": "문자를 읽어주고 쉽게 알려드려요",
+  "recentMessagesIntro": "최근 문자를 가져왔어요.\n확인하고 싶은 문자를 눌러주세요.",
   "infoTabTitle": "정보",
   "infoTabEmptyMessage": "아직 준비된 정보가 없어요. 곧 맞춤 정보를 보여드릴게요.",
   "statisticsLabel": "통계",
@@ -227,10 +284,33 @@
       }
     }
   },
-  "easyModeOnDescription": "켜짐 — 큰 버튼과 단순한 화면",
-  "coreFeaturesTitle": "핵심 기능",
+  "easyModeDescription": "더 크고 단순한 화면으로 보기",
   "recentRecordsTitle": "최근 기록",
-  "emergencyHelpRequestLabel": "긴급 도움 요청",
+  "todayScheduleTitle": "오늘의 일정",
+  "emergencyHelpRequestLabel": "긴급 도움 (SOS)",
+  "emergencyHelpRequestSubtitle": "위급할 때 빠르게 도움을 요청해요",
+  "homeGreetingWithName": "{name}님, 안녕하세요!",
+  "@homeGreetingWithName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGreetingSubtitle": "오늘도 편안하고 안전한 하루 되세요",
+  "easyHomeHeadline": "무엇을 도와드릴까요?",
+  "infoGreetingWithName": "{name}님을 위한 맞춤 정보예요",
+  "@infoGreetingWithName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recordsFilterAllLabel": "전체",
+  "recordsFilterEmptyMessage": "해당하는 기록이 없어요.\n다른 필터를 선택해보세요.",
+  "moreAccountSectionTitle": "계정",
+  "moreUsageInfoSectionTitle": "이용 정보",
   "smsPermissionCheckError": "문자 권한을 확인하지 못했어요.",
   "smsPermissionRequestMessage": "받은 문자를 확인해 위험한 문자인지 알려드리려면\n문자 접근을 허용해주세요.",
   "smsPermissionRequestButton": "문자 권한 허용하기",
@@ -257,6 +337,10 @@
   "textSizeTitle": "글자 크기",
   "voiceGuideTitle": "음성 안내",
   "voiceGuideDescription": "화면 내용을 음성으로도 안내해드려요",
+  "voiceRateTitle": "음성 안내 속도",
+  "homeVoiceGuideEasy": "홈 화면이에요. 문서 읽기, 문자 확인, 경로당 찾기, 내 기록 중에서 골라주세요.",
+  "homeVoiceGuideNormal": "홈 화면이에요. 문서 읽기, 문자 확인, 경로당 찾기, 긴급 도움 요청 중에서 골라주세요.",
+  "easyResultVoiceGuidePrefix": "분석 결과를 알려드릴게요.",
   "feeStatisticsTitle": "요금 통계",
   "feeStatisticsLoadingMessage": "요금 통계를 불러오고 있어요",
   "feeStatisticsLoadError": "요금 통계를 불러오는 중 문제가 발생했어요.",
@@ -316,6 +400,9 @@
   "detailsViewTitle": "상세정보 보기",
   "reliabilityLabel": "신뢰도",
   "sourceTextLabel": "원문",
+  "easyResultAiSummaryLabel": "AI 요약",
+  "easyResultTypeLabel": "종류",
+  "easyResultReplayLabel": "다시 듣기",
   "askAboutThisButton": "이 내용 물어보기",
   "confirmedDoneSemanticLabel": "확인 완료로 표시했어요",
   "confirmedDoneMessage": "확인 완료했어요",
@@ -350,8 +437,29 @@
   "@yearNumberLabel": {
     "placeholders": { "year": { "type": "int" } }
   },
+  "feeHeroTitle": "{month}월 요금",
+  "@feeHeroTitle": {
+    "placeholders": { "month": { "type": "int" } }
+  },
+  "feeHeroLessThanLastMonth": "지난달보다 {amount} 적어요",
+  "@feeHeroLessThanLastMonth": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "feeHeroMoreThanLastMonth": "지난달보다 {amount} 많아요",
+  "@feeHeroMoreThanLastMonth": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "feeHeroSameAsLastMonth": "지난달과 같아요",
+  "recentBillsTitle": "최근 고지서",
   "countUnitLabel": "{count}건",
   "@countUnitLabel": {
     "placeholders": { "count": { "type": "int" } }
-  }
+  },
+  "notifSettingsTitle": "알림 설정",
+  "dangerAlertLabel": "위험 알림",
+  "alwaysOnCaption": "항상 켜짐",
+  "guardianNotifyLabel": "보호자 알림",
+  "messageGuardianNoticeTitle": "보호자에게 알렸어요",
+  "messageGuardianNoticeBody": "문자 내용을 전달했어요",
+  "goHomeButton": "홈으로"
 }

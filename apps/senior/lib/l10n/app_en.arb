@@ -19,6 +19,16 @@
   "pinLabel": "Password",
   "pinHint": "4-digit number",
   "startButton": "Get started",
+  "socialLoginDivider": "or",
+  "googleLoginButton": "Continue with Google",
+  "naverLoginButton": "Continue with Naver",
+  "kakaoLoginButton": "Continue with Kakao",
+  "guestSignInButton": "Continue without signing up",
+  "socialLoginComingSoon": "This feature is coming soon",
+  "oauthPinSetupTitle": "Set up a PIN",
+  "oauthPinSetupSubtitle": "You'll use this PIN to log in from now on.",
+  "oauthPinEntryTitle": "Enter your PIN",
+  "oauthPinEntrySubtitle": "Enter the 4-digit PIN you set up.",
   "forgotPinLink": "Forgot your password?",
   "pinWrongWithCount": "Incorrect password. ({count} failed attempts)",
   "@pinWrongWithCount": {
@@ -70,13 +80,23 @@
   "regionSaved": "Your region has been saved.",
   "sidoPickerTitle": "Select province/city",
   "welfareCenterTitle": "Find a Senior Center",
+  "publicFacilitySearchLabel": "Find Public Facilities",
+  "publicFacilitySearchSubtitle": "Look for public facilities nearby",
   "welfareCenterRegionLoadError": "We couldn't load your region info.",
   "welfareCenterEmptyRegionMessage": "Register your region first to find a senior center.",
   "searchNearbyButton": "Find senior centers near me",
   "phoneLaunchError": "We couldn't open the phone app.",
   "welfareCenterSearchError": "Something went wrong while searching.",
   "welfareCenterNoResults": "We couldn't find any senior centers nearby.",
+  "welfareCenterResultsSummary": "{count} senior centers near {region}",
+  "@welfareCenterResultsSummary": {
+    "placeholders": {
+      "region": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
   "callButtonTooltip": "Call",
+  "directionsButtonLabel": "Directions",
   "voiceUnavailableError": "Voice recognition isn't available on this device.",
   "voiceInitError": "We couldn't start the voice assistant.",
   "voicePreparing": "Getting the voice assistant ready…",
@@ -92,6 +112,7 @@
   "analysisTypeDocumentLabel": "Document analysis",
   "analysisTypeMessageLabel": "Message check",
   "analysisResultTitle": "Analysis Result",
+  "shareButton": "Share",
   "pinEntryPrompt": "Please enter your PIN",
   "pinForgotLink": "Forgot your PIN?",
   "pinResetTitle": "Reset PIN",
@@ -127,6 +148,22 @@
       }
     }
   },
+  "guardianConnectedLabelWithId": "Connected guardian ({id})",
+  "@guardianConnectedLabelWithId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "guardianConnectedSince": "Connected · {date}",
+  "@guardianConnectedSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "acceptButton": "Accept",
   "rejectButton": "Decline",
   "guardianRevokeConfirmTitle": "Disconnect this guardian?",
@@ -138,6 +175,13 @@
   "guardianStatusRejected": "Declined",
   "guardianStatusRevoked": "Disconnected",
   "documentScanTitle": "Scan Document",
+  "documentScanStartTitle": "Document Analysis",
+  "documentScanStartTakePhotoButton": "Take a photo",
+  "documentScanStartPickPhotoButton": "Choose from library",
+  "documentScanStartTipTitle": "Please check before you start!",
+  "documentScanStartTipLine1": "Make sure the text is clearly visible",
+  "documentScanStartTipLine2": "Bright, glare-free lighting gives more accurate results",
+  "photoLibraryUnavailableError": "Couldn't load the photo.",
   "cameraPermissionCheckError": "Couldn't check camera permission.",
   "cameraPermissionRequestMessage": "To photograph and analyze documents and messages,\nplease allow camera access.",
   "cameraPermissionRequestButton": "Allow camera permission",
@@ -145,8 +189,16 @@
   "openSettingsButton": "Open settings",
   "scanPreviewTitle": "Review Photos",
   "retakeLabel": "Retake",
-  "scannedDocumentsCount": "Photos taken ({count})",
+  "scannedDocumentsCount": "{count} photos taken",
   "@scannedDocumentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "photoCountBadge": "{count}",
+  "@photoCountBadge": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -197,15 +249,20 @@
   "cameraPreparingMessage": "Preparing the camera",
   "documentFrameGuideMessage": "Fit the document within the frame",
   "captureButtonLabel": "Take photo",
+  "closeCameraButtonLabel": "Close",
   "noGuardianConnectedError": "You don't have a connected guardian yet.",
   "emergencyHelpTitle": "Do you need help?",
-  "callGuardianLabel": "Call guardian",
-  "emergency119Label": "119 (Emergency Rescue)",
-  "emergency112Label": "112 (Police)",
-  "emergency118Label": "118 (Cybercrime Report)",
+  "emergency119Label": "119 Report (Fire & Rescue)",
+  "emergency112Label": "112 Report (Police)",
+  "govComplaintLabel": "110 Consult (Government Complaints)",
+  "dasanCallCenterLabel": "120 Consult (Dasan Call Center)",
+  "cancelButton": "Cancel",
   "myRecordsTitle": "My Records",
   "documentReadLabel": "Read Document",
+  "documentReadSubtitle": "We'll read documents from a photo",
   "messageCheckLabel": "Check Message",
+  "messageCheckSubtitle": "We'll read messages and explain them simply",
+  "recentMessagesIntro": "We've pulled in your recent messages.\nTap the one you'd like to check.",
   "infoTabTitle": "Info",
   "infoTabEmptyMessage": "There's no information ready yet. We'll show you personalized info soon.",
   "statisticsLabel": "Statistics",
@@ -227,10 +284,33 @@
       }
     }
   },
-  "easyModeOnDescription": "On — Big buttons and simple screens",
-  "coreFeaturesTitle": "Key Features",
+  "easyModeDescription": "Switch to bigger, simpler screens",
   "recentRecordsTitle": "Recent Records",
-  "emergencyHelpRequestLabel": "Emergency Help Request",
+  "todayScheduleTitle": "Today's Schedule",
+  "emergencyHelpRequestLabel": "Emergency Help (SOS)",
+  "emergencyHelpRequestSubtitle": "Get help quickly in an emergency",
+  "homeGreetingWithName": "Hello, {name}!",
+  "@homeGreetingWithName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGreetingSubtitle": "Have a safe and comfortable day",
+  "easyHomeHeadline": "What can we help you with?",
+  "infoGreetingWithName": "Personalized info for {name}",
+  "@infoGreetingWithName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recordsFilterAllLabel": "All",
+  "recordsFilterEmptyMessage": "No records match this filter.\nTry a different filter.",
+  "moreAccountSectionTitle": "Account",
+  "moreUsageInfoSectionTitle": "Usage Info",
   "smsPermissionCheckError": "Couldn't check message permission.",
   "smsPermissionRequestMessage": "To check your messages and warn you about dangerous ones,\nplease allow message access.",
   "smsPermissionRequestButton": "Allow message permission",
@@ -257,6 +337,10 @@
   "textSizeTitle": "Text Size",
   "voiceGuideTitle": "Voice Guide",
   "voiceGuideDescription": "We'll also read the screen content aloud",
+  "voiceRateTitle": "Voice guide speed",
+  "homeVoiceGuideEasy": "This is the home screen. Choose from Read Document, Check Message, Find a Senior Center, or My Records.",
+  "homeVoiceGuideNormal": "This is the home screen. Choose from Read Document, Check Message, Find a Senior Center, or Emergency Help Request.",
+  "easyResultVoiceGuidePrefix": "Here's your analysis result.",
   "feeStatisticsTitle": "Fee Statistics",
   "feeStatisticsLoadingMessage": "Loading fee statistics",
   "feeStatisticsLoadError": "Something went wrong while loading fee statistics.",
@@ -316,6 +400,9 @@
   "detailsViewTitle": "View Details",
   "reliabilityLabel": "Reliability",
   "sourceTextLabel": "Original Text",
+  "easyResultAiSummaryLabel": "AI Summary",
+  "easyResultTypeLabel": "Type",
+  "easyResultReplayLabel": "Listen again",
   "askAboutThisButton": "Ask about this",
   "confirmedDoneSemanticLabel": "Marked as confirmed",
   "confirmedDoneMessage": "Confirmed",
@@ -350,8 +437,29 @@
   "@yearNumberLabel": {
     "placeholders": { "year": { "type": "int" } }
   },
+  "feeHeroTitle": "Month {month} fees",
+  "@feeHeroTitle": {
+    "placeholders": { "month": { "type": "int" } }
+  },
+  "feeHeroLessThanLastMonth": "{amount} less than last month",
+  "@feeHeroLessThanLastMonth": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "feeHeroMoreThanLastMonth": "{amount} more than last month",
+  "@feeHeroMoreThanLastMonth": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "feeHeroSameAsLastMonth": "Same as last month",
+  "recentBillsTitle": "Recent bills",
   "countUnitLabel": "{count}",
   "@countUnitLabel": {
     "placeholders": { "count": { "type": "int" } }
-  }
+  },
+  "notifSettingsTitle": "Notification settings",
+  "dangerAlertLabel": "Danger alerts",
+  "alwaysOnCaption": "Always on",
+  "guardianNotifyLabel": "Notify guardian",
+  "messageGuardianNoticeTitle": "Your guardian has been notified",
+  "messageGuardianNoticeBody": "We shared this message with your guardian",
+  "goHomeButton": "Go home"
 }
