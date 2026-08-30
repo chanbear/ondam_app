@@ -25,22 +25,22 @@ void main() {
     );
   }
 
-  testWidgets('꺼진 상태로 시작하고, "꺼짐" 문구를 보여준다', (tester) async {
+  testWidgets('꺼진 상태로 시작하고, Switch가 off를 보여준다', (tester) async {
     await tester.pumpWidget(wrap());
     await tester.pump();
 
     expect(find.text('쉬운 모드'), findsOneWidget);
-    expect(find.text('꺼짐'), findsOneWidget);
+    expect(tester.widget<Switch>(find.byType(Switch)).value, isFalse);
   });
 
-  testWidgets('탭하면 easyModeProvider가 켜지고 문구가 바뀐다', (tester) async {
+  testWidgets('탭하면 easyModeProvider가 켜지고 Switch가 on으로 바뀐다', (tester) async {
     await tester.pumpWidget(wrap());
     await tester.pump();
 
     await tester.tap(find.byType(EasyModeToggleCard));
     await tester.pump();
 
-    expect(find.textContaining('켜짐'), findsOneWidget);
+    expect(tester.widget<Switch>(find.byType(Switch)).value, isTrue);
 
     final element = tester.element(find.byType(EasyModeToggleCard));
     final container = ProviderScope.containerOf(element);

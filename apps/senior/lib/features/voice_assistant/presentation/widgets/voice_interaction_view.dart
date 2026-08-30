@@ -7,23 +7,19 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../../../core/locale/locale_provider.dart';
+import '../../../../core/voice_guide/tts_locale.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/voice_intent.dart';
 import '../providers/voice_assistant_di_providers.dart';
 
 enum _Stage { idle, listening, processing, answered }
 
-/// STT/TTS 엔진에 넘길 locale 태그 — 다국어 지원(ONDAM i18n)에서 앱 locale과
-/// 연결하는 지점. 단, [ClassifyVoiceIntentUseCase]는 한국어 키워드 매칭만
-/// 지원하므로(재설계 범위 밖) 다른 언어를 선택해도 인식된 문장의 의도 파악은
-/// 여전히 한국어 기준이다 — 이 화면의 안내 문구(예시 명령어)에 한국어
-/// 원문을 그대로 남겨둔 이유이기도 하다(l10n 키 `voiceUnrecognizedAnswer`).
-String _ttsLocaleTag(Locale locale) => switch (locale.languageCode) {
-  'en' => 'en-US',
-  'zh' => 'zh-CN',
-  'ja' => 'ja-JP',
-  _ => 'ko-KR',
-};
+// STT/TTS 엔진에 넘길 locale 태그 매핑은 core/voice_guide/tts_locale.dart의
+// ttsLocaleTag()를 공유한다. 단, [ClassifyVoiceIntentUseCase]는 한국어
+// 키워드 매칭만 지원하므로(재설계 범위 밖) 다른 언어를 선택해도 인식된
+// 문장의 의도 파악은 여전히 한국어 기준이다 — 이 화면의 안내 문구(예시
+// 명령어)에 한국어 원문을 그대로 남겨둔 이유이기도 하다(l10n 키
+// `voiceUnrecognizedAnswer`).
 
 String _sttLocaleId(Locale locale) => switch (locale.languageCode) {
   'en' => 'en_US',
@@ -80,7 +76,7 @@ class _VoiceInteractionViewState extends ConsumerState<VoiceInteractionView> {
         onError: _onSttError,
         onStatus: _onSttStatus,
       );
-      await _tts.setLanguage(_ttsLocaleTag(ref.read(localeControllerProvider)));
+      await _tts.setLanguage(ttsLocaleTag(ref.read(localeControllerProvider)));
       await _tts.awaitSpeakCompletion(true);
       if (!mounted) return;
       setState(() {
@@ -397,7 +393,7 @@ class _MicButtonState extends State<_MicButton>
               child: Icon(
                 Icons.mic,
                 size: widget.size * 0.45,
-                color: widget.active ? Colors.white : AppColors.primary,
+                color: widget.active ? AppColors.surface : AppColors.primary,
               ),
             ),
           ),

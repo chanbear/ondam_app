@@ -209,7 +209,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('촬영한 문서 (2장)'), findsOneWidget);
+      expect(find.text('2장 촬영했어요'), findsOneWidget);
       expect(find.byType(Image), findsNWidgets(2));
     });
 
@@ -229,7 +229,7 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('remove_photo_0')));
       await tester.pumpAndSettle();
 
-      expect(find.text('촬영한 문서 (1장)'), findsOneWidget);
+      expect(find.text('1장 촬영했어요'), findsOneWidget);
       expect(find.byType(Image), findsOneWidget);
     });
 
@@ -250,7 +250,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // onTap이 null이라 아무 일도 일어나지 않는다 — 여전히 1장.
-      expect(find.text('촬영한 문서 (1장)'), findsOneWidget);
+      expect(find.text('1장 촬영했어요'), findsOneWidget);
     });
 
     testWidgets('삭제 버튼의 실제 탭 영역이 접근성 최소 기준(44x44 논리 픽셀)을 만족한다'

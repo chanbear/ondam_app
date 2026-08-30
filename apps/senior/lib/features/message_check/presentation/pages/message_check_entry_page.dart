@@ -39,7 +39,7 @@ class MessageCheckEntryPage extends ConsumerWidget {
         ),
         data: (status) {
           return switch (status) {
-            SmsPermissionStatus.granted => const SmsRecentListView(),
+            SmsPermissionStatus.granted => _RecentMessagesView(l10n: l10n),
             SmsPermissionStatus.denied => _PermissionRequestView(
               easyMode: easyMode,
               onRequest: () =>
@@ -68,6 +68,28 @@ class MessageCheckEntryPage extends ConsumerWidget {
       MaterialPageRoute(
         builder: (_) => MessageRiskResultPage(message: message),
       ),
+    );
+  }
+}
+
+/// 문자 목록 진입 — ui-prototype `msg-list`: 목록 위에 2줄 안내문
+/// ("최근 문자를 가져왔어요.\n확인하고 싶은 문자를 눌러주세요.")을 먼저
+/// 보여준다. 제목("문자 확인")은 이미 표준 [AppHeader]가 담당하므로 여기서
+/// 다시 h1을 반복하지 않는다.
+class _RecentMessagesView extends StatelessWidget {
+  const _RecentMessagesView({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.recentMessagesIntro, style: AppTextStyles.bodyMedium),
+        const SizedBox(height: AppSpacing.lg),
+        const Expanded(child: SmsRecentListView()),
+      ],
     );
   }
 }

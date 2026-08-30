@@ -10,6 +10,8 @@ import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/widgets/analysis_progress_indicator.dart';
 import '../../../../core/widgets/analysis_progress_step.dart';
 import '../../../../core/widgets/analysis_result_view.dart';
+import '../../../../core/widgets/analysis_share_action.dart';
+import '../../../../core/widgets/easy_analysis_result_view.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/presentation/pages/analysis_record_detail_page.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
@@ -120,10 +122,16 @@ class _DocumentScanResultPageState
   Widget build(BuildContext context) {
     final easyMode = ref.watch(easyModeProvider);
     final l10n = AppLocalizations.of(context)!;
+    // 공유는 결과가 정확히 1건일 때만 의미가 있다(여러 장이면 목록일 뿐 —
+    // AnalysisRecordCard를 탭해 들어간 상세 화면에서 각각 공유하면 된다).
+    final singleResult = _results.length == 1 ? _results.first : null;
 
     return AppScaffold(
       title: l10n.analysisResultTitle,
       onBack: () => Navigator.of(context).pop(),
+      headerActions: [
+        if (singleResult != null) AnalysisShareAction(result: singleResult),
+      ],
       body: _buildBody(easyMode, l10n),
     );
   }
@@ -164,6 +172,14 @@ class _DocumentScanResultPageState
 
     if (_results.length == 1) {
       final result = _results.first;
+      if (easyMode) {
+        return EasyAnalysisResultView(
+          result: result,
+          onAskByVoice: _openVoiceAssistant,
+          onConfirm: () =>
+              ref.read(analysisRecordsProvider.notifier).confirm(result.id),
+        );
+      }
       return AnalysisResultView(
         result: result,
         onAskByVoice: _openVoiceAssistant,

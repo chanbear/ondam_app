@@ -123,23 +123,45 @@ class _AnalysisResultViewState extends State<AnalysisResultView> {
 
     return ListView(
       children: [
-        // 위험도 — risk가 null인 기존 데이터는 배지 없이 넘어간다(색만으로
-        // 전달하지 않는다는 원칙은 지키되, 없는 값을 지어내지 않는다).
-        if (risk != null) ...[
-          AppRiskBadge(level: risk, label: _riskBadgeLabel(l10n, risk)),
-          const SizedBox(height: AppSpacing.xs),
-        ],
+        // 위험도 + 신뢰도 — ui-prototype `analysisResultBody()`의
+        // `rsl-risk-row` 카드(두 값을 divider로 나눈 한 카드)를 따라 함께
+        // 묶는다. risk가 null인 기존 데이터는 배지 없이 신뢰도만 보여준다
+        // (색만으로 전달하지 않는다는 원칙은 지키되, 없는 값을 지어내지
+        // 않는다).
+        AppCard(
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (risk != null) ...[
+                  Expanded(
+                    child: AppRiskBadge(
+                      level: risk,
+                      label: _riskBadgeLabel(l10n, risk),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  const VerticalDivider(color: AppColors.divider, width: 1),
+                  const SizedBox(width: AppSpacing.md),
+                ],
+                // 신뢰도는 percentage가 아니라 문장 하나만
+                // (AppConfidenceIndicator 자체 문서 참고 — 요약을 읽기 전에
+                // 얼마나 믿을지 먼저 알려주는 신뢰 보정 용도). 정확한 퍼센트
+                // 수치는 "상세정보"에서 확인한다.
+                Expanded(
+                  child: AppConfidenceIndicator(level: result.reliability),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           '${_formatDate(result.createdAt)} · ${_typeLabel(l10n, result.type)}',
           style: AppTextStyles.labelSmall.copyWith(
             color: AppColors.textSecondary,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
-        // 신뢰도는 percentage가 아니라 문장 하나만(AppConfidenceIndicator
-        // 자체 문서 참고 — 요약을 읽기 전에 얼마나 믿을지 먼저 알려주는
-        // 신뢰 보정 용도). 정확한 퍼센트 수치는 "상세정보"에서 확인한다.
-        AppConfidenceIndicator(level: result.reliability),
         const SizedBox(height: AppSpacing.lg),
 
         // 날짜/기한 — 없으면 영역 자체를 숨긴다.

@@ -107,15 +107,13 @@ class _ScheduleFormPageState extends ConsumerState<ScheduleFormPage> {
             hintText: '예: 혈압약 복용',
           ),
           const SizedBox(height: AppSpacing.xxl),
-          Text('날짜', style: AppTextStyles.titleMedium),
-          const SizedBox(height: AppSpacing.sm),
+          const AppSectionHeader(title: '날짜'),
           AppCard(
             onTap: _pickDate,
             child: AppInfoRow(label: '선택한 날짜', value: _formatDate(_date)),
           ),
           const SizedBox(height: AppSpacing.md),
-          Text('시간', style: AppTextStyles.titleMedium),
-          const SizedBox(height: AppSpacing.sm),
+          const AppSectionHeader(title: '시간'),
           AppCard(
             onTap: _pickTime,
             child: AppInfoRow(label: '선택한 시간', value: _formatTime(_time)),
@@ -123,8 +121,13 @@ class _ScheduleFormPageState extends ConsumerState<ScheduleFormPage> {
           const SizedBox(height: AppSpacing.xxl),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('매일 반복'),
-            subtitle: const Text('복약처럼 매일 같은 시각에 반복돼요.'),
+            title: const Text('매일 반복', style: AppTextStyles.bodyLarge),
+            subtitle: Text(
+              '복약처럼 매일 같은 시각에 반복돼요.',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
             value: _isRecurring,
             onChanged: (value) => setState(() => _isRecurring = value),
           ),

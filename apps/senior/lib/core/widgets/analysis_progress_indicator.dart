@@ -25,6 +25,17 @@ class AnalysisProgressIndicator extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // ui-prototype `doc-analyzing`/`msg-analyzing` — 퍼센트 숫자를
+            // 진행바보다 먼저, primary 색으로 강조해 보여준다.
+            ExcludeSemantics(
+              child: Text(
+                '$percent%',
+                style: AppTextStyles.headlineMedium.copyWith(
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
             ExcludeSemantics(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.full),
@@ -35,10 +46,6 @@ class AnalysisProgressIndicator extends StatelessWidget {
                   valueColor: const AlwaysStoppedAnimation(AppColors.primary),
                 ),
               ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            ExcludeSemantics(
-              child: Text('$percent%', style: AppTextStyles.headlineMedium),
             ),
             const SizedBox(height: AppSpacing.sm),
             ExcludeSemantics(

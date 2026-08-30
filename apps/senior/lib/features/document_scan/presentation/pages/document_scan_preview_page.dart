@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
@@ -7,6 +5,7 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/captured_photo.dart';
+import '../widgets/local_photo_image.dart';
 import 'document_scan_camera_page.dart';
 import 'document_scan_result_page.dart';
 
@@ -69,11 +68,22 @@ class _DocumentScanPreviewPageState extends State<DocumentScanPreviewPage> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                l10n.scannedDocumentsCount(_photos.length),
-                style: AppTextStyles.titleMedium,
+              // ui-prototype `doc-multi`: "N장 촬영했어요" 헤드라인 + 매수
+              // 전용 pill을 카드 하나로 묶는다(위험도 배지가 아닌 매수
+              // 표시라는 prototype의 2026-08-27 수정 의도 그대로).
+              AppCard(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      l10n.scannedDocumentsCount(_photos.length),
+                      style: AppTextStyles.titleMedium,
+                    ),
+                    _PhotoCountBadge(count: _photos.length),
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.md),
               Expanded(
                 child: _PhotoThumbnailList(
                   photos: _photos,
@@ -107,6 +117,32 @@ class _DocumentScanPreviewPageState extends State<DocumentScanPreviewPage> {
   }
 }
 
+/// 매수 pill — `EasyAnalysisResultView`의 종류 태그와 동일한 패턴
+/// (`AppColors.primarySoft` 배경 + `AppRadius.full`)을 재사용한다.
+class _PhotoCountBadge extends StatelessWidget {
+  const _PhotoCountBadge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: 3,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.primarySoft,
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
+      child: Text(
+        AppLocalizations.of(context)!.photoCountBadge(count),
+        style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary),
+      ),
+    );
+  }
+}
+
 class _PhotoThumbnailList extends StatelessWidget {
   const _PhotoThumbnailList({
     required this.photos,
@@ -136,8 +172,8 @@ class _PhotoThumbnailList extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.md),
-              child: Image.file(
-                File(photo.localPath),
+              child: buildLocalPhotoImage(
+                photo.localPath,
                 width: width,
                 height: height,
                 fit: BoxFit.cover,

@@ -28,9 +28,20 @@ class DocumentScanCameraPage extends ConsumerWidget {
     final permissionAsync = ref.watch(cameraPermissionProvider);
     final l10n = AppLocalizations.of(context)!;
 
+    // 촬영 화면(granted)만 카메라 프리뷰가 화면 전체를 채우는 몰입형
+    // 레이아웃이라 표준 밝은 AppHeader를 띄우지 않는다(ui-prototype
+    // `doc-camera`: 어두운 배경 위에 닫기 버튼+안내 문구가 자체 오버레이로
+    // 함께 있음, `CameraPreviewView`가 그 오버레이를 그린다). 권한 요청/차단
+    // 화면은 카메라가 없는 단순 안내 화면이라 다른 화면들과 같은 표준
+    // AppHeader를 그대로 쓴다.
+    final showsCameraPreview = permissionAsync.maybeWhen(
+      data: (status) => status == CameraPermissionStatus.granted,
+      orElse: () => false,
+    );
+
     return AppScaffold(
-      title: l10n.documentScanTitle,
-      onBack: () => Navigator.of(context).pop(),
+      title: showsCameraPreview ? null : l10n.documentScanTitle,
+      onBack: showsCameraPreview ? null : () => Navigator.of(context).pop(),
       padding: EdgeInsets.zero,
       body: permissionAsync.when(
         loading: () => const AppLoading(),
@@ -43,6 +54,7 @@ class DocumentScanCameraPage extends ConsumerWidget {
             CameraPermissionStatus.granted => CameraPreviewView(
               easyMode: easyMode,
               onCaptured: (photo) => Navigator.of(context).pop(photo),
+              onClose: () => Navigator.of(context).pop(),
             ),
             CameraPermissionStatus.denied => _PermissionRequestView(
               easyMode: easyMode,

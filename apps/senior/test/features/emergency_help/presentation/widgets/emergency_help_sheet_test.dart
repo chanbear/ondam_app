@@ -7,21 +7,14 @@ import 'package:ondam_senior/features/emergency_help/presentation/widgets/emerge
 import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../domain/fakes/fake_dialer_repository.dart';
-import '../../domain/fakes/fake_guardian_contact_repository.dart';
 
 void main() {
   late FakeDialerRepository repository;
-  late FakeGuardianContactRepository guardianContactRepository;
 
   Future<void> pumpSheet(WidgetTester tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          dialerRepositoryProvider.overrideWithValue(repository),
-          guardianContactRepositoryProvider.overrideWithValue(
-            guardianContactRepository,
-          ),
-        ],
+        overrides: [dialerRepositoryProvider.overrideWithValue(repository)],
         child: MaterialApp(
           locale: const Locale('ko'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -45,56 +38,58 @@ void main() {
 
   setUp(() {
     repository = FakeDialerRepository();
-    guardianContactRepository = FakeGuardianContactRepository();
   });
 
-  testWidgets('119을 탭하면 실제 전화번호로 dialer를 호출한다', (tester) async {
+  // 2026-08-29 product decision(ui-prototype `S("emergency")`) — SOS 구성이
+  // 보호자 전화/119/112에서 112·119·110·120 4개 공공 긴급/상담 번호로
+  // 교체됐다.
+  testWidgets('112를 탭하면 실제 전화번호로 dialer를 호출한다', (tester) async {
     await pumpSheet(tester);
 
-    await tester.tap(find.text('119 (응급구조)'));
+    await tester.tap(find.text('112 신고하기 (경찰)'));
+    await tester.pumpAndSettle();
+
+    expect(repository.lastCalledNumber, '112');
+  });
+
+  testWidgets('119를 탭하면 실제 전화번호로 dialer를 호출한다', (tester) async {
+    await pumpSheet(tester);
+
+    await tester.tap(find.text('119 신고하기 (소방·구급)'));
     await tester.pumpAndSettle();
 
     expect(repository.lastCalledNumber, '119');
+  });
+
+  testWidgets('110을 탭하면 실제 전화번호로 dialer를 호출한다', (tester) async {
+    await pumpSheet(tester);
+
+    // 시트 안에 4개 버튼이 스크롤 영역에 들어 있어, 작은 테스트 뷰포트에서는
+    // 아래쪽 항목이 화면 밖에 있을 수 있다 — 탭 전에 스크롤해 보이게 한다.
+    await tester.ensureVisible(find.text('110 상담하기 (정부민원안내)'));
+    await tester.tap(find.text('110 상담하기 (정부민원안내)'));
+    await tester.pumpAndSettle();
+
+    expect(repository.lastCalledNumber, '110');
+  });
+
+  testWidgets('120을 탭하면 실제 전화번호로 dialer를 호출한다', (tester) async {
+    await pumpSheet(tester);
+
+    await tester.ensureVisible(find.text('120 상담하기 (다산콜센터)'));
+    await tester.tap(find.text('120 상담하기 (다산콜센터)'));
+    await tester.pumpAndSettle();
+
+    expect(repository.lastCalledNumber, '120');
   });
 
   testWidgets('dialer 실행이 실패하면 실패 메시지를 보여준다', (tester) async {
     repository.result = const Err(UnavailableFailure('전화 앱을 열 수 없어요.'));
     await pumpSheet(tester);
 
-    await tester.tap(find.text('112 (경찰)'));
+    await tester.tap(find.text('112 신고하기 (경찰)'));
     await tester.pumpAndSettle();
 
     expect(find.text('전화 앱을 열 수 없어요.'), findsOneWidget);
-  });
-
-  testWidgets('보호자에게 전화를 탭하면 연결된 보호자의 번호로 dialer를 호출한다', (tester) async {
-    guardianContactRepository.result = const Ok('+821012345678');
-    await pumpSheet(tester);
-
-    await tester.tap(find.text('보호자에게 전화'));
-    await tester.pumpAndSettle();
-
-    expect(repository.lastCalledNumber, '+821012345678');
-  });
-
-  testWidgets('연결된 보호자가 없으면 정직한 안내만 보여주고 dialer를 호출하지 않는다', (tester) async {
-    await pumpSheet(tester);
-
-    await tester.tap(find.text('보호자에게 전화'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('아직 연결된 보호자가 없어요.'), findsOneWidget);
-    expect(repository.lastCalledNumber, isNull);
-  });
-
-  testWidgets('보호자 번호 조회가 실패하면 실패 메시지를 보여주고 dialer를 호출하지 않는다', (tester) async {
-    guardianContactRepository.result = const Err(ServerFailure());
-    await pumpSheet(tester);
-
-    await tester.tap(find.text('보호자에게 전화'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('서버에 문제가 발생했습니다.'), findsOneWidget);
-    expect(repository.lastCalledNumber, isNull);
   });
 }

@@ -5,6 +5,9 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../core/demographics/domain/entities/demographics.dart';
 import '../../../../core/demographics/presentation/providers/demographics_provider.dart';
+import '../../../../core/easy_mode/easy_mode_outline_card.dart';
+import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../core/location/domain/entities/region.dart';
 import '../../../../core/location/presentation/providers/region_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/profile.dart';
@@ -99,6 +102,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final easyMode = ref.watch(easyModeProvider);
     final regionAsync = ref.watch(regionProvider);
     final profileAsync = ref.watch(profileProvider);
     ref.listen<AsyncValue<Profile?>>(profileProvider, (previous, next) {
@@ -130,20 +134,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ui-prototype `senior.onboard-profile` 필드 순서(이름 → 성별 →
+          // 나이 → 지역)와 맞춤.
           AppTextField(label: l10n.nameLabel, controller: _nameController),
-          const SizedBox(height: AppSpacing.md),
-          AppTextField(
-            label: l10n.ageLabel,
-            controller: _ageController,
-            keyboardType: TextInputType.number,
-          ),
-          if (profileAsync.hasError) ...[
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              l10n.profileLoadError,
-              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
-            ),
-          ],
           const SizedBox(height: AppSpacing.xxl),
           Text('성별', style: AppTextStyles.titleMedium),
           const SizedBox(height: AppSpacing.sm),
@@ -167,19 +160,22 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             ],
           ),
           const SizedBox(height: AppSpacing.xxl),
+          AppTextField(
+            label: l10n.ageLabel,
+            controller: _ageController,
+            keyboardType: TextInputType.number,
+          ),
+          if (profileAsync.hasError) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              l10n.profileLoadError,
+              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.xxl),
           Text(l10n.myRegionTitle, style: AppTextStyles.titleMedium),
           const SizedBox(height: AppSpacing.sm),
-          AppCard(
-            child: regionAsync.when(
-              loading: () => const AppLoading(),
-              error: (_, _) =>
-                  Text(l10n.regionLoadError, style: AppTextStyles.bodyMedium),
-              data: (region) => AppInfoRow(
-                label: l10n.currentRegionLabel,
-                value: region?.displayName ?? l10n.regionNotSetValue,
-              ),
-            ),
-          ),
+          _regionCard(easyMode: easyMode, l10n: l10n, regionAsync: regionAsync),
           const SizedBox(height: AppSpacing.sm),
           AppButton(
             label: l10n.enterRegionAction,
@@ -190,6 +186,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           AppButton(
             label: l10n.saveButton,
             isLoading: _saving,
+            size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
             onPressed: _saving ? null : _save,
           ),
           if (_saveError != null) ...[
@@ -202,6 +199,24 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         ],
       ),
     );
+  }
+
+  // 2026-08-28 — 쉬운 모드일 때만 `EasyOutlineCard`(굵은 먹색 테두리)로.
+  Widget _regionCard({
+    required bool easyMode,
+    required AppLocalizations l10n,
+    required AsyncValue<Region?> regionAsync,
+  }) {
+    final content = regionAsync.when(
+      loading: () => const AppLoading(),
+      error: (_, _) =>
+          Text(l10n.regionLoadError, style: AppTextStyles.bodyMedium),
+      data: (region) => AppInfoRow(
+        label: l10n.currentRegionLabel,
+        value: region?.displayName ?? l10n.regionNotSetValue,
+      ),
+    );
+    return easyMode ? EasyOutlineCard(child: content) : AppCard(child: content);
   }
 }
 

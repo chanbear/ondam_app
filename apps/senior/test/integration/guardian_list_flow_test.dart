@@ -64,7 +64,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(fake.respondToRequestCalls, [(linkId: 'link-1', accept: true)]);
-    expect(find.text('연결됨'), findsOneWidget);
+    // 2026-08-30 — accepted 상태는 "연결됨" 배지 대신 "연결 해제" 버튼을
+    // 같은 행에 바로 보여준다(ui-prototype `S("guardian-link")` 정렬 —
+    // 정보 카드와 해제 액션을 하나로 병합).
     expect(find.text('연결 해제'), findsOneWidget);
     expect(find.text('수락'), findsNothing);
   });

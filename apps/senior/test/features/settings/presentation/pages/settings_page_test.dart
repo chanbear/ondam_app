@@ -168,6 +168,12 @@ void main() {
 
     expect(find.text('설정'), findsOneWidget);
 
+    // 2026-08-30 설정 화면이 섹션 카드 3개(쉬운 모드/접근성/언어)로 나뉘며
+    // 길어져, 기본 테스트 뷰포트(800x600)에서 "English"가 화면 밖으로
+    // 밀려났다 — 탭하기 전에 스크롤해서 보이게 한다.
+    await tester.ensureVisible(find.text('English'));
+    await tester.pumpAndSettle();
+
     await tester.tap(find.text('English'));
     await tester.pumpAndSettle();
 

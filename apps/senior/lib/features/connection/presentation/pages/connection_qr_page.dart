@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../../core/easy_mode/easy_mode_outline_card.dart';
+import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/connection_token_notifier.dart';
 
@@ -43,7 +45,13 @@ class _QrContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isExpired = DateTime.now().isAfter(expiresAt);
+    final easyMode = ref.watch(easyModeProvider);
     final l10n = AppLocalizations.of(context)!;
+
+    final qrImage = Opacity(
+      opacity: isExpired ? 0.3 : 1,
+      child: QrImageView(data: data, size: 240, version: QrVersions.auto),
+    );
 
     return Center(
       child: Column(
@@ -52,30 +60,36 @@ class _QrContent extends ConsumerWidget {
           Text(
             l10n.qrShowGuardianPrompt,
             textAlign: TextAlign.center,
-            style: AppTextStyles.titleMedium,
+            style: easyMode
+                ? AppTextStyles.headlineMedium
+                : AppTextStyles.titleMedium,
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.xl),
+          // 2026-08-28 — 쉬운 모드일 때만 `EasyOutlineCard`(굵은 먹색 테두리)로.
+          easyMode ? EasyOutlineCard(child: qrImage) : qrImage,
+          const SizedBox(height: AppSpacing.md),
           Text(
             l10n.qrScanExplanation,
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyMedium,
           ),
           const SizedBox(height: AppSpacing.xl),
-          Opacity(
-            opacity: isExpired ? 0.3 : 1,
-            child: QrImageView(data: data, size: 240, version: QrVersions.auto),
-          ),
-          const SizedBox(height: AppSpacing.xl),
           if (isExpired) ...[
-            Text(l10n.qrExpiredMessage, style: AppTextStyles.bodyMedium),
-            const SizedBox(height: AppSpacing.md),
-            AppButton(
-              label: l10n.qrRegenerateButton,
-              size: AppButtonSize.large,
-              onPressed: () =>
-                  ref.read(connectionTokenProvider.notifier).regenerate(),
+            Text(
+              l10n.qrExpiredMessage,
+              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
             ),
+            const SizedBox(height: AppSpacing.md),
           ],
+          // ui-prototype `senior.qr-generate`와 맞춤 — 만료 여부와 상관없이
+          // 항상 재발급(새로고침) 버튼을 보여준다.
+          AppButton(
+            label: l10n.qrRegenerateButton,
+            variant: AppButtonVariant.secondary,
+            size: AppButtonSize.large,
+            onPressed: () =>
+                ref.read(connectionTokenProvider.notifier).regenerate(),
+          ),
         ],
       ),
     );

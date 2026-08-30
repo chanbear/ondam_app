@@ -5,6 +5,7 @@ import 'package:ondam_models/ondam_models.dart';
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/widgets/analysis_result_view.dart';
+import '../../../../core/widgets/analysis_share_action.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../voice_assistant/presentation/pages/voice_assistant_page.dart';
 import '../providers/analysis_records_notifier.dart';
@@ -27,6 +28,7 @@ class AnalysisRecordDetailPage extends ConsumerWidget {
     return AppScaffold(
       title: l10n.analysisResultTitle,
       onBack: () => Navigator.of(context).pop(),
+      headerActions: [AnalysisShareAction(result: result)],
       body: AnalysisResultView(
         result: result,
         onAskByVoice: () => Navigator.of(

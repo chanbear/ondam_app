@@ -1,30 +1,52 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/auth/auth_state_provider.dart';
+import '../../../../core/auth/supabase_client_provider.dart';
 import '../../../../core/storage/storage_providers.dart';
 
-const _onboardingCompletedKey = 'onboarding_completed';
+const _onboardingCompletedKeyPrefix = 'onboarding_completed';
 
 /// Whether the user has been through the onboarding flow at least once.
 /// `null` = not checked yet, `false`/`true` after the first read. This is a
 /// client-side nudge (Home checks it and pushes to onboarding once), NOT a
 /// router redirect gate — Phase 2's auth `redirect` logic is not touched by
 /// this Phase 3 round.
+///
+/// 2026-08-30 — 키를 계정별로 스코프한다(`onboarding_completed_<userId>`).
+/// 기존에는 기기 전체에 단일 키를 썼는데, 같은 기기에서 여러 테스트 계정이
+/// 로그인/가입을 거치면 한 계정이 온보딩을 마치는 순간 그 뒤에 새로 가입하는
+/// 다른 계정도 영원히 온보딩을 건너뛰는 버그였다. `authStateChangesProvider`를
+/// watch해 로그아웃 후 다른 계정으로 로그인하는 경우에도 다시 계산한다.
 class OnboardingStatusNotifier extends Notifier<bool?> {
+  String _key = _onboardingCompletedKeyPrefix;
+
   @override
   bool? build() {
-    _restore();
+    ref.watch(authStateChangesProvider);
+    // 세션이 없는 경우는 이 provider가 정상적으로 읽히는 상황(로그인 후)에서는
+    // 발생하지 않지만, 안전하게 기존 미스코프 키로 폴백한다.
+    final userId = ref.read(supabaseClientProvider).auth.currentUser?.id;
+    _key = userId == null
+        ? _onboardingCompletedKeyPrefix
+        : '${_onboardingCompletedKeyPrefix}_$userId';
+    _restore(_key);
     return null;
   }
 
-  Future<void> _restore() async {
-    state = await ref
+  Future<void> _restore(String key) async {
+    final value = await ref
         .read(localStorageProvider)
-        .getBool(_onboardingCompletedKey);
+        .getBool(key, defaultValue: false);
+    // 계정이 바뀌어 provider가 이미 폐기/재생성됐을 수 있다 — 그 상태에서
+    // state를 쓰면 예외가 던져지므로 먼저 확인한다(locale_provider.dart와
+    // 동일 패턴).
+    if (!ref.mounted) return;
+    state = value;
   }
 
   Future<void> markCompleted() async {
     state = true;
-    await ref.read(localStorageProvider).setBool(_onboardingCompletedKey, true);
+    await ref.read(localStorageProvider).setBool(_key, true);
   }
 }
 

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
+import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/presentation/pages/analysis_record_detail_page.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
@@ -50,11 +52,22 @@ class RecordsTabPage extends StatelessWidget {
   }
 }
 
-class _AnalysisRecordsView extends ConsumerWidget {
+/// ui-prototype `S("records")`의 안전/주의/위험 필터 칩 — 이미 불러온
+/// [AnalysisResult] 목록을 화면에서만 걸러 보여주는 순수 UI 상태다(서버에
+/// 다시 요청하지 않는다, 2026-08-29 프로토타입 결정과 동일).
+class _AnalysisRecordsView extends ConsumerStatefulWidget {
   const _AnalysisRecordsView();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_AnalysisRecordsView> createState() =>
+      _AnalysisRecordsViewState();
+}
+
+class _AnalysisRecordsViewState extends ConsumerState<_AnalysisRecordsView> {
+  RiskLevel? _filter;
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(analysisRecordsProvider);
     final l10n = AppLocalizations.of(context)!;
 
@@ -73,26 +86,107 @@ class _AnalysisRecordsView extends ConsumerWidget {
         if (records.isEmpty) {
           return AppEmptyState(message: l10n.recordsEmptyMessage);
         }
-        return RefreshIndicator(
-          onRefresh: () => ref.refresh(analysisRecordsProvider.future),
-          child: ListView.separated(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            itemCount: records.length,
-            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
-            itemBuilder: (context, index) {
-              final record = records[index];
-              return AnalysisRecordCard(
-                result: record,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => AnalysisRecordDetailPage(result: record),
-                  ),
-                ),
-              );
-            },
-          ),
+        final filtered = _filter == null
+            ? records
+            : records.where((r) => r.riskLevel == _filter).toList();
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                0,
+                AppSpacing.lg,
+                AppSpacing.sm,
+              ),
+              child: _RiskFilterRow(
+                selected: _filter,
+                onSelect: (filter) => setState(() => _filter = filter),
+              ),
+            ),
+            Expanded(
+              child: filtered.isEmpty
+                  ? AppEmptyState(message: l10n.recordsFilterEmptyMessage)
+                  : RefreshIndicator(
+                      onRefresh: () =>
+                          ref.refresh(analysisRecordsProvider.future),
+                      child: ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(
+                          AppSpacing.lg,
+                          0,
+                          AppSpacing.lg,
+                          AppSpacing.lg,
+                        ),
+                        itemCount: filtered.length,
+                        separatorBuilder: (_, _) =>
+                            const SizedBox(height: AppSpacing.sm),
+                        itemBuilder: (context, index) {
+                          final record = filtered[index];
+                          return AnalysisRecordCard(
+                            result: record,
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    AnalysisRecordDetailPage(result: record),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+            ),
+          ],
         );
       },
+    );
+  }
+}
+
+/// ui-prototype `.chip`/`.chip.active`(테두리+틴트 배경으로 선택 상태 표현,
+/// Material 기본 파란 ChoiceChip이 아님) — 이미 다른 화면(온보딩 접근성
+/// 설정 등)에서 같은 패턴에 쓰인 `AppCard.selected`를 재사용한다. Easy
+/// 모드에서는 `[data-easy="true"] .chip{font-size:17px;padding:12px 18px}`에
+/// 맞춰 여백/글자를 키운다.
+class _RiskFilterRow extends ConsumerWidget {
+  const _RiskFilterRow({required this.selected, required this.onSelect});
+
+  final RiskLevel? selected;
+  final ValueChanged<RiskLevel?> onSelect;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final easyMode = ref.watch(easyModeProvider);
+    final options = <(RiskLevel?, String)>[
+      (null, l10n.recordsFilterAllLabel),
+      (RiskLevel.safe, l10n.riskSafeLabel),
+      (RiskLevel.caution, l10n.riskCautionLabel),
+      (RiskLevel.dangerous, l10n.riskDangerousLabel),
+    ];
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final (filter, label) in options) ...[
+            AppCard(
+              variant: selected == filter
+                  ? AppCardVariant.selected
+                  : AppCardVariant.normal,
+              padding: EdgeInsets.symmetric(
+                horizontal: easyMode ? AppSpacing.lg : AppSpacing.md,
+                vertical: easyMode ? AppSpacing.sm : AppSpacing.xs,
+              ),
+              onTap: () => onSelect(filter),
+              child: Text(
+                label,
+                style: easyMode
+                    ? AppTextStyles.bodyLarge
+                    : AppTextStyles.bodyMedium,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.xs),
+          ],
+        ],
+      ),
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/widgets/home_feature_card.dart';
 import '../../../../l10n/generated/app_localizations.dart';
-import 'home_feature_card.dart';
 
 /// Easy Mode home content — Easy Mode is the app's core UX, not a settings
 /// toggle (ui-principles.md Senior 8): fewer items (핵심 5개 이하), each a
@@ -23,8 +23,12 @@ class EasyModeHomeView extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return ListView(
       children: [
+        // ui-prototype `E("home")`(Easy 앱) 헤드라인 — Easy Mode 버튼은
+        // 서브텍스트/chevron 없이 굵은 라벨만 보여준다(easy-btn 스타일).
+        Text(l10n.easyHomeHeadline, style: AppTextStyles.headlineMedium),
+        const SizedBox(height: AppSpacing.lg),
         for (final item in features) ...[
-          HomeFeatureLargeButton(item: item),
+          HomeFeatureLargeButton(item: item, showChevron: false),
           const SizedBox(height: AppSpacing.md),
         ],
         // prototype `easyHome()`의 도움 요청 버튼은 다른 easy-btn과 달리
@@ -36,8 +40,11 @@ class EasyModeHomeView extends StatelessWidget {
           button: true,
           label: l10n.helpRequestLabel,
           child: Material(
-            color: AppColors.error.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(AppRadius.lg),
+            color: AppColors.errorSoft,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+              side: const BorderSide(color: AppColors.border),
+            ),
             child: InkWell(
               onTap: onEmergencyTap,
               borderRadius: BorderRadius.circular(AppRadius.lg),

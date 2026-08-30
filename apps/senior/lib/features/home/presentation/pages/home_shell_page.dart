@@ -5,6 +5,7 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../voice_assistant/presentation/pages/voice_assistant_page.dart';
+import '../providers/shell_tab_index_provider.dart';
 import 'home_tab_page.dart';
 import 'info_tab_page.dart';
 import 'more_tab_page.dart';
@@ -35,8 +36,6 @@ class HomeShellPage extends ConsumerStatefulWidget {
 }
 
 class _HomeShellPageState extends ConsumerState<HomeShellPage> {
-  int _index = 1;
-
   static const _tabs = [
     InfoTabPage(),
     HomeTabPage(),
@@ -54,10 +53,22 @@ class _HomeShellPageState extends ConsumerState<HomeShellPage> {
   Widget build(BuildContext context) {
     final easyMode = ref.watch(easyModeProvider);
     final l10n = AppLocalizations.of(context)!;
+    final index = ref.watch(shellTabIndexProvider);
+
+    // FAB(음성 비서)는 floating(비docked) 위치라 Scaffold가 body에 자동으로
+    // 여백을 주지 않는다 — 탭 콘텐츠가 길어지면 FAB 아래 깔려 마지막 항목이
+    // 가려진다(예: 더보기 화면 로그아웃 행). FAB 크기(Standard 56dp/Large
+    // 96dp) + Material 기본 여백만큼 body 하단에 패딩을 줘 모든 탭에서
+    // 겹치지 않게 한다.
+    final fabClearance =
+        (easyMode ? 96.0 : 56.0) + kFloatingActionButtonMargin + AppSpacing.sm;
 
     return Scaffold(
       body: SafeArea(
-        child: IndexedStack(index: _index, children: _tabs),
+        child: Padding(
+          padding: EdgeInsets.only(bottom: fabClearance),
+          child: IndexedStack(index: index, children: _tabs),
+        ),
       ),
       floatingActionButton: Semantics(
         button: true,
@@ -83,8 +94,9 @@ class _HomeShellPageState extends ConsumerState<HomeShellPage> {
           AppBottomNavItem(icon: Icons.history, label: l10n.navRecords),
           AppBottomNavItem(icon: Icons.more_horiz, label: l10n.navMore),
         ],
-        currentIndex: _index,
-        onTap: (index) => setState(() => _index = index),
+        currentIndex: index,
+        onTap: (tapped) =>
+            ref.read(shellTabIndexProvider.notifier).select(tapped),
       ),
     );
   }

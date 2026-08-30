@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../core/easy_mode/easy_mode_outline_card.dart';
+import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/guardian_links_notifier.dart';
 import 'connection_qr_page.dart';
@@ -98,51 +100,34 @@ class _GuardianLinkCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.person_outline, color: AppColors.primary),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  l10n.guardianRequestLabelWithId(_shortId(link.guardianId)),
-                  style: AppTextStyles.bodyLarge,
-                ),
+    final easyMode = ref.watch(easyModeProvider);
+    final isAccepted = link.status == GuardianLinkStatus.accepted;
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.person_outline, color: AppColors.primary),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                // 이미 연결된 보호자에게 "연결 요청" 문구를 쓰면 의미가
+                // 틀리다 — accepted 상태는 별도 문구를 쓴다.
+                isAccepted
+                    ? l10n.guardianConnectedLabelWithId(
+                        _shortId(link.guardianId),
+                      )
+                    : l10n.guardianRequestLabelWithId(
+                        _shortId(link.guardianId),
+                      ),
+                style: AppTextStyles.bodyLarge,
               ),
-              _StatusBadge(status: link.status),
-            ],
-          ),
-          if (link.status == GuardianLinkStatus.pending) ...[
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                Expanded(
-                  child: AppButton(
-                    label: l10n.acceptButton,
-                    onPressed: () => ref
-                        .read(guardianLinksProvider.notifier)
-                        .respond(linkId: link.id, accept: true),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => ref
-                        .read(guardianLinksProvider.notifier)
-                        .respond(linkId: link.id, accept: false),
-                    child: Text(l10n.rejectButton),
-                  ),
-                ),
-              ],
             ),
-          ] else if (link.status == GuardianLinkStatus.accepted) ...[
-            const SizedBox(height: AppSpacing.md),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
+            // ui-prototype `senior.guardian-link`와 맞춤(2026-08-29 사용자
+            // 요청) — 연결된 보호자는 정보와 "해제" 액션을 같은 줄에 묶어
+            // 카드 하나로 인지되게 한다. 대기중 요청은 기존대로 배지만.
+            if (isAccepted)
+              TextButton(
                 onPressed: () async {
                   final confirmed = await AppConfirmDialog.show(
                     context,
@@ -163,15 +148,56 @@ class _GuardianLinkCard extends ConsumerWidget {
                     color: AppColors.error,
                   ),
                 ),
-              ),
-            ),
+              )
+            else
+              _StatusBadge(status: link.status),
           ],
+        ),
+        // ui-prototype `S("guardian-link")` — 연결된 날짜 표시.
+        if (isAccepted && link.respondedAt != null) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            l10n.guardianConnectedSince(_formatDate(link.respondedAt!)),
+            style: AppTextStyles.caption.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
         ],
-      ),
+        if (link.status == GuardianLinkStatus.pending) ...[
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Expanded(
+                child: AppButton(
+                  label: l10n.acceptButton,
+                  size: easyMode ? AppButtonSize.large : AppButtonSize.standard,
+                  onPressed: () => ref
+                      .read(guardianLinksProvider.notifier)
+                      .respond(linkId: link.id, accept: true),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => ref
+                      .read(guardianLinksProvider.notifier)
+                      .respond(linkId: link.id, accept: false),
+                  child: Text(l10n.rejectButton),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ],
     );
+    // 2026-08-28 — 쉬운 모드일 때만 `EasyOutlineCard`(굵은 먹색 테두리)로.
+    return easyMode ? EasyOutlineCard(child: content) : AppCard(child: content);
   }
 
   String _shortId(String id) => id.length > 8 ? id.substring(0, 8) : id;
+
+  String _formatDate(DateTime dt) =>
+      '${dt.year}.${dt.month.toString().padLeft(2, '0')}.${dt.day.toString().padLeft(2, '0')}';
 }
 
 class _StatusBadge extends StatelessWidget {

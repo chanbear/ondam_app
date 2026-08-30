@@ -22,7 +22,7 @@ class EasyModeNotifier extends Notifier<bool> {
   Future<void> _restore() async {
     final stored = await ref
         .read(localStorageProvider)
-        .getBool(_easyModeStorageKey);
+        .getBool(_easyModeStorageKey, defaultValue: false);
     state = stored;
   }
 

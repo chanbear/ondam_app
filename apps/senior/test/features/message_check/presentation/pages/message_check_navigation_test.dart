@@ -14,6 +14,7 @@ import 'package:ondam_senior/features/message_check/presentation/providers/sms_p
 import 'package:ondam_senior/features/message_check/presentation/widgets/manual_message_input_view.dart';
 import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../domain/fakes/fake_message_risk_repository.dart';
 
@@ -37,6 +38,20 @@ class _FixedSmsInboxNotifier extends SmsInboxNotifier {
 }
 
 void main() {
+  // 2026-08-30 — `onboardingStatusProvider`가 계정별 키로 스코프되며
+  // `authStateChangesProvider`(→ `supabaseClientProvider`)를 watch하게
+  // 됐다 — `HomeTabPage`를 그리는 첫 번째 테스트는 `widget_test.dart`와
+  // 같은 더미 Supabase 초기화가 필요하다(세션 없음 → 기존 미스코프 키로
+  // 폴백, 동작은 그대로).
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
+    await Supabase.initialize(
+      url: 'https://test.supabase.co',
+      publishableKey: 'test-anon-key',
+    );
+  });
+
   setUp(() {
     SharedPreferences.setMockInitialValues({'onboarding_completed': true});
   });
@@ -55,7 +70,7 @@ void main() {
             locale: const Locale('ko'),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: const HomeTabPage(),
+            home: const Scaffold(body: HomeTabPage()),
           ),
         ),
       );

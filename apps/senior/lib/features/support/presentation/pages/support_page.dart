@@ -159,7 +159,7 @@ class _LocalGovOfficeCard extends ConsumerWidget {
               ),
               if (phone != null)
                 IconButton(
-                  iconSize: 32,
+                  iconSize: AppSpacing.xl,
                   tooltip: AppLocalizations.of(context)!.callButtonTooltip,
                   icon: const Icon(Icons.call, color: AppColors.primary),
                   onPressed: () => onCall(phone),

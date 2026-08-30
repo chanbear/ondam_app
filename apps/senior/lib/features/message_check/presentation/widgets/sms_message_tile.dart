@@ -21,7 +21,11 @@ class SmsMessageTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.sms_outlined, color: AppColors.primary),
+          const CircleAvatar(
+            radius: 18,
+            backgroundColor: AppColors.primarySoft,
+            child: Icon(Icons.sms_outlined, color: AppColors.primary, size: 20),
+          ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(

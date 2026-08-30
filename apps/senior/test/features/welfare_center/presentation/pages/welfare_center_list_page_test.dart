@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_core/ondam_core.dart';
+import 'package:ondam_senior/core/easy_mode/easy_mode_provider.dart';
 import 'package:ondam_senior/core/location/domain/entities/region.dart';
 import 'package:ondam_senior/core/location/presentation/providers/location_di_providers.dart';
 import 'package:ondam_senior/features/profile/presentation/pages/region_input_page.dart';
@@ -12,6 +13,11 @@ import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../../../core/location/domain/fakes/fake_region_repository.dart';
 import '../../domain/fakes/fake_welfare_center_repository.dart';
+
+class _FixedEasyModeNotifier extends EasyModeNotifier {
+  @override
+  bool build() => false;
+}
 
 void main() {
   late FakeRegionRepository regionRepository;
@@ -29,6 +35,10 @@ void main() {
         welfareCenterRepositoryProvider.overrideWithValue(
           welfareCenterRepository,
         ),
+        // 이 파일의 검증 대상은 Normal Mode 카드 레이아웃(인라인 전화
+        // 아이콘 버튼 등)이다 — Easy Mode가 기본값이 된 뒤에도 그 의도를
+        // 그대로 유지하기 위해 고정한다.
+        easyModeProvider.overrideWith(_FixedEasyModeNotifier.new),
       ],
       child: MaterialApp(
         locale: const Locale('ko'),

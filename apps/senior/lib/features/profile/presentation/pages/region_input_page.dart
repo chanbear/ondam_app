@@ -6,6 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/easy_mode/easy_mode_outline_card.dart';
+import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/location/domain/entities/location_permission_status.dart';
 import '../../../../core/location/domain/entities/region.dart';
 import '../../../../core/location/presentation/providers/location_di_providers.dart';
@@ -178,6 +180,18 @@ class _RegionInputPageState extends ConsumerState<RegionInputPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final easyMode = ref.watch(easyModeProvider);
+    final sidoRow = Row(
+      children: [
+        Expanded(
+          child: Text(
+            _sido ?? l10n.sidoPlaceholder,
+            style: AppTextStyles.bodyLarge,
+          ),
+        ),
+        const Icon(Icons.chevron_right),
+      ],
+    );
     return AppScaffold(
       title: l10n.enterRegionAction,
       onBack: () => Navigator.of(context).pop(),
@@ -187,20 +201,10 @@ class _RegionInputPageState extends ConsumerState<RegionInputPage> {
         children: [
           Text(l10n.sidoLabel, style: AppTextStyles.titleMedium),
           const SizedBox(height: AppSpacing.sm),
-          AppCard(
-            onTap: _pickSido,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _sido ?? l10n.sidoPlaceholder,
-                    style: AppTextStyles.bodyLarge,
-                  ),
-                ),
-                const Icon(Icons.chevron_right),
-              ],
-            ),
-          ),
+          // 2026-08-28 — 쉬운 모드일 때만 `EasyOutlineCard`(굵은 먹색 테두리)로.
+          easyMode
+              ? EasyOutlineCard(onTap: _pickSido, child: sidoRow)
+              : AppCard(onTap: _pickSido, child: sidoRow),
           const SizedBox(height: AppSpacing.md),
           AppTextField(
             label: l10n.sigunguLabel,

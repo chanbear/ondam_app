@@ -101,6 +101,10 @@ void main() {
 
       expect(find.text('이 내용 물어보기'), findsOneWidget);
 
+      // Easy Mode 결과 화면이 길어져(배너/일러스트/상세정보 카드) 이 버튼이
+      // 기본 테스트 뷰포트 밖에 있을 수 있다 — 탭 전에 스크롤해서 보이게 한다.
+      await tester.ensureVisible(find.text('이 내용 물어보기'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('이 내용 물어보기'));
       // MaterialPageRoute push는 한 프레임 안에 완전히 반영되지 않는다 —
       // pumpAndSettle()은 VoiceAssistantPage 내부의 micPermissionProvider가
