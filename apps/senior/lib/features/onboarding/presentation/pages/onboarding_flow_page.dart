@@ -168,14 +168,17 @@ class _ProfileStepState extends State<_ProfileStep> {
               const SizedBox(height: AppSpacing.xxl),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text('성별', style: AppTextStyles.titleMedium),
+                child: Text(
+                  l10n.genderSectionLabel,
+                  style: AppTextStyles.titleMedium,
+                ),
               ),
               const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
                   Expanded(
                     child: _ProfileGenderOption(
-                      label: '남성',
+                      label: l10n.genderMaleLabel,
                       selected: _gender == Gender.male,
                       onTap: () => setState(() => _gender = Gender.male),
                     ),
@@ -183,7 +186,7 @@ class _ProfileStepState extends State<_ProfileStep> {
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: _ProfileGenderOption(
-                      label: '여성',
+                      label: l10n.genderFemaleLabel,
                       selected: _gender == Gender.female,
                       onTap: () => setState(() => _gender = Gender.female),
                     ),

@@ -9,17 +9,4 @@ void main() {
       expect(CameraFlashMode.auto.next, CameraFlashMode.off);
     });
   });
-
-  group('CameraFlashMode.label', () {
-    test('every mode has a non-empty visible label (never icon-only)', () {
-      for (final mode in CameraFlashMode.values) {
-        expect(mode.label, isNotEmpty);
-      }
-    });
-
-    test('labels are distinct per mode', () {
-      final labels = CameraFlashMode.values.map((m) => m.label).toSet();
-      expect(labels.length, CameraFlashMode.values.length);
-    });
-  });
 }

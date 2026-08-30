@@ -76,13 +76,17 @@ void main() {
       expect(find.byType(DocumentScanCameraPage), findsOneWidget);
       expect(find.text('카메라 권한 허용하기'), findsOneWidget);
 
-      await tester.tap(find.text('뒤로'));
+      // 2026-08-31 — 뒤로가기가 텍스트 없이 아이콘만 그리도록 바뀌었다
+      // (AppHeader의 backLabel 문서 주석 참고) — 아이콘으로 찾는다.
+      await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
 
       expect(find.byType(DocumentScanCameraPage), findsNothing);
       expect(find.byType(DocumentScanStartPage), findsOneWidget);
 
-      await tester.tap(find.text('뒤로'));
+      // 2026-08-31 — 뒤로가기가 텍스트 없이 아이콘만 그리도록 바뀌었다
+      // (AppHeader의 backLabel 문서 주석 참고) — 아이콘으로 찾는다.
+      await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
 
       expect(find.byType(DocumentScanStartPage), findsNothing);

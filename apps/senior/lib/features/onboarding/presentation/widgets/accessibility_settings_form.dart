@@ -7,6 +7,25 @@ import '../../domain/text_scale_level.dart';
 import '../../domain/voice_rate_level.dart';
 import '../providers/accessibility_prefs_provider.dart';
 
+/// [TextScaleLevel]/[VoiceRateLevel]은 domain 계층이라 l10n을 직접 참조할 수
+/// 없다(architecture.md) — 값→문구 매핑은 여기, 이 위젯에서만 한다
+/// (`GuardianLinkStatus`를 `guardian_list_page.dart`의 `_StatusBadge`가
+/// 매핑하는 것과 같은 패턴).
+String _textScaleLabel(AppLocalizations l10n, TextScaleLevel level) =>
+    switch (level) {
+      TextScaleLevel.normal => l10n.textScaleNormalLabel,
+      TextScaleLevel.large => l10n.textScaleLargeLabel,
+      TextScaleLevel.extraLarge => l10n.textScaleExtraLargeLabel,
+    };
+
+String _voiceRateLabel(AppLocalizations l10n, VoiceRateLevel level) =>
+    switch (level) {
+      VoiceRateLevel.normal => l10n.voiceRateNormalLabel,
+      VoiceRateLevel.fast => l10n.voiceRateFastLabel,
+      VoiceRateLevel.faster => l10n.voiceRateFasterLabel,
+      VoiceRateLevel.fastest => l10n.voiceRateFastestLabel,
+    };
+
 /// 글자 크기/음성 안내 설정 컨트롤 — 온보딩 1단계와 설정 화면이 동일한 UI를
 /// 공유한다(둘 다 같은 `accessibilityPrefsProvider`를 다룸).
 class AccessibilitySettingsForm extends ConsumerWidget {
@@ -29,7 +48,7 @@ class AccessibilitySettingsForm extends ConsumerWidget {
           children: [
             for (final level in TextScaleLevel.values)
               _AccessibilityChip(
-                label: level.label,
+                label: _textScaleLabel(l10n, level),
                 selected: prefs.textScale == level,
                 onTap: () => notifier.setTextScale(level),
               ),
@@ -62,7 +81,7 @@ class AccessibilitySettingsForm extends ConsumerWidget {
           children: [
             for (final level in VoiceRateLevel.values)
               _AccessibilityChip(
-                label: level.label,
+                label: _voiceRateLabel(l10n, level),
                 selected: prefs.voiceRate == level,
                 onTap: () => notifier.setVoiceRate(level),
               ),

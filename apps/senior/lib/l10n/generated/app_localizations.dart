@@ -372,6 +372,24 @@ abstract class AppLocalizations {
   /// **'나이'**
   String get ageLabel;
 
+  /// No description provided for @genderSectionLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'성별'**
+  String get genderSectionLabel;
+
+  /// No description provided for @genderMaleLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'남성'**
+  String get genderMaleLabel;
+
+  /// No description provided for @genderFemaleLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'여성'**
+  String get genderFemaleLabel;
+
   /// No description provided for @profileSaved.
   ///
   /// In ko, this message translates to:
@@ -1056,6 +1074,24 @@ abstract class AppLocalizations {
   /// **'이 기기에서는 플래시를 사용할 수 없어요.'**
   String get flashUnavailableError;
 
+  /// No description provided for @flashOffLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'플래시 꺼짐'**
+  String get flashOffLabel;
+
+  /// No description provided for @flashOnLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'플래시 켜짐'**
+  String get flashOnLabel;
+
+  /// No description provided for @flashAutoLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'플래시 자동'**
+  String get flashAutoLabel;
+
   /// No description provided for @captureFailedError.
   ///
   /// In ko, this message translates to:
@@ -1470,6 +1506,24 @@ abstract class AppLocalizations {
   /// **'글자 크기'**
   String get textSizeTitle;
 
+  /// No description provided for @textScaleNormalLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'보통'**
+  String get textScaleNormalLabel;
+
+  /// No description provided for @textScaleLargeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'크게'**
+  String get textScaleLargeLabel;
+
+  /// No description provided for @textScaleExtraLargeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'아주 크게'**
+  String get textScaleExtraLargeLabel;
+
   /// No description provided for @voiceGuideTitle.
   ///
   /// In ko, this message translates to:
@@ -1487,6 +1541,30 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'음성 안내 속도'**
   String get voiceRateTitle;
+
+  /// No description provided for @voiceRateNormalLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'1배'**
+  String get voiceRateNormalLabel;
+
+  /// No description provided for @voiceRateFastLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'1.2배'**
+  String get voiceRateFastLabel;
+
+  /// No description provided for @voiceRateFasterLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'1.5배'**
+  String get voiceRateFasterLabel;
+
+  /// No description provided for @voiceRateFastestLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'2배'**
+  String get voiceRateFastestLabel;
 
   /// No description provided for @homeVoiceGuideEasy.
   ///

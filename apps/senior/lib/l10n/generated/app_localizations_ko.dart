@@ -149,6 +149,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ageLabel => '나이';
 
   @override
+  String get genderSectionLabel => '성별';
+
+  @override
+  String get genderMaleLabel => '남성';
+
+  @override
+  String get genderFemaleLabel => '여성';
+
+  @override
   String get profileSaved => '프로필이 저장되었어요.';
 
   @override
@@ -517,6 +526,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get flashUnavailableError => '이 기기에서는 플래시를 사용할 수 없어요.';
 
   @override
+  String get flashOffLabel => '플래시 꺼짐';
+
+  @override
+  String get flashOnLabel => '플래시 켜짐';
+
+  @override
+  String get flashAutoLabel => '플래시 자동';
+
+  @override
   String get captureFailedError => '촬영에 실패했어요. 다시 시도해주세요.';
 
   @override
@@ -733,6 +751,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get textSizeTitle => '글자 크기';
 
   @override
+  String get textScaleNormalLabel => '보통';
+
+  @override
+  String get textScaleLargeLabel => '크게';
+
+  @override
+  String get textScaleExtraLargeLabel => '아주 크게';
+
+  @override
   String get voiceGuideTitle => '음성 안내';
 
   @override
@@ -740,6 +767,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get voiceRateTitle => '음성 안내 속도';
+
+  @override
+  String get voiceRateNormalLabel => '1배';
+
+  @override
+  String get voiceRateFastLabel => '1.2배';
+
+  @override
+  String get voiceRateFasterLabel => '1.5배';
+
+  @override
+  String get voiceRateFastestLabel => '2배';
 
   @override
   String get homeVoiceGuideEasy =>

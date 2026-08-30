@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_senior/features/document_scan/domain/entities/camera_flash_mode.dart';
 import 'package:ondam_senior/features/document_scan/presentation/widgets/flash_toggle_button.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 void main() {
   Future<void> pump(
@@ -11,6 +12,9 @@ void main() {
   }) {
     return tester.pumpWidget(
       MaterialApp(
+        locale: const Locale('ko'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: FlashToggleButton(mode: mode, easyMode: easyMode, onTap: () {}),
         ),
@@ -34,6 +38,9 @@ void main() {
     var tapped = false;
     await tester.pumpWidget(
       MaterialApp(
+        locale: const Locale('ko'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: FlashToggleButton(
             mode: CameraFlashMode.off,

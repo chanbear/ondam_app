@@ -151,6 +151,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ageLabel => 'Age';
 
   @override
+  String get genderSectionLabel => 'Gender';
+
+  @override
+  String get genderMaleLabel => 'Male';
+
+  @override
+  String get genderFemaleLabel => 'Female';
+
+  @override
   String get profileSaved => 'Your profile has been saved.';
 
   @override
@@ -534,6 +543,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get flashUnavailableError => 'Flash isn\'t available on this device.';
 
   @override
+  String get flashOffLabel => 'Flash off';
+
+  @override
+  String get flashOnLabel => 'Flash on';
+
+  @override
+  String get flashAutoLabel => 'Flash auto';
+
+  @override
   String get captureFailedError => 'The photo failed. Please try again.';
 
   @override
@@ -760,6 +778,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get textSizeTitle => 'Text Size';
 
   @override
+  String get textScaleNormalLabel => 'Normal';
+
+  @override
+  String get textScaleLargeLabel => 'Large';
+
+  @override
+  String get textScaleExtraLargeLabel => 'Extra Large';
+
+  @override
   String get voiceGuideTitle => 'Voice Guide';
 
   @override
@@ -768,6 +795,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceRateTitle => 'Voice guide speed';
+
+  @override
+  String get voiceRateNormalLabel => '1x';
+
+  @override
+  String get voiceRateFastLabel => '1.2x';
+
+  @override
+  String get voiceRateFasterLabel => '1.5x';
+
+  @override
+  String get voiceRateFastestLabel => '2x';
 
   @override
   String get homeVoiceGuideEasy =>

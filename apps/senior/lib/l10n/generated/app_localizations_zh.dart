@@ -148,6 +148,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ageLabel => '年龄';
 
   @override
+  String get genderSectionLabel => '性别';
+
+  @override
+  String get genderMaleLabel => '男';
+
+  @override
+  String get genderFemaleLabel => '女';
+
+  @override
   String get profileSaved => '个人资料已保存。';
 
   @override
@@ -511,6 +520,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get flashUnavailableError => '此设备无法使用闪光灯。';
 
   @override
+  String get flashOffLabel => '闪光灯关闭';
+
+  @override
+  String get flashOnLabel => '闪光灯打开';
+
+  @override
+  String get flashAutoLabel => '闪光灯自动';
+
+  @override
   String get captureFailedError => '拍摄失败，请重试。';
 
   @override
@@ -725,6 +743,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get textSizeTitle => '字体大小';
 
   @override
+  String get textScaleNormalLabel => '标准';
+
+  @override
+  String get textScaleLargeLabel => '大';
+
+  @override
+  String get textScaleExtraLargeLabel => '特大';
+
+  @override
   String get voiceGuideTitle => '语音引导';
 
   @override
@@ -732,6 +759,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get voiceRateTitle => '语音提示速度';
+
+  @override
+  String get voiceRateNormalLabel => '1倍';
+
+  @override
+  String get voiceRateFastLabel => '1.2倍';
+
+  @override
+  String get voiceRateFasterLabel => '1.5倍';
+
+  @override
+  String get voiceRateFastestLabel => '2倍';
 
   @override
   String get homeVoiceGuideEasy => '这是首页。请从阅读文件、查看短信、查找老年活动中心、我的记录中选择。';

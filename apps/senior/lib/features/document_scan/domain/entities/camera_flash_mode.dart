@@ -6,12 +6,6 @@ enum CameraFlashMode {
   on,
   auto;
 
-  String get label => switch (this) {
-    CameraFlashMode.off => '플래시 꺼짐',
-    CameraFlashMode.on => '플래시 켜짐',
-    CameraFlashMode.auto => '플래시 자동',
-  };
-
   CameraFlashMode get next => switch (this) {
     CameraFlashMode.off => CameraFlashMode.on,
     CameraFlashMode.on => CameraFlashMode.auto,

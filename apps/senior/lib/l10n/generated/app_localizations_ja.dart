@@ -149,6 +149,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ageLabel => '年齢';
 
   @override
+  String get genderSectionLabel => '性別';
+
+  @override
+  String get genderMaleLabel => '男性';
+
+  @override
+  String get genderFemaleLabel => '女性';
+
+  @override
   String get profileSaved => 'プロフィールを保存しました。';
 
   @override
@@ -516,6 +525,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get flashUnavailableError => 'この端末ではフラッシュを使用できません。';
 
   @override
+  String get flashOffLabel => 'フラッシュオフ';
+
+  @override
+  String get flashOnLabel => 'フラッシュオン';
+
+  @override
+  String get flashAutoLabel => 'フラッシュ自動';
+
+  @override
   String get captureFailedError => '撮影に失敗しました。もう一度お試しください。';
 
   @override
@@ -732,6 +750,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get textSizeTitle => '文字サイズ';
 
   @override
+  String get textScaleNormalLabel => '普通';
+
+  @override
+  String get textScaleLargeLabel => '大きく';
+
+  @override
+  String get textScaleExtraLargeLabel => 'とても大きく';
+
+  @override
   String get voiceGuideTitle => '音声案内';
 
   @override
@@ -739,6 +766,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get voiceRateTitle => '音声案内の速度';
+
+  @override
+  String get voiceRateNormalLabel => '1倍';
+
+  @override
+  String get voiceRateFastLabel => '1.2倍';
+
+  @override
+  String get voiceRateFasterLabel => '1.5倍';
+
+  @override
+  String get voiceRateFastestLabel => '2倍';
 
   @override
   String get homeVoiceGuideEasy =>

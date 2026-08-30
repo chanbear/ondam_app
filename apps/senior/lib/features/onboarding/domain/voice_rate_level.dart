@@ -18,11 +18,4 @@ enum VoiceRateLevel {
   /// 0.5가 통상적인 "보통" 속도다(패키지 문서 기준) — [multiplier]를 그
   /// 기준(0.5)에 곱해 유효 범위 안에서 배율을 근사한다.
   double get ttsRate => (multiplier * 0.5).clamp(0.0, 1.0);
-
-  String get label => switch (this) {
-    VoiceRateLevel.normal => '1배',
-    VoiceRateLevel.fast => '1.2배',
-    VoiceRateLevel.faster => '1.5배',
-    VoiceRateLevel.fastest => '2배',
-  };
 }

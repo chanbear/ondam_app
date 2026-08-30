@@ -138,13 +138,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           // 나이 → 지역)와 맞춤.
           AppTextField(label: l10n.nameLabel, controller: _nameController),
           const SizedBox(height: AppSpacing.xxl),
-          Text('성별', style: AppTextStyles.titleMedium),
+          Text(l10n.genderSectionLabel, style: AppTextStyles.titleMedium),
           const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               Expanded(
                 child: _GenderOption(
-                  label: '남성',
+                  label: l10n.genderMaleLabel,
                   selected: _gender == Gender.male,
                   onTap: () => setState(() => _gender = Gender.male),
                 ),
@@ -152,7 +152,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: _GenderOption(
-                  label: '여성',
+                  label: l10n.genderFemaleLabel,
                   selected: _gender == Gender.female,
                   onTap: () => setState(() => _gender = Gender.female),
                 ),

@@ -10,10 +10,4 @@ enum TextScaleLevel {
     TextScaleLevel.large => 1.2,
     TextScaleLevel.extraLarge => 1.4,
   };
-
-  String get label => switch (this) {
-    TextScaleLevel.normal => '보통',
-    TextScaleLevel.large => '크게',
-    TextScaleLevel.extraLarge => '아주 크게',
-  };
 }
