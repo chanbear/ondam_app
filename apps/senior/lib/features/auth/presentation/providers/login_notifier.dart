@@ -5,6 +5,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_models/ondam_models.dart';
 
 import '../../domain/entities/pin_verify_result.dart';
+import '../../domain/entities/social_auth_provider.dart';
 import 'auth_di_providers.dart';
 import 'pin_notifier.dart';
 import 'role_notifier.dart';
@@ -36,6 +37,82 @@ class LoginNotifier extends AsyncNotifier<void> {
     return result;
   }
 
+  /// OAuth(구글/카카오) 로그인 브라우저를 연다. 실제 세션은 딥링크로 앱에
+  /// 돌아온 뒤 비동기로 생성되므로, 이 메서드는 브라우저가 열렸는지만
+  /// 알려준다 — PIN 설정/역할 부여는 세션이 실제로 생기고 난 뒤
+  /// [submitPinForExistingSession]이 담당한다(라우터가 `hasPin==false`를
+  /// 보고 phoneInput으로 되돌리면, 그 화면이 세션 존재 여부로 이 경로를
+  /// 자동으로 고른다).
+  Future<Result<void>> signInWithOAuth(SocialAuthProvider provider) async {
+    state = const AsyncLoading();
+    final result = await ref
+        .read(signInWithOAuthUseCaseProvider)
+        .call(provider);
+    state = switch (result) {
+      Ok() => const AsyncData(null),
+      Err(:final failure) => AsyncError(failure, StackTrace.current),
+    };
+    return result;
+  }
+
+  /// 회원가입 없이 사용하기 — 익명 Supabase 세션을 만든다. [signInWithOAuth]와
+  /// 마찬가지로 세션이 실제로 생기면 라우터가 phoneInput으로 되돌리고,
+  /// `phone_input_page.dart`의 `isOAuthSession` 분기(휴대폰 번호 없는
+  /// 세션)가 그대로 PIN 설정 UI를 보여준다.
+  Future<Result<void>> signInAsGuest() async {
+    state = const AsyncLoading();
+    final result = await ref.read(signInAsGuestUseCaseProvider).call();
+    state = switch (result) {
+      Ok() => const AsyncData(null),
+      Err(:final failure) => AsyncError(failure, StackTrace.current),
+    };
+    return result;
+  }
+
+  /// OAuth로 이미 세션이 생긴 뒤 PIN만 입력받는 경로 — [_submit]의 signUp
+  /// 호출(휴대폰 가입/로그인 전용)을 건너뛰고 곧장 PIN 설정/확인 + 역할
+  /// 부여 단계로 들어간다.
+  Future<Result<PinVerifyResult>> submitPinForExistingSession(
+    String pin,
+  ) async {
+    state = const AsyncLoading();
+    final result = await _completePinAndRole(pin);
+    state = switch (result) {
+      Ok() => const AsyncData(null),
+      Err(:final failure) => AsyncError(failure, StackTrace.current),
+    };
+    return result;
+  }
+
+  /// 소셜 로그인(구글/카카오) 세션 전용 — PIN 설정/확인을 완전히 건너뛰고
+  /// 곧장 역할 자동 부여로 넘어간다(사용자 요청: 소셜 로그인 시 PIN 입력
+  /// 생략). [_completePinAndRole]과 달리 hasPin/setPin/verifyPin을 전혀
+  /// 호출하지 않는다 — 라우터(`decideAuthRedirect`)도 소셜 로그인 세션에서는
+  /// hasPin/pinVerified를 아예 보지 않으므로 이 값들을 쓸 필요가 없다.
+  Future<Result<void>> completeSocialLoginSession() async {
+    state = const AsyncLoading();
+    final rolesResult = await ref.read(getRolesUseCaseProvider).call();
+    final List<UserRole> roles;
+    switch (rolesResult) {
+      case Ok(:final value):
+        roles = value;
+      case Err(:final failure):
+        state = AsyncError(failure, StackTrace.current);
+        return Err(failure);
+    }
+    if (roles.isEmpty) {
+      final addRoleResult = await ref
+          .read(roleNotifierProvider.notifier)
+          .addRole(UserRole.elder);
+      if (addRoleResult case Err(:final failure)) {
+        state = AsyncError(failure, StackTrace.current);
+        return Err(failure);
+      }
+    }
+    state = const AsyncData(null);
+    return const Ok(null);
+  }
+
   Future<Result<PinVerifyResult>> _submit({
     required String rawPhoneNumber,
     required String pin,
@@ -43,13 +120,21 @@ class LoginNotifier extends AsyncNotifier<void> {
     // ONDAM 2.0V 로그인 화면에는 이름 입력이 없다(요구사항 2). 서버는
     // signup-with-phone 호출 시 이름을 필수로 요구하지만, 이 값은
     // auth.users의 메타데이터로만 저장되고 앱 어디에서도 읽거나 표시하지
-    // 않는다(ProfilePage는 별도의 미구현 기능) — DB 스키마를 바꾸지 않고
-    // 화면에도 노출하지 않기 위해 고정값을 사용한다.
+    // 않는다 — 실제 표시용 이름은 이후 ProfilePage(`profileProvider`)에서
+    // 별도로 입력/저장한다. 여기서는 그 값과 무관하게 DB 스키마를 바꾸지
+    // 않기 위해 고정값을 사용한다.
     final signUpResult = await ref
         .read(signUpUseCaseProvider)
         .call(name: '온담 이용자', rawPhoneNumber: rawPhoneNumber);
     if (signUpResult case Err(:final failure)) return Err(failure);
 
+    return _completePinAndRole(pin);
+  }
+
+  /// signUp(휴대폰) 또는 signInWithOAuth(소셜) 어느 쪽으로 세션이 생겼든,
+  /// 그 다음부터는 동일하다: PIN 최초 설정/확인 → (신규면) 어르신 역할
+  /// 자동 부여.
+  Future<Result<PinVerifyResult>> _completePinAndRole(String pin) async {
     // 방금 세션이 새로 만들어졌거나 다른 계정으로 바뀌었을 수 있으므로
     // 캐시(hasPinProvider)를 거치지 않고 항상 새로 조회한다.
     final hasPinResult = await ref.read(hasPinUseCaseProvider).call();

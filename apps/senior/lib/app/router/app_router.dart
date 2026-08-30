@@ -59,13 +59,27 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 });
 
 String? _redirect(Ref ref, GoRouterState state) {
-  final hasSession =
-      ref.read(supabaseClientProvider).auth.currentSession != null;
+  final currentUser = ref
+      .read(supabaseClientProvider)
+      .auth
+      .currentSession
+      ?.user;
+  final hasSession = currentUser != null;
+  // 소셜 로그인(구글/카카오)으로 만들어진 세션은 휴대폰 번호가 없다 —
+  // 익명(게스트) 세션도 마찬가지로 번호가 없으므로 `isAnonymous`로
+  // 구분한다(게스트는 이 변경 대상이 아니다 — 사용자 요청은 "소셜
+  // 로그인"에 한정). `phone_input_page.dart`의 `isOAuthSession` 판별과
+  // 같은 신호(phone 필드)를 쓰되, anonymous는 제외한다.
+  final isSocialLogin =
+      hasSession &&
+      !currentUser.isAnonymous &&
+      (currentUser.phone == null || currentUser.phone!.isEmpty);
 
   return decideAuthRedirect(
     hasSession: hasSession,
     hasPin: ref.read(hasPinProvider).value,
     pinVerified: ref.read(pinVerifiedProvider),
+    isSocialLogin: isSocialLogin,
     roles: ref.read(roleNotifierProvider).value,
     location: state.matchedLocation,
   );

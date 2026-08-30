@@ -40,6 +40,17 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- OAuth(구글/카카오) 로그인 완료 후 브라우저가 앱으로 돌아오는
+                 딥링크. scheme/host는
+                 auth_remote_datasource.dart의 `oauthRedirectUrl`과 반드시
+                 동일해야 하고, Supabase 대시보드 Authentication → URL
+                 Configuration의 Redirect URLs에도 같은 값을 등록해야 한다. -->
+            <intent-filter android:autoVerify="false">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="io.ondam.senior" android:host="login-callback"/>
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

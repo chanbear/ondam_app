@@ -84,16 +84,25 @@ class _PinForgotPageState extends ConsumerState<PinForgotPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
-          child: switch (_step) {
-            _Step.reauthenticating => _ReauthenticatingStep(
-              onRetry: _reauthenticate,
+          // pin_entry_page/pin_setup_page와 동일하게 textScaler 확대에 대비해
+          // 스크롤 가능하게 감싼다 (ui-design.md Responsive UI).
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: switch (_step) {
+                  _Step.reauthenticating => _ReauthenticatingStep(
+                    onRetry: _reauthenticate,
+                  ),
+                  _Step.newPin => _NewPinStep(
+                    enteredLength: _newPinEntry.length,
+                    onDigit: _onNewPinDigit,
+                    onBackspace: _onNewPinBackspace,
+                  ),
+                },
+              ),
             ),
-            _Step.newPin => _NewPinStep(
-              enteredLength: _newPinEntry.length,
-              onDigit: _onNewPinDigit,
-              onBackspace: _onNewPinBackspace,
-            ),
-          },
+          ),
         ),
       ),
     );

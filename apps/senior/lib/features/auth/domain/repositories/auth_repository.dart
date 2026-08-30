@@ -2,6 +2,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_models/ondam_models.dart';
 
 import '../entities/pin_verify_result.dart';
+import '../entities/social_auth_provider.dart';
 
 /// Auth/PIN/Role operations for the Senior app. Implemented by
 /// `data/repositories/auth_repository_impl.dart`, which is the boundary
@@ -17,6 +18,22 @@ abstract class AuthRepository {
     required String name,
     required String phoneNumber,
   });
+
+  /// Opens the system browser for [provider]'s OAuth consent screen. Returns
+  /// once the browser has been launched — NOT once the user has finished
+  /// authenticating. The resulting session (if the user completes the flow)
+  /// arrives later via the deep-link redirect and shows up through Supabase's
+  /// own auth-state stream ([AuthRepository] has no separate "wait for OAuth
+  /// result" call; callers watch `authStateChangesProvider`/`hasPinProvider`
+  /// same as any other session change).
+  Future<Result<void>> signInWithOAuth(SocialAuthProvider provider);
+
+  /// Starts an anonymous Supabase session — no phone/OAuth identity attached.
+  /// The caller still goes through the same first-time PIN-setup step as any
+  /// other new session (an anonymous user's `currentUser.phone` is also
+  /// null/empty, so it naturally routes into the existing OAuth-session PIN
+  /// UI branch in `phone_input_page.dart`).
+  Future<Result<void>> signInAsGuest();
 
   /// Ends the Supabase Auth session (full sign-out, not just the PIN gate).
   Future<Result<void>> signOut();

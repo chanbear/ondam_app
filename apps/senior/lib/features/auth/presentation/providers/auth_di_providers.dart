@@ -11,6 +11,8 @@ import '../../domain/usecases/get_roles_usecase.dart';
 import '../../domain/usecases/has_pin_usecase.dart';
 import '../../domain/usecases/reset_pin_usecase.dart';
 import '../../domain/usecases/set_pin_usecase.dart';
+import '../../domain/usecases/sign_in_as_guest_usecase.dart';
+import '../../domain/usecases/sign_in_with_oauth_usecase.dart';
 import '../../domain/usecases/sign_out_usecase.dart';
 import '../../domain/usecases/sign_up_usecase.dart';
 import '../../domain/usecases/verify_pin_usecase.dart';
@@ -36,6 +38,14 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 
 final signUpUseCaseProvider = Provider(
   (ref) => SignUpUseCase(ref.watch(authRepositoryProvider)),
+);
+
+final signInWithOAuthUseCaseProvider = Provider(
+  (ref) => SignInWithOAuthUseCase(ref.watch(authRepositoryProvider)),
+);
+
+final signInAsGuestUseCaseProvider = Provider(
+  (ref) => SignInAsGuestUseCase(ref.watch(authRepositoryProvider)),
 );
 
 final signOutUseCaseProvider = Provider(

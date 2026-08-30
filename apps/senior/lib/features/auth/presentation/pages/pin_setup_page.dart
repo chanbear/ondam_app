@@ -73,51 +73,60 @@ class _PinSetupPageState extends ConsumerState<PinSetupPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _confirming ? l10n.pinConfirmPrompt : l10n.pinSetupPrompt,
-                style: AppTextStyles.headlineMedium,
-                textAlign: TextAlign.center,
+          // pin_entry_page와 동일하게 textScaler 확대에 대비해 스크롤 가능하게
+          // 감싼다 (ui-design.md Responsive UI).
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _confirming ? l10n.pinConfirmPrompt : l10n.pinSetupPrompt,
+                      style: AppTextStyles.headlineMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      l10n.pinSetupDescription,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    if (_mismatchMessage != null) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        _mismatchMessage!,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.error,
+                        ),
+                      ),
+                    ],
+                    if (failure != null) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        failure.message,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.error,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: AppSpacing.xl),
+                    if (isLoading)
+                      const AppLoading()
+                    else
+                      PinKeypad(
+                        pinLength: _pinLength,
+                        enteredLength: _currentEntry.length,
+                        onDigit: _onDigit,
+                        onBackspace: _onBackspace,
+                      ),
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                l10n.pinSetupDescription,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              if (_mismatchMessage != null) ...[
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  _mismatchMessage!,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.error,
-                  ),
-                ),
-              ],
-              if (failure != null) ...[
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  failure.message,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.error,
-                  ),
-                ),
-              ],
-              const SizedBox(height: AppSpacing.xl),
-              if (isLoading)
-                const AppLoading()
-              else
-                PinKeypad(
-                  pinLength: _pinLength,
-                  enteredLength: _currentEntry.length,
-                  onDigit: _onDigit,
-                  onBackspace: _onBackspace,
-                ),
-            ],
+            ),
           ),
         ),
       ),

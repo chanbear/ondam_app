@@ -1,6 +1,7 @@
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_models/ondam_models.dart';
 import 'package:ondam_senior/features/auth/domain/entities/pin_verify_result.dart';
+import 'package:ondam_senior/features/auth/domain/entities/social_auth_provider.dart';
 import 'package:ondam_senior/features/auth/domain/repositories/auth_repository.dart';
 
 /// Configurable fake — each field is the [Result] the fake returns for that
@@ -9,6 +10,8 @@ import 'package:ondam_senior/features/auth/domain/repositories/auth_repository.d
 /// package (testing.md: Repository is faked/mocked, not hit over network).
 class FakeAuthRepository implements AuthRepository {
   Result<void> signUpResult = const Ok(null);
+  Result<void> signInWithOAuthResult = const Ok(null);
+  Result<void> signInAsGuestResult = const Ok(null);
   Result<void> signOutResult = const Ok(null);
   Result<void> setPinResult = const Ok(null);
   Result<PinVerifyResult> verifyPinResult = const Ok(PinVerifyResult.success());
@@ -19,6 +22,8 @@ class FakeAuthRepository implements AuthRepository {
   Result<List<UserRole>> getRolesResult = const Ok(<UserRole>[]);
 
   final List<({String name, String phoneNumber})> signUpCalls = [];
+  final List<SocialAuthProvider> signInWithOAuthCalls = [];
+  int signInAsGuestCalls = 0;
   final List<String> setPinCalls = [];
   final List<String> verifyPinCalls = [];
   final List<String> resetPinCalls = [];
@@ -35,6 +40,18 @@ class FakeAuthRepository implements AuthRepository {
   }) async {
     signUpCalls.add((name: name, phoneNumber: phoneNumber));
     return signUpResult;
+  }
+
+  @override
+  Future<Result<void>> signInWithOAuth(SocialAuthProvider provider) async {
+    signInWithOAuthCalls.add(provider);
+    return signInWithOAuthResult;
+  }
+
+  @override
+  Future<Result<void>> signInAsGuest() async {
+    signInAsGuestCalls++;
+    return signInAsGuestResult;
   }
 
   @override

@@ -34,6 +34,21 @@
 	<string>현재 위치로 내 지역을 자동으로 입력하려면 위치 접근이 필요해요.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>말씀하신 내용을 글자로 바꿔 음성 비서 기능을 실행하려면 음성 인식 권한이 필요해요.</string>
+	<!-- OAuth(구글/카카오) 로그인 완료 후 브라우저가 앱으로 돌아오는 딥링크.
+	     scheme은 auth_remote_datasource.dart의 `oauthRedirectUrl`
+	     (io.ondam.senior://login-callback)과 반드시 동일해야 한다. Windows
+	     환경에서는 iOS 빌드 자체가 불가해 실기기 검증은 못했다. -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>io.ondam.senior</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>io.ondam.senior.oauth</string>
+		</dict>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

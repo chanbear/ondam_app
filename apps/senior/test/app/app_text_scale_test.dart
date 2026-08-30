@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:ondam_senior/app/app.dart';
 import 'package:ondam_senior/features/onboarding/domain/text_scale_level.dart';
+import 'package:ondam_senior/features/onboarding/domain/voice_rate_level.dart';
 import 'package:ondam_senior/features/onboarding/presentation/providers/accessibility_prefs_provider.dart';
 
 /// BUG 35 회귀 테스트 — 설정의 글자 크기(TextScaleLevel)가 실제 앱의
@@ -48,6 +49,7 @@ void main() {
               const AccessibilityPrefs(
                 textScale: TextScaleLevel.large,
                 voiceGuideEnabled: false,
+                voiceRate: VoiceRateLevel.normal,
               ),
             ),
           ),
@@ -70,6 +72,7 @@ void main() {
               const AccessibilityPrefs(
                 textScale: TextScaleLevel.extraLarge,
                 voiceGuideEnabled: false,
+                voiceRate: VoiceRateLevel.normal,
               ),
             ),
           ),

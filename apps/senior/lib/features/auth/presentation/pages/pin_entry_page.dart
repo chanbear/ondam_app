@@ -101,41 +101,51 @@ class _PinEntryPageState extends ConsumerState<PinEntryPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                l10n.pinEntryPrompt,
-                style: AppTextStyles.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-              if (guidance != null) ...[
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  guidance,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.error,
-                  ),
-                  textAlign: TextAlign.center,
+          // 시스템 폰트 확대(textScaler)로 고정 Column 높이를 넘길 수 있어
+          // phone_input_page와 동일하게 LayoutBuilder + SingleChildScrollView로
+          // 감싼다 (ui-design.md Responsive UI).
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      l10n.pinEntryPrompt,
+                      style: AppTextStyles.headlineMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    if (guidance != null) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        guidance,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.error,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                    const SizedBox(height: AppSpacing.xl),
+                    if (isLoading)
+                      const AppLoading()
+                    else
+                      PinKeypad(
+                        pinLength: _pinLength,
+                        enteredLength: _entry.length,
+                        onDigit: _onDigit,
+                        onBackspace: _onBackspace,
+                        enabled: !isLocked,
+                      ),
+                    const SizedBox(height: AppSpacing.lg),
+                    TextButton(
+                      onPressed: () => context.push(AuthRoutes.pinForgot),
+                      child: Text(l10n.pinForgotLink),
+                    ),
+                  ],
                 ),
-              ],
-              const SizedBox(height: AppSpacing.xl),
-              if (isLoading)
-                const AppLoading()
-              else
-                PinKeypad(
-                  pinLength: _pinLength,
-                  enteredLength: _entry.length,
-                  onDigit: _onDigit,
-                  onBackspace: _onBackspace,
-                  enabled: !isLocked,
-                ),
-              const SizedBox(height: AppSpacing.lg),
-              TextButton(
-                onPressed: () => context.push(AuthRoutes.pinForgot),
-                child: Text(l10n.pinForgotLink),
               ),
-            ],
+            ),
           ),
         ),
       ),

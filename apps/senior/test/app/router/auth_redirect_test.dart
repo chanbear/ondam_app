@@ -15,6 +15,7 @@ void main() {
           hasSession: false,
           hasPin: null,
           pinVerified: false,
+          isSocialLogin: false,
           roles: null,
           location: AuthRoutes.phoneInput,
         ),
@@ -28,6 +29,7 @@ void main() {
           hasSession: false,
           hasPin: null,
           pinVerified: false,
+          isSocialLogin: false,
           roles: null,
           location: AuthRoutes.home,
         ),
@@ -45,6 +47,7 @@ void main() {
             hasSession: true,
             hasPin: false,
             pinVerified: false,
+            isSocialLogin: false,
             roles: null,
             location: AuthRoutes.home,
           ),
@@ -59,6 +62,7 @@ void main() {
           hasSession: true,
           hasPin: false,
           pinVerified: false,
+          isSocialLogin: false,
           roles: null,
           location: AuthRoutes.phoneInput,
         ),
@@ -76,6 +80,7 @@ void main() {
             hasSession: true,
             hasPin: true,
             pinVerified: false,
+            isSocialLogin: false,
             roles: null,
             location: AuthRoutes.home,
           ),
@@ -90,6 +95,7 @@ void main() {
           hasSession: true,
           hasPin: true,
           pinVerified: false,
+          isSocialLogin: false,
           roles: null,
           location: AuthRoutes.phoneInput,
         ),
@@ -103,6 +109,7 @@ void main() {
           hasSession: true,
           hasPin: true,
           pinVerified: false,
+          isSocialLogin: false,
           roles: null,
           location: AuthRoutes.pinForgot,
         ),
@@ -118,6 +125,7 @@ void main() {
           hasSession: true,
           hasPin: true,
           pinVerified: true,
+          isSocialLogin: false,
           roles: const <UserRole>[],
           location: AuthRoutes.home,
         ),
@@ -133,6 +141,7 @@ void main() {
           hasSession: true,
           hasPin: true,
           pinVerified: true,
+          isSocialLogin: false,
           roles: const [UserRole.elder],
           location: AuthRoutes.phoneInput,
         ),
@@ -146,10 +155,87 @@ void main() {
           hasSession: true,
           hasPin: true,
           pinVerified: true,
+          isSocialLogin: false,
           roles: const [UserRole.elder],
           location: AuthRoutes.home,
         ),
         isNull,
+      );
+    });
+  });
+
+  group('Social login session (사용자 요청: PIN 입력 생략)', () {
+    test('hasPin이 false여도 PIN 화면으로 보내지 않고 곧장 통과시킨다', () {
+      expect(
+        decideAuthRedirect(
+          hasSession: true,
+          hasPin: false,
+          pinVerified: false,
+          isSocialLogin: true,
+          roles: const [UserRole.elder],
+          location: AuthRoutes.home,
+        ),
+        isNull,
+      );
+    });
+
+    test('hasPin이 아직 로딩 중(null)이어도 session-loading으로 보내지 않는다', () {
+      expect(
+        decideAuthRedirect(
+          hasSession: true,
+          hasPin: null,
+          pinVerified: false,
+          isSocialLogin: true,
+          roles: const [UserRole.elder],
+          location: AuthRoutes.home,
+        ),
+        isNull,
+      );
+    });
+
+    test('역할이 아직 없으면(자동 부여 전) session-loading에서 기다린다', () {
+      expect(
+        decideAuthRedirect(
+          hasSession: true,
+          hasPin: false,
+          pinVerified: false,
+          isSocialLogin: true,
+          roles: const <UserRole>[],
+          location: AuthRoutes.home,
+        ),
+        AuthRoutes.sessionLoading,
+      );
+    });
+
+    test('역할 부여가 끝나면 로그인 화면에서 홈으로 보낸다', () {
+      expect(
+        decideAuthRedirect(
+          hasSession: true,
+          hasPin: false,
+          pinVerified: false,
+          isSocialLogin: true,
+          roles: const [UserRole.elder],
+          location: AuthRoutes.phoneInput,
+        ),
+        AuthRoutes.home,
+      );
+    });
+
+    // 회귀 테스트(2026-08-30 실기기): 역할 부여가 비동기로 끝나면 이미
+    // session-loading으로 이동해 있는 상태에서 role이 채워질 수 있다 —
+    // 이때도 홈으로 보내야 한다. onLogin(location==phoneInput)만 확인하면
+    // 이 경우를 놓쳐 role이 채워져도 session-loading에 영원히 멈춘다.
+    test('역할 부여가 session-loading에서 끝나도 홈으로 보낸다', () {
+      expect(
+        decideAuthRedirect(
+          hasSession: true,
+          hasPin: false,
+          pinVerified: false,
+          isSocialLogin: true,
+          roles: const [UserRole.elder],
+          location: AuthRoutes.sessionLoading,
+        ),
+        AuthRoutes.home,
       );
     });
   });
@@ -165,6 +251,7 @@ void main() {
             hasSession: true,
             hasPin: true,
             pinVerified: false,
+            isSocialLogin: false,
             roles: const [UserRole.elder],
             location: AuthRoutes.home,
           ),

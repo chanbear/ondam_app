@@ -18,6 +18,7 @@ String? decideAuthRedirect({
   required bool hasSession,
   required bool? hasPin,
   required bool pinVerified,
+  required bool isSocialLogin,
   required List<Object>? roles,
   required String location,
 }) {
@@ -34,13 +35,19 @@ String? decideAuthRedirect({
   // explicit context.go(home) on success, not via this redirect.
   if (onPinForgot) return null;
 
-  if (hasPin == null) {
-    return AuthRoutes.sessionLoading;
-  }
+  // 소셜 로그인(구글/카카오) 세션은 PIN 게이트 자체를 건너뛴다(사용자 요청
+  // — 소셜 로그인 시 PIN 입력 생략). `LoginNotifier.completeSocialLoginSession`이
+  // PIN 없이 곧장 역할 부여까지 처리하므로 hasPin/pinVerified는 이 세션
+  // 종류에서는 애초에 의미가 없다 — 아래 두 검사를 그대로 통과시킨다.
+  if (!isSocialLogin) {
+    if (hasPin == null) {
+      return AuthRoutes.sessionLoading;
+    }
 
-  if (!hasPin || !pinVerified) {
-    if (onLogin) return null;
-    return AuthRoutes.phoneInput;
+    if (!hasPin || !pinVerified) {
+      if (onLogin) return null;
+      return AuthRoutes.phoneInput;
+    }
   }
 
   if (roles == null) {
@@ -51,6 +58,11 @@ String? decideAuthRedirect({
     return AuthRoutes.sessionLoading;
   }
 
-  if (onLogin) return AuthRoutes.home;
+  // `onLogin`만 확인하면 소셜 로그인처럼 role 부여가 비동기로 끝나
+  // sessionLoading에 이미 가 있는 경우를 놓친다 — 그 경우 이 함수가
+  // 계속 null(제자리 유지)을 반환해 role이 채워져도 영원히
+  // sessionLoading에 멈춘다(2026-08-30 실기기에서 재현된 버그). "홈이
+  // 아니면 홈으로"가 올바른 조건이다.
+  if (location != AuthRoutes.home) return AuthRoutes.home;
   return null;
 }

@@ -106,4 +106,41 @@ void main() {
       expect(fake.addRoleCalls, isEmpty);
     },
   );
+
+  group('completeSocialLoginSession (사용자 요청: 소셜 로그인 시 PIN 입력 생략)', () {
+    test('hasPin/setPin/verifyPin을 전혀 호출하지 않고 역할만 자동으로 추가한다', () async {
+      final fake = FakeAuthRepository()
+        ..getRolesResult = const Ok(<UserRole>[]);
+      final container = ProviderContainer(
+        overrides: [authRepositoryProvider.overrideWithValue(fake)],
+      );
+      addTearDown(container.dispose);
+
+      final result = await container
+          .read(loginNotifierProvider.notifier)
+          .completeSocialLoginSession();
+
+      expect(result, isA<Ok<void>>());
+      expect(fake.hasPinCalls, 0);
+      expect(fake.setPinCalls, isEmpty);
+      expect(fake.verifyPinCalls, isEmpty);
+      expect(fake.addRoleCalls, [UserRole.elder]);
+    });
+
+    test('이미 역할이 있으면 다시 추가하지 않는다', () async {
+      final fake = FakeAuthRepository()
+        ..getRolesResult = const Ok([UserRole.elder]);
+      final container = ProviderContainer(
+        overrides: [authRepositoryProvider.overrideWithValue(fake)],
+      );
+      addTearDown(container.dispose);
+
+      final result = await container
+          .read(loginNotifierProvider.notifier)
+          .completeSocialLoginSession();
+
+      expect(result, isA<Ok<void>>());
+      expect(fake.addRoleCalls, isEmpty);
+    });
+  });
 }

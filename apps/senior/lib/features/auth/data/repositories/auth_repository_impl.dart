@@ -3,6 +3,7 @@ import 'package:ondam_models/ondam_models.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../domain/entities/pin_verify_result.dart';
+import '../../domain/entities/social_auth_provider.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_datasource.dart';
 import '../datasources/pin_remote_datasource.dart';
@@ -32,6 +33,34 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Ok(null);
     } on FunctionException catch (e) {
       return Err(_mapFunctionException(e));
+    } on AuthException catch (e) {
+      return Err(_mapAuthException(e));
+    } catch (_) {
+      return const Err(UnknownFailure());
+    }
+  }
+
+  @override
+  Future<Result<void>> signInWithOAuth(SocialAuthProvider provider) async {
+    final gotrueProvider = switch (provider) {
+      SocialAuthProvider.google => OAuthProvider.google,
+      SocialAuthProvider.kakao => OAuthProvider.kakao,
+    };
+    try {
+      await _authDataSource.signInWithOAuth(gotrueProvider);
+      return const Ok(null);
+    } on AuthException catch (e) {
+      return Err(_mapAuthException(e));
+    } catch (_) {
+      return const Err(UnknownFailure());
+    }
+  }
+
+  @override
+  Future<Result<void>> signInAsGuest() async {
+    try {
+      await _authDataSource.signInAsGuest();
+      return const Ok(null);
     } on AuthException catch (e) {
       return Err(_mapAuthException(e));
     } catch (_) {
