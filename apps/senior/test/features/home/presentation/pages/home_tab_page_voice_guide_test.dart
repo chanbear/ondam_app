@@ -10,6 +10,9 @@ import 'package:ondam_senior/features/home/presentation/pages/home_tab_page.dart
 import 'package:ondam_senior/features/onboarding/domain/text_scale_level.dart';
 import 'package:ondam_senior/features/onboarding/domain/voice_rate_level.dart';
 import 'package:ondam_senior/features/onboarding/presentation/providers/accessibility_prefs_provider.dart';
+import 'package:ondam_senior/features/onboarding/presentation/providers/onboarding_status_provider.dart';
+import 'package:ondam_senior/features/profile/domain/entities/profile.dart';
+import 'package:ondam_senior/features/profile/presentation/providers/profile_provider.dart';
 import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 class _FakeVoiceGuideService extends VoiceGuideService {
@@ -26,6 +29,21 @@ class _FakeVoiceGuideService extends VoiceGuideService {
 
   @override
   Future<void> stop() async {}
+}
+
+// `authStateChangesProvider`(→ 실제 네트워크가 없는 테스트용 fake Supabase)를
+// 건드리면 재시도 타이머가 테스트 종료 뒤까지 남아 "Timer still pending"으로
+// 실패한다 — 이 provider를 고정값으로 덮어써 그 경로를 아예 타지 않게 한다.
+class _FixedOnboardingStatusNotifier extends OnboardingStatusNotifier {
+  @override
+  bool? build() => true;
+}
+
+// `NormalHomeView`의 인사말이 읽는 `profileProvider`도 같은 이유로
+// 네트워크를 건드리지 않게 고정한다.
+class _FixedProfileNotifier extends ProfileNotifier {
+  @override
+  Future<Profile?> build() async => null;
 }
 
 class _FixedAccessibilityPrefsNotifier extends AccessibilityPrefsNotifier {
@@ -90,5 +108,47 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(fake.spoken, isEmpty);
+  });
+
+  testWidgets('꺼진 채로 홈에 들어왔다가 설정에서 켜면 즉시 안내를 읽는다', (tester) async {
+    final fake = _FakeVoiceGuideService();
+    final container = ProviderContainer(
+      overrides: [
+        voiceGuideServiceProvider.overrideWithValue(fake),
+        accessibilityPrefsProvider.overrideWith(
+          () => _FixedAccessibilityPrefsNotifier(false),
+        ),
+        onboardingStatusProvider.overrideWith(
+          () => _FixedOnboardingStatusNotifier(),
+        ),
+        profileProvider.overrideWith(() => _FixedProfileNotifier()),
+      ],
+      // 테스트 환경엔 실제 네트워크가 없어 아직 못 찾은 provider가 실패하면
+      // Riverpod 기본 재시도가 타이머를 계속 새로 예약해 "Timer still
+      // pending"으로 테스트가 죽는다 — 이 컨테이너에서는 재시도 자체를 끈다.
+      retry: (retryCount, error) => null,
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(body: HomeTabPage()),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(fake.spoken, isEmpty);
+
+    await container
+        .read(accessibilityPrefsProvider.notifier)
+        .setVoiceGuideEnabled(true);
+    await tester.pumpAndSettle();
+
+    expect(fake.spoken, isNotEmpty);
   });
 }

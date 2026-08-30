@@ -11,6 +11,7 @@ import '../../../document_scan/presentation/pages/document_scan_start_page.dart'
 import '../../../emergency_help/presentation/widgets/emergency_help_sheet.dart';
 import '../../../message_check/presentation/pages/message_check_entry_page.dart';
 import '../../../onboarding/presentation/pages/onboarding_flow_page.dart';
+import '../../../onboarding/presentation/providers/accessibility_prefs_provider.dart';
 import '../../../onboarding/presentation/providers/onboarding_status_provider.dart';
 import '../../../profile/presentation/providers/profile_provider.dart';
 import '../../../welfare_center/presentation/pages/welfare_center_list_page.dart';
@@ -32,7 +33,9 @@ class HomeTabPage extends ConsumerStatefulWidget {
 
 class _HomeTabPageState extends ConsumerState<HomeTabPage> {
   bool _onboardingPromptShown = false;
-  bool _voiceGuideSpoken = false;
+  // 마지막으로 안내한 시점의 활성화 여부 — 꺼진 상태로 그친 시도를
+  // "이미 말했음"으로 치지 않아야, 설정에서 막 켰을 때 즉시 재안내된다.
+  bool _lastVoiceGuideEnabled = false;
   // dispose()에서는 ref.read()가 안전하지 않다(ConsumerState가 이미
   // unmount 중일 수 있음) — initState에서 미리 읽어 필드에 저장해둔다.
   late final VoiceGuideService _voiceGuideService;
@@ -158,6 +161,9 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
   Widget build(BuildContext context) {
     final easyMode = ref.watch(easyModeProvider);
     final onboardingCompleted = ref.watch(onboardingStatusProvider);
+    final voiceGuideEnabled = ref.watch(
+      accessibilityPrefsProvider.select((prefs) => prefs.voiceGuideEnabled),
+    );
     final l10n = AppLocalizations.of(context)!;
 
     if (onboardingCompleted == false && !_onboardingPromptShown) {
@@ -170,8 +176,7 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
       });
     }
 
-    if (!_voiceGuideSpoken) {
-      _voiceGuideSpoken = true;
+    if (voiceGuideEnabled && !_lastVoiceGuideEnabled) {
       final guideText = easyMode
           ? l10n.homeVoiceGuideEasy
           : l10n.homeVoiceGuideNormal;
@@ -180,6 +185,7 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
         speakScreenGuide(ref, guideText);
       });
     }
+    _lastVoiceGuideEnabled = voiceGuideEnabled;
 
     // 쉬운 모드 토글은 일반/쉬운 모드 홈 화면 모두 상단에 동일하게 둔다
     // (ONDAM 2.0 요구사항 33) — 음성비서 FAB(HomeShellPage, centerFloat)
