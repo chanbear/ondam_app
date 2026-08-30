@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:cross_file/cross_file.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../domain/entities/captured_photo.dart';
@@ -23,7 +22,7 @@ class AnalysisRemoteDataSource {
       throw const AuthException('로그인이 필요해요.');
     }
 
-    final bytes = await File(photo.localPath).readAsBytes();
+    final bytes = await XFile(photo.localPath).readAsBytes();
     final storagePath =
         '$userId/${photo.capturedAt.microsecondsSinceEpoch}.jpg';
 
