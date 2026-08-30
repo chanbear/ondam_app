@@ -149,6 +149,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ageLabel => '年齢';
 
   @override
+  String get ageDecreaseAction => '年齢を減らす';
+
+  @override
+  String get ageIncreaseAction => '年齢を増やす';
+
+  @override
   String get genderSectionLabel => '性別';
 
   @override

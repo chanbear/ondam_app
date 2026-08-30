@@ -59,6 +59,8 @@
   "profileTitle": "내 정보",
   "nameLabel": "이름",
   "ageLabel": "나이",
+  "ageDecreaseAction": "나이 줄이기",
+  "ageIncreaseAction": "나이 늘리기",
   "genderSectionLabel": "성별",
   "genderMaleLabel": "남성",
   "genderFemaleLabel": "여성",

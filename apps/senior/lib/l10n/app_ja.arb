@@ -59,6 +59,8 @@
   "profileTitle": "マイ情報",
   "nameLabel": "お名前",
   "ageLabel": "年齢",
+  "ageDecreaseAction": "年齢を減らす",
+  "ageIncreaseAction": "年齢を増やす",
   "genderSectionLabel": "性別",
   "genderMaleLabel": "男性",
   "genderFemaleLabel": "女性",

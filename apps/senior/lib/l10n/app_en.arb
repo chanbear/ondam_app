@@ -59,6 +59,8 @@
   "profileTitle": "My Info",
   "nameLabel": "Name",
   "ageLabel": "Age",
+  "ageDecreaseAction": "Decrease age",
+  "ageIncreaseAction": "Increase age",
   "genderSectionLabel": "Gender",
   "genderMaleLabel": "Male",
   "genderFemaleLabel": "Female",

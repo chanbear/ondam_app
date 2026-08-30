@@ -149,6 +149,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ageLabel => '나이';
 
   @override
+  String get ageDecreaseAction => '나이 줄이기';
+
+  @override
+  String get ageIncreaseAction => '나이 늘리기';
+
+  @override
   String get genderSectionLabel => '성별';
 
   @override

@@ -3,8 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../core/demographics/domain/entities/demographics.dart';
+import '../../../../core/easy_mode/easy_mode_outline_card.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../core/location/domain/entities/region.dart';
+import '../../../../core/location/presentation/providers/region_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
+import '../../../profile/presentation/pages/region_input_page.dart';
 import '../../../settings/presentation/widgets/language_picker_tile.dart';
 import '../providers/onboarding_status_provider.dart';
 import '../widgets/accessibility_settings_form.dart';
@@ -130,32 +134,37 @@ class _AccessibilityStep extends StatelessWidget {
   }
 }
 
-class _ProfileStep extends StatefulWidget {
+class _ProfileStep extends ConsumerStatefulWidget {
   const _ProfileStep({required this.onNext});
 
   final VoidCallback onNext;
 
   @override
-  State<_ProfileStep> createState() => _ProfileStepState();
+  ConsumerState<_ProfileStep> createState() => _ProfileStepState();
 }
 
-class _ProfileStepState extends State<_ProfileStep> {
+class _ProfileStepState extends ConsumerState<_ProfileStep> {
   final _nameController = TextEditingController();
-  final _ageController = TextEditingController();
-  final _regionController = TextEditingController();
+  int _age = 60;
   Gender? _gender;
 
   @override
   void dispose() {
     _nameController.dispose();
-    _ageController.dispose();
-    _regionController.dispose();
     super.dispose();
+  }
+
+  void _openRegionInput() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const RegionInputPage()));
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final easyMode = ref.watch(easyModeProvider);
+    final regionAsync = ref.watch(regionProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -194,15 +203,34 @@ class _ProfileStepState extends State<_ProfileStep> {
                 ],
               ),
               const SizedBox(height: AppSpacing.xxl),
-              AppTextField(
+              AppNumberStepper(
                 label: l10n.ageLabel,
-                controller: _ageController,
-                keyboardType: TextInputType.number,
+                value: _age,
+                onChanged: (value) => setState(() => _age = value),
+                decreaseSemanticLabel: l10n.ageDecreaseAction,
+                increaseSemanticLabel: l10n.ageIncreaseAction,
+                min: 1,
+                max: 119,
               ),
-              const SizedBox(height: AppSpacing.md),
-              AppTextField(
-                label: l10n.regionLabel,
-                controller: _regionController,
+              const SizedBox(height: AppSpacing.xxl),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  l10n.myRegionTitle,
+                  style: AppTextStyles.titleMedium,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              _regionCard(
+                easyMode: easyMode,
+                l10n: l10n,
+                regionAsync: regionAsync,
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              AppButton(
+                label: l10n.enterRegionAction,
+                size: AppButtonSize.large,
+                onPressed: _openRegionInput,
               ),
             ],
           ),
@@ -217,6 +245,25 @@ class _ProfileStepState extends State<_ProfileStep> {
         TextButton(onPressed: widget.onNext, child: Text(l10n.skipButton)),
       ],
     );
+  }
+
+  // `profile_page.dart`의 `_regionCard`와 동일한 패턴 — 온보딩과 설정에서
+  // 지역 입력 UI가 서로 다르게 보이지 않도록 그대로 맞춘다.
+  Widget _regionCard({
+    required bool easyMode,
+    required AppLocalizations l10n,
+    required AsyncValue<Region?> regionAsync,
+  }) {
+    final content = regionAsync.when(
+      loading: () => const AppLoading(),
+      error: (_, _) =>
+          Text(l10n.regionLoadError, style: AppTextStyles.bodyMedium),
+      data: (region) => AppInfoRow(
+        label: l10n.currentRegionLabel,
+        value: region?.displayName ?? l10n.regionNotSetValue,
+      ),
+    );
+    return easyMode ? EasyOutlineCard(child: content) : AppCard(child: content);
   }
 }
 

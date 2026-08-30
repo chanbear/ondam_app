@@ -22,6 +22,15 @@ void main() {
   late FakeProfileRepository profileRepository;
   late FakeDemographicsRepository demographicsRepository;
 
+  // 나이 입력이 텍스트 필드에서 스테퍼(+/-)로 바뀌어(2026-08-31), 기본값
+  // 60에서 목표값까지 "+" 버튼을 눌러서 도달한다.
+  Future<void> setAge(WidgetTester tester, int target) async {
+    for (var age = 60; age < target; age++) {
+      await tester.tap(find.byIcon(Icons.add));
+      await tester.pump();
+    }
+  }
+
   setUp(() {
     regionRepository = FakeRegionRepository();
     profileRepository = FakeProfileRepository();
@@ -69,6 +78,7 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text('내 지역 입력하기'));
     await tester.tap(find.text('내 지역 입력하기'));
     await tester.pumpAndSettle();
 
@@ -91,7 +101,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField).at(0), '홍길동');
-    await tester.enterText(find.byType(TextField).at(1), '73');
+    await setAge(tester, 73);
     await tester.ensureVisible(find.text('저장'));
     await tester.tap(find.text('저장'));
     await tester.pumpAndSettle();
@@ -106,7 +116,7 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byType(TextField).at(1), '73');
+    await setAge(tester, 73);
     await tester.ensureVisible(find.text('저장'));
     await tester.tap(find.text('저장'));
     await tester.pumpAndSettle();
@@ -123,7 +133,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField).at(0), '홍길동');
-    await tester.enterText(find.byType(TextField).at(1), '73');
+    await setAge(tester, 73);
     await tester.ensureVisible(find.text('저장'));
     await tester.tap(find.text('저장'));
     await tester.pumpAndSettle();
@@ -137,7 +147,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField).at(0), '홍길동');
-    await tester.enterText(find.byType(TextField).at(1), '73');
+    await setAge(tester, 73);
     await tester.ensureVisible(find.text('남성'));
     await tester.tap(find.text('남성'));
     await tester.ensureVisible(find.text('저장'));
@@ -156,7 +166,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField).at(0), '홍길동');
-    await tester.enterText(find.byType(TextField).at(1), '73');
+    await setAge(tester, 73);
     await tester.ensureVisible(find.text('저장'));
     await tester.tap(find.text('저장'));
     await tester.pumpAndSettle();
@@ -174,7 +184,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField).at(0), '홍길동');
-    await tester.enterText(find.byType(TextField).at(1), '73');
+    await setAge(tester, 73);
     await tester.ensureVisible(find.text('남성'));
     await tester.tap(find.text('남성'));
     await tester.ensureVisible(find.text('저장'));

@@ -29,7 +29,8 @@ class ProfilePage extends ConsumerStatefulWidget {
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final _nameController = TextEditingController();
-  final _ageController = TextEditingController();
+  int _age = 60;
+  bool _ageHydrated = false;
   Gender? _gender;
 
   bool _saving = false;
@@ -38,7 +39,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   @override
   void dispose() {
     _nameController.dispose();
-    _ageController.dispose();
     super.dispose();
   }
 
@@ -50,7 +50,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
     final profileResult = await ref
         .read(profileProvider.notifier)
-        .save(name: _nameController.text, age: _ageController.text);
+        .save(name: _nameController.text, age: _age.toString());
     if (!mounted) return;
 
     if (profileResult case Err(:final failure)) {
@@ -73,7 +73,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       return;
     }
 
-    final age = int.tryParse(_ageController.text.trim());
+    final age = _age;
     final demographicsResult = await ref
         .read(demographicsProvider.notifier)
         .save(Demographics(age: age, gender: gender));
@@ -110,9 +110,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       if (profile == null) return;
       // 사용자가 아직 아무것도 입력하지 않았을 때만 서버 값으로 채운다 —
       // 이미 타이핑 중인 값을 조회 결과로 덮어쓰지 않는다.
-      if (_nameController.text.isEmpty && _ageController.text.isEmpty) {
+      if (_nameController.text.isEmpty && !_ageHydrated) {
         _nameController.text = profile.name;
-        _ageController.text = profile.age.toString();
+        setState(() {
+          _age = profile.age;
+          _ageHydrated = true;
+        });
       }
     });
     ref.listen<AsyncValue<Demographics?>>(demographicsProvider, (
@@ -160,10 +163,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             ],
           ),
           const SizedBox(height: AppSpacing.xxl),
-          AppTextField(
+          AppNumberStepper(
             label: l10n.ageLabel,
-            controller: _ageController,
-            keyboardType: TextInputType.number,
+            value: _age,
+            onChanged: (value) => setState(() => _age = value),
+            decreaseSemanticLabel: l10n.ageDecreaseAction,
+            increaseSemanticLabel: l10n.ageIncreaseAction,
+            min: 1,
+            max: 119,
           ),
           if (profileAsync.hasError) ...[
             const SizedBox(height: AppSpacing.sm),

@@ -27,6 +27,7 @@ export 'src/widgets/app_header.dart';
 export 'src/widgets/app_icon_button.dart';
 export 'src/widgets/app_info_row.dart';
 export 'src/widgets/app_loading.dart';
+export 'src/widgets/app_number_stepper.dart';
 export 'src/widgets/app_risk_badge.dart';
 export 'src/widgets/app_scaffold.dart';
 export 'src/widgets/app_section_header.dart';

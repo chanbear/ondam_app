@@ -372,6 +372,18 @@ abstract class AppLocalizations {
   /// **'나이'**
   String get ageLabel;
 
+  /// No description provided for @ageDecreaseAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'나이 줄이기'**
+  String get ageDecreaseAction;
+
+  /// No description provided for @ageIncreaseAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'나이 늘리기'**
+  String get ageIncreaseAction;
+
   /// No description provided for @genderSectionLabel.
   ///
   /// In ko, this message translates to:

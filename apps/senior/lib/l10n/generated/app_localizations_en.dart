@@ -151,6 +151,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ageLabel => 'Age';
 
   @override
+  String get ageDecreaseAction => 'Decrease age';
+
+  @override
+  String get ageIncreaseAction => 'Increase age';
+
+  @override
   String get genderSectionLabel => 'Gender';
 
   @override

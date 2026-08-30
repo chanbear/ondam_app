@@ -148,6 +148,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ageLabel => '年龄';
 
   @override
+  String get ageDecreaseAction => '减少年龄';
+
+  @override
+  String get ageIncreaseAction => '增加年龄';
+
+  @override
   String get genderSectionLabel => '性别';
 
   @override

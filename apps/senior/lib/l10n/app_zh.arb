@@ -59,6 +59,8 @@
   "profileTitle": "我的信息",
   "nameLabel": "姓名",
   "ageLabel": "年龄",
+  "ageDecreaseAction": "减少年龄",
+  "ageIncreaseAction": "增加年龄",
   "genderSectionLabel": "性别",
   "genderMaleLabel": "男",
   "genderFemaleLabel": "女",
