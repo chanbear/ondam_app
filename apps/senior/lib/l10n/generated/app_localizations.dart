@@ -108,6 +108,24 @@ abstract class AppLocalizations {
   /// **'온담'**
   String get appTitle;
 
+  /// No description provided for @appTagline.
+  ///
+  /// In ko, this message translates to:
+  /// **'어르신을 위한 문서·문자 확인 도우미'**
+  String get appTagline;
+
+  /// No description provided for @splashTagline.
+  ///
+  /// In ko, this message translates to:
+  /// **'어르신을 위한 안심 생활 비서'**
+  String get splashTagline;
+
+  /// No description provided for @splashStartButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'온담 시작하기'**
+  String get splashStartButton;
+
   /// No description provided for @settingsTitle.
   ///
   /// In ko, this message translates to:
@@ -213,7 +231,7 @@ abstract class AppLocalizations {
   /// No description provided for @startButton.
   ///
   /// In ko, this message translates to:
-  /// **'시작하기'**
+  /// **'설정하러 가기'**
   String get startButton;
 
   /// No description provided for @socialLoginDivider.
@@ -228,29 +246,11 @@ abstract class AppLocalizations {
   /// **'구글 로그인'**
   String get googleLoginButton;
 
-  /// No description provided for @naverLoginButton.
-  ///
-  /// In ko, this message translates to:
-  /// **'네이버 로그인'**
-  String get naverLoginButton;
-
-  /// No description provided for @kakaoLoginButton.
-  ///
-  /// In ko, this message translates to:
-  /// **'카카오 로그인'**
-  String get kakaoLoginButton;
-
   /// No description provided for @guestSignInButton.
   ///
   /// In ko, this message translates to:
   /// **'회원가입 없이 사용하기'**
   String get guestSignInButton;
-
-  /// No description provided for @socialLoginComingSoon.
-  ///
-  /// In ko, this message translates to:
-  /// **'준비 중인 기능이에요'**
-  String get socialLoginComingSoon;
 
   /// No description provided for @oauthPinSetupTitle.
   ///
@@ -401,6 +401,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'여성'**
   String get genderFemaleLabel;
+
+  /// No description provided for @genderRequiredError.
+  ///
+  /// In ko, this message translates to:
+  /// **'성별을 선택해주세요. 맞춤 정보 검색에 꼭 필요해요.'**
+  String get genderRequiredError;
 
   /// No description provided for @profileSaved.
   ///
@@ -1500,17 +1506,23 @@ abstract class AppLocalizations {
   /// **'건너뛰기'**
   String get skipButton;
 
-  /// No description provided for @guardianConnectComingSoonMessage.
+  /// No description provided for @profileNextButton.
   ///
   /// In ko, this message translates to:
-  /// **'보호자 연결은 곧 제공될 예정이에요. 준비되면 더보기 메뉴에서 언제든 연결하실 수 있어요.'**
-  String get guardianConnectComingSoonMessage;
+  /// **'보호자 등록으로 넘어가기'**
+  String get profileNextButton;
 
-  /// No description provided for @saveAndStartButton.
+  /// No description provided for @onboardingCompleteTitle.
   ///
   /// In ko, this message translates to:
-  /// **'저장하고 시작하기'**
-  String get saveAndStartButton;
+  /// **'설정 완료!'**
+  String get onboardingCompleteTitle;
+
+  /// No description provided for @onboardingCompleteSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'온담을 편하게 이용하실 준비가 되었어요'**
+  String get onboardingCompleteSubtitle;
 
   /// No description provided for @textSizeTitle.
   ///
@@ -1535,6 +1547,24 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'아주 크게'**
   String get textScaleExtraLargeLabel;
+
+  /// No description provided for @textScaleNormalDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'가장 많이 선택해요.'**
+  String get textScaleNormalDesc;
+
+  /// No description provided for @textScaleLargeDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'더 크게 보실 수 있어요.'**
+  String get textScaleLargeDesc;
+
+  /// No description provided for @textScaleExtraLargeDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'가장 크게 보여드려요.'**
+  String get textScaleExtraLargeDesc;
 
   /// No description provided for @voiceGuideTitle.
   ///

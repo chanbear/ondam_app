@@ -12,6 +12,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appTitle => '온담';
 
   @override
+  String get appTagline => '어르신을 위한 문서·문자 확인 도우미';
+
+  @override
+  String get splashTagline => '어르신을 위한 안심 생활 비서';
+
+  @override
+  String get splashStartButton => '온담 시작하기';
+
+  @override
   String get settingsTitle => '설정';
 
   @override
@@ -64,7 +73,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get pinHint => '4자리 숫자';
 
   @override
-  String get startButton => '시작하기';
+  String get startButton => '설정하러 가기';
 
   @override
   String get socialLoginDivider => '또는';
@@ -73,16 +82,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get googleLoginButton => '구글 로그인';
 
   @override
-  String get naverLoginButton => '네이버 로그인';
-
-  @override
-  String get kakaoLoginButton => '카카오 로그인';
-
-  @override
   String get guestSignInButton => '회원가입 없이 사용하기';
-
-  @override
-  String get socialLoginComingSoon => '준비 중인 기능이에요';
 
   @override
   String get oauthPinSetupTitle => 'PIN을 새로 설정해주세요';
@@ -162,6 +162,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get genderFemaleLabel => '여성';
+
+  @override
+  String get genderRequiredError => '성별을 선택해주세요. 맞춤 정보 검색에 꼭 필요해요.';
 
   @override
   String get profileSaved => '프로필이 저장되었어요.';
@@ -747,11 +750,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get skipButton => '건너뛰기';
 
   @override
-  String get guardianConnectComingSoonMessage =>
-      '보호자 연결은 곧 제공될 예정이에요. 준비되면 더보기 메뉴에서 언제든 연결하실 수 있어요.';
+  String get profileNextButton => '보호자 등록으로 넘어가기';
 
   @override
-  String get saveAndStartButton => '저장하고 시작하기';
+  String get onboardingCompleteTitle => '설정 완료!';
+
+  @override
+  String get onboardingCompleteSubtitle => '온담을 편하게 이용하실 준비가 되었어요';
 
   @override
   String get textSizeTitle => '글자 크기';
@@ -764,6 +769,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get textScaleExtraLargeLabel => '아주 크게';
+
+  @override
+  String get textScaleNormalDesc => '가장 많이 선택해요.';
+
+  @override
+  String get textScaleLargeDesc => '더 크게 보실 수 있어요.';
+
+  @override
+  String get textScaleExtraLargeDesc => '가장 크게 보여드려요.';
 
   @override
   String get voiceGuideTitle => '음성 안내';

@@ -12,6 +12,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appTitle => '온담';
 
   @override
+  String get appTagline => '高齢者のための文書・メッセージ確認アシスタント';
+
+  @override
+  String get splashTagline => '高齢者のための安心生活アシスタント';
+
+  @override
+  String get splashStartButton => 'オンダムを始める';
+
+  @override
   String get settingsTitle => '設定';
 
   @override
@@ -64,7 +73,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pinHint => '4桁の数字';
 
   @override
-  String get startButton => 'はじめる';
+  String get startButton => '設定へ進む';
 
   @override
   String get socialLoginDivider => 'または';
@@ -73,16 +82,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get googleLoginButton => 'Googleでログイン';
 
   @override
-  String get naverLoginButton => 'Naverでログイン';
-
-  @override
-  String get kakaoLoginButton => 'Kakaoでログイン';
-
-  @override
   String get guestSignInButton => '会員登録なしで利用する';
-
-  @override
-  String get socialLoginComingSoon => '近日公開予定の機能です';
 
   @override
   String get oauthPinSetupTitle => 'PINを設定してください';
@@ -162,6 +162,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get genderFemaleLabel => '女性';
+
+  @override
+  String get genderRequiredError => '性別を選択してください。カスタム情報検索に必要です。';
 
   @override
   String get profileSaved => 'プロフィールを保存しました。';
@@ -746,11 +749,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get skipButton => 'スキップ';
 
   @override
-  String get guardianConnectComingSoonMessage =>
-      '保護者連携は近日提供予定です。準備が整い次第、その他メニューからいつでも連携できます。';
+  String get profileNextButton => '保護者登録に進む';
 
   @override
-  String get saveAndStartButton => '保存して始める';
+  String get onboardingCompleteTitle => '設定完了！';
+
+  @override
+  String get onboardingCompleteSubtitle => 'オンダムを使う準備ができました';
 
   @override
   String get textSizeTitle => '文字サイズ';
@@ -763,6 +768,15 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get textScaleExtraLargeLabel => 'とても大きく';
+
+  @override
+  String get textScaleNormalDesc => '最も多く選ばれています。';
+
+  @override
+  String get textScaleLargeDesc => 'もっと大きく見られます。';
+
+  @override
+  String get textScaleExtraLargeDesc => '一番大きく表示します。';
 
   @override
   String get voiceGuideTitle => '音声案内';

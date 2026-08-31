@@ -12,6 +12,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Ondam';
 
   @override
+  String get appTagline =>
+      'A helper for reading documents and messages for seniors';
+
+  @override
+  String get splashTagline => 'A trusted daily assistant for seniors';
+
+  @override
+  String get splashStartButton => 'Get started with Ondam';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override
@@ -64,7 +74,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pinHint => '4-digit number';
 
   @override
-  String get startButton => 'Get started';
+  String get startButton => 'Continue to setup';
 
   @override
   String get socialLoginDivider => 'or';
@@ -73,16 +83,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get googleLoginButton => 'Continue with Google';
 
   @override
-  String get naverLoginButton => 'Continue with Naver';
-
-  @override
-  String get kakaoLoginButton => 'Continue with Kakao';
-
-  @override
   String get guestSignInButton => 'Continue without signing up';
-
-  @override
-  String get socialLoginComingSoon => 'This feature is coming soon';
 
   @override
   String get oauthPinSetupTitle => 'Set up a PIN';
@@ -164,6 +165,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get genderFemaleLabel => 'Female';
+
+  @override
+  String get genderRequiredError =>
+      'Please select a gender. It\'s needed for personalized info search.';
 
   @override
   String get profileSaved => 'Your profile has been saved.';
@@ -774,11 +779,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get skipButton => 'Skip';
 
   @override
-  String get guardianConnectComingSoonMessage =>
-      'Guardian connection will be available soon. Once it\'s ready, you can connect anytime from the More menu.';
+  String get profileNextButton => 'Continue to guardian registration';
 
   @override
-  String get saveAndStartButton => 'Save and get started';
+  String get onboardingCompleteTitle => 'All set!';
+
+  @override
+  String get onboardingCompleteSubtitle => 'You\'re ready to start using Ondam';
 
   @override
   String get textSizeTitle => 'Text Size';
@@ -791,6 +798,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get textScaleExtraLargeLabel => 'Extra Large';
+
+  @override
+  String get textScaleNormalDesc => 'The most commonly chosen size.';
+
+  @override
+  String get textScaleLargeDesc => 'You can see it larger.';
+
+  @override
+  String get textScaleExtraLargeDesc => 'Shows it as large as possible.';
 
   @override
   String get voiceGuideTitle => 'Voice Guide';

@@ -12,6 +12,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appTitle => '온담';
 
   @override
+  String get appTagline => '为老年人提供的文档·短信确认助手';
+
+  @override
+  String get splashTagline => '为老年人提供的安心生活助手';
+
+  @override
+  String get splashStartButton => '开始使用온담';
+
+  @override
   String get settingsTitle => '设置';
 
   @override
@@ -63,7 +72,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pinHint => '4位数字';
 
   @override
-  String get startButton => '开始';
+  String get startButton => '前往设置';
 
   @override
   String get socialLoginDivider => '或';
@@ -72,16 +81,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get googleLoginButton => '使用谷歌登录';
 
   @override
-  String get naverLoginButton => '使用Naver登录';
-
-  @override
-  String get kakaoLoginButton => '使用Kakao登录';
-
-  @override
   String get guestSignInButton => '无需注册直接使用';
-
-  @override
-  String get socialLoginComingSoon => '该功能即将上线';
 
   @override
   String get oauthPinSetupTitle => '请设置PIN码';
@@ -161,6 +161,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get genderFemaleLabel => '女';
+
+  @override
+  String get genderRequiredError => '请选择性别。个性化信息搜索需要此项。';
 
   @override
   String get profileSaved => '个人资料已保存。';
@@ -739,11 +742,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get skipButton => '跳过';
 
   @override
-  String get guardianConnectComingSoonMessage =>
-      '监护人连接功能即将上线。准备就绪后，您可以随时在“更多”菜单中连接。';
+  String get profileNextButton => '前往监护人注册';
 
   @override
-  String get saveAndStartButton => '保存并开始';
+  String get onboardingCompleteTitle => '设置完成！';
+
+  @override
+  String get onboardingCompleteSubtitle => '您可以开始使用온담了';
 
   @override
   String get textSizeTitle => '字体大小';
@@ -756,6 +761,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get textScaleExtraLargeLabel => '特大';
+
+  @override
+  String get textScaleNormalDesc => '最多人选择的大小。';
+
+  @override
+  String get textScaleLargeDesc => '可以看得更大。';
+
+  @override
+  String get textScaleExtraLargeDesc => '显示最大的字体。';
 
   @override
   String get voiceGuideTitle => '语音引导';

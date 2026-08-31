@@ -26,6 +26,13 @@ String _voiceRateLabel(AppLocalizations l10n, VoiceRateLevel level) =>
       VoiceRateLevel.fastest => l10n.voiceRateFastestLabel,
     };
 
+String _textScaleDescription(AppLocalizations l10n, TextScaleLevel level) =>
+    switch (level) {
+      TextScaleLevel.normal => l10n.textScaleNormalDesc,
+      TextScaleLevel.large => l10n.textScaleLargeDesc,
+      TextScaleLevel.extraLarge => l10n.textScaleExtraLargeDesc,
+    };
+
 /// 글자 크기/음성 안내 설정 컨트롤 — 온보딩 1단계와 설정 화면이 동일한 UI를
 /// 공유한다(둘 다 같은 `accessibilityPrefsProvider`를 다룸).
 class AccessibilitySettingsForm extends ConsumerWidget {
@@ -42,15 +49,18 @@ class AccessibilitySettingsForm extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         AppSectionHeader(title: l10n.textSizeTitle),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.sm,
+        Column(
           children: [
             for (final level in TextScaleLevel.values)
-              _AccessibilityChip(
-                label: _textScaleLabel(l10n, level),
-                selected: prefs.textScale == level,
-                onTap: () => notifier.setTextScale(level),
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: _TextScaleOption(
+                  label: _textScaleLabel(l10n, level),
+                  description: _textScaleDescription(l10n, level),
+                  scaleFactor: level.scaleFactor,
+                  selected: prefs.textScale == level,
+                  onTap: () => notifier.setTextScale(level),
+                ),
               ),
           ],
         ),
@@ -92,9 +102,9 @@ class AccessibilitySettingsForm extends ConsumerWidget {
   }
 }
 
-/// ui-prototype `.chip`/`.chip.active`(글자크기/음성속도 선택칩)와 같은
-/// 시각 패턴 — 선택 시 `AppCard`의 `selected` variant(primary 테두리 +
-/// primarySoft 배경)를 그대로 재사용해 새 색상 조합을 만들지 않는다.
+/// ui-prototype `.chip`/`.chip.active`(음성 속도 선택칩)와 같은 시각 패턴 —
+/// 선택 시 `AppCard`의 `selected` variant(primary 테두리 + primarySoft
+/// 배경)를 그대로 재사용해 새 색상 조합을 만들지 않는다.
 class _AccessibilityChip extends StatelessWidget {
   const _AccessibilityChip({
     required this.label,
@@ -120,6 +130,82 @@ class _AccessibilityChip extends StatelessWidget {
         style: AppTextStyles.bodyLarge.copyWith(
           color: selected ? AppColors.primary : AppColors.textPrimary,
           fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+    );
+  }
+}
+
+/// ui-prototype `.textsize-option`(제목+설명+실제 크기 미리보기 "A")과 같은
+/// 시각 패턴 — 글자 크기는 음성 속도와 달리 선택지 자체가 눈으로 확인해야
+/// 하는 값이라(그 크기가 어떻게 보이는지) 일반 칩 대신 설명 문구와 실제
+/// [scaleFactor]가 적용된 미리보기를 함께 보여준다.
+class _TextScaleOption extends StatelessWidget {
+  const _TextScaleOption({
+    required this.label,
+    required this.description,
+    required this.scaleFactor,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final String description;
+  final double scaleFactor;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: AppCard(
+        variant: selected ? AppCardVariant.selected : AppCardVariant.normal,
+        onTap: onTap,
+        child: Row(
+          children: [
+            SizedBox(
+              width: AppSpacing.lg,
+              height: AppSpacing.lg,
+              child: selected
+                  ? const DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.check,
+                        size: AppSpacing.md,
+                        color: AppColors.surface,
+                      ),
+                    )
+                  : null,
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: AppTextStyles.titleMedium),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Text(
+              'A',
+              style: AppTextStyles.bodyLarge.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.textSecondary,
+                fontSize: AppTextStyles.bodyLarge.fontSize! * scaleFactor,
+              ),
+            ),
+          ],
         ),
       ),
     );
