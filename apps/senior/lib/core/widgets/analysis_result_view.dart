@@ -149,17 +149,21 @@ class _AnalysisResultViewState extends State<AnalysisResultView> {
                 // 얼마나 믿을지 먼저 알려주는 신뢰 보정 용도). 정확한 퍼센트
                 // 수치는 "상세정보"에서 확인한다.
                 Expanded(
-                  child: AppConfidenceIndicator(level: result.reliability),
+                  child: AppConfidenceIndicator(
+                    level: result.reliability,
+                    showPercentage: true,
+                    showStars: true,
+                  ),
                 ),
               ],
             ),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        Text(
-          '${_formatDate(result.createdAt)} · ${_typeLabel(l10n, result.type)}',
-          style: AppTextStyles.labelSmall.copyWith(
-            color: AppColors.textSecondary,
+        AppCard(
+          child: AppInfoRow(
+            label: _typeLabel(l10n, result.type),
+            value: _formatDate(result.createdAt),
           ),
         ),
         const SizedBox(height: AppSpacing.lg),

@@ -31,10 +31,16 @@ class AppConfidenceIndicator extends StatelessWidget {
     super.key,
     required this.level,
     this.showPercentage = false,
+    this.showStars = false,
   });
 
   final ReliabilityLevel level;
   final bool showPercentage;
+
+  /// ui-prototype `.rsl-stars`(5칸 중 채워진 별) — [showPercentage]와 함께
+  /// 쓸 때만 의미가 있다. 기존 호출부(Guardian 등)는 기본값 false라 영향
+  /// 없다.
+  final bool showStars;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +96,10 @@ class AppConfidenceIndicator extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              if (showStars) ...[
+                const SizedBox(height: AppSpacing.xs),
+                _StarRow(filled: level.displayPercent ~/ 20),
+              ],
               Text(
                 label,
                 style: AppTextStyles.bodyMedium.copyWith(color: color),
@@ -97,6 +107,27 @@ class AppConfidenceIndicator extends StatelessWidget {
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _StarRow extends StatelessWidget {
+  const _StarRow({required this.filled});
+
+  final int filled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < 5; i++)
+          Icon(
+            i < filled ? Icons.star : Icons.star_border,
+            size: 16,
+            color: AppColors.warning,
+          ),
       ],
     );
   }
