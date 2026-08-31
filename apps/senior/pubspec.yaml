@@ -57,3 +57,6 @@ flutter:
   generate: true
   assets:
     - .env
+    - assets/images/easy_result_illustration_doc.png
+    - assets/images/easy_result_illustration_msg.png
+    - assets/images/ondam_logo.png

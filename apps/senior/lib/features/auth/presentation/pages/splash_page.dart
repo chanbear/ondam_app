@@ -52,55 +52,19 @@ class SplashPage extends StatelessWidget {
   }
 }
 
-/// 레퍼런스 이미지의 문서+AI+체크리스트 로고 — `assets/*`가 아직
-/// pubspec에 등록되지 않아(CLAUDE.md) 이미지 대신 아이콘을 겹쳐 구성한다.
+/// ui-prototype `ONDAM_LOGO_DATA_URI`(문서+AI+체크리스트 로고) — 이제
+/// `assets/images/`가 pubspec에 등록되어 있어(easy_result_illustration_*와
+/// 동일 패턴) 아이콘 합성 대신 실제 로고 이미지를 그대로 쓴다.
 class _SplashMark extends StatelessWidget {
   const _SplashMark();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Image.asset(
+      'assets/images/ondam_logo.png',
       width: 96,
       height: 96,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.textPrimary.withValues(alpha: 0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          const Icon(
-            Icons.description_outlined,
-            color: AppColors.primary,
-            size: 48,
-          ),
-          Positioned(
-            right: 14,
-            bottom: 22,
-            child: Container(
-              width: 28,
-              height: 28,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                color: AppColors.surface,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.auto_awesome,
-                color: AppColors.primary,
-                size: 18,
-              ),
-            ),
-          ),
-        ],
-      ),
+      fit: BoxFit.contain,
     );
   }
 }
