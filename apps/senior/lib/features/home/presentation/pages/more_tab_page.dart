@@ -5,7 +5,7 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../connection/presentation/pages/guardian_list_page.dart';
-import '../../../onboarding/presentation/pages/onboarding_flow_page.dart';
+import '../../../onboarding/presentation/pages/how_to_use_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
 import '../../../statistics/presentation/pages/fee_statistics_page.dart';
@@ -63,7 +63,7 @@ class MoreTabPage extends ConsumerWidget {
       (
         Icons.menu_book_outlined,
         l10n.howToUseLabel,
-        () => _push(context, const OnboardingFlowPage()),
+        () => _push(context, const HowToUsePage()),
       ),
       (
         Icons.support_agent_outlined,
@@ -73,16 +73,6 @@ class MoreTabPage extends ConsumerWidget {
       (
         Icons.settings_outlined,
         l10n.settingsTitle,
-        () => _push(context, const SettingsPage()),
-      ),
-      // ui-prototype `S("more")`는 "설정"과 별도로 "접근성 설정" 행을 둔다.
-      // 실제 앱은 접근성 항목(글자 크기/음성 안내/언어)을 별도 화면으로
-      // 쪼개지 않고 `SettingsPage` 안에 이미 포함하기로 한 기존 결정을
-      // 유지하되(설정 페이지 여러 개로 쪼개지 않음), 목록에서 바로 찾을 수
-      // 있도록 같은 화면으로 가는 행을 하나 더 둔다.
-      (
-        Icons.accessibility_new_outlined,
-        l10n.accessibilitySettingsTitle,
         () => _push(context, const SettingsPage()),
       ),
     ];
@@ -139,6 +129,16 @@ class MoreTabPage extends ConsumerWidget {
       children: [
         for (final (icon, label, onTap) in items)
           _EasyMoreTile(icon: icon, label: label, onTap: onTap),
+        // ui-prototype `easy.more` — 로그아웃이 설정 화면 안이 아니라 이
+        // 그리드에 바로 있다. Normal 모드는 "설정" 진입 한 번이면 되지만,
+        // Easy 모드는 탭 수를 줄이는 게 목적이라 여기서도 바로 접근하게
+        // 둔다(Normal의 독립 "로그아웃" 행과 동일한 signOutAndClearSession).
+        _EasyMoreTile(
+          icon: Icons.logout,
+          label: l10n.logout,
+          onTap: () => signOutAndClearSession(ref),
+          danger: true,
+        ),
       ],
     );
   }
@@ -206,14 +206,18 @@ class _EasyMoreTile extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
+    this.danger = false,
   });
 
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final bool danger;
 
   @override
   Widget build(BuildContext context) {
+    final tintColor = danger ? AppColors.errorSoft : AppColors.primarySoft;
+    final avatarColor = danger ? AppColors.error : AppColors.primary;
     return Semantics(
       button: true,
       label: label,
@@ -222,7 +226,7 @@ class _EasyMoreTile extends StatelessWidget {
       // 적용한 수정)가 이 타일에도 그대로 있었다 — surface(흰색) 대신
       // primarySoft로. 안의 아이콘은 solid-primary라 겹치지 않는다.
       child: Material(
-        color: AppColors.primarySoft,
+        color: tintColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
           side: const BorderSide(color: AppColors.border),
@@ -237,14 +241,16 @@ class _EasyMoreTile extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 28,
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: avatarColor,
                   child: Icon(icon, color: Colors.white, size: 28),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   label,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.titleMedium,
+                  style: AppTextStyles.titleMedium.copyWith(
+                    color: danger ? AppColors.error : null,
+                  ),
                 ),
               ],
             ),
