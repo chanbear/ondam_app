@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -630,15 +631,87 @@ class _CompleteCheckMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 96,
       height: 96,
-      decoration: const BoxDecoration(
-        color: AppColors.success,
-        shape: BoxShape.circle,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: 96,
+            height: 96,
+            decoration: const BoxDecoration(
+              color: AppColors.success,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.check, color: AppColors.surface, size: 48),
+          ),
+          const _ConfettiDot(
+            top: 2,
+            left: 20,
+            color: AppColors.warning,
+            shape: BoxShape.rectangle,
+            angleDegrees: 20,
+          ),
+          const _ConfettiDot(top: 26, right: -4, color: AppColors.warmAccent),
+          const _ConfettiDot(
+            bottom: 12,
+            left: -6,
+            color: AppColors.primary,
+            shape: BoxShape.rectangle,
+            angleDegrees: -15,
+          ),
+          const _ConfettiDot(bottom: -2, right: 22, color: AppColors.secondary),
+        ],
       ),
-      child: const Icon(Icons.check, color: AppColors.surface, size: 48),
     );
   }
 }
 
+/// ui-prototype `.onb-illus .confetti`(c1~c4) — 완료 체크서클 주변 장식용 점.
+class _ConfettiDot extends StatelessWidget {
+  const _ConfettiDot({
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+    required this.color,
+    this.shape = BoxShape.circle,
+    this.angleDegrees = 0,
+  });
+
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+  final Color color;
+  final BoxShape shape;
+  final double angleDegrees;
+
+  static const double _size = 9;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget dot = Container(
+      width: _size,
+      height: _size,
+      decoration: BoxDecoration(
+        color: color,
+        shape: shape,
+        borderRadius: shape == BoxShape.rectangle
+            ? BorderRadius.circular(3)
+            : null,
+      ),
+    );
+    if (angleDegrees != 0) {
+      dot = Transform.rotate(angle: angleDegrees * math.pi / 180, child: dot);
+    }
+    return Positioned(
+      top: top,
+      bottom: bottom,
+      left: left,
+      right: right,
+      child: dot,
+    );
+  }
+}
