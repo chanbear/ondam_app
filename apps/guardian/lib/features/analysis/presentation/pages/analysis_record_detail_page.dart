@@ -163,7 +163,7 @@ class _DetailsSection extends StatelessWidget {
       elevation: 0,
       color: AppColors.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         side: const BorderSide(color: AppColors.border),
       ),
       clipBehavior: Clip.antiAlias,

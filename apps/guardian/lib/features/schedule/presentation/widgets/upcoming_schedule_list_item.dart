@@ -15,6 +15,21 @@ class UpcomingScheduleListItem extends StatelessWidget {
     return AppCard(
       child: Row(
         children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: AppColors.primarySoft,
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+            ),
+            alignment: Alignment.center,
+            child: const Icon(
+              Icons.event_outlined,
+              color: AppColors.primary,
+              size: 18,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

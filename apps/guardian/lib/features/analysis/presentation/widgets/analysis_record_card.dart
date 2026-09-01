@@ -16,45 +16,65 @@ class AnalysisRecordCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final risk = result.riskLevel;
+    final isDanger = risk == RiskLevel.dangerous || risk == RiskLevel.caution;
     return AppCard(
       onTap: onTap,
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(
-                result.type == AnalysisType.document
-                    ? Icons.description_outlined
-                    : Icons.sms_outlined,
-                color: AppColors.primary,
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: isDanger ? AppColors.errorSoft : AppColors.primarySoft,
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              result.type == AnalysisType.document
+                  ? Icons.description_outlined
+                  : Icons.sms_outlined,
+              color: isDanger ? AppColors.error : AppColors.primary,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
                   result.type == AnalysisType.document
                       ? l10n.analysisTypeDocumentLabel
                       : l10n.analysisTypeMessageLabel,
                   style: AppTextStyles.bodyLarge,
                 ),
-              ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  result.summary,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
               if (risk != null)
                 AppRiskBadge(level: risk, label: riskLabel(l10n, risk)),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                _formatDate(result.createdAt),
+                style: AppTextStyles.labelSmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
             ],
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            result.summary,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.bodyMedium,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            _formatDate(result.createdAt),
-            style: AppTextStyles.labelSmall.copyWith(
-              color: AppColors.textSecondary,
-            ),
           ),
         ],
       ),
