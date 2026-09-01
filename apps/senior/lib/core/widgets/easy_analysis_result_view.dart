@@ -7,6 +7,7 @@ import 'package:ondam_models/ondam_models.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../voice_guide/voice_guide_provider.dart';
 import '../voice_guide/voice_guide_service.dart';
+import 'structured_field_labels.dart';
 
 /// Easy Mode 전용 분석 결과 화면 — `AnalysisResultView`(Normal Mode, 정보
 /// 밀도 높은 기존 화면)는 절대 수정하지 않고, 완전히 별도 위젯으로 둔다.
@@ -111,7 +112,19 @@ class _EasyAnalysisResultViewState
     final structuredFields = result.structuredFields;
     final typeTag = (structuredFields == null || structuredFields.isEmpty)
         ? null
-        : structuredFields.values.first?.toString();
+        : structuredFieldValue(
+            l10n,
+            structuredFields.entries.first.key,
+            structuredFields.entries.first.value,
+          );
+    final structuredFieldRows = [
+      for (final entry
+          in structuredFields?.entries ?? const <MapEntry<String, Object?>>[])
+        MapEntry(
+          structuredFieldLabel(l10n, entry.key),
+          structuredFieldValue(l10n, entry.key, entry.value),
+        ),
+    ];
     final sourceExcerpt = result.sourceExcerpt;
     final hasDetails =
         (structuredFields != null && structuredFields.isNotEmpty) ||
@@ -135,7 +148,7 @@ class _EasyAnalysisResultViewState
             detailsTitle: l10n.detailsViewTitle,
             reliabilityLabel: l10n.reliabilityLabel,
             reliability: result.reliability,
-            structuredFields: structuredFields,
+            structuredFieldRows: structuredFieldRows,
             sourceTextLabel: l10n.sourceTextLabel,
             sourceExcerpt: sourceExcerpt,
           ),
@@ -382,7 +395,7 @@ class _DetailsCard extends StatelessWidget {
     required this.detailsTitle,
     required this.reliabilityLabel,
     required this.reliability,
-    required this.structuredFields,
+    required this.structuredFieldRows,
     required this.sourceTextLabel,
     required this.sourceExcerpt,
   });
@@ -392,7 +405,7 @@ class _DetailsCard extends StatelessWidget {
   final String detailsTitle;
   final String reliabilityLabel;
   final ReliabilityLevel reliability;
-  final Map<String, Object?>? structuredFields;
+  final List<MapEntry<String, String>> structuredFieldRows;
   final String sourceTextLabel;
   final String? sourceExcerpt;
 
@@ -451,9 +464,8 @@ class _DetailsCard extends StatelessWidget {
               label: reliabilityLabel,
               value: '${reliability.displayPercent}%',
             ),
-            if (structuredFields != null && structuredFields!.isNotEmpty)
-              for (final entry in structuredFields!.entries)
-                AppInfoRow(label: entry.key, value: '${entry.value}'),
+            for (final row in structuredFieldRows)
+              AppInfoRow(label: row.key, value: row.value),
             if (sourceExcerpt != null && sourceExcerpt!.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(
@@ -574,9 +586,12 @@ class _ReplayChip extends StatelessWidget {
   }
 }
 
-/// 문서/문자를 나타내는 간단한 플랫 일러스트 — 목업의 전면 그라디언트
-/// 패널 느낌으로, 원본 그림을 그대로 그리지 않고 기존 토큰(primarySoft→
-/// successSoft)만으로 Container/Icon 조합을 옮긴다(에셋 이미지 추가 없음).
+/// 문서/문자를 나타내는 일러스트 — 2026-08-31 사용자 요청으로 손그림
+/// Container/Icon 조합 대신 GPT(gpt-image-1)로 한 번 생성해 둔 정적
+/// 이미지(`assets/images/easy_result_illustration_{doc,msg}.png`, ui-prototype
+/// `assets/illustrations/`와 동일 원본)를 쓴다. 위험도별로 다시 생성하면
+/// 호출 비용이 계속 들어서, 시나리오당(문서/문자) 한 장만 두고 위험도
+/// 구분은 기존처럼 우측 하단 배지 색으로만 전달한다.
 class _EasyResultIllustration extends StatelessWidget {
   const _EasyResultIllustration({required this.isDoc, required this.visual});
 
@@ -585,74 +600,37 @@ class _EasyResultIllustration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 170,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [AppColors.primarySoft, AppColors.successSoft],
-        ),
-      ),
-      child: Center(
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            Container(
-              width: 96,
-              height: 118,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.lg,
-              ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // 이미지 자체에 둥근 카드 프레임이 이미 포함돼 있어(생성 프롬프트)
+          // BoxFit.cover로 자르지 않고 contain으로 전체를 보여준다.
+          Center(
+            child: Image.asset(
+              isDoc
+                  ? 'assets/images/easy_result_illustration_doc.png'
+                  : 'assets/images/easy_result_illustration_msg.png',
+              height: 170,
+              fit: BoxFit.contain,
+            ),
+          ),
+          Positioned(
+            right: 12,
+            bottom: 12,
+            child: Container(
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: isDoc
-                    ? BorderRadius.circular(AppRadius.sm)
-                    : const BorderRadius.only(
-                        topLeft: Radius.circular(AppRadius.sm),
-                        topRight: Radius.circular(AppRadius.sm),
-                        bottomRight: Radius.circular(AppRadius.sm),
-                      ),
-                border: Border.all(color: visual.color, width: 3),
+                color: visual.color,
+                shape: BoxShape.circle,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (final widthFactor in const [0.9, 0.65, 0.8, 0.5]) ...[
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: Container(
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: visual.softColor,
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                ],
-              ),
+              child: Icon(visual.icon, color: Colors.white, size: 22),
             ),
-            Positioned(
-              right: 26,
-              bottom: 4,
-              child: Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: visual.color,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(visual.icon, color: Colors.white, size: 22),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:ondam_models/ondam_models.dart';
 
 import '../../l10n/generated/app_localizations.dart';
 import 'analysis_action_checklist.dart';
+import 'structured_field_labels.dart';
 
 /// Renders a completed [AnalysisResult] — ONDAM 2.0 결과 화면. Shared by
 /// `document_scan`과 `message_check`: 두 feature가 동일한 [AnalysisResult]
@@ -299,7 +300,10 @@ class _DetailsSection extends StatelessWidget {
             ),
             if (structuredFields != null && structuredFields.isNotEmpty)
               for (final entry in structuredFields.entries)
-                AppInfoRow(label: entry.key, value: '${entry.value}'),
+                AppInfoRow(
+                  label: structuredFieldLabel(l10n, entry.key),
+                  value: structuredFieldValue(l10n, entry.key, entry.value),
+                ),
             if (sourceExcerpt != null && sourceExcerpt.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(
