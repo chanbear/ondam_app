@@ -96,12 +96,14 @@ void main() {
     expect(find.text('73'), findsOneWidget);
   });
 
-  testWidgets('이름/나이를 입력하고 저장하면 저장 완료 안내를 보여준다', (tester) async {
+  testWidgets('이름/성별/나이를 입력하고 저장하면 저장 완료 안내를 보여준다', (tester) async {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField).at(0), '홍길동');
     await setAge(tester, 73);
+    await tester.ensureVisible(find.text('남성'));
+    await tester.tap(find.text('남성'));
     await tester.ensureVisible(find.text('저장'));
     await tester.tap(find.text('저장'));
     await tester.pumpAndSettle();
@@ -161,7 +163,7 @@ void main() {
     expect(find.text('프로필이 저장되었어요.'), findsOneWidget);
   });
 
-  testWidgets('성별을 선택하지 않고 저장하면 성별은 저장을 시도하지 않는다', (tester) async {
+  testWidgets('성별을 선택하지 않고 저장하면 성별은 저장을 시도하지 않고 안내를 보여준다', (tester) async {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
@@ -173,7 +175,10 @@ void main() {
 
     expect(profileRepository.saveCalls, 1);
     expect(demographicsRepository.saveCalls, 0);
-    expect(find.text('프로필이 저장되었어요.'), findsOneWidget);
+    // BUG 회귀 테스트 — 성별 미선택 시 "저장되었어요"로 오해하게 두지 않고
+    // 왜 정보 탭에 아무것도 안 나오는지 알 수 있는 안내를 보여준다.
+    expect(find.text('프로필이 저장되었어요.'), findsNothing);
+    expect(find.text('성별을 선택해주세요. 맞춤 정보 검색에 꼭 필요해요.'), findsOneWidget);
   });
 
   testWidgets('성별 저장이 실패하면 에러 메시지를 보여준다', (tester) async {

@@ -61,15 +61,18 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       return;
     }
 
-    // 성별을 아직 선택하지 않았으면 성별 저장은 시도하지 않는다 — 이름/
-    // 나이만 입력한 기존 사용자 흐름을 그대로 유지한다.
+    // BUG: 성별 미선택 시에도 이름/나이 저장 성공 스낵바를 그대로 보여줘,
+    // "정보"탭(맞춤 혜택 검색)이 나이+성별을 모두 요구하는 걸 모른 채
+    // "저장했는데 왜 정보 탭엔 아무것도 안 나오지" 상태에 빠졌다
+    // (search_benefit_services_usecase.dart 검증 메시지 "나이와 성별을
+    // 먼저 입력해주세요."). `RegionInputPage._save`의 `_sido` 필수 검증과
+    // 같은 패턴으로 성별도 필수로 만들어 저장 성공 여부를 정확히 알린다.
     final gender = _gender;
     if (gender == null) {
-      setState(() => _saving = false);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.profileSaved)),
-      );
+      setState(() {
+        _saving = false;
+        _saveError = AppLocalizations.of(context)!.genderRequiredError;
+      });
       return;
     }
 
