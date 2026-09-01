@@ -30,13 +30,16 @@ function loadReview() { try { return JSON.parse(localStorage.getItem(REVIEW_KEY)
 function saveReview(map) { localStorage.setItem(REVIEW_KEY, JSON.stringify(map)); }
 
 // 2026-08-28 — 사용자 요청: "초기에 로그인 화면부터 ... 쉬운 모드로 변경".
-// Senior/Guardian은 그대로 각자 .home으로 진입하지만, Easy만 easy.home
-// 전에 새로 만든 easy.auth-login(로그인·소셜로그인·게스트 진입)을 거친다.
+// Senior는 그대로 senior.home으로 진입하지만, Easy는 easy.home 전에
+// easy.auth-login(로그인·소셜로그인·게스트 진입)을 거친다.
+// 2026-09-01 — Guardian도 이제 곧장 guardian.home으로 진입하지 않고,
+// 외부 레퍼런스 기반으로 새로 만든 guardian.connect(전화번호 연결) 화면을
+// 먼저 거친다(screens.guardian.js "시작" 섹션 참고).
 function enterApp(app) {
   STATE.app = app; STATE.history = [];
   document.body.classList.add("in-app");
   buildNavigator();
-  const entryScreen = app === "easy" ? "easy.auth-login" : app + ".home";
+  const entryScreen = app === "easy" ? "easy.auth-login" : app === "guardian" ? "guardian.connect" : app + ".home";
   goTo(entryScreen, { replace: true });
 }
 function exitApp() {

@@ -1,79 +1,37 @@
-// Guardian screen registry. 42 requested screen concepts covered by 31
+// Guardian screen registry. 42 requested screen concepts covered by 25
 // interactive screen ids (see SENIOR_SCREENS comment for the merge rationale
-// — e.g. risk-level notification variants share one detail screen).
+// — e.g. risk-level notification variants share one detail screen). 2026-09-01
+// — 인증/온보딩 7개를 "connect" 1개로 대체하며 31→25로 줄었다.
 const GUARDIAN_SCREENS = [];
 function G(id, cat, title, spec, purpose, ref, decision, states, render) {
   GUARDIAN_SCREENS.push({ id: "guardian." + id, app: "guardian", cat, title, spec, purpose, ref, decision, states: states || ["기본"], render });
 }
 
-// ---------- Authentication ----------
-G("auth-login", "인증", "로그인", "57", "보호자 앱 진입 — 전화번호 로그인.",
-  "Senior와 동일한 진입 패턴 공유(브랜드 일관성), 정보 밀도는 살짝 더 높게.",
-  "\"보호자로 시작하기\" 문구로 역할을 명확히.", null, (ctx) => `
-  <div class="scr center">
-    ${T.iconBadge("shield", "primary", "lg")}
-    <h1 class="h-display" style="margin-top:16px">온담 보호자</h1>
-    <p class="body-sm" style="margin-bottom:32px">어르신의 안전을 한눈에</p>
-    ${T.button("전화번호로 시작하기", { variant: "primary", nav: "guardian.auth-pin-setup", large: false })}
-  </div>`);
-
-G("auth-pin-setup", "인증", "PIN 설정", "58", "최초 PIN 생성.",
-  "Senior와 동일 컴포넌트, 다만 카드가 더 조밀.",
-  "재입력 확인 단계 동일 적용.", ["처음 입력", "다시 확인"], (ctx, state) => `
-  ${T.topBar("PIN 설정")}
-  <div class="scr" style="display:flex;flex-direction:column;min-height:calc(100% - 60px)">
-    <p class="body" style="text-align:center">${state === "처음 입력" ? "PIN 번호 4자리를 설정해주세요" : "다시 한 번 입력해주세요"}</p>
-    ${T.pinDots(state === "처음 입력" ? 3 : 4, 4, false)}
-    ${T.keypad("guardian.onboard-welcome")}
-  </div>`);
-
-G("auth-pin-entry", "인증", "PIN 입력", "59", "재방문 인증.",
-  "Senior와 동일.", "동일 컴포넌트 재사용.", ["입력 중", "오류"], (ctx, state) => `
-  ${T.topBar("PIN 입력", { back: false })}
-  <div class="scr" style="display:flex;flex-direction:column;min-height:calc(100% - 60px)">
-    <p class="body" style="text-align:center">PIN 번호를 입력해주세요</p>
-    ${T.pinDots(state === "오류" ? 4 : 3, 4, state === "오류")}
-    ${state === "오류" ? `<p class="body-sm" style="text-align:center;color:var(--danger)">PIN이 올바르지 않아요</p>` : ""}
-    ${T.keypad("guardian.home", "guardian.auth-login")}
-  </div>`);
-
-G("auth-error", "인증", "로그인 오류", "60", "인증 실패 안내.",
-  "Senior와 동일 패턴.", "재시도 버튼 1개.", null, (ctx) => `
-  <div class="scr center">
-    ${T.msi("error", "")}
-    <h2 class="h1" style="margin-top:12px">로그인에 실패했어요</h2>
-    <p class="body-sm" style="margin-bottom:28px">전화번호 또는 PIN을 다시 확인해주세요</p>
-    ${T.button("다시 시도하기", { variant: "primary", nav: "guardian.auth-login" })}
-  </div>`);
-
-// ---------- Onboarding ----------
-G("onboard-welcome", "온보딩", "환영", "61", "보호자 앱 첫 실행 환영.",
-  "Guardian은 온보딩을 짧게 — 핵심 가치만 1화면.",
-  "\"무엇을 볼 수 있는지\"를 바로 보여줌(정보 지향).", null, (ctx) => `
+// ---------- 시작 ----------
+// 2026-09-01 — 사용자 요청으로 인증(로그인/PIN 설정/PIN 입력/로그인 오류)과
+// 온보딩(환영/기본 설정/온보딩 완료) 7개 화면을 삭제하고, 외부 레퍼런스
+// 저장소(chanbear/gyeongjidaehoe3-main, codex/guardian-app 브랜치의
+// guardian.html #connectScreen)에 있는 보호자 첫 화면 하나로 대체했다.
+// 원본은 전화번호 연결 폼 + "연결 전 화면 미리보기"인데, 여기서는 그 구조를
+// ui-prototype 자체 컴포넌트/토큰(T.button, .field)으로 다시 구현했다 —
+// 원본 CSS/마크업을 그대로 옮기지 않는다. app.js의 enterApp()도 Guardian
+// 진입점을 이 화면으로 바꿨다(기존엔 곧장 guardian.home으로 진입).
+// 2026-09-01(2차) — 사용자 요청으로 "어르신 전화번호" 단일 입력을
+// 보호자 본인 로그인(이름+전화번호) 두 입력 + 바로 아래 "보호자 연결하기"
+// 버튼으로 변경. 실제 Flutter 앱(apps/guardian)의 흐름과 순서를 맞춘다 —
+// 보호자 본인 인증이 먼저이고, 특정 어르신과의 QR 연결(elder-add/qr-scan)은
+// 그다음 별도 단계라 버튼은 elder-add로 이동한다.
+G("connect", "시작", "보호자 로그인 · 연결", "57", "보호자 앱 진입점 — 보호자 본인 정보 입력 후 어르신 QR 연결로 이어짐.",
+  "온보딩/PIN 단계 없이 이름+전화번호 두 필드와 버튼 하나로 진입 마찰을 없앤다(기존 결정 유지) — 다만 입력 대상을 어르신이 아니라 보호자 본인으로 바꿔 실제 로그인 흐름과 맞춘다.",
+  "\"보호자 연결하기\"가 주 CTA, 다음 화면(elder-add)에서 QR로 어르신을 연결한다. \"연결 전 화면 미리보기\"는 그대로 home의 \"어르신 없음\" 상태로 연결.", null, (ctx) => `
   <div class="scr center">
     ${T.iconBadgeTint("family_restroom", "primary", "lg")}
-    <h1 class="h1" style="margin-top:16px">환영합니다</h1>
-    <p class="body-sm" style="margin-bottom:32px">어르신의 안심 상태를<br>한눈에 확인하세요</p>
-    ${T.button("시작하기", { variant: "primary", nav: "guardian.onboard-setup" })}
-  </div>`);
-
-G("onboard-setup", "온보딩", "기본 설정", "62", "알림 권한 등 최소 설정.",
-  "권한은 필요한 시점에(just-in-time) 요청 원칙, 다만 알림은 핵심 기능이라 온보딩에서 1회 요청.",
-  "알림 권한만 요청, 나머지는 설정에서.", null, (ctx) => `
-  ${T.topBar("기본 설정")}
-  <div class="scr">
-    ${T.card(`<div class="row"><div style="flex:1"><div class="h-title">위험 알림 받기</div><div class="body-sm">위험 문자·문서 발견 시 즉시 알려드려요</div></div><button class="toggle on"></button></div>`)}
-    <div style="margin-top:24px">${T.button("다음", { variant: "primary", nav: "guardian.onboard-done" })}</div>
-  </div>`);
-
-G("onboard-done", "온보딩", "온보딩 완료", "63", "온보딩 종료.",
-  "완료 후 바로 어르신 연결로 유도.",
-  "다음 행동(어르신 연결)을 명확한 CTA로.", null, (ctx) => `
-  <div class="scr center">
-    ${T.iconBadge("check_circle", "primary", "lg")}
-    <h2 class="h1" style="margin-top:14px">준비가 끝났어요</h2>
-    <p class="body-sm" style="margin-bottom:28px">이제 어르신을 연결해주세요</p>
-    ${T.button("어르신 연결하기", { variant: "primary", nav: "guardian.elder-add" })}
+    <h1 class="h1" style="margin-top:16px">부모님 곁에<br>한 걸음 더 가까이</h1>
+    <p class="body-sm" style="margin-bottom:28px">보호자 정보를 입력하고<br>어르신과 안전하게 연결하세요.</p>
+    <div class="field" style="width:100%;text-align:left;margin-bottom:12px"><label>보호자 이름</label><input type="text" placeholder="홍길동" /></div>
+    <div class="field" style="width:100%;text-align:left;margin-bottom:24px"><label>전화번호</label><input type="tel" placeholder="010-1234-5678" /></div>
+    ${T.button("보호자 연결하기", { variant: "primary", nav: "guardian.elder-add", large: true })}
+    <div style="margin-top:10px;width:100%">${T.button("연결 전 화면 미리보기", { variant: "secondary", nav: "guardian.home", attrs: `data-state="어르신 없음"` })}</div>
   </div>`);
 
 // ---------- Home ----------
@@ -191,7 +149,7 @@ G("connect-remove", "어르신 관리", "연결 해제 확인", "74", "연결 �
   "원칙 7 — 되돌리기 어려운 행동만 확인 다이얼로그.",
   "빨간 위험 버튼 + 명확한 결과 설명.", null, (ctx) => `
   <div class="scr" style="position:relative;min-height:100%">
-    ${T.dialog("연결을 해제할까요?", "해제하면 아버님의 활동을 더 이상 볼 수 없어요.", `${T.button("취소", { variant: "secondary" })}${T.button("해제하기", { variant: "emergency" })}`)}
+    ${T.dialog("연결을 해제할까요?", "해제하면 아버님의 활동을 더 이상 볼 수 없어요.", `${T.button("취소", { variant: "secondary", nav: "guardian.manage-elders" })}${T.button("해제하기", { variant: "emergency", nav: "guardian.manage-elders" })}`)}
   </div>`);
 
 // ---------- Records ----------
@@ -218,14 +176,90 @@ G("records-all", "기록", "전체/위험/문서/문자 기록", "75, 76, 77", "
   </div>
   ${T.bottomNavGuardian("guardian.records-all")}`; });
 
+// 2026-09-01 — 사용자 요청: "시니어앱에서 분석한 결과를 보호자용에서 본
+// 것처럼 보이는 화면"이 없었다(기존엔 alertCard + 확인 상태 카드뿐, 실제
+// 분석 내용이 전혀 없었음). Senior의 analysisResultBody()(위험도/신뢰도 →
+// 분석 정보 → AI 요약 → 해야 할 일 → 상세정보)를 그대로 재사용해 같은
+// 내용을 보호자도 보게 한다 — 실제 코드(AnalysisRecordDetailPage)에서도
+// 이 순서를 그대로 따른다. 단, 어르신 전용 UI(음성으로 질문하기, 바로
+// 납부하기/납부 방법 보기 결제 버튼)는 그 파일의 결정대로 뺀다.
+// 2026-09-01(2차) — 사용자가 "완전히 똑같게 말고 조금 요약해서" 요청 —
+// Senior와 카드 구성/내용은 그대로 두되, "해야 할 일"/"상세 정보" 두
+// 카드는 기본 접힘으로 시작한다(Senior는 기본 펼침). 보호자는 위험도/AI
+// 요약만 먼저 보고, 필요할 때만 펼쳐서 더 보면 된다.
+function guardianAnalysisDetailBody(tone) {
+  const cls = "rsl-" + tone;
+  const label = { safe: "안심", caution: "주의", dangerous: "위험" }[tone];
+  const icon = { safe: "verified", caution: "error", dangerous: "warning" }[tone];
+  const isDoc = tone === "safe";
+  return `
+  <div class="${cls}">
+    <div class="rsl-card rsl-risk-row">
+      <div class="rsl-risk-col" style="display:flex;gap:10px;align-items:center">
+        <span class="rsl-icon-badge">${T.msi(icon)}</span>
+        <div>
+          <div class="lbl">위험도</div>
+          <div class="rsl-risk-value">${label}</div>
+          <div class="rsl-risk-desc">${tone === "safe" ? "문제가 발견되지 않았어요." : "혼자 결정하지 마세요."}</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="rsl-risk-col">
+        <div class="lbl">신뢰도 ⓘ</div>
+        <div class="rsl-conf-value">87%</div>
+        <div class="rsl-stars">${[1, 1, 1, 1, 0].map((on) => `<span class="msi ${on ? "on" : "off"}">star</span>`).join("")}</div>
+        <div class="rsl-risk-desc">AI 분석의 신뢰도예요.</div>
+      </div>
+    </div>
+
+    <div class="rsl-card rsl-info-grid">
+      <div class="col"><div class="lbl">분석 날짜</div><div class="val">2026.08.18<br>오후 2:12</div></div>
+      <div class="vd"></div>
+      <div class="col"><div class="lbl">${isDoc ? "문서 종류" : "발신 번호"}</div><div class="val">${isDoc ? "전기요금 고지서<br>(한국전력)" : "010-****-2231<br>(발신번호 미상)"}</div></div>
+      <div class="vd"></div>
+      <div class="col"><div class="lbl">${isDoc ? "납부 기한" : "위험 유형"}</div><div class="val">${isDoc ? "2026.08.25<br>D-1일" : "금융/개인정보<br>요구"}</div></div>
+    </div>
+
+    <div class="rsl-card">
+      <div class="hd"><span class="ttl">AI 요약</span></div>
+      <p class="rsl-summary">${isDoc ? "이번 달 요금은 <b>87,500원</b>으로 지난달보다 <b>5,200원</b> 감소했어요." : "고객님 명의로 계좌가 개설됐다며 금융 정보를 요구하는 <b>보이스피싱형 문자</b>예요."}</p>
+      <div class="rsl-bullets">
+        ${isDoc
+          ? `<div class="rsl-bullet">${T.msi("check_circle")}사용량은 12% 감소했어요.</div><div class="rsl-bullet">${T.msi("check_circle")}전기 사용 패턴은 안정적이에요.</div>`
+          : `<div class="rsl-bullet">${T.msi("check_circle")}발신번호가 등록되지 않은 번호예요.</div><div class="rsl-bullet">${T.msi("check_circle")}링크를 누르거나 회신하지 않는 게 안전해요.</div>`}
+      </div>
+    </div>
+
+    <div class="rsl-card">
+      <div class="hd" style="cursor:pointer" onclick="const c=this.nextElementSibling;const open=c.style.display!=='none';c.style.display=open?'none':'block';this.querySelector('.msi').textContent=open?'expand_more':'expand_less'"><span class="ttl">아버님 화면에 뜬 해야 할 일</span>${T.msi("expand_more", "chev")}</div>
+      <div style="display:none">
+        ${isDoc
+          ? `<label class="rsl-check-row"><input type="checkbox" checked disabled />납부 기한(08.25) 확인하기<span class="pri">중요</span></label><label class="rsl-check-row"><input type="checkbox" disabled />고지 금액 확인 후 납부하기</label>`
+          : `<label class="rsl-check-row"><input type="checkbox" disabled />모르는 링크나 전화는 누르지 않기<span class="pri">중요</span></label><label class="rsl-check-row"><input type="checkbox" disabled />의심되면 보호자에게 먼저 물어보기</label>`}
+      </div>
+    </div>
+
+    <div class="rsl-card">
+      <div class="hd" style="cursor:pointer" onclick="const c=this.nextElementSibling;const open=c.style.display!=='none';c.style.display=open?'none':'block';this.querySelector('.msi').textContent=open?'expand_more':'expand_less'"><span class="ttl">상세 정보</span>${T.msi("expand_more", "chev")}</div>
+      <div style="display:none">
+        <div class="row between" style="padding:6px 0;border-bottom:1px solid var(--divider)"><span class="body-sm">신뢰도</span><span class="body" style="font-weight:700">87%</span></div>
+        <div class="body-sm" style="padding-top:8px">원문</div>
+        <p class="body-sm" style="margin-top:2px">${isDoc ? "한국전력공사 - 2026년 8월 전기요금 87,500원, 납부기한 8월 25일까지..." : "[Web발신] 고객님 명의로 개설된 계좌가 확인되어 금융감독원에서 확인이 필요합니다. 아래 링크를 눌러..."}</p>
+      </div>
+    </div>
+  </div>`;
+}
+
 G("records-detail", "기록", "기록 상세 (위험/확인 완료)", "78, 79, 80", "기록 상세 + 확인 상태.",
-  "Senior 상세 화면과 데이터 구조 공유, Guardian은 조치 버튼(알림 재전송 등) 추가.",
+  "Senior 상세 화면(analysisResultBody)과 렌더를 공유해 \"시니어가 본 분석 결과를 보호자도 그대로 본다\"를 실제로 보여준다. Guardian은 어르신 전용 UI(음성 질문, 결제 버튼) 대신 조치 버튼(알림 재전송 등)을 붙인다.",
   "확인 여부 배지 + 원문 보기.", ["안전", "위험", "확인완료"], (ctx, state) => {
-    const level = state === "위험" ? "dangerous" : state === "확인완료" ? "dangerous" : "safe";
+    const tone = state === "안전" ? "safe" : "dangerous";
     return `
   ${T.topBar("기록 상세")}
   <div class="scr">
-    ${T.alertCard(level, level === "dangerous" ? "위험해요" : "안전한 문서예요", level === "dangerous" ? "금전이나 개인정보를 요구하고 있어요." : "특별히 위험한 내용은 없어요.")}
+    ${T.alertCard(tone, tone === "dangerous" ? "위험해요" : "안전한 문서예요", tone === "dangerous" ? "금전이나 개인정보를 요구하고 있어요." : "특별히 위험한 내용은 없어요.")}
+    <div style="height:16px"></div>
+    ${guardianAnalysisDetailBody(tone)}
     <div style="height:16px"></div>
     ${T.card(`<div class="row between"><span class="body-sm">확인 상태</span>${state === "확인완료" ? `<span class="badge-dot">아버님이 확인함</span>` : `<span class="body-sm" style="color:var(--warning)">미확인</span>`}</div>`)}
     ${state !== "확인완료" ? `<div style="margin-top:20px">${T.button("확인 알림 다시 보내기", { variant: "secondary", nav: "guardian.records-detail", attrs: `data-state="확인완료"` })}</div>` : ""}
