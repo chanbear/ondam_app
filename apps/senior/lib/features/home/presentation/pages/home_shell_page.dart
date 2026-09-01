@@ -70,21 +70,27 @@ class _HomeShellPageState extends ConsumerState<HomeShellPage> {
           child: IndexedStack(index: index, children: _tabs),
         ),
       ),
-      floatingActionButton: Semantics(
-        button: true,
-        label: l10n.voiceAssistantLabel,
-        child: easyMode
-            ? FloatingActionButton.large(
-                onPressed: _openVoiceAssistant,
-                tooltip: l10n.voiceAssistantLabel,
-                child: const Icon(Icons.mic),
-              )
-            : FloatingActionButton(
-                onPressed: _openVoiceAssistant,
-                tooltip: l10n.voiceAssistantLabel,
-                child: const Icon(Icons.mic),
-              ),
-      ),
+      // 홈 탭(Normal Mode)은 ui-prototype처럼 인사말 옆 인라인 버튼으로
+      // 음성 비서에 접근한다(HomeTabPage._HomeGreetingRow) — 같은 화면에
+      // 버튼이 두 개 뜨지 않도록 이 FAB은 그때만 숨긴다. 그 외 탭/Easy
+      // Mode는 기존대로 FAB 유지(요구사항 33 — 어디서나 접근 가능).
+      floatingActionButton: (index == 1 && !easyMode)
+          ? null
+          : Semantics(
+              button: true,
+              label: l10n.voiceAssistantLabel,
+              child: easyMode
+                  ? FloatingActionButton.large(
+                      onPressed: _openVoiceAssistant,
+                      tooltip: l10n.voiceAssistantLabel,
+                      child: const Icon(Icons.mic),
+                    )
+                  : FloatingActionButton(
+                      onPressed: _openVoiceAssistant,
+                      tooltip: l10n.voiceAssistantLabel,
+                      child: const Icon(Icons.mic),
+                    ),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: AppBottomNavigation(
         large: easyMode,
