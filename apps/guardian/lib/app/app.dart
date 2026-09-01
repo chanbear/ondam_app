@@ -26,7 +26,12 @@ class App extends ConsumerWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'ondam_guardian',
-      theme: AppTheme.light,
+      theme: AppTheme.light.copyWith(
+        scaffoldBackgroundColor: AppColors.surface,
+        appBarTheme: AppTheme.light.appBarTheme.copyWith(
+          backgroundColor: AppColors.surface,
+        ),
+      ),
       darkTheme: AppTheme.dark,
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,
