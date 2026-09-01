@@ -14,6 +14,17 @@ function cssAppFor(app) { return app === "easy" ? "senior" : app; }
 
 const STATE = { app: null, screenId: null, elderId: "e1", variants: {}, history: [], frame: 390, overview: false };
 
+// 2026-09-02 — 버그: "분석 중" 화면(문서/문자)이 "분석하기" 클릭 등 실사용
+// 흐름으로 진입 가능한데 뒤로가기도, 자동 전환 타이머도 없어 영구히 멈췄다.
+// 실제 앱처럼 분석이 끝나면 자동으로 결과 화면으로 넘어가게 한다.
+const ANALYZING_NEXT = {
+  "senior.doc-analyzing": "senior.doc-result",
+  "senior.msg-analyzing": "senior.msg-result-real",
+  "easy.doc-analyzing": "easy.doc-result",
+  "easy.msg-analyzing": "easy.msg-result",
+};
+let analyzingTimer = null;
+
 const REVIEW_KEY = "ondam_proto_review_v1";
 function loadReview() { try { return JSON.parse(localStorage.getItem(REVIEW_KEY)) || {}; } catch { return {}; } }
 function saveReview(map) { localStorage.setItem(REVIEW_KEY, JSON.stringify(map)); }
@@ -48,6 +59,7 @@ function goBack() {
 function currentVariant(entry) { return STATE.variants[entry.id] || entry.states[0]; }
 
 function render() {
+  if (analyzingTimer) { clearTimeout(analyzingTimer); analyzingTimer = null; }
   const entry = SCREEN_MAP[STATE.screenId];
   if (!entry) return;
   const variant = currentVariant(entry);

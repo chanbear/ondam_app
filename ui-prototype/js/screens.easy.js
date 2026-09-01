@@ -155,29 +155,50 @@ E("doc-camera", "문서 읽기", "카메라", "19", "실제 촬영 화면 — Se
   </div>`);
 
 // 2026-08-28 — 사용자 제공 참고 이미지 기반 재설계: "찍은 사진" 큰 제목 +
-// "1장을 찍으셨어요." + 작은 확인 배지가 겹친 미리보기 + 여러 장 촬영
+// "N장을 찍으셨어요." + 작은 확인 배지가 겹친 미리보기 + 여러 장 촬영
 // 안내문 + 사진 더 찍기/분석하기 버튼. 참고 이미지에 있던 "음성 안내
 // 사용하기" 토글/문구는 사용자가 명시적으로 빼달라고 해서 제외.
-E("doc-captured", "문서 읽기", "촬영 확인", "20", "촬영 결과 확인, 재촬영/다음 — 참고 이미지 기반 재설계.",
-  "senior.doc-captured 대신 참고 이미지의 [찍은 사진] 화면 그대로(음성 관련 토글/문구만 제외).",
-  "미리보기 좌상단에 작은 확인 배지를 겹쳐 촬영 완료를 시각적으로 보여준다. \"사진 더 찍기\"(보조)/\"분석하기\"(주요) 2개 버튼. " +
-  "2026-08-29 — 문구 톤 정리(짧고 친근하게).", null, (ctx) => `
+// 2026-08-31 — 사용자 요청으로 Senior 전용이던 "다중 문서 진행"(여러 장
+// 촬영 시 매수/썸네일 표시, 옛 `senior.doc-multi`)의 매수 표시 기능을 이
+// 화면 디자인에 그대로 들여온다. `docCapturedBody()`는 Senior/Easy가 함께
+// 쓴다(analysisResultBody()와 같은 공유 패턴) — `senior.doc-multi`는 이
+// 화면으로 대체되어 삭제됐다.
+// 2026-08-31(2차) — 사용자 피드백: "2장 찍었다고만 뜨고 어떤 사진인지 안
+// 보인다" — 모든 칸이 똑같은 문서 아이콘만 반복돼 실제로는 구분이 안 됐던
+// 문제. 실제 촬영 이미지가 없는 목업이라 진짜 미리보기는 못 보여주지만,
+// 최소한 몇 번째 사진인지는 각 칸에 번호 배지로 명확히 표시한다 — "확인
+// 배지"는 방금 찍은 마지막 사진에만.
+function docCapturedBody(app, photoCount) {
+  const thumb = (n, big) => `
+    <div style="position:relative;flex:1;aspect-ratio:3/4;background:var(--surface);border-radius:${big ? "var(--r-lg)" : "var(--r-md)"};display:flex;align-items:center;justify-content:center">
+      ${T.iconBadgeTint("description", "primary", big ? "lg" : "")}
+      <span class="tag-pill" style="position:absolute;top:8px;left:8px">${n}번째 사진</span>
+      ${n === photoCount ? `<span style="position:absolute;top:8px;right:8px">${T.iconBadge("check", "primary", "sm")}</span>` : ""}
+    </div>`;
+  return `
   <div class="top-bar">
     <button class="back" style="width:auto" data-back>${T.msi("arrow_back")}홈으로</button>
   </div>
   <div class="scr">
     <div class="h1" style="margin-bottom:4px">찍은 사진</div>
-    <p class="body-sm" style="margin-bottom:var(--sp-lg)">1장 찍으셨어요.</p>
-    <div style="position:relative;aspect-ratio:3/4;background:var(--surface);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center">
-      ${T.iconBadgeTint("description", "primary", "lg")}
-      <span style="position:absolute;top:10px;left:10px">${T.iconBadge("check", "primary", "sm")}</span>
-    </div>
+    <p class="body-sm" style="margin-bottom:var(--sp-lg)">${photoCount}장 찍으셨어요. 어떤 사진인지 아래에서 확인해보세요.</p>
+    ${photoCount === 1 ? thumb(1, true) : `
+    <div class="row" style="gap:10px;flex-wrap:wrap">
+      ${Array.from({ length: photoCount }, (_, i) => thumb(i + 1, false)).join("")}
+    </div>`}
     <p class="body-sm" style="margin-top:var(--sp-md);line-height:1.6">여러 장 찍어도 돼요. 알아서 구분해 드려요.</p>
     <div class="stack md" style="margin-top:var(--sp-lg)">
-      ${T.button("사진 더 찍기", { variant: "secondary", nav: "easy.doc-camera", icon: "photo_camera" })}
-      ${T.button("분석하기", { variant: "accent", nav: "easy.doc-analyzing", large: true })}
+      ${T.button("사진 더 찍기", { variant: "secondary", nav: `${app}.doc-camera`, icon: "photo_camera" })}
+      ${T.button("분석하기", { variant: "accent", nav: `${app}.doc-analyzing`, large: true })}
     </div>
-  </div>`);
+  </div>`;
+}
+
+E("doc-captured", "문서 읽기", "촬영 확인", "20", "촬영 결과 확인, 재촬영/다음 — 참고 이미지 기반 재설계.",
+  "senior.doc-captured 대신 참고 이미지의 [찍은 사진] 화면 그대로(음성 관련 토글/문구만 제외).",
+  "미리보기 좌상단에 작은 확인 배지를 겹쳐 촬영 완료를 시각적으로 보여준다. \"사진 더 찍기\"(보조)/\"분석하기\"(주요) 2개 버튼. " +
+  "2026-08-29 — 문구 톤 정리(짧고 친근하게). 2026-08-31 — 매수 2장 이상일 때 아래 썸네일 추가(Senior doc-multi 이식).",
+  null, (ctx) => docCapturedBody("easy", 2));
 
 E("doc-analyzing", "문서 읽기", "분석 중", "21", "AI 분석 진행 상태.",
   "senior.doc-analyzing 재사용 — 진행률(%) UI.",

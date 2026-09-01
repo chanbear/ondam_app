@@ -337,19 +337,24 @@ S("doc-camera", "문서 분석", "카메라", "19", "실제 촬영 화면.",
   "카메라는 최소 UI — 셔터만 크게, 플래시는 아이콘+텍스트 병행(기존 결정 유지). " +
   "2026-08-29 — 사용자 요청으로 \"문서를 화면 안에 맞춰주세요\" 안내 문구를 프레임 중앙 아래가 아니라 " +
   "상단 X(닫기) 버튼 옆으로 이동(제목 자리를 안내 문구가 대신함) + 플래시 버튼에 \"플래시\" 라벨을 " +
-  "병기해 아이콘만으로 알기 어려웠던 것을 보완 + 셔터가 doc-captured(삭제됨) 대신 doc-multi로 바로 이어짐.",
+  "병기해 아이콘만으로 알기 어려웠던 것을 보완. 2026-08-31 — 셔터가 doc-multi(삭제됨) 대신 " +
+  "doc-captured(Easy 디자인 이식)로 이어짐.",
   "셔터 버튼 80px 이상, 화면 대부분을 프리뷰가 차지. 2026-08-27: 안내 문구만 떠 있어 뭘 맞춰야 할지 막막했던 걸 점선 프레임 가이드로 보완, 셔터 링은 앱 accent 색(--accent, Senior CTA 색과 동일)으로 브랜드 톤 유지, 플래시 버튼은 44px 터치 영역 확보.", null, (ctx) => `
   <div class="scr flush" style="background:#111;min-height:100%;display:flex;flex-direction:column;color:#fff">
     <div class="top-bar" style="color:#fff"><button class="back" style="color:#fff" data-back>${T.msi("close")}</button><h1 style="color:#fff;font-size:14px;font-weight:600">문서를 화면 안에 맞춰주세요</h1><button class="right-action" style="color:#fff;display:flex;align-items:center;gap:3px;flex:none">${T.msi("flash_off")}<span style="font-size:11px">플래시</span></button></div>
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px">
       <div style="width:100%;max-width:280px;aspect-ratio:3/4;border:2px dashed rgba(255,255,255,.5);border-radius:var(--r-lg)"></div>
     </div>
-    <div style="display:flex;justify-content:center;padding:24px"><button data-nav="senior.doc-multi" style="width:76px;height:76px;border-radius:50%;background:#fff;border:6px solid var(--accent)"></button></div>
+    <div style="display:flex;justify-content:center;padding:24px"><button data-nav="senior.doc-captured" style="width:76px;height:76px;border-radius:50%;background:#fff;border:6px solid var(--accent)"></button></div>
   </div>`);
 
-// 2026-08-29 — 사용자 요청으로 "촬영 완료" 화면 삭제, doc-camera 셔터가
-// doc-multi(다중 문서 진행)로 바로 이어지도록 변경 — 단일/복수 촬영 모두
-// doc-multi 하나가 검토+추가촬영+분석시작을 담당한다.
+// 2026-08-31 — 사용자 요청으로 Senior 전용 "다중 문서 진행"(doc-multi, 매수
+// tag-pill+썸네일 그리드 디자인) 삭제, Easy의 "촬영 확인"(doc-captured)
+// 디자인으로 통일 — 매수 표시/추가 썸네일 기능은 그대로 유지한 채
+// `docCapturedBody()`(screens.easy.js)를 Senior에서도 그대로 공유해서 쓴다.
+S("doc-captured", "문서 분석", "촬영 확인", "20", "촬영 결과 확인 — Easy 디자인으로 통일, 매수/썸네일 표시는 유지.",
+  "docCapturedBody()를 Easy와 공유(analysisResultBody()와 같은 패턴) — 옛 doc-multi의 tag-pill+그리드 대신 Easy의 큰 미리보기+확인 배지, 2번째 사진부터 아래 썸네일.",
+  "\"사진 더 찍기\"(보조)/\"분석하기\"(주요) 2개 버튼.", null, (ctx) => docCapturedBody("senior", 2));
 S("doc-analyzing", "문서 분석", "분석 중", "21", "AI 분석 진행 상태.",
   "막연한 스피너보다 진행률(%)을 보여줘 얼마나 남았는지 가늠할 수 있게(2026-08-27 사용자 제공 시안으로 교체 — 기존 스피너+문구 방식 대체).",
   "\"무슨 일이 일어나고 있는지\" 문장으로 불안감 감소. 진행률 숫자를 크게 강조 + 다중 문서일 땐 몇 번째 문서인지 하단에 작게(예시: 2장 중 1번째).", null, (ctx) => `
@@ -478,26 +483,7 @@ S("doc-result", "문서 분석", "분석 결과 / 위험 문서 결과", "22, 23
 
 // 2026-08-29 — 사용자 요청으로 "확인 완료"/"다시 촬영" 화면 삭제.
 // analysisResultBody()의 확인 완료 버튼(rsl-cta)은 이제 senior.home으로
-// 바로 이동한다(doc-result 정의부 confirmNav 참고). doc-camera는 이미
-// doc-captured/doc-retake를 거치지 않고 doc-multi로 바로 이어진다.
-// 2026-08-30 — Senior 내부 일관성 점검: doc-start처럼 stack 안에 쌓인
-// 전체너비 버튼 2개는 항상 둘 다 large — 이 화면만 첫 버튼에 large가
-// 빠져 둘째 버튼보다 얇게 보이던 것을 맞췄다(guardian-link/qr-generate의
-// 단독 CTA도 같은 이유로 동일하게 large 추가).
-S("doc-multi", "문서 분석", "다중 문서 진행", "26", "여러 장 촬영 진행 상태.",
-  "진행 상태는 숫자+점으로 단순 표시.",
-  "\"2장 촬영했어요\" + 추가/완료 두 선택지만. 2026-08-27: 매수 표시에 위험도 배지(riskBadge)를 쓰고 있어 \"안전하게 촬영됨\"처럼 의미가 잘못 읽히던 것을 매수 전용 tag-pill로 교체, 촬영한 페이지를 실감나게 보여주도록 썸네일 자리 추가.", null, (ctx) => `
-  ${T.topBar("문서 촬영")}
-  <div class="scr">
-    ${T.card(`<div class="row between"><span class="h-title">2장 촬영했어요</span><span class="tag-pill">2장</span></div>`)}
-    <div class="row" style="gap:10px;margin-top:12px">
-      ${[1, 2].map(() => `<div style="flex:1;aspect-ratio:3/4;background:var(--surface);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center">${T.iconBadgeTint("description", "primary")}</div>`).join("")}
-    </div>
-    <div class="stack" style="margin-top:20px">
-      ${T.button("한 장 더 촬영하기", { variant: "secondary", nav: "senior.doc-camera", icon: "add_a_photo", large: true })}
-      ${T.button("분석 시작하기", { variant: "accent", nav: "senior.doc-analyzing", large: true })}
-    </div>
-  </div>`);
+// 바로 이동한다(doc-result 정의부 confirmNav 참고).
 
 // ---------- Message ----------
 // 2026-08-29 — 사용자 요청으로 Easy 앱의 문자 목록 구조(← 홈으로 텍스트 백 +
