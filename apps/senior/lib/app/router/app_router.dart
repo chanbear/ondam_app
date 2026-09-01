@@ -8,6 +8,7 @@ import '../../core/auth/supabase_client_provider.dart';
 import '../../features/auth/presentation/pages/phone_input_page.dart';
 import '../../features/auth/presentation/pages/pin_forgot_page.dart';
 import '../../features/auth/presentation/pages/session_loading_page.dart';
+import '../../features/auth/presentation/pages/splash_page.dart';
 import '../../features/auth/presentation/providers/has_pin_provider.dart';
 import '../../features/auth/presentation/providers/role_notifier.dart';
 import '../../features/home/presentation/pages/home_shell_page.dart';
@@ -33,13 +34,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   ref.onDispose(refreshNotifier.dispose);
 
   return GoRouter(
-    initialLocation: AuthRoutes.phoneInput,
+    initialLocation: AuthRoutes.splash,
     refreshListenable: refreshNotifier,
     redirect: (context, state) => _redirect(ref, state),
     routes: [
       GoRoute(
         path: AuthRoutes.home,
         builder: (context, state) => const HomeShellPage(),
+      ),
+      GoRoute(
+        path: AuthRoutes.splash,
+        builder: (context, state) => const SplashPage(),
       ),
       GoRoute(
         path: AuthRoutes.phoneInput,
@@ -65,21 +70,18 @@ String? _redirect(Ref ref, GoRouterState state) {
       .currentSession
       ?.user;
   final hasSession = currentUser != null;
-  // 소셜 로그인(구글/카카오)으로 만들어진 세션은 휴대폰 번호가 없다 —
-  // 익명(게스트) 세션도 마찬가지로 번호가 없으므로 `isAnonymous`로
-  // 구분한다(게스트는 이 변경 대상이 아니다 — 사용자 요청은 "소셜
-  // 로그인"에 한정). `phone_input_page.dart`의 `isOAuthSession` 판별과
-  // 같은 신호(phone 필드)를 쓰되, anonymous는 제외한다.
-  final isSocialLogin =
-      hasSession &&
-      !currentUser.isAnonymous &&
-      (currentUser.phone == null || currentUser.phone!.isEmpty);
+  // 소셜 로그인(구글)이나 게스트(익명) 세션은 휴대폰 번호가 없다 — 이
+  // 사용자들은 PIN 게이트 자체를 건너뛴다(2026-08-31 — 이전에는 게스트를
+  // 제외해서 PIN 설정 화면을 보게 되는 버그였다). `phone_input_page.dart`의
+  // `skipsPinGate` 판별과 같은 신호(phone 필드).
+  final skipsPinGate =
+      hasSession && (currentUser.phone == null || currentUser.phone!.isEmpty);
 
   return decideAuthRedirect(
     hasSession: hasSession,
     hasPin: ref.read(hasPinProvider).value,
     pinVerified: ref.read(pinVerifiedProvider),
-    isSocialLogin: isSocialLogin,
+    skipsPinGate: skipsPinGate,
     roles: ref.read(roleNotifierProvider).value,
     location: state.matchedLocation,
   );

@@ -44,7 +44,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<void>> signInWithOAuth(SocialAuthProvider provider) async {
     final gotrueProvider = switch (provider) {
       SocialAuthProvider.google => OAuthProvider.google,
-      SocialAuthProvider.kakao => OAuthProvider.kakao,
     };
     try {
       await _authDataSource.signInWithOAuth(gotrueProvider);

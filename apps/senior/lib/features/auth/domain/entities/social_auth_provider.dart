@@ -1,4 +1,4 @@
-/// Third-party 로그인 제공자. Supabase Auth가 기본 지원하는 provider만
-/// 나열한다 — Naver는 Supabase의 기본 OAuth provider 목록에 없어(2026-08-30
-/// 기준) 별도 custom OIDC 연동이 필요하므로 이 enum에 없다.
-enum SocialAuthProvider { google, kakao }
+/// Third-party 로그인 제공자. 2026-08-31 — 사용자 요청으로 카카오 로그인을
+/// 제거(네이버는 애초에 이 enum에 없던 UI 전용 "준비 중" 버튼이었다 —
+/// `phone_input_page.dart` 참고). 구글만 남는다.
+enum SocialAuthProvider { google }

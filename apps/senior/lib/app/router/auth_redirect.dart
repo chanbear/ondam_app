@@ -18,15 +18,20 @@ String? decideAuthRedirect({
   required bool hasSession,
   required bool? hasPin,
   required bool pinVerified,
-  required bool isSocialLogin,
+  required bool skipsPinGate,
   required List<Object>? roles,
   required String location,
 }) {
   final onLogin = location == AuthRoutes.phoneInput;
+  final onSplash = location == AuthRoutes.splash;
   final onPinForgot = location == AuthRoutes.pinForgot;
 
   if (!hasSession) {
-    if (onLogin) return null;
+    // 스플래시(`AuthRoutes.splash`)는 앱의 `initialLocation`으로만 쓰인다 —
+    // 세션이 없을 때 다른 모든 경로는 그대로 로그인 화면으로 보내되, 이
+    // 최초 진입 화면만은 예외로 머무르게 한다. 로그아웃 후 재진입 등
+    // 그 외의 모든 "세션 없음" 경로는 기존대로 곧장 로그인 화면으로.
+    if (onLogin || onSplash) return null;
     return AuthRoutes.phoneInput;
   }
 
@@ -35,11 +40,12 @@ String? decideAuthRedirect({
   // explicit context.go(home) on success, not via this redirect.
   if (onPinForgot) return null;
 
-  // 소셜 로그인(구글/카카오) 세션은 PIN 게이트 자체를 건너뛴다(사용자 요청
-  // — 소셜 로그인 시 PIN 입력 생략). `LoginNotifier.completeSocialLoginSession`이
-  // PIN 없이 곧장 역할 부여까지 처리하므로 hasPin/pinVerified는 이 세션
-  // 종류에서는 애초에 의미가 없다 — 아래 두 검사를 그대로 통과시킨다.
-  if (!isSocialLogin) {
+  // 소셜 로그인(구글)이나 게스트(익명) 세션은 PIN 게이트 자체를 건너뛴다
+  // (사용자 요청 — 2026-08-31, 이전에는 게스트가 제외돼 PIN 설정 화면을
+  // 보는 버그였다). `LoginNotifier.completeSocialLoginSession`이 PIN 없이
+  // 곧장 역할 부여까지 처리하므로 hasPin/pinVerified는 이 세션 종류에서는
+  // 애초에 의미가 없다 — 아래 두 검사를 그대로 통과시킨다.
+  if (!skipsPinGate) {
     if (hasPin == null) {
       return AuthRoutes.sessionLoading;
     }

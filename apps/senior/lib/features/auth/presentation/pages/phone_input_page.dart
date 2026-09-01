@@ -13,7 +13,6 @@ import '../../domain/entities/pin_verify_result.dart';
 import '../../domain/entities/social_auth_provider.dart';
 import '../providers/has_pin_provider.dart';
 import '../providers/login_notifier.dart';
-import '../widgets/app_mark.dart';
 
 /// ONDAM 2.0V 로그인 화면(요구사항 2/3) — 휴대폰 번호와 비밀번호(PIN)를
 /// 하나의 화면에서 입력받는다. 별도의 "PIN 입력창"으로 넘어가는 느낌 없이
@@ -36,11 +35,11 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
   /// 번 다시 불려도(ref.watch로 인한 rebuild) 한 번만 호출되게 막는다.
   bool _socialLoginAutoCompleteTriggered = false;
 
-  /// 소셜 로그인 세션이 감지되면 PIN 없이 곧장 역할 부여를 자동으로
-  /// 진행한다(사용자 요청: 소셜 로그인 시 PIN 입력 생략) — 사용자가 버튼을
-  /// 누를 필요가 없다.
-  void _maybeAutoCompleteSocialLogin(bool isSocialLoginSession) {
-    if (!isSocialLoginSession || _socialLoginAutoCompleteTriggered) return;
+  /// 소셜 로그인 또는 게스트 세션이 감지되면 PIN 없이 곧장 역할 부여를
+  /// 자동으로 진행한다(사용자 요청: 이 두 경우 모두 PIN 입력을 생략) —
+  /// 사용자가 버튼을 누를 필요가 없다.
+  void _maybeAutoCompleteSocialLogin(bool skipsPinGate) {
+    if (!skipsPinGate || _socialLoginAutoCompleteTriggered) return;
     _socialLoginAutoCompleteTriggered = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(loginNotifierProvider.notifier).completeSocialLoginSession();
@@ -68,7 +67,7 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
     }
   }
 
-  /// OAuth(구글/카카오)로 이미 세션이 있는 상태(휴대폰 번호가 없는 계정)에서
+  /// OAuth(구글)로 이미 세션이 있는 상태(휴대폰 번호가 없는 계정)에서
   /// PIN만 입력받아 제출한다 — [_submit]과 달리 signUp(휴대폰) 호출이 없다.
   Future<void> _submitPinOnly() async {
     setState(() => _lastPinResult = null);
@@ -114,15 +113,6 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
     return '$hh:$mm';
   }
 
-  /// Naver는 Supabase Auth 기본 지원 provider 목록에 없어(2026-08-30 기준)
-  /// custom OIDC 연동이 별도로 필요하다 — 그 연동이 준비될 때까지 UI만
-  /// 두고 안내만 보여준다. Google/Kakao는 [_startOAuth]로 실제 연동됨.
-  void _showSocialLoginComingSoon(AppLocalizations l10n) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.socialLoginComingSoon)));
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -140,20 +130,17 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
         ?.user;
     final hasSession = currentUser != null;
     // signup-with-phone으로 만든 세션은 항상 phone이 채워져 있다 — OAuth로
-    // 만들어진 세션(구글/카카오)은 휴대폰 번호가 없으므로 이 값으로 구분한다.
-    // 라우터는 hasSession && (!hasPin || !pinVerified)일 때 이 화면으로
-    // 보내는데, OAuth 사용자는 재입력할 휴대폰 번호 자체가 없으므로 PIN만
-    // 받는 화면으로 분기해야 한다.
-    final isOAuthSession =
+    // 만들어진 세션(구글)이나 게스트(익명) 세션은 휴대폰 번호가 없으므로
+    // 이 값으로 구분한다. 이 사용자들은 재입력할 휴대폰 번호 자체가 없으니
+    // PIN도 아예 생략하고(2026-08-31 — 이전에는 게스트만 제외돼 PIN 설정
+    // 화면을 보는 버그였다) 곧장 역할 부여로 넘어간다. `app_router.dart`의
+    // `skipsPinGate` 판별과 같은 신호.
+    final skipsPinGate =
         hasSession && (currentUser.phone == null || currentUser.phone!.isEmpty);
-    // 소셜 로그인(구글/카카오)은 익명(게스트) 세션과 달리 PIN을 아예
-    // 생략한다(사용자 요청) — `app_router.dart`의 `isSocialLogin` 판별과
-    // 같은 신호(phone 없음 + anonymous 아님).
-    final isSocialLoginSession = isOAuthSession && !currentUser.isAnonymous;
-    _maybeAutoCompleteSocialLogin(isSocialLoginSession);
-    if (isSocialLoginSession) {
+    _maybeAutoCompleteSocialLogin(skipsPinGate);
+    if (skipsPinGate) {
       // 역할 부여(completeSocialLoginSession)가 실패하면(네트워크 오류 등)
-      // isSocialLoginSession은 계속 true로 남는다 — 여기서 실패를 구분하지
+      // skipsPinGate는 계속 true로 남는다 — 여기서 실패를 구분하지
       // 않으면 사용자가 원인도 재시도 방법도 모른 채 로딩 화면만 영원히
       // 보게 된다(2026-08-30 실기기에서 재현된 버그).
       if (failure != null) {
@@ -176,7 +163,7 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
     // 입력 필드는 기존 AppTextField 그대로 재사용한다. 굵은 테두리 카드는
     // 2026-08-29 ui-prototype에서 삭제된 시각 요소라 여기서도 쓰지 않는다.
     final easyMode = ref.watch(easyModeProvider);
-    final fields = isOAuthSession
+    final fields = skipsPinGate
         ? AppTextField(
             label: l10n.pinLabel,
             controller: _pinController,
@@ -204,10 +191,10 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
               ),
             ],
           );
-    final title = isOAuthSession
+    final title = skipsPinGate
         ? (hasPin == true ? l10n.oauthPinEntryTitle : l10n.oauthPinSetupTitle)
         : l10n.phoneStartTitle;
-    final subtitle = isOAuthSession
+    final subtitle = skipsPinGate
         ? (hasPin == true
               ? l10n.oauthPinEntrySubtitle
               : l10n.oauthPinSetupSubtitle)
@@ -228,8 +215,6 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const AppMark(),
-                    const SizedBox(height: AppSpacing.lg),
                     Text(
                       title,
                       style: easyMode
@@ -265,9 +250,9 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
                       isLoading: isLoading,
                       onPressed: (isLoading || isLocked)
                           ? null
-                          : (isOAuthSession ? _submitPinOnly : _submit),
+                          : (skipsPinGate ? _submitPinOnly : _submit),
                     ),
-                    if (!isOAuthSession) ...[
+                    if (!skipsPinGate) ...[
                       const SizedBox(height: AppSpacing.md),
                       _OrDivider(label: l10n.socialLoginDivider),
                       const SizedBox(height: AppSpacing.sm),
@@ -280,37 +265,6 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
                         onPressed: isLoading
                             ? null
                             : () => _startOAuth(SocialAuthProvider.google),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      _SocialLoginButton(
-                        label: l10n.naverLoginButton,
-                        backgroundColor: _SocialBrandColors.naver,
-                        borderColor: _SocialBrandColors.naver,
-                        textColor: AppColors.surface,
-                        badge: _TextBadge(
-                          text: 'N',
-                          background: AppColors.surface,
-                          foreground: _SocialBrandColors.naver,
-                        ),
-                        // Naver는 Supabase Auth 기본 지원 provider가 아니라
-                        // custom OIDC 연동이 별도로 필요하다 — 그때까지는
-                        // UI만 두고 안내만 보여준다.
-                        onPressed: () => _showSocialLoginComingSoon(l10n),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      _SocialLoginButton(
-                        label: l10n.kakaoLoginButton,
-                        backgroundColor: _SocialBrandColors.kakao,
-                        borderColor: _SocialBrandColors.kakao,
-                        textColor: _SocialBrandColors.kakaoText,
-                        badge: _TextBadge(
-                          text: 'TALK',
-                          background: _SocialBrandColors.kakaoText,
-                          foreground: _SocialBrandColors.kakao,
-                        ),
-                        onPressed: isLoading
-                            ? null
-                            : () => _startOAuth(SocialAuthProvider.kakao),
                       ),
                       const SizedBox(height: AppSpacing.md),
                       AppButton(
@@ -335,14 +289,6 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
       ),
     );
   }
-}
-
-/// 네이버/카카오 공식 브랜드 색 — 앱 디자인 토큰이 아니라 각 플랫폼이
-/// 지정한 고정값이라 `AppColors`에 넣지 않고 여기서만 쓴다.
-abstract final class _SocialBrandColors {
-  static const Color naver = Color(0xFF03C75A);
-  static const Color kakao = Color(0xFFFEE500);
-  static const Color kakaoText = Color(0xFF191600);
 }
 
 /// ui-prototype `.or-div` — 좌우 구분선 사이에 문구를 넣는 구분자.

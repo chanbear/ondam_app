@@ -9,13 +9,27 @@ import 'package:ondam_senior/app/router/auth_routes.dart';
 /// `/auth/role-select`로 더 이상 리다이렉트되지 않는다는 것을 검증한다.
 void main() {
   group('No Session', () {
+    test('allows staying on the splash route (initialLocation)', () {
+      expect(
+        decideAuthRedirect(
+          hasSession: false,
+          hasPin: null,
+          pinVerified: false,
+          skipsPinGate: false,
+          roles: null,
+          location: AuthRoutes.splash,
+        ),
+        isNull,
+      );
+    });
+
     test('allows staying on the login route', () {
       expect(
         decideAuthRedirect(
           hasSession: false,
           hasPin: null,
           pinVerified: false,
-          isSocialLogin: false,
+          skipsPinGate: false,
           roles: null,
           location: AuthRoutes.phoneInput,
         ),
@@ -29,7 +43,7 @@ void main() {
           hasSession: false,
           hasPin: null,
           pinVerified: false,
-          isSocialLogin: false,
+          skipsPinGate: false,
           roles: null,
           location: AuthRoutes.home,
         ),
@@ -47,7 +61,7 @@ void main() {
             hasSession: true,
             hasPin: false,
             pinVerified: false,
-            isSocialLogin: false,
+            skipsPinGate: false,
             roles: null,
             location: AuthRoutes.home,
           ),
@@ -62,7 +76,7 @@ void main() {
           hasSession: true,
           hasPin: false,
           pinVerified: false,
-          isSocialLogin: false,
+          skipsPinGate: false,
           roles: null,
           location: AuthRoutes.phoneInput,
         ),
@@ -80,7 +94,7 @@ void main() {
             hasSession: true,
             hasPin: true,
             pinVerified: false,
-            isSocialLogin: false,
+            skipsPinGate: false,
             roles: null,
             location: AuthRoutes.home,
           ),
@@ -95,7 +109,7 @@ void main() {
           hasSession: true,
           hasPin: true,
           pinVerified: false,
-          isSocialLogin: false,
+          skipsPinGate: false,
           roles: null,
           location: AuthRoutes.phoneInput,
         ),
@@ -109,7 +123,7 @@ void main() {
           hasSession: true,
           hasPin: true,
           pinVerified: false,
-          isSocialLogin: false,
+          skipsPinGate: false,
           roles: null,
           location: AuthRoutes.pinForgot,
         ),
@@ -125,7 +139,7 @@ void main() {
           hasSession: true,
           hasPin: true,
           pinVerified: true,
-          isSocialLogin: false,
+          skipsPinGate: false,
           roles: const <UserRole>[],
           location: AuthRoutes.home,
         ),
@@ -141,7 +155,7 @@ void main() {
           hasSession: true,
           hasPin: true,
           pinVerified: true,
-          isSocialLogin: false,
+          skipsPinGate: false,
           roles: const [UserRole.elder],
           location: AuthRoutes.phoneInput,
         ),
@@ -155,7 +169,7 @@ void main() {
           hasSession: true,
           hasPin: true,
           pinVerified: true,
-          isSocialLogin: false,
+          skipsPinGate: false,
           roles: const [UserRole.elder],
           location: AuthRoutes.home,
         ),
@@ -164,14 +178,14 @@ void main() {
     });
   });
 
-  group('Social login session (사용자 요청: PIN 입력 생략)', () {
+  group('Social login/게스트 세션 (사용자 요청: PIN 입력 생략, 2026-08-31 게스트도 포함)', () {
     test('hasPin이 false여도 PIN 화면으로 보내지 않고 곧장 통과시킨다', () {
       expect(
         decideAuthRedirect(
           hasSession: true,
           hasPin: false,
           pinVerified: false,
-          isSocialLogin: true,
+          skipsPinGate: true,
           roles: const [UserRole.elder],
           location: AuthRoutes.home,
         ),
@@ -185,7 +199,7 @@ void main() {
           hasSession: true,
           hasPin: null,
           pinVerified: false,
-          isSocialLogin: true,
+          skipsPinGate: true,
           roles: const [UserRole.elder],
           location: AuthRoutes.home,
         ),
@@ -199,7 +213,7 @@ void main() {
           hasSession: true,
           hasPin: false,
           pinVerified: false,
-          isSocialLogin: true,
+          skipsPinGate: true,
           roles: const <UserRole>[],
           location: AuthRoutes.home,
         ),
@@ -213,7 +227,7 @@ void main() {
           hasSession: true,
           hasPin: false,
           pinVerified: false,
-          isSocialLogin: true,
+          skipsPinGate: true,
           roles: const [UserRole.elder],
           location: AuthRoutes.phoneInput,
         ),
@@ -231,7 +245,7 @@ void main() {
           hasSession: true,
           hasPin: false,
           pinVerified: false,
-          isSocialLogin: true,
+          skipsPinGate: true,
           roles: const [UserRole.elder],
           location: AuthRoutes.sessionLoading,
         ),
@@ -251,7 +265,7 @@ void main() {
             hasSession: true,
             hasPin: true,
             pinVerified: false,
-            isSocialLogin: false,
+            skipsPinGate: false,
             roles: const [UserRole.elder],
             location: AuthRoutes.home,
           ),

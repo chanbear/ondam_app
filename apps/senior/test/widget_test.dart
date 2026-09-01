@@ -26,6 +26,9 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: App()));
     await tester.pumpAndSettle();
 
+    await tester.tap(find.text('온담 시작하기'));
+    await tester.pumpAndSettle();
+
     expect(find.text('휴대폰 번호로 시작하기'), findsOneWidget);
   });
 }

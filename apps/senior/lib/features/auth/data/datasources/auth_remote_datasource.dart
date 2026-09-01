@@ -52,15 +52,6 @@ class AuthRemoteDataSource {
       provider,
       redirectTo: kIsWeb ? _webOauthRedirectUrl : oauthRedirectUrl,
       authScreenLaunchMode: LaunchMode.externalApplication,
-      // Supabase의 카카오 기본 스코프는 account_email까지 포함하는데,
-      // 카카오 콘솔에서 account_email은 사업자 정보 등록 전이라 아직
-      // 승인 불가 상태(개인 개발자 비즈 앱은 사업자 번호 없이는 신청
-      // 자체가 막힘) — 승인 안 된 스코프가 하나라도 섞이면 카카오가
-      // 요청 전체를 거부한다(KOE205 "잘못된 요청"). 승인된 두 스코프만
-      // 명시해서 우회한다.
-      scopes: provider == OAuthProvider.kakao
-          ? 'profile_nickname profile_image'
-          : null,
     );
   }
 

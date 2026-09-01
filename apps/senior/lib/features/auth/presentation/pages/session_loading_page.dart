@@ -11,7 +11,7 @@ import '../providers/login_notifier.dart';
 /// terminal destination — the router's `redirect` moves away from this
 /// the instant the underlying provider settles.
 ///
-/// 소셜 로그인(구글/카카오) 세션이 남아있는 상태로 앱이 새로 열리면,
+/// 소셜 로그인(구글)이나 게스트 세션이 남아있는 상태로 앱이 새로 열리면,
 /// 라우터가 `PhoneInputPage`를 거치지 않고 곧장 이 화면으로 보낼 수 있다
 /// (역할이 비어있으면 `decideAuthRedirect`가 바로 `sessionLoading`을
 /// 반환한다) — 그러면 역할 자동 부여를 트리거하는 코드가
@@ -36,10 +36,13 @@ class _SessionLoadingPageState extends ConsumerState<SessionLoadingPage> {
         .currentSession
         ?.user;
     if (currentUser == null) return;
-    final isSocialLogin =
-        !currentUser.isAnonymous &&
-        (currentUser.phone == null || currentUser.phone!.isEmpty);
-    if (!isSocialLogin) return;
+    // 2026-08-31 — 게스트도 소셜 로그인과 동일하게 PIN 게이트를 건너뛴다
+    // (phone_input_page.dart의 `skipsPinGate`와 같은 신호) — 이전에는
+    // 익명 세션을 제외해서, 역할이 비어있는 게스트가 이 화면에 갇히는
+    // 같은 종류의 버그가 여기에도 있었다.
+    final skipsPinGate =
+        currentUser.phone == null || currentUser.phone!.isEmpty;
+    if (!skipsPinGate) return;
     _triggered = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(loginNotifierProvider.notifier).completeSocialLoginSession();
