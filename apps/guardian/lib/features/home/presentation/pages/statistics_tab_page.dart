@@ -9,6 +9,7 @@ import '../../../analysis/presentation/providers/analysis_records_notifier.dart'
 import '../../../analysis/presentation/widgets/analysis_record_card.dart'
     show structuredFieldLabel, structuredFieldValue;
 import '../../../connection/presentation/providers/connected_elders_provider.dart';
+import '../../../schedule/presentation/providers/schedules_notifier.dart';
 
 /// [AppFeeStatisticsSection]은 앱 무관 공용 위젯이라 자체 `AppLocalizations`가
 /// 없다 — 이 앱의 l10n에서 라벨 번들을 만들어 전달한다(Statistics/Records
@@ -83,7 +84,10 @@ class StatisticsTabPage extends ConsumerWidget {
                     message: l10n.statisticsLoadError,
                     onRetry: () => ref.invalidate(analysisRecordsProvider),
                   ),
-                  data: (records) => _StatisticsContent(records: records),
+                  data: (records) => _StatisticsContent(
+                    records: records,
+                    schedulesState: ref.watch(schedulesProvider),
+                  ),
                 ),
         ),
       ],
@@ -92,9 +96,13 @@ class StatisticsTabPage extends ConsumerWidget {
 }
 
 class _StatisticsContent extends StatelessWidget {
-  const _StatisticsContent({required this.records});
+  const _StatisticsContent({
+    required this.records,
+    required this.schedulesState,
+  });
 
   final List<AnalysisResult> records;
+  final AsyncValue<List<Schedule>> schedulesState;
 
   String _trendSentence(AppLocalizations l10n, int delta) {
     if (delta == 0) return l10n.trendSameAsLastMonth;
@@ -111,6 +119,9 @@ class _StatisticsContent extends StatelessWidget {
     }
 
     final stats = AnalysisStats.compute(records, DateTime.now());
+    final schedules = schedulesState.value ?? const <Schedule>[];
+    final completedCount = schedules.where((s) => s.completed).length;
+    final pendingCount = schedules.where((s) => !s.completed).length;
 
     final billRecords = records
         .where(
@@ -138,6 +149,41 @@ class _StatisticsContent extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Row(
+          children: [
+            Expanded(
+              child: AppStatCard(
+                label: l10n.completedScheduleCountLabel,
+                value: l10n.countUnitLabel(completedCount),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: AppStatCard(
+                label: l10n.pendingScheduleCountLabel,
+                value: l10n.countUnitLabel(pendingCount),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.xl),
+        AppSectionHeader(title: l10n.recentWeeksActivityTitle),
+        Text(
+          l10n.recentWeeksActivitySubtitle,
+          style: AppTextStyles.labelSmall.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _WeeklyActivityChart(records: records),
+        const SizedBox(height: AppSpacing.xl),
+        AppSectionHeader(title: l10n.guardianSummaryTitle),
+        const SizedBox(height: AppSpacing.sm),
+        _GuardianSummaryCard(
+          riskyCount: stats.riskyThisMonthCount,
+          pendingScheduleCount: pendingCount,
         ),
         const SizedBox(height: AppSpacing.xl),
         AppSectionHeader(title: l10n.feeStatisticsSectionTitle),
@@ -189,5 +235,133 @@ class _StatisticsContent extends StatelessWidget {
 
   String _formatDate(DateTime dt) {
     return '${dt.year}.${dt.month.toString().padLeft(2, '0')}.${dt.day.toString().padLeft(2, '0')}';
+  }
+}
+
+/// 최근 4주(이번 주 포함) 분석 건수 — 이미 불러온 [records]에서 직접 세는
+/// 순수 집계다(새 API 호출 없음). 별도 차트 라이브러리를 쓰지 않고 막대
+/// 4개만 그린다 — 이 정도 데이터에 `fl_chart`를 새로 끌어오는 건 과하다.
+class _WeeklyActivityChart extends StatelessWidget {
+  const _WeeklyActivityChart({required this.records});
+
+  final List<AnalysisResult> records;
+
+  List<int> _weeklyCounts() {
+    final now = DateTime.now();
+    final counts = List<int>.filled(4, 0);
+    for (final record in records) {
+      final daysAgo = now.difference(record.createdAt).inDays;
+      if (daysAgo < 0 || daysAgo >= 28) continue;
+      final weekIndex = 3 - (daysAgo ~/ 7);
+      counts[weekIndex]++;
+    }
+    return counts;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final counts = _weeklyCounts();
+    final maxCount = counts.fold(0, (a, b) => a > b ? a : b);
+
+    return AppCard(
+      child: SizedBox(
+        height: 120,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            for (var i = 0; i < counts.length; i++) ...[
+              if (i > 0) const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${counts[i]}',
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Container(
+                      height: maxCount == 0
+                          ? 6
+                          : 6 + (counts[i] / maxCount) * 60,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      i == 0
+                          ? l10n.fourWeeksAgoLabel
+                          : i == counts.length - 1
+                          ? l10n.thisWeekLabel
+                          : '',
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: AppColors.textSecondary,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 참고 디자인(ui-prototype `stats-home`)의 "보호자 안심 요약" 체크리스트.
+/// 원본은 3줄(위험 건/남은 일정/며칠째 확인)이지만 세 번째 줄("부모님 안전
+/// 지표를 N일째 확인했습니다")은 이 앱이 추적하지 않는 값(연속 확인
+/// 일수)이라 지어내지 않고 뺀다 — 실제로 갖고 있는 위험 건수/남은 일정만
+/// 보여준다(`ui-design.md`/정직성 원칙). 둘 다 0이면 안심 문구 하나로
+/// 대체한다.
+class _GuardianSummaryCard extends StatelessWidget {
+  const _GuardianSummaryCard({
+    required this.riskyCount,
+    required this.pendingScheduleCount,
+  });
+
+  final int riskyCount;
+  final int pendingScheduleCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final lines = [
+      if (riskyCount > 0) l10n.guardianSummaryRiskyCount(riskyCount),
+      if (pendingScheduleCount > 0)
+        l10n.guardianSummaryPendingSchedule(pendingScheduleCount),
+    ];
+    if (lines.isEmpty) lines.add(l10n.guardianSummaryAllClear);
+
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final (index, line) in lines.indexed) ...[
+            if (index > 0) const SizedBox(height: AppSpacing.sm),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.check_circle_outline,
+                  size: 18,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(child: Text(line, style: AppTextStyles.bodyMedium)),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }
