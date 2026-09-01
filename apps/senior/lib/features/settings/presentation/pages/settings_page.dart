@@ -129,6 +129,12 @@ class SettingsPage extends ConsumerWidget {
   }) {
     Widget wrap(Widget child) =>
         easyMode ? EasyOutlineCard(child: child) : AppCard(child: child);
+    // 2026-08-31 — 쉬운 모드에서 카드 테두리/버튼 크기만 바뀌고 항목 글자는
+    // 그대로였다(BUG: "쉬움모드에서 설정 글자 안 커짐"). `MoreTabPage`의
+    // easy 그리드 타일이 이미 `titleMedium`을 쓰는 것과 맞춰, 이 화면의
+    // 스위치/리스트 타이틀도 easyMode일 때 한 단계 큰 스타일로 그린다.
+    final titleStyle = easyMode ? AppTextStyles.titleMedium : null;
+    final subtitleStyle = easyMode ? AppTextStyles.bodyLarge : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,8 +147,8 @@ class SettingsPage extends ConsumerWidget {
               AppSectionHeader(title: l10n.easyModeSectionTitle),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(l10n.easyModeTitle),
-                subtitle: Text(l10n.easyModeSubtitle),
+                title: Text(l10n.easyModeTitle, style: titleStyle),
+                subtitle: Text(l10n.easyModeSubtitle, style: subtitleStyle),
                 value: easyMode,
                 activeThumbColor: easyMode ? AppEasyMode.success : null,
                 onChanged: (_) => ref.read(easyModeProvider.notifier).toggle(),
@@ -160,7 +166,7 @@ class SettingsPage extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.family_restroom_outlined),
-            title: Text(l10n.guardianListTitle),
+            title: Text(l10n.guardianListTitle, style: titleStyle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(
               context,
@@ -175,7 +181,7 @@ class SettingsPage extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.notifications_outlined),
-            title: Text(l10n.notifSettingsTitle),
+            title: Text(l10n.notifSettingsTitle, style: titleStyle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const NotifSettingsPage()),
