@@ -141,11 +141,19 @@ class _VoiceInteractionViewState extends ConsumerState<VoiceInteractionView> {
   }
 
   void _onSttStatus(String status) {
-    // Listening ended (silence/timeout) without a final result ever
-    // arriving via [_onResult] — treat the same as an unrecognized
-    // utterance, never as a hard error (ui-spec.md "인식 실패/무음").
+    // BUG: `speech_to_text` 7.4.0의 web 구현(speech_to_text_web.dart
+    // `_onResult`)은 `resultType`을 항상 `ResultType.partial`로만 보낸다
+    // (브라우저 SpeechRecognition의 isFinal을 확인하지 않는 패키지 쪽
+    // 버그) — 그래서 웹에서는 `result.finalResult`가 절대 true가 되지
+    // 않아 [_onResult]가 [_respond]를 호출할 일이 없다. 대신 여기,
+    // 듣기가 끝났다는 'done' 상태 콜백에서 처리해야 하는데, 이전엔
+    // 마지막으로 인식된 텍스트를 버리고 빈 문자열을 넘겨 항상
+    // "이해하지 못했어요"로 끝났다(웹에서 "음성 인식은 되는데 기능이
+    // 동작 안 함" 버그). 네이티브에서는 이 분기가 진짜 무음/타임아웃
+    // 때만 타므로(정상 케이스는 [_onResult]에서 먼저 처리) 이 시점의
+    // `_recognizedText`가 이미 비어 있어 동작은 그대로다.
     if (status == 'done' && _stage == _Stage.listening) {
-      _respond('');
+      _respond(_recognizedText);
     }
   }
 
