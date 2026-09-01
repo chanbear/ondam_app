@@ -14,6 +14,7 @@ import '../../../onboarding/presentation/pages/onboarding_flow_page.dart';
 import '../../../onboarding/presentation/providers/accessibility_prefs_provider.dart';
 import '../../../onboarding/presentation/providers/onboarding_status_provider.dart';
 import '../../../profile/presentation/providers/profile_provider.dart';
+import '../../../voice_assistant/presentation/pages/voice_assistant_page.dart';
 import '../../../welfare_center/presentation/pages/welfare_center_list_page.dart';
 import '../widgets/easy_mode_home_view.dart';
 import '../widgets/easy_mode_toggle_card.dart';
@@ -66,6 +67,12 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => const MessageCheckEntryPage()));
+  }
+
+  void _openVoiceAssistant() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const VoiceAssistantPage()));
   }
 
   void _openWelfareCenter() {
@@ -206,7 +213,10 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
         // 이 있을 때만 보여주고, 아직 입력 전(null)이거나 로딩/에러 중이면
         // 조용히 생략한다(빈 값을 지어내지 않는다).
         if (!easyMode)
-          _HomeGreeting(name: ref.watch(profileProvider).value?.name),
+          _HomeGreetingRow(
+            name: ref.watch(profileProvider).value?.name,
+            onVoiceAssistantTap: _openVoiceAssistant,
+          ),
         Padding(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.lg,
@@ -222,18 +232,23 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
   }
 }
 
-/// ui-prototype `S("home")` 상단 인사말("OOO님, 안녕하세요!" + 한 줄 설명).
-/// [name]이 null이면(프로필 미입력) 아무것도 그리지 않는다.
-class _HomeGreeting extends StatelessWidget {
-  const _HomeGreeting({required this.name});
+/// ui-prototype `S("home")` 상단 인사말("OOO님, 안녕하세요!" + 한 줄 설명) +
+/// `.voice-fab-inline`(인사말 옆 음성 비서 원형 버튼). [name]이 null이면
+/// (프로필 미입력) 인사말 텍스트만 생략하고, 버튼은 그대로 보여준다 —
+/// 이름을 아직 입력하지 않았다고 음성 비서 접근까지 막을 이유는 없다.
+class _HomeGreetingRow extends StatelessWidget {
+  const _HomeGreetingRow({
+    required this.name,
+    required this.onVoiceAssistantTap,
+  });
 
   final String? name;
+  final VoidCallback onVoiceAssistantTap;
 
   @override
   Widget build(BuildContext context) {
-    final name = this.name;
-    if (name == null) return const SizedBox.shrink();
     final l10n = AppLocalizations.of(context)!;
+    final name = this.name;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
@@ -241,18 +256,44 @@ class _HomeGreeting extends StatelessWidget {
         AppSpacing.lg,
         0,
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.homeGreetingWithName(name),
-            style: AppTextStyles.headlineMedium,
+          Expanded(
+            child: name == null
+                ? const SizedBox.shrink()
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.homeGreetingWithName(name),
+                        style: AppTextStyles.headlineMedium,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        l10n.homeGreetingSubtitle,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            l10n.homeGreetingSubtitle,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+          Semantics(
+            button: true,
+            label: l10n.voiceAssistantLabel,
+            child: Material(
+              color: AppColors.primary,
+              shape: const CircleBorder(),
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onVoiceAssistantTap,
+                child: const SizedBox(
+                  width: AppTouch.standard,
+                  height: AppTouch.standard,
+                  child: Icon(Icons.mic, color: Colors.white),
+                ),
+              ),
             ),
           ),
         ],
