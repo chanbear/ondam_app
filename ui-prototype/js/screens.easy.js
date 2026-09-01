@@ -213,6 +213,56 @@ E("doc-analyzing", "문서 읽기", "분석 중", "21", "AI 분석 진행 상태
 // 체크리스트(항목마다 작은 확인 표시) → 물어보기 → 확인 완료. 색/폰트/
 // 테두리만 우리 토큰으로 — 문구/카피는 그대로 베끼지 않고 우리 시나리오
 // (전기요금 고지서/택배사칭 문자)에 맞춰 새로 쓴다.
+
+// 2026-09-01 — easyResultBody()의 GPT 이미지 대신 쓰는 임시 SVG 일러스트
+// 2장(문서: 요금 납부 장면, 문자-위험: 위험 표시 장면). 이미지 생성 도구가
+// 없는 세션에서 사용자와 합의한 대안 — 실제 GPT 이미지로 교체할 땐 이 두
+// 함수 호출부만 <img>로 되돌리면 된다(easyResultBody의 illustration 변수
+// 참고). 색은 하드코딩 없이 전부 CSS 변수(토큰)를 그대로 참조한다.
+function billPaymentIllustration() {
+  return `<svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+    <rect width="320" height="210" fill="var(--primary-soft)"/>
+    <rect x="52" y="34" width="120" height="150" rx="14" fill="#fff"/>
+    <rect x="68" y="54" width="88" height="10" rx="5" fill="var(--border)"/>
+    <rect x="68" y="74" width="60" height="8" rx="4" fill="var(--border)"/>
+    <rect x="68" y="92" width="72" height="8" rx="4" fill="var(--border)"/>
+    <line x1="68" y1="114" x2="156" y2="114" stroke="var(--border)" stroke-width="2" stroke-dasharray="4 4"/>
+    <text x="68" y="142" font-size="20" font-weight="800" fill="var(--primary)">87,500원</text>
+    <rect x="68" y="154" width="88" height="12" rx="6" fill="var(--primary-soft)"/>
+    <rect x="184" y="70" width="94" height="120" rx="16" fill="var(--primary)"/>
+    <rect x="198" y="86" width="66" height="34" rx="8" fill="#fff"/>
+    <rect x="198" y="128" width="66" height="10" rx="5" fill="rgba(255,255,255,.55)"/>
+    <rect x="198" y="146" width="44" height="10" rx="5" fill="rgba(255,255,255,.35)"/>
+    <g transform="translate(212 38) rotate(-8)">
+      <rect width="58" height="38" rx="7" fill="#fff" stroke="var(--border)" stroke-width="2"/>
+      <rect x="8" y="9" width="18" height="12" rx="3" fill="var(--warning)"/>
+    </g>
+    <circle cx="252" cy="44" r="17" fill="var(--success)"/>
+    <path d="M244 44l5 5 10-11" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+}
+
+function dangerIllustration() {
+  return `<svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+    <rect width="320" height="210" fill="var(--danger-soft)"/>
+    <circle cx="160" cy="100" r="72" fill="rgba(198,54,46,.08)"/>
+    <rect x="118" y="40" width="84" height="140" rx="18" fill="#fff" stroke="var(--danger)" stroke-width="3"/>
+    <rect x="132" y="60" width="56" height="10" rx="5" fill="var(--danger-soft)"/>
+    <rect x="132" y="78" width="40" height="8" rx="4" fill="var(--danger-soft)"/>
+    <rect x="132" y="94" width="50" height="8" rx="4" fill="var(--danger-soft)"/>
+    <g transform="translate(190 24)">
+      <circle r="30" fill="var(--danger)"/>
+      <path d="M0 -13 L0 6" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+      <circle cy="15" r="3" fill="#fff"/>
+    </g>
+    <g transform="translate(150 148)">
+      <rect x="-30" y="-12" width="60" height="24" rx="12" fill="#fff" stroke="var(--danger)" stroke-width="2.5"/>
+      <line x1="-22" y1="-8" x2="22" y2="8" stroke="var(--danger)" stroke-width="3" stroke-linecap="round"/>
+      <line x1="22" y1="-8" x2="-22" y2="8" stroke="var(--danger)" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </svg>`;
+}
+
 function easyResultBody(kind, state, confirmNav) {
   const tone = state === "위험" ? "dangerous" : state === "주의" ? "caution" : "safe";
   const icon = { safe: "verified", caution: "error", dangerous: "warning" }[tone];
@@ -239,31 +289,24 @@ function easyResultBody(kind, state, confirmNav) {
   // 테두리+옅은 그림자의 부드러운 카드, 사람이 있는 컬러 일러스트(어르신 +
   // 상담사가 서류를 주고받는 장면), 확인 버튼은 참고 이미지처럼 초록색
   // (--success 토큰, 사이트 전역 --accent/파랑은 건드리지 않는다).
+  // 2026-08-31 — 사용자 요청으로 손으로 그린 SVG 대신 GPT(gpt-image-1)로
+  // 생성한 일러스트로 교체. 위험도별로 다시 그리면 호출 비용이 계속
+  // 들어서(요청마다 새로 생성 X), 문서/문자 시나리오당 하나씩 딱 2장만
+  // 한 번 생성해 정적 파일로 저장해 두고 재사용한다(assets/illustrations/
+  // 생성 스크립트는 커밋하지 않음 — 원-샷 산출물만 남김). 위험도 구분은
+  // 기존처럼 아래 배지(easy-rsl-illustration-badge)와 테두리 색으로.
+  // 2026-09-01 — 사용자 요청 두 가지: (1) 문서 결과 일러스트를 "실제 요금을
+  // 납부하는" 장면으로 교체, (2) 문자 결과가 "위험"일 때는 일러스트 자체도
+  // 위험 표시로 바뀌게. 이번 세션엔 이미지 생성 도구가 없어 GPT 이미지 대신
+  // 손으로 그린 SVG로 임시 구현하기로 사용자와 합의(billPaymentIllustration/
+  // dangerIllustration) — 실제 이미지로 교체하고 싶으면 이 두 함수 호출을
+  // <img src="assets/illustrations/...png" /> 로 되돌리면 된다. 문자
+  // 안심/주의는 기존 GPT 이미지(msg.png)를 그대로 쓴다 — 손대지 않음.
   const illustration = isDoc
-    ? `<svg viewBox="0 0 200 150" width="100%" height="150" role="presentation">
-        <circle cx="100" cy="78" r="66" fill="#FBEEDD" />
-        <path d="M30 148c1-24 16-38 34-38s33 14 34 38" fill="#D7DEE8" />
-        <circle cx="64" cy="96" r="19" fill="#F4C9A0" />
-        <path d="M47 92a17 17 0 0 1 34 0c0-9-7-15-17-15s-17 6-17 15z" fill="#B8B8B8" />
-        <path d="M112 148c1-22 15-35 32-35s31 13 32 35" fill="#8FC7DE" />
-        <circle cx="144" cy="98" r="18" fill="#F6D3B0" />
-        <path d="M130 92c0-9 6-16 14-16s14 7 14 16" fill="#5B4632" />
-        <rect x="88" y="104" width="34" height="24" rx="5" fill="#fff" stroke="var(--risk)" stroke-width="3" />
-        <rect x="93" y="110" width="20" height="4" rx="2" fill="var(--risk-soft)" />
-        <rect x="93" y="117" width="14" height="4" rx="2" fill="var(--risk-soft)" />
-      </svg>`
-    : `<svg viewBox="0 0 200 150" width="100%" height="150" role="presentation">
-        <circle cx="100" cy="78" r="66" fill="#FBEEDD" />
-        <path d="M46 148c2-28 22-42 50-42s48 14 50 42" fill="#D7DEE8" />
-        <circle cx="96" cy="94" r="20" fill="#F4C9A0" />
-        <path d="M78 90a18 18 0 0 1 36 0c0-9-8-16-18-16s-18 7-18 16z" fill="#8B8B8B" />
-        <rect x="122" y="76" width="40" height="62" rx="8" fill="#fff" stroke="var(--risk)" stroke-width="3.5" />
-        <rect x="130" y="86" width="24" height="6" rx="3" fill="var(--risk-soft)" />
-        <rect x="130" y="98" width="18" height="6" rx="3" fill="var(--risk-soft)" />
-        <circle cx="142" cy="118" r="9" fill="var(--risk)" />
-        <path d="M142 113v6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" />
-        <circle cx="142" cy="123" r="1.4" fill="#fff" />
-      </svg>`;
+    ? billPaymentIllustration()
+    : tone === "dangerous"
+      ? dangerIllustration()
+      : `<img src="assets/illustrations/msg.png" alt="" />`;
   return `
   <div class="easy-rsl-head">
     <div class="easy-rsl-badge sm">${T.msi(icon)}</div>
@@ -280,7 +323,7 @@ function easyResultBody(kind, state, confirmNav) {
     <p>${aiSummary}</p>
   </div>
   <div class="easy-rsl-checklist">
-    ${checklist.map((c) => `<div class="row">${T.msi("check_circle")}<span>${c}</span></div>`).join("")}
+    ${checklist.map((c, i) => `<label class="row"><input type="checkbox" class="chk" id="easy-rsl-chk-${i}" /><span>${c}</span></label>`).join("")}
   </div>
   <div class="easy-rsl-ask" data-nav="easy.voice">${T.msi("mic")}<span>${askLabel}</span>${T.msi("chevron_right", "chev")}</div>
   <div class="stack md" style="margin-top:var(--sp-xl)">
@@ -344,9 +387,13 @@ E("msg-analyzing", "문자 확인", "문자 분석 중", "27~28 사이", "AI 문
     <p class="body-sm" style="margin-top:4px">문자를 확인하고 있어요</p>
   </div>`);
 
+// 2026-09-01 — 사용자 요청으로 states[0]을 "위험"으로 바꿈: 전체 보기(다른
+// 화면들과 비교하는 개요 그리드)에서 이 화면은 states[0] 상태로 렌더되는데
+// (js/app.js renderOverview), 문자 확인은 위험 사례가 핵심 시나리오라
+// 기본값을 안심 대신 위험으로 보여준다.
 E("msg-result", "문자 확인", "문자 분석 결과", "28, 29, 30", "위험도별 문자 분석 결과 — Easy 전용 easyResultBody() 사용, 실제 문자 시나리오(택배 반송 사칭 사기 문자, 참고 이미지와 동일 시나리오) 내용.",
   "easyResultBody(kind, state, confirmNav) 호출 — doc-result와 같은 새 레이아웃(.easy-rsl-*), 내용만 문자에 맞게. 참고 이미지대로 상단바 전체를 위험도 색으로 틴트(보호자에게 전달하기 버튼은 사용자 요청으로 제외).",
-  "위험 배지 → 한 문장 요약 → 발신 번호/위험 유형 → 왜 그런지 → 할 일 2가지. 확인은 easy.msg-guardian-notice로 이어진다.", ["안심", "주의", "위험"], (ctx, state) => {
+  "위험 배지 → 한 문장 요약 → 발신 번호/위험 유형 → 왜 그런지 → 할 일 2가지. 확인은 easy.msg-guardian-notice로 이어진다.", ["위험", "주의", "안심"], (ctx, state) => {
     const tone = state === "위험" ? "dangerous" : state === "주의" ? "caution" : "safe";
     return `
   <div class="easy-rsl-${tone}">

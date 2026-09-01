@@ -266,8 +266,14 @@
    대상자 안내" 예시)를 보여주며 "이런 느낌으로, 완전히 똑같이는 하지 말고"
    요청 — 기한/보낸사람 하이라이트 카드(.easy-rsl-highlight), 행동 카드
    안 체크리스트(.easy-rsl-action .chk), 질문하기 행(.easy-rsl-ask) 추가. */
-.easy-rsl-illustration{ position:relative; width:180px; height:150px; margin:0 auto; }
+/* 2026-08-31(2차) — 정사각형 박스가 좁고 답답하다는 피드백으로 긴
+   직사각형으로 확대. 원본 소스(assets/illustrations/*.png)는 1024x1024
+   정사각형 생성물이라 폭만 늘리면 여백만 커지므로 object-fit:cover로
+   위아래를 살짝 잘라 채운다 — 인물 얼굴/책상은 원본에서 상하 여백이 있어
+   이 정도 크롭(약 210px 높이)에서는 잘리지 않는다(스크린샷으로 확인). */
+.easy-rsl-illustration{ position:relative; width:100%; height:210px; margin:0 auto; border-radius:var(--radius-card); overflow:hidden; }
 .easy-rsl-illustration svg{ display:block; width:100%; height:100%; }
+.easy-rsl-illustration img{ display:block; width:100%; height:100%; object-fit:cover; object-position:center 35%; }
 .easy-rsl-illustration-badge{
   position:absolute; right:2px; bottom:2px; width:52px; height:52px; border-radius:50%;
   background:var(--risk); display:flex; align-items:center; justify-content:center;
@@ -314,9 +320,14 @@
   box-shadow:0 2px 10px rgba(20,21,26,.06);
   padding:6px var(--sp-lg);
 }
-.easy-rsl-checklist .row{ display:flex; align-items:flex-start; gap:10px; font-size:17px; font-weight:700; padding:14px 0; border-bottom:1px solid var(--divider); }
+/* 2026-08-31(3차) — "직접 체크할 수 있는 체크리스트가 있어야 한다" 요청 —
+   장식용 check_circle 아이콘 대신 실제로 누를 수 있는 네이티브
+   checkbox로 교체. label로 행 전체를 감싸 텍스트를 눌러도 체크되게 하고
+   (쉬운 모드 큰 터치 영역 원칙), 체크박스 자체도 26px로 키운다. */
+.easy-rsl-checklist .row{ display:flex; align-items:flex-start; gap:12px; font-size:17px; font-weight:700; padding:14px 0; border-bottom:1px solid var(--divider); cursor:pointer; }
 .easy-rsl-checklist .row:last-child{ border-bottom:none; }
-.easy-rsl-checklist .row .msi{ color:var(--risk); font-size:22px; flex:none; margin-top:1px; }
+.easy-rsl-checklist .row .chk{ width:26px; height:26px; flex:none; margin:1px 0 0; accent-color:var(--risk); }
+.easy-rsl-checklist .row:has(.chk:checked) span{ color:var(--text-secondary); text-decoration:line-through; }
 
 .easy-rsl-ask{
   margin-top:var(--sp-md); display:flex; align-items:center; gap:12px; background:#fff;
