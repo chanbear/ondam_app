@@ -138,18 +138,24 @@
    tokens.css의 --fs-*/--fw-* 확대만으로 안 잡히는, 사이즈를 직접 못박아둔
    컴포넌트들을 [data-easy="true"] 스코프로 개별 확대한다. Senior의
    analysisResultBody()/.rsl-* 카드는 Senior와 공유하는 화면이라 제외. */
-[data-easy="true"] .btn.large{ font-size:22px; min-height:68px; }
-[data-easy="true"] .btn .msi{ font-size:24px; }
+[data-easy="true"] .btn.large{ font-size:24px; min-height:68px; }
+[data-easy="true"] .btn .msi{ font-size:26px; }
 [data-easy="true"] .body-sm{ font-weight:600; }
 [data-easy="true"] .icon-badge.lg{ width:64px; height:64px; }
-[data-easy="true"] .icon-badge.lg .msi{ font-size:30px; }
-[data-easy="true"] .state-block .state-icon .msi{ font-size:32px; }
-[data-easy="true"] .state-block .t{ font-size:18px; }
-[data-easy="true"] .state-block .d{ font-size:15px; }
-[data-easy="true"] .dialog h3{ font-size:20px; }
-[data-easy="true"] .dialog p{ font-size:16px; }
-[data-easy="true"] .list-row .tt{ font-size:17px; }
-[data-easy="true"] .list-row .ts{ font-size:14px; }
+[data-easy="true"] .icon-badge.lg .msi{ font-size:32px; }
+[data-easy="true"] .state-block .state-icon .msi{ font-size:34px; }
+[data-easy="true"] .state-block .t{ font-size:20px; }
+[data-easy="true"] .state-block .d{ font-size:17px; }
+[data-easy="true"] .dialog h3{ font-size:22px; }
+[data-easy="true"] .dialog p{ font-size:18px; }
+/* BUG: [data-app="senior"] .list-row .tt/.ts(파일 뒤쪽, 줄 376-377)가 이
+   규칙과 명시도(specificity)가 같아서 소스 순서상 나중에 선언된 senior
+   쪽이 항상 이겨버려, Senior 앱의 Easy 모드(=[data-app="senior"]
+   [data-easy="true"])에서 list-row 글자 확대가 실제로는 한 번도 적용된
+   적이 없었다(문자/기록/알림 목록 등 list-row를 쓰는 모든 화면에서).
+   명시도를 올려 순서와 무관하게 이기도록 고친다. */
+[data-app="senior"][data-easy="true"] .list-row .tt{ font-size:19px; }
+[data-app="senior"][data-easy="true"] .list-row .ts{ font-size:16px; }
 
 /* 2026-08-28 — 팀원 피드백("일반 모드에 배경·테두리만 씌운 것 같다, 작은
    글씨는 여전히 작다") 반영: h1/title/body 토큰만 올리고 나머지는 개별
@@ -157,27 +163,27 @@
    보이던 문제를 전수 조사해서 고친다 — "화면에 보이는 모든 글자 16px 이상"
    을 기준으로 Easy 모드에서 실제 쓰이는 컴포넌트를 전부 다시 확대한다.
    analysisResultBody() 전용인 .rsl-*/.g-*(Guardian)는 그대로 제외. */
-[data-easy="true"] .top-bar .right-action{ font-size:16px; }
-[data-easy="true"] .section-title{ font-size:18px; }
-[data-easy="true"] .or-div{ font-size:15px; }
-[data-easy="true"] .social-btn .badge{ width:26px; height:26px; font-size:13px; }
+[data-easy="true"] .top-bar .right-action{ font-size:18px; }
+[data-easy="true"] .section-title{ font-size:20px; }
+[data-easy="true"] .or-div{ font-size:17px; }
+[data-easy="true"] .social-btn .badge{ width:26px; height:26px; font-size:15px; }
 [data-easy="true"] .easy-rsl-highlight .k,
-[data-easy="true"] .easy-rsl-highlight .note{ font-size:16px; }
-[data-easy="true"] .tag-pill{ font-size:14px; padding:5px 12px; }
-[data-easy="true"] .risk-badge{ font-size:15px; padding:5px 12px; }
-[data-easy="true"] .risk-badge .msi{ font-size:17px; }
-[data-easy="true"] .alert-card .t{ font-size:17px; }
+[data-easy="true"] .easy-rsl-highlight .note{ font-size:18px; }
+[data-easy="true"] .tag-pill{ font-size:16px; padding:5px 12px; }
+[data-easy="true"] .risk-badge{ font-size:17px; padding:5px 12px; }
+[data-easy="true"] .risk-badge .msi{ font-size:19px; }
+[data-easy="true"] .alert-card .t{ font-size:19px; }
 [data-easy="true"] .alert-card .d,
-[data-easy="true"] .alert-card .a{ font-size:15px; }
+[data-easy="true"] .alert-card .a{ font-size:17px; }
 [data-easy="true"] .fee-hero .lbl,
-[data-easy="true"] .fee-hero .delta{ font-size:15px; }
-[data-easy="true"] .fee-hero .amt{ font-size:36px; }
-[data-easy="true"] .field label{ font-size:16px; }
-[data-easy="true"] .field .err{ font-size:15px; }
+[data-easy="true"] .fee-hero .delta{ font-size:17px; }
+[data-easy="true"] .fee-hero .amt{ font-size:38px; }
+[data-easy="true"] .field label{ font-size:18px; }
+[data-easy="true"] .field .err{ font-size:17px; }
 [data-easy="true"] .today-row .time,
-[data-easy="true"] .today-row .ttl{ font-size:17px; }
-[data-easy="true"] .today-row .loc{ font-size:15px; }
-[data-easy="true"] .badge-dot{ font-size:15px; }
+[data-easy="true"] .today-row .ttl{ font-size:19px; }
+[data-easy="true"] .today-row .loc{ font-size:17px; }
+[data-easy="true"] .badge-dot{ font-size:17px; }
 
 /* 2026-08-28 — 사용자 제공 참고 이미지 기반으로 카드/버튼마다 굵은 먹색
    테두리를 둘렀던 규칙 — 2026-08-29 사용자 요청으로 전부 삭제. 원색 채도
@@ -191,9 +197,9 @@
    화면의 모든 요소가 동일한 무게로 보여 정작 중요한 카드/버튼(CTA)이
    묻힌다. 칩은 얇은 테두리(비선택)/색 채움(선택)만으로 상태를 표현해
    "무게감 있는 카드·버튼" vs "가벼운 선택지"의 위계를 되살린다. */
-[data-easy="true"] .chip{ font-size:17px; padding:12px 18px; border-width:2px; border-color:var(--border); }
+[data-easy="true"] .chip{ font-size:19px; padding:12px 18px; border-width:2px; border-color:var(--border); }
 [data-easy="true"] .chip.active{ border-color:var(--primary); }
-[data-easy="true"] .chip .msi{ font-size:19px; }
+[data-easy="true"] .chip .msi{ font-size:21px; }
 
 [data-easy="true"] .toggle.on{ background:var(--success); }
 [data-easy="true"] .bottom-nav button.tab-danger{ background:var(--emergency); color:#fff; border-radius:var(--r-md) var(--r-md) 0 0; }
@@ -244,7 +250,7 @@
 .social-btn.kakao .badge{ background:#191600; color:#FEE500; font-size:7px; letter-spacing:.02em; }
 .social-btn.naver{ background:#03C75A; border-color:#03C75A; color:#fff; }
 .social-btn.naver .badge{ background:#fff; color:#03C75A; }
-[data-easy="true"] .social-btn{ border-width:2.5px; min-height:var(--touch-min); font-size:18px; }
+[data-easy="true"] .social-btn{ border-width:2.5px; min-height:var(--touch-min); font-size:20px; }
 
 /* ---- Easy 모드 전용 분석 결과 (2026-08-27) — Senior/Guardian이 공유하는
    analysisResultBody()의 .rsl-*(3단 그리드/별점/체크박스/공유)는 그대로
@@ -377,6 +383,27 @@
 [data-app="senior"] .list-row .ts{ font-size:13px; }
 [data-app="senior"] .list-row .icon-badge.sm{ width:44px; height:44px; }
 [data-app="senior"] .list-row .icon-badge.sm .msi{ font-size:22px; }
+
+/* 문자 목록(msg-list) — 사용자 요청으로 흰 배경 위 밑줄 구분선뿐이던
+   list-row를 색이 있는 카드로 바꾼다. 다른 화면(기록/알림/보호자 목록 등)도
+   같은 .list-row를 공유하므로 여기서만 스코프를 좁혀(.msg-list-cards)
+   적용 — 공용 .list-row 자체는 건드리지 않는다. 아이콘 배지가 이미 쓰는
+   --primary-soft 톤으로 카드 배경을 채우고, 밑줄 구분선 대신 카드 사이
+   여백으로 구분한다. */
+.msg-list-cards .list-row{
+  background:var(--primary-soft); border:1px solid var(--border); border-radius:var(--r-lg);
+  padding:14px 16px; margin-bottom:10px; border-bottom:none;
+}
+.msg-list-cards .list-row:last-child{ margin-bottom:0; }
+
+/* 경로당 목록(welfare-search, Senior/Easy 둘 다) — 같은 이유로 색 카드화.
+   아이콘 배지가 이미 "secondary" 톤(tint-secondary → --success-soft)을
+   쓰고 있어 카드 배경도 그 톤에 맞춘다. */
+.welfare-list-cards .list-row{
+  background:var(--success-soft); border:1px solid var(--border); border-radius:var(--r-lg);
+  padding:14px 16px; margin-bottom:10px; border-bottom:none;
+}
+.welfare-list-cards .list-row:last-child{ margin-bottom:0; }
 
 /* ---- empty / error / loading ---- */
 .state-block{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:48px 20px; gap:10px; }

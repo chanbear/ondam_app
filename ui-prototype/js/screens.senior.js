@@ -518,7 +518,7 @@ S("msg-list", "문자 분석", "문자 확인", "27", "문자 분석 진입 — 
     <div class="h1" style="margin-bottom:4px">최근 문자</div>
     <p class="body-sm" style="margin-bottom:var(--sp-lg)">최근 문자를 가져왔어요.<br>확인하고 싶은 문자를 눌러주세요.</p>
     ${state === "불러오는 중" ? T.loadingState() : state === "빈 목록" ? T.emptyState("sms", "아직 확인한 문자가 없어요", "새 문자를 확인해보세요") : `
-    <div class="stack">
+    <div class="stack msg-list-cards">
       ${ONDAM_DATA.messages.slice(0, 4).map((m) => T.listRow({ leftBadge: T.iconBadgeTint("sms", "primary", "sm"), title: m.preview.slice(0, 16) + "…", sub: m.date, nav: "senior.msg-analyzing" })).join("")}
     </div>`}
   </div>`);
@@ -760,7 +760,7 @@ S("welfare-search", "경로당", "경로당 검색 (결과/결과 없음)", "44,
     ${state === "불러오는 중" ? `<div style="padding:var(--sp-md) 0">${T.loadingState("경로당을 찾고 있어요")}</div>`
       : state === "결과 없음" ? T.emptyState("search_off", "근처에 경로당이 없어요", "검색 범위를 넓혀보세요", "범위 넓히기", "senior.welfare-search")
       : `<div style="padding:var(--sp-md) 0"><span class="body-sm">${ONDAM_DATA.seniorSelf.region} 근처 경로당 ${ONDAM_DATA.welfareCenters.length}곳</span></div>
-    <div class="stack">${ONDAM_DATA.welfareCenters.map((w) => T.listRow({ leftBadge: T.iconBadgeTint("place", "secondary", "sm"), title: w.name, sub: `${w.addr} · ${w.open ? "운영 중" : "운영 종료"}`, nav: "senior.welfare-detail" })).join("")}</div>`}
+    <div class="stack welfare-list-cards">${ONDAM_DATA.welfareCenters.map((w) => T.listRow({ leftBadge: T.iconBadgeTint("place", "secondary", "sm"), title: w.name, sub: `${w.addr} · ${w.open ? "운영 중" : "운영 종료"}`, nav: "senior.welfare-detail" })).join("")}</div>`}
   </div>`);
 
 S("welfare-detail", "경로당", "경로당 상세 (전화걸기·길찾기)", "47, 48", "상세 정보 + 전화 연결 + 길찾기.",

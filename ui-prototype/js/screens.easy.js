@@ -324,7 +324,7 @@ E("msg-list", "문자 확인", "최근 문자", "27", "문자 분석 진입 — 
     <div class="h1" style="margin-bottom:4px">최근 문자</div>
     <p class="body-sm" style="margin-bottom:var(--sp-lg)">최근 문자예요.<br>확인할 문자를 눌러주세요.</p>
     ${state === "불러오는 중" ? T.loadingState() : state === "빈 목록" ? T.emptyState("sms", "아직 확인한 문자가 없어요", "새 문자를 확인해보세요") : `
-    <div class="stack">
+    <div class="stack msg-list-cards">
       ${[
         { num: "114", label: "SKT 고객님", preview: "고객님의 반응이 없어 해지된 소액결제는 폐업 ARS를 통해 확인 후 조치하세요.", date: "6월 27일" },
         { num: "15880365", label: "", preview: "[신한투자증권] 본인확인 인증이 완료되었습니다.", date: "6월 26일" },
@@ -387,7 +387,7 @@ E("welfare-search", "경로당 찾기", "경로당 검색", "44, 45, 46", "검�
     ${state === "불러오는 중" ? `<div style="padding:var(--sp-md) 0">${T.loadingState("경로당을 찾고 있어요")}</div>`
       : state === "결과 없음" ? T.emptyState("search_off", "근처에 경로당이 없어요", "검색 범위를 넓혀보세요", "범위 넓히기", "easy.welfare-search")
       : `<div style="padding:var(--sp-md) 0"><span class="body-sm">${ONDAM_DATA.seniorSelf.region} 근처 경로당 ${ONDAM_DATA.welfareCenters.length}곳</span></div>
-    <div class="stack">${ONDAM_DATA.welfareCenters.map((w) => T.listRow({ leftBadge: T.iconBadgeTint("place", "secondary", "sm"), title: w.name, sub: `${w.addr} · ${w.open ? "운영 중" : "운영 종료"}`, nav: "easy.welfare-detail" })).join("")}</div>`}
+    <div class="stack welfare-list-cards">${ONDAM_DATA.welfareCenters.map((w) => T.listRow({ leftBadge: T.iconBadgeTint("place", "secondary", "sm"), title: w.name, sub: `${w.addr} · ${w.open ? "운영 중" : "운영 종료"}`, nav: "easy.welfare-detail" })).join("")}</div>`}
   </div>
   ${T.bottomNavEasy("")}`);
 

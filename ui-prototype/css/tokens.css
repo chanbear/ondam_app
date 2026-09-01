@@ -100,11 +100,11 @@
   --on-accent:var(--on-primary);
 }
 [data-app="senior"][data-easy="true"]{
-  --fs-h1:28px; --fw-h1:800;
-  --fs-title:24px; --fw-title:800;
-  --fs-body:22px; --fw-body:700;
-  --fs-body-sm:17px;
-  --fs-caption:15px;
+  --fs-h1:30px; --fw-h1:800;
+  --fs-title:26px; --fw-title:800;
+  --fs-body:24px; --fw-body:700;
+  --fs-body-sm:19px;
+  --fs-caption:17px;
   --touch-min:64px;
   --radius-card:var(--r-xl);
   --gap-section:var(--sp-xl);
