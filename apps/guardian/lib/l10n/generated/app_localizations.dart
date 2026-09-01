@@ -294,11 +294,23 @@ abstract class AppLocalizations {
   /// **'최근 활동'**
   String get recentActivityTitle;
 
+  /// No description provided for @recentActivityEyebrow.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 소식'**
+  String get recentActivityEyebrow;
+
   /// No description provided for @upcomingScheduleTitle.
   ///
   /// In ko, this message translates to:
   /// **'다가오는 일정'**
   String get upcomingScheduleTitle;
+
+  /// No description provided for @upcomingScheduleEyebrow.
+  ///
+  /// In ko, this message translates to:
+  /// **'놓치지 않도록'**
+  String get upcomingScheduleEyebrow;
 
   /// No description provided for @noUpcomingSchedule.
   ///
@@ -359,6 +371,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'최근 알림'**
   String get recentNotificationsTitle;
+
+  /// No description provided for @recentNotificationsEyebrow.
+  ///
+  /// In ko, this message translates to:
+  /// **'지금 확인해 주세요'**
+  String get recentNotificationsEyebrow;
 
   /// No description provided for @viewAllAction.
   ///
@@ -438,6 +456,18 @@ abstract class AppLocalizations {
   /// **'실시간 알림'**
   String get realtimeAlertsTitle;
 
+  /// No description provided for @unreadNotificationsCountLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'읽지 않은 알림'**
+  String get unreadNotificationsCountLabel;
+
+  /// No description provided for @unreadNotificationsSummaryDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'어르신이 확인한 문서·문자 중 주의가 필요한 알림이 여기에 모여요.'**
+  String get unreadNotificationsSummaryDescription;
+
   /// No description provided for @riskRecordsTitle.
   ///
   /// In ko, this message translates to:
@@ -492,11 +522,101 @@ abstract class AppLocalizations {
   /// **'다른 어르신 연결'**
   String get connectAnotherElderAction;
 
+  /// No description provided for @connectAnotherElderSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'새로운 어르신을 연결해요'**
+  String get connectAnotherElderSubtitle;
+
+  /// No description provided for @settingsSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'언어와 계정을 관리해요'**
+  String get settingsSubtitle;
+
   /// No description provided for @supportTitle.
   ///
   /// In ko, this message translates to:
   /// **'고객 지원'**
   String get supportTitle;
+
+  /// No description provided for @supportSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'도움이 필요하면 문의해요'**
+  String get supportSubtitle;
+
+  /// No description provided for @supportFaqSectionTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'자주 묻는 질문'**
+  String get supportFaqSectionTitle;
+
+  /// No description provided for @supportFaqConnectQuestion.
+  ///
+  /// In ko, this message translates to:
+  /// **'어르신을 어떻게 연결하나요?'**
+  String get supportFaqConnectQuestion;
+
+  /// No description provided for @supportFaqConnectAnswer.
+  ///
+  /// In ko, this message translates to:
+  /// **'더보기 화면의 \'다른 어르신 연결\'을 누르고, 어르신 온담 앱의 화면에 표시된 QR 코드를 카메라로 비추면 바로 연결돼요.'**
+  String get supportFaqConnectAnswer;
+
+  /// No description provided for @supportFaqAlertQuestion.
+  ///
+  /// In ko, this message translates to:
+  /// **'위험 알림은 언제 오나요?'**
+  String get supportFaqAlertQuestion;
+
+  /// No description provided for @supportFaqAlertAnswer.
+  ///
+  /// In ko, this message translates to:
+  /// **'어르신이 확인한 문서나 문자에서 주의 또는 위험 요소가 발견되면 알림 탭에 실시간으로 도착해요. 안전한 내용은 따로 알리지 않아요.'**
+  String get supportFaqAlertAnswer;
+
+  /// No description provided for @supportFaqMultipleEldersQuestion.
+  ///
+  /// In ko, this message translates to:
+  /// **'여러 어르신을 연결할 수 있나요?'**
+  String get supportFaqMultipleEldersQuestion;
+
+  /// No description provided for @supportFaqMultipleEldersAnswer.
+  ///
+  /// In ko, this message translates to:
+  /// **'네, 더보기의 \'다른 어르신 연결\'로 계속 추가할 수 있어요. 홈 화면 상단에서 연결된 어르신을 바꿔가며 확인할 수 있어요.'**
+  String get supportFaqMultipleEldersAnswer;
+
+  /// No description provided for @supportFaqDisconnectQuestion.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결을 해제하면 어떻게 되나요?'**
+  String get supportFaqDisconnectQuestion;
+
+  /// No description provided for @supportFaqDisconnectAnswer.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정에서 연결을 해제하면 그 어르신의 알림과 기록이 더 이상 보이지 않아요. 어르신 쪽 연결 목록에서도 함께 사라져요.'**
+  String get supportFaqDisconnectAnswer;
+
+  /// No description provided for @supportPrivacySectionTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'개인정보 보호'**
+  String get supportPrivacySectionTitle;
+
+  /// No description provided for @supportPrivacyNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'어르신의 비밀번호, PIN, 화면 설정 같은 민감한 정보는 보호자에게 전달되지 않아요. 온담은 주의가 필요한 알림과 확인 기록만 보여드려요.'**
+  String get supportPrivacyNote;
+
+  /// No description provided for @guardianLoginEyebrow.
+  ///
+  /// In ko, this message translates to:
+  /// **'가족 안심 로그인'**
+  String get guardianLoginEyebrow;
 
   /// No description provided for @pinForgotTitle.
   ///
@@ -540,6 +660,30 @@ abstract class AppLocalizations {
   /// **'아직 분석 기록이 없습니다.'**
   String get recordsEmptyMessage;
 
+  /// No description provided for @filterAllLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체'**
+  String get filterAllLabel;
+
+  /// No description provided for @filterDangerLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'위험'**
+  String get filterDangerLabel;
+
+  /// No description provided for @filterDocumentLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서'**
+  String get filterDocumentLabel;
+
+  /// No description provided for @filterMessageLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자'**
+  String get filterMessageLabel;
+
   /// No description provided for @statisticsLoadError.
   ///
   /// In ko, this message translates to:
@@ -564,11 +708,71 @@ abstract class AppLocalizations {
   /// **'위험 문자 건수'**
   String get riskyThisMonthCountLabel;
 
+  /// No description provided for @completedScheduleCountLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료한 일정'**
+  String get completedScheduleCountLabel;
+
+  /// No description provided for @pendingScheduleCountLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'남은 일정'**
+  String get pendingScheduleCountLabel;
+
+  /// No description provided for @recentWeeksActivityTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 4주 활동'**
+  String get recentWeeksActivityTitle;
+
+  /// No description provided for @recentWeeksActivitySubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 횟수'**
+  String get recentWeeksActivitySubtitle;
+
+  /// No description provided for @fourWeeksAgoLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'4주 전'**
+  String get fourWeeksAgoLabel;
+
+  /// No description provided for @thisWeekLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'이번 주'**
+  String get thisWeekLabel;
+
   /// No description provided for @countUnitLabel.
   ///
   /// In ko, this message translates to:
   /// **'{count}건'**
   String countUnitLabel(int count);
+
+  /// No description provided for @guardianSummaryTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자 안심 요약'**
+  String get guardianSummaryTitle;
+
+  /// No description provided for @guardianSummaryRiskyCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인이 필요한 위험 건 {count}건 있어요'**
+  String guardianSummaryRiskyCount(int count);
+
+  /// No description provided for @guardianSummaryPendingSchedule.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료하지 않은 일정이 {count}건 남았어요'**
+  String guardianSummaryPendingSchedule(int count);
+
+  /// No description provided for @guardianSummaryAllClear.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인할 위험 건이나 남은 일정이 없어요'**
+  String get guardianSummaryAllClear;
 
   /// No description provided for @feeStatisticsSectionTitle.
   ///
@@ -911,6 +1115,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'이 기능은 아직 준비 중이에요.'**
   String get comingSoonMessage;
+
+  /// No description provided for @demoUsageBadgeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모 · {months}개월째 이용 중 · 분석 {count}건'**
+  String demoUsageBadgeLabel(int months, int count);
 }
 
 class _AppLocalizationsDelegate

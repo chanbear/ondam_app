@@ -38,7 +38,9 @@
   "noConnectedEldersMessage": "아직 연결된 어르신이 없습니다.",
   "connectElderAction": "어르신 연결하기",
   "recentActivityTitle": "최근 활동",
+  "recentActivityEyebrow": "최근 소식",
   "upcomingScheduleTitle": "다가오는 일정",
+  "upcomingScheduleEyebrow": "놓치지 않도록",
   "noUpcomingSchedule": "예정된 일정이 없어요.",
   "reassuranceLoadError": "안심 상태를 불러오지 못했어요.",
   "dangerousAlertTitle": "확인이 필요한 활동이 있어요",
@@ -49,6 +51,7 @@
   "recentActivityLoadError": "최근 활동을 불러오지 못했어요.",
   "noActivityRecords": "아직 활동 기록이 없어요.",
   "recentNotificationsTitle": "최근 알림",
+  "recentNotificationsEyebrow": "지금 확인해 주세요",
   "viewAllAction": "전체보기",
   "noRecentNotifications": "아직 받은 알림이 없습니다.",
   "recentNotificationsLoadError": "알림을 불러오지 못했어요.",
@@ -62,6 +65,8 @@
   "confirmButtonLabel": "확인 완료",
   "confirmedBannerLabel": "확인 완료했어요",
   "realtimeAlertsTitle": "실시간 알림",
+  "unreadNotificationsCountLabel": "읽지 않은 알림",
+  "unreadNotificationsSummaryDescription": "어르신이 확인한 문서·문자 중 주의가 필요한 알림이 여기에 모여요.",
   "riskRecordsTitle": "위험 기록",
   "riskRecordsLoadError": "기록을 불러오지 못했어요.",
   "noRiskRecords": "아직 위험 기록이 없습니다.",
@@ -71,7 +76,22 @@
   "analysisTypeDocumentLabel": "문서 분석",
   "analysisTypeMessageLabel": "문자 확인",
   "connectAnotherElderAction": "다른 어르신 연결",
+  "connectAnotherElderSubtitle": "새로운 어르신을 연결해요",
+  "settingsSubtitle": "언어와 계정을 관리해요",
   "supportTitle": "고객 지원",
+  "supportSubtitle": "도움이 필요하면 문의해요",
+  "supportFaqSectionTitle": "자주 묻는 질문",
+  "supportFaqConnectQuestion": "어르신을 어떻게 연결하나요?",
+  "supportFaqConnectAnswer": "더보기 화면의 '다른 어르신 연결'을 누르고, 어르신 온담 앱의 화면에 표시된 QR 코드를 카메라로 비추면 바로 연결돼요.",
+  "supportFaqAlertQuestion": "위험 알림은 언제 오나요?",
+  "supportFaqAlertAnswer": "어르신이 확인한 문서나 문자에서 주의 또는 위험 요소가 발견되면 알림 탭에 실시간으로 도착해요. 안전한 내용은 따로 알리지 않아요.",
+  "supportFaqMultipleEldersQuestion": "여러 어르신을 연결할 수 있나요?",
+  "supportFaqMultipleEldersAnswer": "네, 더보기의 '다른 어르신 연결'로 계속 추가할 수 있어요. 홈 화면 상단에서 연결된 어르신을 바꿔가며 확인할 수 있어요.",
+  "supportFaqDisconnectQuestion": "연결을 해제하면 어떻게 되나요?",
+  "supportFaqDisconnectAnswer": "설정에서 연결을 해제하면 그 어르신의 알림과 기록이 더 이상 보이지 않아요. 어르신 쪽 연결 목록에서도 함께 사라져요.",
+  "supportPrivacySectionTitle": "개인정보 보호",
+  "supportPrivacyNote": "어르신의 비밀번호, PIN, 화면 설정 같은 민감한 정보는 보호자에게 전달되지 않아요. 온담은 주의가 필요한 알림과 확인 기록만 보여드려요.",
+  "guardianLoginEyebrow": "가족 안심 로그인",
   "pinForgotTitle": "PIN 재설정",
   "pinForgotReauthFailedTitle": "본인 확인에 실패했어요",
   "retryButtonLabel": "다시 시도",
@@ -79,14 +99,34 @@
   "pinKeypadClearLabel": "지우기",
   "recordsLoadError": "분석 기록을 불러오지 못했어요.",
   "recordsEmptyMessage": "아직 분석 기록이 없습니다.",
+  "filterAllLabel": "전체",
+  "filterDangerLabel": "위험",
+  "filterDocumentLabel": "문서",
+  "filterMessageLabel": "문자",
   "statisticsLoadError": "통계를 불러오지 못했어요.",
   "statisticsEmptyMessage": "아직 통계로 보여드릴 데이터가 없습니다.",
   "thisMonthCountLabel": "이번 달 분석 건수",
   "riskyThisMonthCountLabel": "위험 문자 건수",
+  "completedScheduleCountLabel": "완료한 일정",
+  "pendingScheduleCountLabel": "남은 일정",
+  "recentWeeksActivityTitle": "최근 4주 활동",
+  "recentWeeksActivitySubtitle": "분석 횟수",
+  "fourWeeksAgoLabel": "4주 전",
+  "thisWeekLabel": "이번 주",
   "countUnitLabel": "{count}건",
   "@countUnitLabel": {
     "placeholders": { "count": { "type": "int" } }
   },
+  "guardianSummaryTitle": "보호자 안심 요약",
+  "guardianSummaryRiskyCount": "확인이 필요한 위험 건 {count}건 있어요",
+  "@guardianSummaryRiskyCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "guardianSummaryPendingSchedule": "완료하지 않은 일정이 {count}건 남았어요",
+  "@guardianSummaryPendingSchedule": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "guardianSummaryAllClear": "확인할 위험 건이나 남은 일정이 없어요",
   "feeStatisticsSectionTitle": "요금 통계",
   "billingInfoSectionTitle": "고지서 정보",
   "billingInfoUndecidedNotice": "고지서 통계 항목은 아직 결정되지 않았어요. 기록에 담긴 원본 정보만 보여드려요.",
@@ -164,5 +204,12 @@
   "connectionRequestSentTitle": "연결 요청을 보냈어요",
   "connectionRequestSentDescription": "어르신이 요청을 수락하면 연결이 완료돼요.",
   "okButtonLabel": "확인",
-  "comingSoonMessage": "이 기능은 아직 준비 중이에요."
+  "comingSoonMessage": "이 기능은 아직 준비 중이에요.",
+  "demoUsageBadgeLabel": "데모 · {months}개월째 이용 중 · 분석 {count}건",
+  "@demoUsageBadgeLabel": {
+    "placeholders": {
+      "months": { "type": "int" },
+      "count": { "type": "int" }
+    }
+  }
 }

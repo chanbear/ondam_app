@@ -110,7 +110,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get recentActivityTitle => '最近のアクティビティ';
 
   @override
+  String get recentActivityEyebrow => '最新のお知らせ';
+
+  @override
   String get upcomingScheduleTitle => '今後の予定';
+
+  @override
+  String get upcomingScheduleEyebrow => '見逃さないように';
 
   @override
   String get noUpcomingSchedule => '予定はありません。';
@@ -141,6 +147,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get recentNotificationsTitle => '最近の通知';
+
+  @override
+  String get recentNotificationsEyebrow => '今すぐ確認してください';
 
   @override
   String get viewAllAction => 'すべて見る';
@@ -182,6 +191,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get realtimeAlertsTitle => 'リアルタイム通知';
 
   @override
+  String get unreadNotificationsCountLabel => '未読の通知';
+
+  @override
+  String get unreadNotificationsSummaryDescription =>
+      'ご家族が確認した書類・メッセージのうち注意が必要な通知がここに集まります。';
+
+  @override
   String get riskRecordsTitle => 'リスク記録';
 
   @override
@@ -209,7 +225,57 @@ class AppLocalizationsJa extends AppLocalizations {
   String get connectAnotherElderAction => '他の高齢者と連携';
 
   @override
+  String get connectAnotherElderSubtitle => '新しいご家族と連携します';
+
+  @override
+  String get settingsSubtitle => '言語とアカウントを管理します';
+
+  @override
   String get supportTitle => 'カスタマーサポート';
+
+  @override
+  String get supportSubtitle => 'お困りの際はお問い合わせください';
+
+  @override
+  String get supportFaqSectionTitle => 'よくある質問';
+
+  @override
+  String get supportFaqConnectQuestion => '高齢者の方をどうやって連携しますか?';
+
+  @override
+  String get supportFaqConnectAnswer =>
+      '「その他」画面の「別の高齢者を連携」をタップし、高齢者用アプリの画面に表示されたQRコードにカメラをかざすとすぐに連携できます。';
+
+  @override
+  String get supportFaqAlertQuestion => '危険アラートはいつ届きますか?';
+
+  @override
+  String get supportFaqAlertAnswer =>
+      '高齢者が確認した書類やメッセージに注意または危険な要素が見つかると、通知タブにリアルタイムで届きます。安全な内容は個別に通知しません。';
+
+  @override
+  String get supportFaqMultipleEldersQuestion => '複数の高齢者を連携できますか?';
+
+  @override
+  String get supportFaqMultipleEldersAnswer =>
+      'はい。「その他」の「別の高齢者を連携」から追加でき、ホーム画面上部で連携中の高齢者を切り替えて確認できます。';
+
+  @override
+  String get supportFaqDisconnectQuestion => '連携を解除するとどうなりますか?';
+
+  @override
+  String get supportFaqDisconnectAnswer =>
+      '設定で連携を解除すると、その高齢者の通知や記録が表示されなくなります。高齢者側の連携リストからも同時に消えます。';
+
+  @override
+  String get supportPrivacySectionTitle => 'プライバシー保護';
+
+  @override
+  String get supportPrivacyNote =>
+      '高齢者のパスワード、PIN、画面設定などの機密情報は保護者に共有されません。ONDAMは注意が必要な通知と確認記録のみを表示します。';
+
+  @override
+  String get guardianLoginEyebrow => '家族の安心ログイン';
 
   @override
   String get pinForgotTitle => 'PIN再設定';
@@ -233,6 +299,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get recordsEmptyMessage => 'まだ分析記録がありません。';
 
   @override
+  String get filterAllLabel => 'すべて';
+
+  @override
+  String get filterDangerLabel => '危険';
+
+  @override
+  String get filterDocumentLabel => '書類';
+
+  @override
+  String get filterMessageLabel => 'メッセージ';
+
+  @override
   String get statisticsLoadError => '統計を読み込めませんでした。';
 
   @override
@@ -245,9 +323,43 @@ class AppLocalizationsJa extends AppLocalizations {
   String get riskyThisMonthCountLabel => '今月の危険メッセージ件数';
 
   @override
+  String get completedScheduleCountLabel => '完了した予定';
+
+  @override
+  String get pendingScheduleCountLabel => '残っている予定';
+
+  @override
+  String get recentWeeksActivityTitle => '直近4週間の活動';
+
+  @override
+  String get recentWeeksActivitySubtitle => '分析回数';
+
+  @override
+  String get fourWeeksAgoLabel => '4週間前';
+
+  @override
+  String get thisWeekLabel => '今週';
+
+  @override
   String countUnitLabel(int count) {
     return '$count件';
   }
+
+  @override
+  String get guardianSummaryTitle => '見守りサマリー';
+
+  @override
+  String guardianSummaryRiskyCount(int count) {
+    return '確認が必要な危険な項目が$count件あります';
+  }
+
+  @override
+  String guardianSummaryPendingSchedule(int count) {
+    return '未完了の予定が$count件残っています';
+  }
+
+  @override
+  String get guardianSummaryAllClear => '確認が必要な危険な項目や残っている予定はありません';
 
   @override
   String get feeStatisticsSectionTitle => '料金統計';
@@ -437,4 +549,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get comingSoonMessage => 'この機能は現在準備中です。';
+
+  @override
+  String demoUsageBadgeLabel(int months, int count) {
+    return 'デモ · $monthsヶ月利用中 · 分析$count件';
+  }
 }

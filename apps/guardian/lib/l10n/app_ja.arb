@@ -38,7 +38,9 @@
   "noConnectedEldersMessage": "まだ連携している高齢者がいません。",
   "connectElderAction": "高齢者と連携する",
   "recentActivityTitle": "最近のアクティビティ",
+  "recentActivityEyebrow": "最新のお知らせ",
   "upcomingScheduleTitle": "今後の予定",
+  "upcomingScheduleEyebrow": "見逃さないように",
   "noUpcomingSchedule": "予定はありません。",
   "reassuranceLoadError": "安心ステータスを読み込めませんでした。",
   "dangerousAlertTitle": "確認が必要な活動があります",
@@ -49,6 +51,7 @@
   "recentActivityLoadError": "最近のアクティビティを読み込めませんでした。",
   "noActivityRecords": "まだ活動記録がありません。",
   "recentNotificationsTitle": "最近の通知",
+  "recentNotificationsEyebrow": "今すぐ確認してください",
   "viewAllAction": "すべて見る",
   "noRecentNotifications": "まだ通知がありません。",
   "recentNotificationsLoadError": "通知を読み込めませんでした。",
@@ -62,6 +65,8 @@
   "confirmButtonLabel": "確認完了",
   "confirmedBannerLabel": "確認完了しました",
   "realtimeAlertsTitle": "リアルタイム通知",
+  "unreadNotificationsCountLabel": "未読の通知",
+  "unreadNotificationsSummaryDescription": "ご家族が確認した書類・メッセージのうち注意が必要な通知がここに集まります。",
   "riskRecordsTitle": "リスク記録",
   "riskRecordsLoadError": "記録を読み込めませんでした。",
   "noRiskRecords": "まだリスク記録がありません。",
@@ -71,6 +76,21 @@
   "analysisTypeDocumentLabel": "書類分析",
   "analysisTypeMessageLabel": "メッセージ確認",
   "connectAnotherElderAction": "他の高齢者と連携",
+  "connectAnotherElderSubtitle": "新しいご家族と連携します",
+  "settingsSubtitle": "言語とアカウントを管理します",
+  "supportSubtitle": "お困りの際はお問い合わせください",
+  "supportFaqSectionTitle": "よくある質問",
+  "supportFaqConnectQuestion": "高齢者の方をどうやって連携しますか?",
+  "supportFaqConnectAnswer": "「その他」画面の「別の高齢者を連携」をタップし、高齢者用アプリの画面に表示されたQRコードにカメラをかざすとすぐに連携できます。",
+  "supportFaqAlertQuestion": "危険アラートはいつ届きますか?",
+  "supportFaqAlertAnswer": "高齢者が確認した書類やメッセージに注意または危険な要素が見つかると、通知タブにリアルタイムで届きます。安全な内容は個別に通知しません。",
+  "supportFaqMultipleEldersQuestion": "複数の高齢者を連携できますか?",
+  "supportFaqMultipleEldersAnswer": "はい。「その他」の「別の高齢者を連携」から追加でき、ホーム画面上部で連携中の高齢者を切り替えて確認できます。",
+  "supportFaqDisconnectQuestion": "連携を解除するとどうなりますか?",
+  "supportFaqDisconnectAnswer": "設定で連携を解除すると、その高齢者の通知や記録が表示されなくなります。高齢者側の連携リストからも同時に消えます。",
+  "supportPrivacySectionTitle": "プライバシー保護",
+  "supportPrivacyNote": "高齢者のパスワード、PIN、画面設定などの機密情報は保護者に共有されません。ONDAMは注意が必要な通知と確認記録のみを表示します。",
+  "guardianLoginEyebrow": "家族の安心ログイン",
   "supportTitle": "カスタマーサポート",
   "pinForgotTitle": "PIN再設定",
   "pinForgotReauthFailedTitle": "本人確認に失敗しました",
@@ -78,15 +98,35 @@
   "pinForgotNewPinTitle": "新しい4桁のPINを設定してください",
   "pinKeypadClearLabel": "消去",
   "recordsLoadError": "分析記録を読み込めませんでした。",
+  "filterAllLabel": "すべて",
+  "filterDangerLabel": "危険",
+  "filterDocumentLabel": "書類",
+  "filterMessageLabel": "メッセージ",
   "recordsEmptyMessage": "まだ分析記録がありません。",
   "statisticsLoadError": "統計を読み込めませんでした。",
   "statisticsEmptyMessage": "まだ統計として表示できるデータがありません。",
   "thisMonthCountLabel": "今月の分析件数",
+  "completedScheduleCountLabel": "完了した予定",
+  "pendingScheduleCountLabel": "残っている予定",
+  "recentWeeksActivityTitle": "直近4週間の活動",
+  "recentWeeksActivitySubtitle": "分析回数",
+  "fourWeeksAgoLabel": "4週間前",
+  "thisWeekLabel": "今週",
   "riskyThisMonthCountLabel": "今月の危険メッセージ件数",
   "countUnitLabel": "{count}件",
   "@countUnitLabel": {
     "placeholders": { "count": { "type": "int" } }
   },
+  "guardianSummaryTitle": "見守りサマリー",
+  "guardianSummaryRiskyCount": "確認が必要な危険な項目が{count}件あります",
+  "@guardianSummaryRiskyCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "guardianSummaryPendingSchedule": "未完了の予定が{count}件残っています",
+  "@guardianSummaryPendingSchedule": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "guardianSummaryAllClear": "確認が必要な危険な項目や残っている予定はありません",
   "feeStatisticsSectionTitle": "料金統計",
   "billingInfoSectionTitle": "請求書情報",
   "billingInfoUndecidedNotice": "請求書統計の項目はまだ決まっていません。記録に含まれる元の情報のみ表示します。",
@@ -164,5 +204,12 @@
   "connectionRequestSentTitle": "連携リクエストを送信しました",
   "connectionRequestSentDescription": "高齢者がリクエストを承認すると連携が完了します。",
   "okButtonLabel": "OK",
-  "comingSoonMessage": "この機能は現在準備中です。"
+  "comingSoonMessage": "この機能は現在準備中です。",
+  "demoUsageBadgeLabel": "デモ · {months}ヶ月利用中 · 分析{count}件",
+  "@demoUsageBadgeLabel": {
+    "placeholders": {
+      "months": { "type": "int" },
+      "count": { "type": "int" }
+    }
+  }
 }

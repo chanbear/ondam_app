@@ -109,7 +109,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recentActivityTitle => '最近活动';
 
   @override
+  String get recentActivityEyebrow => '最新动态';
+
+  @override
   String get upcomingScheduleTitle => '即将到来的日程';
+
+  @override
+  String get upcomingScheduleEyebrow => '不要错过';
 
   @override
   String get noUpcomingSchedule => '没有安排的日程。';
@@ -140,6 +146,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recentNotificationsTitle => '最近通知';
+
+  @override
+  String get recentNotificationsEyebrow => '请立即查看';
 
   @override
   String get viewAllAction => '查看全部';
@@ -181,6 +190,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get realtimeAlertsTitle => '实时通知';
 
   @override
+  String get unreadNotificationsCountLabel => '未读通知';
+
+  @override
+  String get unreadNotificationsSummaryDescription =>
+      '长辈已确认的文件、短信中需要留意的通知会汇总在这里。';
+
+  @override
   String get riskRecordsTitle => '风险记录';
 
   @override
@@ -208,7 +224,57 @@ class AppLocalizationsZh extends AppLocalizations {
   String get connectAnotherElderAction => '连接其他老人';
 
   @override
+  String get connectAnotherElderSubtitle => '连接新的长辈';
+
+  @override
+  String get settingsSubtitle => '管理语言和账户';
+
+  @override
   String get supportTitle => '客服支持';
+
+  @override
+  String get supportSubtitle => '需要帮助时联系我们';
+
+  @override
+  String get supportFaqSectionTitle => '常见问题';
+
+  @override
+  String get supportFaqConnectQuestion => '如何连接长辈？';
+
+  @override
+  String get supportFaqConnectAnswer =>
+      '在更多页面点击「连接其他长辈」，然后用相机对准长辈온담应用画面上显示的二维码即可立即连接。';
+
+  @override
+  String get supportFaqAlertQuestion => '危险提醒什么时候会发送？';
+
+  @override
+  String get supportFaqAlertAnswer =>
+      '当长辈查看的文件或短信被判定为需要注意或危险时，提醒会实时出现在通知标签中。安全内容不会单独通知。';
+
+  @override
+  String get supportFaqMultipleEldersQuestion => '可以连接多位长辈吗？';
+
+  @override
+  String get supportFaqMultipleEldersAnswer =>
+      '可以，通过更多页面的「连接其他长辈」持续添加，并在主页顶部切换查看已连接的长辈。';
+
+  @override
+  String get supportFaqDisconnectQuestion => '解除连接会怎样？';
+
+  @override
+  String get supportFaqDisconnectAnswer =>
+      '在设置中解除连接后，该长辈的提醒和记录将不再显示，长辈那边的连接列表中也会同时消失。';
+
+  @override
+  String get supportPrivacySectionTitle => '隐私保护';
+
+  @override
+  String get supportPrivacyNote =>
+      '长辈的密码、PIN码、屏幕设置等敏感信息不会提供给监护人。온담只显示需要您关注的提醒和确认记录。';
+
+  @override
+  String get guardianLoginEyebrow => '家人安心登录';
 
   @override
   String get pinForgotTitle => '重置PIN';
@@ -232,6 +298,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordsEmptyMessage => '尚无分析记录。';
 
   @override
+  String get filterAllLabel => '全部';
+
+  @override
+  String get filterDangerLabel => '风险';
+
+  @override
+  String get filterDocumentLabel => '文件';
+
+  @override
+  String get filterMessageLabel => '短信';
+
+  @override
   String get statisticsLoadError => '无法加载统计数据。';
 
   @override
@@ -244,9 +322,43 @@ class AppLocalizationsZh extends AppLocalizations {
   String get riskyThisMonthCountLabel => '本月风险短信数';
 
   @override
+  String get completedScheduleCountLabel => '已完成日程';
+
+  @override
+  String get pendingScheduleCountLabel => '剩余日程';
+
+  @override
+  String get recentWeeksActivityTitle => '最近4周活动';
+
+  @override
+  String get recentWeeksActivitySubtitle => '分析次数';
+
+  @override
+  String get fourWeeksAgoLabel => '4周前';
+
+  @override
+  String get thisWeekLabel => '本周';
+
+  @override
   String countUnitLabel(int count) {
     return '$count件';
   }
+
+  @override
+  String get guardianSummaryTitle => '监护人安心摘要';
+
+  @override
+  String guardianSummaryRiskyCount(int count) {
+    return '有$count件需要确认的风险内容';
+  }
+
+  @override
+  String guardianSummaryPendingSchedule(int count) {
+    return '还有$count件未完成的日程';
+  }
+
+  @override
+  String get guardianSummaryAllClear => '目前没有需要确认的风险内容或未完成的日程';
 
   @override
   String get feeStatisticsSectionTitle => '费用统计';
@@ -432,4 +544,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get comingSoonMessage => '此功能仍在开发中。';
+
+  @override
+  String demoUsageBadgeLabel(int months, int count) {
+    return '演示 · 已使用$months个月 · 分析$count件';
+  }
 }

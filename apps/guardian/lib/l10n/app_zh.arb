@@ -38,7 +38,9 @@
   "noConnectedEldersMessage": "尚未连接任何老人。",
   "connectElderAction": "连接老人",
   "recentActivityTitle": "最近活动",
+  "recentActivityEyebrow": "最新动态",
   "upcomingScheduleTitle": "即将到来的日程",
+  "upcomingScheduleEyebrow": "不要错过",
   "noUpcomingSchedule": "没有安排的日程。",
   "reassuranceLoadError": "无法加载安心状态。",
   "dangerousAlertTitle": "有需要确认的活动",
@@ -49,6 +51,7 @@
   "recentActivityLoadError": "无法加载最近活动。",
   "noActivityRecords": "尚无活动记录。",
   "recentNotificationsTitle": "最近通知",
+  "recentNotificationsEyebrow": "请立即查看",
   "viewAllAction": "查看全部",
   "noRecentNotifications": "尚未收到通知。",
   "recentNotificationsLoadError": "无法加载通知。",
@@ -62,6 +65,8 @@
   "confirmButtonLabel": "确认完成",
   "confirmedBannerLabel": "已确认完成",
   "realtimeAlertsTitle": "实时通知",
+  "unreadNotificationsCountLabel": "未读通知",
+  "unreadNotificationsSummaryDescription": "长辈已确认的文件、短信中需要留意的通知会汇总在这里。",
   "riskRecordsTitle": "风险记录",
   "riskRecordsLoadError": "无法加载记录。",
   "noRiskRecords": "尚无风险记录。",
@@ -71,6 +76,21 @@
   "analysisTypeDocumentLabel": "文件分析",
   "analysisTypeMessageLabel": "短信核查",
   "connectAnotherElderAction": "连接其他老人",
+  "connectAnotherElderSubtitle": "连接新的长辈",
+  "settingsSubtitle": "管理语言和账户",
+  "supportSubtitle": "需要帮助时联系我们",
+  "supportFaqSectionTitle": "常见问题",
+  "supportFaqConnectQuestion": "如何连接长辈？",
+  "supportFaqConnectAnswer": "在更多页面点击「连接其他长辈」，然后用相机对准长辈온담应用画面上显示的二维码即可立即连接。",
+  "supportFaqAlertQuestion": "危险提醒什么时候会发送？",
+  "supportFaqAlertAnswer": "当长辈查看的文件或短信被判定为需要注意或危险时，提醒会实时出现在通知标签中。安全内容不会单独通知。",
+  "supportFaqMultipleEldersQuestion": "可以连接多位长辈吗？",
+  "supportFaqMultipleEldersAnswer": "可以，通过更多页面的「连接其他长辈」持续添加，并在主页顶部切换查看已连接的长辈。",
+  "supportFaqDisconnectQuestion": "解除连接会怎样？",
+  "supportFaqDisconnectAnswer": "在设置中解除连接后，该长辈的提醒和记录将不再显示，长辈那边的连接列表中也会同时消失。",
+  "supportPrivacySectionTitle": "隐私保护",
+  "supportPrivacyNote": "长辈的密码、PIN码、屏幕设置等敏感信息不会提供给监护人。온담只显示需要您关注的提醒和确认记录。",
+  "guardianLoginEyebrow": "家人安心登录",
   "supportTitle": "客服支持",
   "pinForgotTitle": "重置PIN",
   "pinForgotReauthFailedTitle": "身份验证失败",
@@ -78,15 +98,35 @@
   "pinForgotNewPinTitle": "请设置新的4位PIN码",
   "pinKeypadClearLabel": "清除",
   "recordsLoadError": "无法加载分析记录。",
+  "filterAllLabel": "全部",
+  "filterDangerLabel": "风险",
+  "filterDocumentLabel": "文件",
+  "filterMessageLabel": "短信",
   "recordsEmptyMessage": "尚无分析记录。",
   "statisticsLoadError": "无法加载统计数据。",
   "statisticsEmptyMessage": "尚无可显示的统计数据。",
   "thisMonthCountLabel": "本月分析次数",
+  "completedScheduleCountLabel": "已完成日程",
+  "pendingScheduleCountLabel": "剩余日程",
+  "recentWeeksActivityTitle": "最近4周活动",
+  "recentWeeksActivitySubtitle": "分析次数",
+  "fourWeeksAgoLabel": "4周前",
+  "thisWeekLabel": "本周",
   "riskyThisMonthCountLabel": "本月风险短信数",
   "countUnitLabel": "{count}件",
   "@countUnitLabel": {
     "placeholders": { "count": { "type": "int" } }
   },
+  "guardianSummaryTitle": "监护人安心摘要",
+  "guardianSummaryRiskyCount": "有{count}件需要确认的风险内容",
+  "@guardianSummaryRiskyCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "guardianSummaryPendingSchedule": "还有{count}件未完成的日程",
+  "@guardianSummaryPendingSchedule": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "guardianSummaryAllClear": "目前没有需要确认的风险内容或未完成的日程",
   "feeStatisticsSectionTitle": "费用统计",
   "billingInfoSectionTitle": "账单信息",
   "billingInfoUndecidedNotice": "账单统计项目尚未确定，仅显示记录中的原始信息。",
@@ -164,5 +204,12 @@
   "connectionRequestSentTitle": "已发送连接请求",
   "connectionRequestSentDescription": "老人接受请求后即可完成连接。",
   "okButtonLabel": "确定",
-  "comingSoonMessage": "此功能仍在开发中。"
+  "comingSoonMessage": "此功能仍在开发中。",
+  "demoUsageBadgeLabel": "演示 · 已使用{months}个月 · 分析{count}件",
+  "@demoUsageBadgeLabel": {
+    "placeholders": {
+      "months": { "type": "int" },
+      "count": { "type": "int" }
+    }
+  }
 }

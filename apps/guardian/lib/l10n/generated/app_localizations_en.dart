@@ -111,7 +111,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentActivityTitle => 'Recent activity';
 
   @override
+  String get recentActivityEyebrow => 'Latest updates';
+
+  @override
   String get upcomingScheduleTitle => 'Upcoming schedule';
+
+  @override
+  String get upcomingScheduleEyebrow => 'So nothing slips';
 
   @override
   String get noUpcomingSchedule => 'No upcoming schedule.';
@@ -144,6 +150,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recentNotificationsTitle => 'Recent alerts';
+
+  @override
+  String get recentNotificationsEyebrow => 'Please check now';
 
   @override
   String get viewAllAction => 'View all';
@@ -185,6 +194,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get realtimeAlertsTitle => 'Live alerts';
 
   @override
+  String get unreadNotificationsCountLabel => 'Unread alerts';
+
+  @override
+  String get unreadNotificationsSummaryDescription =>
+      'Alerts that need attention from your parent\'s checked documents and messages show up here.';
+
+  @override
   String get riskRecordsTitle => 'Risk records';
 
   @override
@@ -212,7 +228,58 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectAnotherElderAction => 'Connect another elder';
 
   @override
+  String get connectAnotherElderSubtitle => 'Link a new elder to your account';
+
+  @override
+  String get settingsSubtitle => 'Manage language and account';
+
+  @override
   String get supportTitle => 'Support';
+
+  @override
+  String get supportSubtitle => 'Reach out if you need help';
+
+  @override
+  String get supportFaqSectionTitle => 'Frequently asked questions';
+
+  @override
+  String get supportFaqConnectQuestion => 'How do I connect an elder?';
+
+  @override
+  String get supportFaqConnectAnswer =>
+      'Tap \'Connect another elder\' in More, then point your camera at the QR code shown on the elder\'s ONDAM app screen to connect instantly.';
+
+  @override
+  String get supportFaqAlertQuestion => 'When do risk alerts arrive?';
+
+  @override
+  String get supportFaqAlertAnswer =>
+      'You\'ll get a real-time alert whenever a document or message the elder checked is flagged as caution or dangerous. Safe items aren\'t reported separately.';
+
+  @override
+  String get supportFaqMultipleEldersQuestion =>
+      'Can I connect more than one elder?';
+
+  @override
+  String get supportFaqMultipleEldersAnswer =>
+      'Yes — keep adding elders from \'Connect another elder\' in More, and switch between them at the top of the Home screen.';
+
+  @override
+  String get supportFaqDisconnectQuestion => 'What happens if I disconnect?';
+
+  @override
+  String get supportFaqDisconnectAnswer =>
+      'Disconnecting removes that elder\'s alerts and records from your view, and it also disappears from their connection list.';
+
+  @override
+  String get supportPrivacySectionTitle => 'Privacy';
+
+  @override
+  String get supportPrivacyNote =>
+      'Sensitive information like the elder\'s password, PIN, or display settings is never shared with guardians. ONDAM only shows alerts and records that need your attention.';
+
+  @override
+  String get guardianLoginEyebrow => 'Family peace of mind';
 
   @override
   String get pinForgotTitle => 'Reset PIN';
@@ -236,6 +303,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordsEmptyMessage => 'No analysis records yet.';
 
   @override
+  String get filterAllLabel => 'All';
+
+  @override
+  String get filterDangerLabel => 'Risky';
+
+  @override
+  String get filterDocumentLabel => 'Documents';
+
+  @override
+  String get filterMessageLabel => 'Messages';
+
+  @override
   String get statisticsLoadError => 'We couldn\'t load the statistics.';
 
   @override
@@ -248,9 +327,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String get riskyThisMonthCountLabel => 'Risky messages this month';
 
   @override
+  String get completedScheduleCountLabel => 'Completed schedules';
+
+  @override
+  String get pendingScheduleCountLabel => 'Remaining schedules';
+
+  @override
+  String get recentWeeksActivityTitle => 'Last 4 weeks';
+
+  @override
+  String get recentWeeksActivitySubtitle => 'Analyses';
+
+  @override
+  String get fourWeeksAgoLabel => '4 wks ago';
+
+  @override
+  String get thisWeekLabel => 'This week';
+
+  @override
   String countUnitLabel(int count) {
     return '$count';
   }
+
+  @override
+  String get guardianSummaryTitle => 'Care Summary';
+
+  @override
+  String guardianSummaryRiskyCount(int count) {
+    return '$count risky item(s) need your attention';
+  }
+
+  @override
+  String guardianSummaryPendingSchedule(int count) {
+    return '$count schedule(s) still pending';
+  }
+
+  @override
+  String get guardianSummaryAllClear =>
+      'No risky items or pending schedules right now';
 
   @override
   String get feeStatisticsSectionTitle => 'Fee Statistics';
@@ -445,4 +559,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get comingSoonMessage => 'This feature is still being built.';
+
+  @override
+  String demoUsageBadgeLabel(int months, int count) {
+    return 'Demo · used for $months months · $count analyses';
+  }
 }

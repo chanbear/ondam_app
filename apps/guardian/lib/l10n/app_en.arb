@@ -38,7 +38,9 @@
   "noConnectedEldersMessage": "No elders connected yet.",
   "connectElderAction": "Connect with an elder",
   "recentActivityTitle": "Recent activity",
+  "recentActivityEyebrow": "Latest updates",
   "upcomingScheduleTitle": "Upcoming schedule",
+  "upcomingScheduleEyebrow": "So nothing slips",
   "noUpcomingSchedule": "No upcoming schedule.",
   "reassuranceLoadError": "We couldn't load the status.",
   "dangerousAlertTitle": "There's activity that needs your attention",
@@ -49,6 +51,7 @@
   "recentActivityLoadError": "We couldn't load recent activity.",
   "noActivityRecords": "No activity records yet.",
   "recentNotificationsTitle": "Recent alerts",
+  "recentNotificationsEyebrow": "Please check now",
   "viewAllAction": "View all",
   "noRecentNotifications": "No alerts yet.",
   "recentNotificationsLoadError": "We couldn't load alerts.",
@@ -62,6 +65,8 @@
   "confirmButtonLabel": "Confirm",
   "confirmedBannerLabel": "Marked as confirmed",
   "realtimeAlertsTitle": "Live alerts",
+  "unreadNotificationsCountLabel": "Unread alerts",
+  "unreadNotificationsSummaryDescription": "Alerts that need attention from your parent's checked documents and messages show up here.",
   "riskRecordsTitle": "Risk records",
   "riskRecordsLoadError": "We couldn't load records.",
   "noRiskRecords": "No risk records yet.",
@@ -71,6 +76,21 @@
   "analysisTypeDocumentLabel": "Document analysis",
   "analysisTypeMessageLabel": "Message check",
   "connectAnotherElderAction": "Connect another elder",
+  "connectAnotherElderSubtitle": "Link a new elder to your account",
+  "settingsSubtitle": "Manage language and account",
+  "supportSubtitle": "Reach out if you need help",
+  "supportFaqSectionTitle": "Frequently asked questions",
+  "supportFaqConnectQuestion": "How do I connect an elder?",
+  "supportFaqConnectAnswer": "Tap 'Connect another elder' in More, then point your camera at the QR code shown on the elder's ONDAM app screen to connect instantly.",
+  "supportFaqAlertQuestion": "When do risk alerts arrive?",
+  "supportFaqAlertAnswer": "You'll get a real-time alert whenever a document or message the elder checked is flagged as caution or dangerous. Safe items aren't reported separately.",
+  "supportFaqMultipleEldersQuestion": "Can I connect more than one elder?",
+  "supportFaqMultipleEldersAnswer": "Yes — keep adding elders from 'Connect another elder' in More, and switch between them at the top of the Home screen.",
+  "supportFaqDisconnectQuestion": "What happens if I disconnect?",
+  "supportFaqDisconnectAnswer": "Disconnecting removes that elder's alerts and records from your view, and it also disappears from their connection list.",
+  "supportPrivacySectionTitle": "Privacy",
+  "supportPrivacyNote": "Sensitive information like the elder's password, PIN, or display settings is never shared with guardians. ONDAM only shows alerts and records that need your attention.",
+  "guardianLoginEyebrow": "Family peace of mind",
   "supportTitle": "Support",
   "pinForgotTitle": "Reset PIN",
   "pinForgotReauthFailedTitle": "We couldn't verify your identity",
@@ -78,15 +98,35 @@
   "pinForgotNewPinTitle": "Please set a new 4-digit PIN",
   "pinKeypadClearLabel": "Clear",
   "recordsLoadError": "We couldn't load the analysis records.",
+  "filterAllLabel": "All",
+  "filterDangerLabel": "Risky",
+  "filterDocumentLabel": "Documents",
+  "filterMessageLabel": "Messages",
   "recordsEmptyMessage": "No analysis records yet.",
   "statisticsLoadError": "We couldn't load the statistics.",
   "statisticsEmptyMessage": "No data to show statistics for yet.",
   "thisMonthCountLabel": "Analyses this month",
+  "completedScheduleCountLabel": "Completed schedules",
+  "pendingScheduleCountLabel": "Remaining schedules",
+  "recentWeeksActivityTitle": "Last 4 weeks",
+  "recentWeeksActivitySubtitle": "Analyses",
+  "fourWeeksAgoLabel": "4 wks ago",
+  "thisWeekLabel": "This week",
   "riskyThisMonthCountLabel": "Risky messages this month",
   "countUnitLabel": "{count}",
   "@countUnitLabel": {
     "placeholders": { "count": { "type": "int" } }
   },
+  "guardianSummaryTitle": "Care Summary",
+  "guardianSummaryRiskyCount": "{count} risky item(s) need your attention",
+  "@guardianSummaryRiskyCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "guardianSummaryPendingSchedule": "{count} schedule(s) still pending",
+  "@guardianSummaryPendingSchedule": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "guardianSummaryAllClear": "No risky items or pending schedules right now",
   "feeStatisticsSectionTitle": "Fee Statistics",
   "billingInfoSectionTitle": "Bill Information",
   "billingInfoUndecidedNotice": "We haven't finalized which bill fields to summarize yet — showing the raw info from each record.",
@@ -164,5 +204,12 @@
   "connectionRequestSentTitle": "Connection request sent",
   "connectionRequestSentDescription": "The connection will complete once the elder accepts the request.",
   "okButtonLabel": "OK",
-  "comingSoonMessage": "This feature is still being built."
+  "comingSoonMessage": "This feature is still being built.",
+  "demoUsageBadgeLabel": "Demo · used for {months} months · {count} analyses",
+  "@demoUsageBadgeLabel": {
+    "placeholders": {
+      "months": { "type": "int" },
+      "count": { "type": "int" }
+    }
+  }
 }

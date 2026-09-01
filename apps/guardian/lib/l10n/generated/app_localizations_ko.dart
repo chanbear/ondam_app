@@ -110,7 +110,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get recentActivityTitle => '최근 활동';
 
   @override
+  String get recentActivityEyebrow => '최근 소식';
+
+  @override
   String get upcomingScheduleTitle => '다가오는 일정';
+
+  @override
+  String get upcomingScheduleEyebrow => '놓치지 않도록';
 
   @override
   String get noUpcomingSchedule => '예정된 일정이 없어요.';
@@ -141,6 +147,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get recentNotificationsTitle => '최근 알림';
+
+  @override
+  String get recentNotificationsEyebrow => '지금 확인해 주세요';
 
   @override
   String get viewAllAction => '전체보기';
@@ -182,6 +191,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get realtimeAlertsTitle => '실시간 알림';
 
   @override
+  String get unreadNotificationsCountLabel => '읽지 않은 알림';
+
+  @override
+  String get unreadNotificationsSummaryDescription =>
+      '어르신이 확인한 문서·문자 중 주의가 필요한 알림이 여기에 모여요.';
+
+  @override
   String get riskRecordsTitle => '위험 기록';
 
   @override
@@ -209,7 +225,57 @@ class AppLocalizationsKo extends AppLocalizations {
   String get connectAnotherElderAction => '다른 어르신 연결';
 
   @override
+  String get connectAnotherElderSubtitle => '새로운 어르신을 연결해요';
+
+  @override
+  String get settingsSubtitle => '언어와 계정을 관리해요';
+
+  @override
   String get supportTitle => '고객 지원';
+
+  @override
+  String get supportSubtitle => '도움이 필요하면 문의해요';
+
+  @override
+  String get supportFaqSectionTitle => '자주 묻는 질문';
+
+  @override
+  String get supportFaqConnectQuestion => '어르신을 어떻게 연결하나요?';
+
+  @override
+  String get supportFaqConnectAnswer =>
+      '더보기 화면의 \'다른 어르신 연결\'을 누르고, 어르신 온담 앱의 화면에 표시된 QR 코드를 카메라로 비추면 바로 연결돼요.';
+
+  @override
+  String get supportFaqAlertQuestion => '위험 알림은 언제 오나요?';
+
+  @override
+  String get supportFaqAlertAnswer =>
+      '어르신이 확인한 문서나 문자에서 주의 또는 위험 요소가 발견되면 알림 탭에 실시간으로 도착해요. 안전한 내용은 따로 알리지 않아요.';
+
+  @override
+  String get supportFaqMultipleEldersQuestion => '여러 어르신을 연결할 수 있나요?';
+
+  @override
+  String get supportFaqMultipleEldersAnswer =>
+      '네, 더보기의 \'다른 어르신 연결\'로 계속 추가할 수 있어요. 홈 화면 상단에서 연결된 어르신을 바꿔가며 확인할 수 있어요.';
+
+  @override
+  String get supportFaqDisconnectQuestion => '연결을 해제하면 어떻게 되나요?';
+
+  @override
+  String get supportFaqDisconnectAnswer =>
+      '설정에서 연결을 해제하면 그 어르신의 알림과 기록이 더 이상 보이지 않아요. 어르신 쪽 연결 목록에서도 함께 사라져요.';
+
+  @override
+  String get supportPrivacySectionTitle => '개인정보 보호';
+
+  @override
+  String get supportPrivacyNote =>
+      '어르신의 비밀번호, PIN, 화면 설정 같은 민감한 정보는 보호자에게 전달되지 않아요. 온담은 주의가 필요한 알림과 확인 기록만 보여드려요.';
+
+  @override
+  String get guardianLoginEyebrow => '가족 안심 로그인';
 
   @override
   String get pinForgotTitle => 'PIN 재설정';
@@ -233,6 +299,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get recordsEmptyMessage => '아직 분석 기록이 없습니다.';
 
   @override
+  String get filterAllLabel => '전체';
+
+  @override
+  String get filterDangerLabel => '위험';
+
+  @override
+  String get filterDocumentLabel => '문서';
+
+  @override
+  String get filterMessageLabel => '문자';
+
+  @override
   String get statisticsLoadError => '통계를 불러오지 못했어요.';
 
   @override
@@ -245,9 +323,43 @@ class AppLocalizationsKo extends AppLocalizations {
   String get riskyThisMonthCountLabel => '위험 문자 건수';
 
   @override
+  String get completedScheduleCountLabel => '완료한 일정';
+
+  @override
+  String get pendingScheduleCountLabel => '남은 일정';
+
+  @override
+  String get recentWeeksActivityTitle => '최근 4주 활동';
+
+  @override
+  String get recentWeeksActivitySubtitle => '분석 횟수';
+
+  @override
+  String get fourWeeksAgoLabel => '4주 전';
+
+  @override
+  String get thisWeekLabel => '이번 주';
+
+  @override
   String countUnitLabel(int count) {
     return '$count건';
   }
+
+  @override
+  String get guardianSummaryTitle => '보호자 안심 요약';
+
+  @override
+  String guardianSummaryRiskyCount(int count) {
+    return '확인이 필요한 위험 건 $count건 있어요';
+  }
+
+  @override
+  String guardianSummaryPendingSchedule(int count) {
+    return '완료하지 않은 일정이 $count건 남았어요';
+  }
+
+  @override
+  String get guardianSummaryAllClear => '확인할 위험 건이나 남은 일정이 없어요';
 
   @override
   String get feeStatisticsSectionTitle => '요금 통계';
@@ -437,4 +549,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get comingSoonMessage => '이 기능은 아직 준비 중이에요.';
+
+  @override
+  String demoUsageBadgeLabel(int months, int count) {
+    return '데모 · $months개월째 이용 중 · 분석 $count건';
+  }
 }
