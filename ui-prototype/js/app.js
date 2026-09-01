@@ -91,6 +91,10 @@ function render() {
   document.getElementById("breadcrumb").innerHTML = `${appLabel(entry.app)} / ${entry.cat} / <b>${entry.title}</b>`;
   renderDevPanel(entry, variant);
   highlightNav(entry.id);
+
+  if (ANALYZING_NEXT[entry.id]) {
+    analyzingTimer = setTimeout(() => goTo(ANALYZING_NEXT[entry.id], { replace: true }), 1500);
+  }
 }
 
 // 2026-08-28 — 사용자 요청: "말로 물어보기"를 홈 화면에서만 쓸 수 있게
