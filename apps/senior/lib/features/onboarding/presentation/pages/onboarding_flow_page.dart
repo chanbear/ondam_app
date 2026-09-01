@@ -173,9 +173,13 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
   // 온보딩 흐름이 끊겼다 — region_input_page.dart의 입력 UI/로직을 이
   // 스텝 안으로 그대로 이식한다(그 파일은 SupportPage/ProfilePage에서
   // 독립 화면으로 계속 쓰이므로 건드리지 않는다).
+  // 2026-09-02 — ui-prototype(senior.onboard-profile)에 맞춰 시/도 선택 +
+  // 시/군/구·동 수동 입력을 없애고, 위치 자동 입력 결과만 보여주는 단일
+  // 필드로 단순화했다(사용자 요청) — sigungu/dong은 더는 별도 입력칸이
+  // 없어 TextEditingController 대신 평범한 String으로 들고 있는다.
   String? _sido;
-  final _sigunguController = TextEditingController();
-  final _dongController = TextEditingController();
+  String _sigungu = '';
+  String _dong = '';
   bool _locating = false;
   String? _locationError;
 
@@ -190,26 +194,15 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
     if (saved == null || !mounted) return;
     setState(() {
       _sido = saved.sido;
-      _sigunguController.text = saved.sigungu;
-      _dongController.text = saved.dong;
+      _sigungu = saved.sigungu;
+      _dong = saved.dong;
     });
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _sigunguController.dispose();
-    _dongController.dispose();
     super.dispose();
-  }
-
-  Future<void> _pickSido() async {
-    final selected = await showModalBottomSheet<String>(
-      context: context,
-      builder: (context) => _ProfileSidoPickerSheet(current: _sido),
-    );
-    if (selected == null || !mounted) return;
-    setState(() => _sido = selected);
   }
 
   // region_input_page.dart `_useCurrentLocation`과 동일한 권한 확인 →
@@ -271,8 +264,8 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
       case Ok(:final value):
         setState(() {
           _sido = value.sido;
-          _sigunguController.text = value.sigungu;
-          _dongController.text = value.dong;
+          _sigungu = value.sigungu;
+          _dong = value.dong;
           _locating = false;
         });
       case Err(:final failure):
@@ -304,13 +297,7 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
     if (sido != null && sido.isNotEmpty) {
       await ref
           .read(regionProvider.notifier)
-          .save(
-            Region(
-              sido: sido,
-              sigungu: _sigunguController.text,
-              dong: _dongController.text,
-            ),
-          );
+          .save(Region(sido: sido, sigungu: _sigungu, dong: _dong));
     }
     if (!mounted) return;
     widget.onNext();
@@ -320,16 +307,12 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final easyMode = ref.watch(easyModeProvider);
-    final sidoRow = Row(
-      children: [
-        Expanded(
-          child: Text(
-            _sido ?? l10n.sidoPlaceholder,
-            style: AppTextStyles.bodyLarge,
-          ),
-        ),
-        const Icon(Icons.chevron_right),
-      ],
+    final sido = _sido;
+    final regionInfo = AppInfoRow(
+      label: l10n.currentRegionLabel,
+      value: sido == null
+          ? l10n.regionNotSetValue
+          : Region(sido: sido, sigungu: _sigungu, dong: _dong).displayName,
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,18 +371,15 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
               ),
               const SizedBox(height: AppSpacing.sm),
               // BUG: 여기서 RegionInputPage로 이동시켰던 걸 인라인 입력으로
-              // 바꿨다 — region_input_page.dart의 시/도 선택 시트 +
-              // 시/군/구·동 텍스트필드 + 현재 위치 자동 입력을 그대로 이식.
+              // 바꿨다 — region_input_page.dart의 현재 위치 자동 입력
+              // 로직을 그대로 이식한다.
+              // 2026-09-02 — ui-prototype(senior.onboard-profile)에 맞춰
+              // 시/도 선택 + 시/군/구·동 수동 입력을 없애고, 위치 자동 입력
+              // 결과만 보여주는 단일 필드로 단순화했다(사용자 요청 — 위치
+              // 인식 결과를 직접 고칠 수는 없어졌다).
               easyMode
-                  ? EasyOutlineCard(onTap: _pickSido, child: sidoRow)
-                  : AppCard(onTap: _pickSido, child: sidoRow),
-              const SizedBox(height: AppSpacing.md),
-              AppTextField(
-                label: l10n.sigunguLabel,
-                controller: _sigunguController,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              AppTextField(label: l10n.dongLabel, controller: _dongController),
+                  ? EasyOutlineCard(child: regionInfo)
+                  : AppCard(child: regionInfo),
               const SizedBox(height: AppSpacing.md),
               AppButton(
                 label: _locating
@@ -476,40 +456,6 @@ class _ProfileGenderOption extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// `region_input_page.dart`의 `_SidoPickerSheet`와 같은 시각/동작 —
-/// private 클래스라 파일 간 재사용이 안 돼(`_ProfileGenderOption`과 같은
-/// 이유로) 그대로 복제한다.
-class _ProfileSidoPickerSheet extends StatelessWidget {
-  const _ProfileSidoPickerSheet({required this.current});
-
-  final String? current;
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: ListView(
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        children: [
-          Text(
-            AppLocalizations.of(context)!.sidoPickerTitle,
-            style: AppTextStyles.titleMedium,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          for (final sido in koreaSidoList)
-            ListTile(
-              title: Text(sido, style: AppTextStyles.bodyLarge),
-              trailing: sido == current
-                  ? const Icon(Icons.check, color: AppColors.primary)
-                  : null,
-              onTap: () => Navigator.of(context).pop(sido),
-            ),
-        ],
       ),
     );
   }

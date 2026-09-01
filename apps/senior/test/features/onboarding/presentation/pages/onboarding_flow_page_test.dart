@@ -6,18 +6,24 @@ import 'package:ondam_senior/features/onboarding/presentation/pages/onboarding_f
 import 'package:ondam_senior/features/profile/presentation/pages/region_input_page.dart';
 import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
+import '../../../../core/location/domain/fakes/fake_location_repository.dart';
 import '../../../../core/location/domain/fakes/fake_region_repository.dart';
 
 void main() {
+  late FakeLocationRepository locationRepository;
   late FakeRegionRepository regionRepository;
 
   setUp(() {
+    locationRepository = FakeLocationRepository();
     regionRepository = FakeRegionRepository();
   });
 
   Widget buildApp() {
     return ProviderScope(
-      overrides: [regionRepositoryProvider.overrideWithValue(regionRepository)],
+      overrides: [
+        locationRepositoryProvider.overrideWithValue(locationRepository),
+        regionRepositoryProvider.overrideWithValue(regionRepository),
+      ],
       child: MaterialApp(
         locale: const Locale('ko'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -29,7 +35,9 @@ void main() {
 
   // BUG 회귀 테스트 — "내 지역 입력하기"가 RegionInputPage로 이동해버려서
   // 온보딩 흐름이 끊기고, 지역이 저장되지 않았다.
-  testWidgets('내 정보 단계에서 시/도를 고르고 다음으로 넘어가면 다른 화면으로 이동하지 않고 지역이 저장된다', (
+  // 2026-09-02 — ui-prototype에 맞춰 시/도 수동 선택이 없어지고 "현재 위치로
+  // 자동 입력" 버튼만 남아, 이 테스트도 위치 조회 흐름으로 갱신했다.
+  testWidgets('내 정보 단계에서 현재 위치로 지역을 채우고 다음으로 넘어가면 다른 화면으로 이동하지 않고 지역이 저장된다', (
     tester,
   ) async {
     await tester.pumpWidget(buildApp());
@@ -40,19 +48,13 @@ void main() {
     await tester.tap(find.text('다음'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('눌러서 선택해주세요'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('서울특별시').last);
+    await tester.ensureVisible(find.text('현재 위치로 자동 입력'));
+    await tester.tap(find.text('현재 위치로 자동 입력'));
     await tester.pumpAndSettle();
 
-    // 시/도를 골라도 다른 화면(RegionInputPage)으로 이동하지 않는다.
+    // 위치 조회 결과가 표시돼도 다른 화면(RegionInputPage)으로 이동하지 않는다.
     expect(find.byType(RegionInputPage), findsNothing);
-    expect(find.text('서울특별시'), findsWidgets);
-
-    // SaveRegionUseCase는 시/도·시/군/구·읍/면/동을 모두 요구한다.
-    // TextField(0)=이름, (1)=시/군/구, (2)=읍/면/동.
-    await tester.enterText(find.byType(TextField).at(1), '강남구');
-    await tester.enterText(find.byType(TextField).at(2), '역삼동');
+    expect(find.text('서울특별시 강남구 역삼동'), findsOneWidget);
 
     await tester.ensureVisible(find.text('보호자 등록으로 넘어가기'));
     await tester.tap(find.text('보호자 등록으로 넘어가기'));
