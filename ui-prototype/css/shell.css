@@ -4,6 +4,12 @@
 
 *{ box-sizing:border-box; }
 html,body{ height:100%; }
+/* 2026-09-01 — 사용자 보고: 다크모드에서 폰 목업 안 실제 화면 글씨가 안
+   보임. 원인은 브라우저의 "웹사이트 자동 다크모드" 기능 — 페이지가 다크를
+   지원한다고 선언하지 않으면 브라우저가 임의로 색을 반전시키다가 대비가
+   깨진다. 이 문서는 실제로 다크(에디터 크롬)를 지원하므로 최상위에
+   `light dark`를 선언해 브라우저의 임의 반전을 끈다. */
+html{ color-scheme:light dark; }
 body{
   margin:0; background:var(--chrome-paper); color:var(--chrome-ink);
   font-family:var(--font-chrome-body); font-size:14px; -webkit-font-smoothing:antialiased;
@@ -151,6 +157,15 @@ body.in-app #landing{ display:none; }
 .phone-notch{ height:22px; display:flex; align-items:center; justify-content:center; }
 .phone-notch::before{ content:""; width:90px; height:8px; border-radius:6px; background:#111411; }
 .phone-screen{
+  /* 실제 앱(Senior/Guardian/Easy)은 아직 다크모드를 지원하지 않는다 —
+     여기 안쪽은 항상 라이트로 고정해 브라우저가 임의로 반전시키지 않게 한다.
+     진짜 원인은 이거였다: 이 안의 텍스트 중 색을 직접 안 정하는 요소는
+     body의 color(--chrome-ink, 에디터 다크모드에 따라 바뀜)를 그대로
+     상속받는데, 배경(--app-bg)은 항상 흰색 고정이라 다크모드에서 밝은
+     글씨+흰 배경으로 사실상 안 보이게 됐다. color를 여기서 고정값으로
+     끊어주면 상속이 멈춘다. */
+  color-scheme:light;
+  color:var(--text-primary);
   background:var(--app-bg,#fff); border-radius:26px; overflow:hidden; position:relative;
   display:flex; flex-direction:column; width:390px; height:760px;
 }
