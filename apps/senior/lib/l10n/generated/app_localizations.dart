@@ -1860,6 +1860,66 @@ abstract class AppLocalizations {
   /// **'원문'**
   String get sourceTextLabel;
 
+  /// No description provided for @structuredFieldRiskTypeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'위험 유형'**
+  String get structuredFieldRiskTypeLabel;
+
+  /// No description provided for @riskTypeVoicePhishingLure.
+  ///
+  /// In ko, this message translates to:
+  /// **'보이스피싱 유도'**
+  String get riskTypeVoicePhishingLure;
+
+  /// No description provided for @riskTypeSmishing.
+  ///
+  /// In ko, this message translates to:
+  /// **'스미싱(문자 사기)'**
+  String get riskTypeSmishing;
+
+  /// No description provided for @riskTypeLoanScam.
+  ///
+  /// In ko, this message translates to:
+  /// **'대출 사기'**
+  String get riskTypeLoanScam;
+
+  /// No description provided for @riskTypeImpersonationAuthority.
+  ///
+  /// In ko, this message translates to:
+  /// **'기관 사칭'**
+  String get riskTypeImpersonationAuthority;
+
+  /// No description provided for @riskTypeDeliveryScam.
+  ///
+  /// In ko, this message translates to:
+  /// **'배송 사기'**
+  String get riskTypeDeliveryScam;
+
+  /// No description provided for @riskTypeInvestmentScam.
+  ///
+  /// In ko, this message translates to:
+  /// **'투자 사기'**
+  String get riskTypeInvestmentScam;
+
+  /// No description provided for @riskTypeRomanceScam.
+  ///
+  /// In ko, this message translates to:
+  /// **'로맨스 스캠'**
+  String get riskTypeRomanceScam;
+
+  /// No description provided for @riskTypeOtherScam.
+  ///
+  /// In ko, this message translates to:
+  /// **'기타 사기'**
+  String get riskTypeOtherScam;
+
+  /// No description provided for @riskTypeNone.
+  ///
+  /// In ko, this message translates to:
+  /// **'해당 없음'**
+  String get riskTypeNone;
+
   /// No description provided for @easyResultAiSummaryLabel.
   ///
   /// In ko, this message translates to:

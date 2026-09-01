@@ -938,6 +938,36 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sourceTextLabel => '원문';
 
   @override
+  String get structuredFieldRiskTypeLabel => '위험 유형';
+
+  @override
+  String get riskTypeVoicePhishingLure => '보이스피싱 유도';
+
+  @override
+  String get riskTypeSmishing => '스미싱(문자 사기)';
+
+  @override
+  String get riskTypeLoanScam => '대출 사기';
+
+  @override
+  String get riskTypeImpersonationAuthority => '기관 사칭';
+
+  @override
+  String get riskTypeDeliveryScam => '배송 사기';
+
+  @override
+  String get riskTypeInvestmentScam => '투자 사기';
+
+  @override
+  String get riskTypeRomanceScam => '로맨스 스캠';
+
+  @override
+  String get riskTypeOtherScam => '기타 사기';
+
+  @override
+  String get riskTypeNone => '해당 없음';
+
+  @override
   String get easyResultAiSummaryLabel => 'AI 요약';
 
   @override

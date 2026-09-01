@@ -926,6 +926,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sourceTextLabel => '原文';
 
   @override
+  String get structuredFieldRiskTypeLabel => '风险类型';
+
+  @override
+  String get riskTypeVoicePhishingLure => '电话诈骗诱导';
+
+  @override
+  String get riskTypeSmishing => '短信诈骗';
+
+  @override
+  String get riskTypeLoanScam => '贷款诈骗';
+
+  @override
+  String get riskTypeImpersonationAuthority => '机构冒充';
+
+  @override
+  String get riskTypeDeliveryScam => '快递诈骗';
+
+  @override
+  String get riskTypeInvestmentScam => '投资诈骗';
+
+  @override
+  String get riskTypeRomanceScam => '恋爱诈骗';
+
+  @override
+  String get riskTypeOtherScam => '其他诈骗';
+
+  @override
+  String get riskTypeNone => '无';
+
+  @override
   String get easyResultAiSummaryLabel => 'AI摘要';
 
   @override

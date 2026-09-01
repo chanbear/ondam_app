@@ -938,6 +938,36 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sourceTextLabel => '原文';
 
   @override
+  String get structuredFieldRiskTypeLabel => 'リスク種別';
+
+  @override
+  String get riskTypeVoicePhishingLure => '振り込め詐欺の誘導';
+
+  @override
+  String get riskTypeSmishing => 'スミッシング(迷惑メッセージ)';
+
+  @override
+  String get riskTypeLoanScam => '融資詐欺';
+
+  @override
+  String get riskTypeImpersonationAuthority => '機関なりすまし';
+
+  @override
+  String get riskTypeDeliveryScam => '配送詐欺';
+
+  @override
+  String get riskTypeInvestmentScam => '投資詐欺';
+
+  @override
+  String get riskTypeRomanceScam => 'ロマンス詐欺';
+
+  @override
+  String get riskTypeOtherScam => 'その他の詐欺';
+
+  @override
+  String get riskTypeNone => 'なし';
+
+  @override
   String get easyResultAiSummaryLabel => 'AI要約';
 
   @override

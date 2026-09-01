@@ -972,6 +972,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sourceTextLabel => 'Original Text';
 
   @override
+  String get structuredFieldRiskTypeLabel => 'Risk type';
+
+  @override
+  String get riskTypeVoicePhishingLure => 'Voice phishing lure';
+
+  @override
+  String get riskTypeSmishing => 'Smishing (text scam)';
+
+  @override
+  String get riskTypeLoanScam => 'Loan scam';
+
+  @override
+  String get riskTypeImpersonationAuthority => 'Authority impersonation';
+
+  @override
+  String get riskTypeDeliveryScam => 'Delivery scam';
+
+  @override
+  String get riskTypeInvestmentScam => 'Investment scam';
+
+  @override
+  String get riskTypeRomanceScam => 'Romance scam';
+
+  @override
+  String get riskTypeOtherScam => 'Other scam';
+
+  @override
+  String get riskTypeNone => 'None';
+
+  @override
   String get easyResultAiSummaryLabel => 'AI Summary';
 
   @override
