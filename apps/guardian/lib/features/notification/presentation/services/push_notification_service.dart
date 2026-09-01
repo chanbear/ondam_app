@@ -24,11 +24,12 @@ const _riskAlertChannelName = '위험 알림';
 /// as `IdleTimeoutController` — this drives app-wide state (DB token
 /// registration, notification tray), not per-screen state.
 ///
-/// This environment has no real Firebase project wired up yet (no
-/// `google-services.json`/`GoogleService-Info.plist` — see Phase 8 report).
-/// `Firebase.initializeApp()` is expected to throw here until that native
-/// config exists; every FCM call is guarded so the rest of the app keeps
-/// working when Push is unavailable, instead of crashing at startup.
+/// Android has a real Firebase project wired up (`google-services.json`,
+/// project "ondam-app") and `Firebase.initializeApp()` succeeds there. iOS
+/// has no `GoogleService-Info.plist` yet, and widget tests have no native
+/// platform channel either, so `Firebase.apps` stays empty in those cases;
+/// every FCM call is still guarded so the rest of the app keeps working
+/// when Push is unavailable, instead of crashing at startup.
 class PushNotificationController {
   PushNotificationController(this._ref) {
     unawaited(_initLocalNotifications());

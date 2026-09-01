@@ -20,12 +20,13 @@ Future<void> main() async {
     publishableKey: AppConfig.supabaseAnonKey,
   );
 
-  // Push (FCM, technical-decisions.md §1-10). This environment has no real
-  // Firebase project registered yet (no google-services.json/
-  // GoogleService-Info.plist), so `initializeApp()` is expected to throw
-  // here until that native config exists — the rest of the app must keep
-  // working without Push in that case (see Phase 8 report), so this is
-  // guarded instead of awaited unconditionally.
+  // Push (FCM, technical-decisions.md §1-10). Android now has a real
+  // Firebase project wired up (android/app/google-services.json, project
+  // "ondam-app") — `initializeApp()` succeeds on real Android devices. iOS
+  // still has no GoogleService-Info.plist, and widget tests have no native
+  // platform channel either, so `initializeApp()` still throws there — the
+  // rest of the app must keep working without Push in those cases, so this
+  // stays guarded instead of awaited unconditionally.
   if (await _tryInitializeFirebase()) {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
