@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
-import '../../../../core/widgets/coming_soon_page.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../connection/presentation/pages/connection_list_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
+import '../../../support/presentation/pages/support_page.dart';
 
-/// 더보기 탭 — 설정/다른 어르신 연결은 실제 화면으로 연결하고, 고객 지원은
-/// 아직 도메인 계층이 없어 `ComingSoonPage`로 보낸다. "어르신 앱 열기"는
-/// Decision 1에 따라 채택하지 않으므로 메뉴에 넣지 않는다.
+/// 더보기 탭 — 설정/다른 어르신 연결/고객 지원 모두 실제 화면으로
+/// 연결한다. "어르신 앱 열기"는 Decision 1에 따라 채택하지 않으므로
+/// 메뉴에 넣지 않는다.
 class MoreTabPage extends StatelessWidget {
   const MoreTabPage({super.key});
 
@@ -19,17 +19,24 @@ class MoreTabPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final items = <(IconData, String, Widget Function())>[
+    final items = <(IconData, String, String, Widget Function())>[
       (
         Icons.person_add_alt_outlined,
         l10n.connectAnotherElderAction,
+        l10n.connectAnotherElderSubtitle,
         () => const ConnectionListPage(),
       ),
-      (Icons.settings_outlined, l10n.settingsTitle, () => const SettingsPage()),
+      (
+        Icons.settings_outlined,
+        l10n.settingsTitle,
+        l10n.settingsSubtitle,
+        () => const SettingsPage(),
+      ),
       (
         Icons.support_agent_outlined,
         l10n.supportTitle,
-        () => ComingSoonPage(title: l10n.supportTitle),
+        l10n.supportSubtitle,
+        () => const SupportPage(),
       ),
     ];
 
@@ -44,20 +51,74 @@ class MoreTabPage extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.lg),
             children: [
               AppSectionHeader(title: l10n.navMore),
-              for (final (icon, label, pageBuilder) in items)
-                AppCard(
-                  onTap: () => _push(context, pageBuilder()),
-                  child: Row(
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Column(
                     children: [
-                      Icon(icon, color: AppColors.primary),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Text(label, style: AppTextStyles.bodyLarge),
-                      ),
-                      const Icon(Icons.chevron_right),
+                      for (final (index, (icon, label, subtitle, pageBuilder))
+                          in items.indexed) ...[
+                        InkWell(
+                          onTap: () => _push(context, pageBuilder()),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.md,
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primarySoft,
+                                    borderRadius: BorderRadius.circular(
+                                      AppRadius.sm,
+                                    ),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Icon(icon, color: AppColors.primary),
+                                ),
+                                const SizedBox(width: AppSpacing.md),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        label,
+                                        style: AppTextStyles.bodyLarge,
+                                      ),
+                                      const SizedBox(height: AppSpacing.xs),
+                                      Text(
+                                        subtitle,
+                                        style: AppTextStyles.labelSmall
+                                            .copyWith(
+                                              color: AppColors.textSecondary,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.chevron_right,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (index != items.length - 1)
+                          const Divider(height: 1, color: AppColors.border),
+                      ],
                     ],
                   ),
                 ),
+              ),
               const SizedBox(height: AppSpacing.sm),
             ],
           ),
