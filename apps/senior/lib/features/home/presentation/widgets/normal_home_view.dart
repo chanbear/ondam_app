@@ -47,7 +47,20 @@ class NormalHomeView extends ConsumerWidget {
         ],
         if (todaySchedules.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.xl),
-          AppSectionHeader(title: l10n.todayScheduleTitle),
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.calendar_today,
+                  size: 18,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Text(l10n.todayScheduleTitle, style: AppTextStyles.titleMedium),
+              ],
+            ),
+          ),
           for (final schedule in todaySchedules)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -74,23 +87,28 @@ class _TodayScheduleRow extends StatelessWidget {
         '${schedule.scheduledAt.minute.toString().padLeft(2, '0')}';
 
     return AppCard(
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const Icon(Icons.access_time, size: 14, color: AppColors.primary),
-              const SizedBox(width: AppSpacing.xs),
-              Text(
-                time,
-                style: AppTextStyles.labelSmall.copyWith(
-                  color: AppColors.primary,
-                ),
+          SizedBox(
+            width: 44,
+            child: Text(
+              time,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
               ),
-            ],
+            ),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(schedule.title, style: AppTextStyles.bodyLarge),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              schedule.title,
+              style: AppTextStyles.bodyMedium.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ],
       ),
     );

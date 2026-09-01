@@ -194,7 +194,18 @@ class _SeniorCenterCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final phone = center.phoneNumber;
     final l10n = AppLocalizations.of(context)!;
-    final card = AppCard(
+    // 2026-08-31 — ui-prototype `.welfare-list-cards`(사용자 요청)와 맞춰
+    // 흰 `AppCard` 대신 위치 배지와 같은 계열 톤(`AppColors.successSoft`)의
+    // 색 카드로 바꾼다. `AppCard`는 여러 화면이 공유하는 흰 배경 카드라 이
+    // 화면만 바꾸려고 그 위젯 자체를 고치지 않는다(sms_message_tile.dart와
+    // 동일한 이유/패턴).
+    final card = Container(
+      decoration: BoxDecoration(
+        color: AppColors.successSoft,
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
+      padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -107,7 +107,15 @@ class _GuardianLinkCard extends ConsumerWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.person_outline, color: AppColors.primary),
+            // 2026-08-31 — 사용자 제공 레퍼런스 디자인의 원형 아바타에 맞춘다.
+            // 실제 이름/관계 정보는 이 화면에서 조회하지 않아(guardianId만
+            // 있음) 이니셜 대신 아이콘을 그대로 쓴다 — 없는 데이터를 지어내지
+            // 않는다.
+            const CircleAvatar(
+              radius: 20,
+              backgroundColor: AppColors.primarySoft,
+              child: Icon(Icons.person_outline, color: AppColors.primary),
+            ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(

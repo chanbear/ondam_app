@@ -217,6 +217,9 @@ class _RegionInputPageState extends ConsumerState<RegionInputPage> {
             label: _locating
                 ? l10n.locatingButton
                 : l10n.useCurrentLocationButton,
+            // 아래 "저장" primary 버튼과 색이 같아 어느 쪽이 필수 동작인지
+            // 구분이 안 됐다 — 위치 자동 입력은 보조 동작이라 secondary로.
+            variant: AppButtonVariant.secondary,
             isLoading: _locating,
             size: AppButtonSize.large,
             onPressed: _locating ? null : _useCurrentLocation,
