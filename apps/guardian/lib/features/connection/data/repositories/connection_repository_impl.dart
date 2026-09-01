@@ -2,6 +2,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_models/ondam_models.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../domain/entities/demo_usage_stats.dart';
 import '../../domain/repositories/connection_repository.dart';
 import '../datasources/connection_remote_datasource.dart';
 import '../models/guardian_link_model.dart';
@@ -55,6 +56,24 @@ class ConnectionRepositoryImpl implements ConnectionRepository {
     try {
       await _dataSource.revokeLink(linkId);
       return const Ok(null);
+    } on PostgrestException catch (e) {
+      return Err(_mapPostgrestException(e));
+    } catch (_) {
+      return const Err(UnknownFailure());
+    }
+  }
+
+  @override
+  Future<Result<DemoUsageStats?>> getDemoUsageStats(String elderId) async {
+    try {
+      final row = await _dataSource.fetchDemoUsageStats(elderId);
+      if (row == null) return const Ok(null);
+      return Ok(
+        DemoUsageStats(
+          since: DateTime.parse(row['since'] as String),
+          analysisCount: row['analysis_count'] as int,
+        ),
+      );
     } on PostgrestException catch (e) {
       return Err(_mapPostgrestException(e));
     } catch (_) {

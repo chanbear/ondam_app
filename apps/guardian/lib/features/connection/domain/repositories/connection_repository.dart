@@ -1,6 +1,8 @@
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../entities/demo_usage_stats.dart';
+
 /// Guardian-side of the `connection` feature: redeeming a scanned QR token
 /// to create a pending connection request, and managing the resulting
 /// guardian_links rows. Implemented by
@@ -16,4 +18,8 @@ abstract class ConnectionRepository {
 
   /// Ends an `accepted` connection from the guardian's side.
   Future<Result<void>> revokeLink(String linkId);
+
+  /// Demo-only "used for N months" figure for [elderId], or `null` if none
+  /// was seeded (e.g. connection never went through the QR accept trigger).
+  Future<Result<DemoUsageStats?>> getDemoUsageStats(String elderId);
 }

@@ -12,6 +12,8 @@ import '../../../analysis/presentation/providers/analysis_records_notifier.dart'
 import '../../../analysis/presentation/widgets/analysis_record_card.dart';
 import '../../../connection/presentation/pages/connection_scan_page.dart';
 import '../../../connection/presentation/providers/connected_elders_provider.dart';
+import '../../../connection/domain/entities/demo_usage_stats.dart';
+import '../../../connection/presentation/providers/connection_di_providers.dart';
 import '../../../notification/domain/entities/notification_item.dart';
 import '../../../notification/presentation/providers/notifications_notifier.dart';
 import '../../../notification/presentation/services/notification_navigation.dart';
@@ -68,7 +70,7 @@ class HomeTabPage extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.all(AppSpacing.lg),
             children: [
-              AppElderSwitcher(
+              _SeniorCard(
                 elders: elders,
                 selectedElderId: selectedId,
                 onSelect: (id) =>
@@ -77,6 +79,7 @@ class HomeTabPage extends ConsumerWidget {
               const SizedBox(height: AppSpacing.md),
               _ReassuranceCard(recordsState: recordsState),
               const SizedBox(height: AppSpacing.xl),
+              _SectionEyebrow(text: l10n.recentNotificationsEyebrow),
               AppSectionHeader(
                 title: l10n.recentNotificationsTitle,
                 trailing: TextButton(
@@ -87,9 +90,11 @@ class HomeTabPage extends ConsumerWidget {
               ),
               _RecentNotifications(notificationsState: notificationsState),
               const SizedBox(height: AppSpacing.xl),
+              _SectionEyebrow(text: l10n.upcomingScheduleEyebrow),
               AppSectionHeader(title: l10n.upcomingScheduleTitle),
               _UpcomingSchedule(scheduleState: upcomingSchedulesState),
               const SizedBox(height: AppSpacing.xl),
+              _SectionEyebrow(text: l10n.recentActivityEyebrow),
               AppSectionHeader(title: l10n.recentActivityTitle),
               _RecentActivity(recordsState: recordsState),
             ],
@@ -290,6 +295,116 @@ class _UpcomingSchedule extends ConsumerWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// 돌봄 대상 어르신 카드 — `AppElderSwitcher`(이름만 있는 최소 표시)를
+/// 카드로 감싸 이니셜 아바타를 더한다. 실제 나이/지역/전화번호 필드가
+/// `ElderSummary`에 없으므로(연결된 이름조차 실제 데이터가 아직 없어 "어르신
+/// (ID 앞 8자리)"로 대체 표시 중 — `connectedEldersProvider` 참고) 그런
+/// 정보나 전화 버튼을 지어내지 않는다 — `ui-design.md`/정직성 원칙.
+class _SeniorCard extends ConsumerWidget {
+  const _SeniorCard({
+    required this.elders,
+    required this.selectedElderId,
+    required this.onSelect,
+  });
+
+  final List<ElderSummary> elders;
+  final String? selectedElderId;
+  final ValueChanged<String> onSelect;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (elders.isEmpty) return const SizedBox.shrink();
+    final selected = elders.firstWhere(
+      (elder) => elder.id == selectedElderId,
+      orElse: () => elders.first,
+    );
+    final demoStats = ref.watch(demoUsageStatsProvider(selected.id)).value;
+
+    return AppCard(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Row(
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: AppColors.primarySoft,
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              selected.name.isEmpty ? '' : selected.name[0],
+              style: AppTextStyles.titleMedium.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppElderSwitcher(
+                  elders: elders,
+                  selectedElderId: selectedElderId,
+                  onSelect: onSelect,
+                ),
+                if (demoStats != null) _DemoUsageBadge(stats: demoStats),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// `demo_usage_stats`가 있는 연결에만 보이는 장식용 배지. 실제 분석 기록
+/// (`analysis_results`)과 절대 혼동되지 않도록 "데모" 라벨을 항상 함께
+/// 보여준다 — 이 값만 보고 실제 분석 이력이 있다고 오해하면 안 된다.
+class _DemoUsageBadge extends StatelessWidget {
+  const _DemoUsageBadge({required this.stats});
+
+  final DemoUsageStats stats;
+
+  @override
+  Widget build(BuildContext context) {
+    final months = (DateTime.now().difference(stats.since).inDays / 30)
+        .floor()
+        .clamp(1, 999);
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.xs),
+      child: Text(
+        AppLocalizations.of(
+          context,
+        )!.demoUsageBadgeLabel(months, stats.analysisCount),
+        style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+      ),
+    );
+  }
+}
+
+/// 섹션 제목 위 작은 라벨 — 참고 디자인의 `eyebrow` 톤을 재현한다. 별도 공용
+/// 위젯(`AppSectionHeader`)을 고치지 않고 이 파일에서만 얇게 추가한다 —
+/// Senior 앱과 공유하는 위젯에 영향을 주지 않기 위함.
+class _SectionEyebrow extends StatelessWidget {
+  const _SectionEyebrow({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+      child: Text(
+        text,
+        style: AppTextStyles.caption.copyWith(color: AppColors.primary),
+      ),
     );
   }
 }

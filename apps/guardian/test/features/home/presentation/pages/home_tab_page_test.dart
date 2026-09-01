@@ -74,6 +74,14 @@ void main() {
   /// caught here by using `AppSectionHeader(trailing: ...)` instead and
   /// asserting every section actually renders when an elder is connected.
   testWidgets('연결된 어르신이 있으면 모든 섹션 헤더가 정상적으로 렌더링된다', (tester) async {
+    // 어르신 카드/eyebrow 라벨이 추가되면서 "최근 활동" 섹션이 기본 테스트
+    // 뷰포트(800x600)보다 아래로 밀렸다 — `ListView(children:...)`는 화면
+    // 밖 자식을 지연 빌드하므로, 표면을 넉넉히 키워 모든 섹션이 한 번에
+    // 빌드되게 한다(앱 동작 자체는 정상, 스크롤이 필요할 뿐).
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
+    await binding.setSurfaceSize(const Size(800, 2000));
+    addTearDown(() => binding.setSurfaceSize(null));
+
     await tester.pumpWidget(
       _wrap(
         links: [

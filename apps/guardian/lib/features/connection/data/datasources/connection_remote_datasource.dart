@@ -55,4 +55,12 @@ class ConnectionRemoteDataSource {
         .update({'status': 'revoked'})
         .eq('id', linkId);
   }
+
+  Future<Map<String, dynamic>?> fetchDemoUsageStats(String elderId) async {
+    return _client
+        .from('demo_usage_stats')
+        .select()
+        .eq('elder_id', elderId)
+        .maybeSingle();
+  }
 }

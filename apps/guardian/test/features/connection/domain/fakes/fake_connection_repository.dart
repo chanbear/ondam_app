@@ -1,4 +1,5 @@
 import 'package:ondam_core/ondam_core.dart';
+import 'package:ondam_guardian/features/connection/domain/entities/demo_usage_stats.dart';
 import 'package:ondam_guardian/features/connection/domain/repositories/connection_repository.dart';
 import 'package:ondam_models/ondam_models.dart';
 
@@ -17,9 +18,11 @@ class FakeConnectionRepository implements ConnectionRepository {
   );
   Result<List<GuardianLink>> getMyLinksResult = const Ok(<GuardianLink>[]);
   Result<void> revokeLinkResult = const Ok(null);
+  Result<DemoUsageStats?> getDemoUsageStatsResult = const Ok(null);
 
   final List<String> redeemConnectionTokenCalls = [];
   final List<String> revokeLinkCalls = [];
+  final List<String> getDemoUsageStatsCalls = [];
   int getMyLinksCallCount = 0;
 
   @override
@@ -38,5 +41,11 @@ class FakeConnectionRepository implements ConnectionRepository {
   Future<Result<void>> revokeLink(String linkId) async {
     revokeLinkCalls.add(linkId);
     return revokeLinkResult;
+  }
+
+  @override
+  Future<Result<DemoUsageStats?>> getDemoUsageStats(String elderId) async {
+    getDemoUsageStatsCalls.add(elderId);
+    return getDemoUsageStatsResult;
   }
 }
