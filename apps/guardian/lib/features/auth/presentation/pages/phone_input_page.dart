@@ -92,57 +92,103 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(l10n.phoneStartTitle, style: AppTextStyles.headlineMedium),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                l10n.phoneStartSubtitle,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
+          // 브랜드 마크/eyebrow를 추가하면서 콘텐츠가 늘어난 만큼, 접근성
+          // 글자 배율이나 작은 화면에서 고정 Column이 넘칠 수 있다 — Senior
+          // 쪽 phone_input_page.dart에서 이미 겪은 문제와 동일한 예방 조치.
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        l10n.appTitle.isEmpty ? '' : l10n.appTitle[0],
+                        style: AppTextStyles.titleMedium.copyWith(
+                          color: AppColors.surface,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.smMd,
+                        vertical: AppSpacing.xs,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primarySoft,
+                        borderRadius: BorderRadius.circular(AppRadius.full),
+                      ),
+                      child: Text(
+                        l10n.guardianLoginEyebrow,
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      l10n.phoneStartTitle,
+                      style: AppTextStyles.headlineMedium,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      l10n.phoneStartSubtitle,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    AppTextField(
+                      label: l10n.phoneNumberLabel,
+                      controller: _phoneController,
+                      hintText: l10n.phoneNumberHint,
+                      keyboardType: TextInputType.phone,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    AppTextField(
+                      label: l10n.pinLabel,
+                      controller: _pinController,
+                      hintText: l10n.pinHint,
+                      obscureText: true,
+                      keyboardType: TextInputType.number,
+                      errorText: _pinGuidance(l10n),
+                    ),
+                    if (failure != null) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        failure.message,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.error,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: AppSpacing.lg),
+                    AppButton(
+                      label: l10n.startButton,
+                      isLoading: isLoading,
+                      onPressed: (isLoading || isLocked) ? null : _submit,
+                    ),
+                    if (hasSession) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      TextButton(
+                        onPressed: () => context.push(AuthRoutes.pinForgot),
+                        child: Text(l10n.forgotPinLink),
+                      ),
+                    ],
+                  ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.xl),
-              AppTextField(
-                label: l10n.phoneNumberLabel,
-                controller: _phoneController,
-                hintText: l10n.phoneNumberHint,
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              AppTextField(
-                label: l10n.pinLabel,
-                controller: _pinController,
-                hintText: l10n.pinHint,
-                obscureText: true,
-                keyboardType: TextInputType.number,
-                errorText: _pinGuidance(l10n),
-              ),
-              if (failure != null) ...[
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  failure.message,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.error,
-                  ),
-                ),
-              ],
-              const SizedBox(height: AppSpacing.lg),
-              AppButton(
-                label: l10n.startButton,
-                isLoading: isLoading,
-                onPressed: (isLoading || isLocked) ? null : _submit,
-              ),
-              if (hasSession) ...[
-                const SizedBox(height: AppSpacing.md),
-                TextButton(
-                  onPressed: () => context.push(AuthRoutes.pinForgot),
-                  child: Text(l10n.forgotPinLink),
-                ),
-              ],
-            ],
+            ),
           ),
         ),
       ),
