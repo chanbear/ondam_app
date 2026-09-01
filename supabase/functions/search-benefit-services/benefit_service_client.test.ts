@@ -2,10 +2,12 @@
 // welfare_center_client.test.ts). Provided as a best-effort artifact for
 // review/future execution.
 //
-// 이 파일이 검증하는 필드명 자체가 benefit_service_client.ts 상단 주석에
-// 적힌 대로 "미확인 초안"이다 — 실제 서비스키로 라이브 검증한 뒤 필드명이
-// 바뀌면 이 테스트도 welfare_center_client.test.ts의 PHASE 35 사례처럼
-// 함께 갱신해야 한다.
+// 응답 파싱(parseSearchResponse)이 검증하는 아이템 필드명 자체가
+// benefit_service_client.ts 상단 주석에 적힌 대로 "미확인 초안"이다 —
+// 실제 서비스키로 라이브 검증한 뒤 필드명이 바뀌면 이 테스트도
+// welfare_center_client.test.ts의 PHASE 35 사례처럼 함께 갱신해야 한다.
+// buildRequestUrl의 "type=json" 누락(정보 탭이 항상 비어 보이던 원인)은
+// 이번에 고쳤고, 아래 테스트가 회귀를 막는다.
 
 import { assertEquals } from "jsr:@std/assert@1";
 import {
@@ -66,6 +68,16 @@ Deno.test("buildRequestUrl: 서비스키/생애주기코드/페이지 번호를 
   assertEquals(parsed.searchParams.get("callTp"), "list");
   assertEquals(parsed.searchParams.get("pageNo"), "2");
   assertEquals(parsed.searchParams.get("lifeArray"), "006");
+});
+
+// BUG 회귀 테스트 — "type=json"이 빠지면 data.go.kr이 기본 XML로 응답해
+// response.json()이 매번 실패하고(그 실패가 조용히 빈 결과로 삼켜져)
+// "정보" 탭이 항상 비어 보였다. welfare_center_client.ts가 이미 검증한
+// 패턴과 동일하게 이 파라미터를 요구한다.
+Deno.test("buildRequestUrl: JSON 응답을 요청한다(type=json)", () => {
+  const url = buildRequestUrl("https://example.com/api", "test-key", 1, 70);
+  const parsed = new URL(url);
+  assertEquals(parsed.searchParams.get("type"), "json");
 });
 
 // --- parseSearchResponse ---------------------------------------------------------

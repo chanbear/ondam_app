@@ -7,10 +7,21 @@
 // (dataset 15108347) + 한국사회보장정보원_중앙부처복지서비스(dataset
 // 15090532) Open API. 공식 페이지에서 "목록조회/상세조회 2개 오퍼레이션"
 // 이라는 것만 확인했고, 로그인 없이는 SWAGGER 문서를 볼 수 없어 정확한
-// 요청/응답 필드명은 확인하지 못했다 — 아래 필드명은 이 API 계열에 대한
-// **최선 추정 초안**이다. welfare_center_client.ts의 PHASE 26→35와 동일하게,
-// 실제 서비스키로 라이브 검증한 뒤 필드명을 교정해야 한다(ponytail: 검증
-// 전까지는 최선 추정치 — 라이브 검증은 서비스키 발급 후 진행).
+// 요청/응답 필드명은 확인하지 못했다 — 아래 아이템 필드명(servId/servNm/
+// servDgst/aplyMtdNm 등)은 이 API 계열에 대한 **최선 추정 초안**이다.
+// welfare_center_client.ts의 PHASE 26→35와 동일하게, 실제 서비스키로 라이브
+// 검증한 뒤 필드명을 교정해야 한다(ponytail: 검증 전까지는 최선 추정치 —
+// 라이브 검증은 서비스키 발급 후 진행).
+//
+// BUG(확인됨, 수정 완료) — 응답 envelope(header/body, resultCode) 구조와
+// 달리 요청 파라미터의 "type=json"은 추정이 아니라 실수로 빠져 있었다.
+// 같은 제공기관(한국사회보장정보원) API를 실제 서비스키로 검증한
+// `welfare_center_client.ts`의 `buildRequestUrl`이 이 파라미터를 쓰는데
+// 여기만 없었다 — data.go.kr류 API는 이게 없으면 기본 XML로 응답해
+// `response.json()`이 매번 파싱 실패하고, 그 실패를 `fetchSource`가
+// 조용히 빈 배열로 삼켜 "정보" 탭이 항상 텅 비어 보였다.
+// `buildRequestUrl`에 `type=json`을 추가해 고쳤다 — 아이템 필드명 추정은
+// 여전히 미검증이라 그대로 남아 있다.
 //
 // 지역 필터: 지자체 API 항목에는 관할 시/도·시/군/구 필드(추정: ctpvNm/
 // sggNm)가 있을 것으로 보고 시도하되, 없거나 매치 실패해도 항목 자체를
@@ -84,6 +95,7 @@ export function buildRequestUrl(
 ): string {
   const url = new URL(endpoint);
   url.searchParams.set("serviceKey", serviceKey);
+  url.searchParams.set("type", "json"); // BUG fix — 파일 상단 주석 참고.
   url.searchParams.set("callTp", "list");
   url.searchParams.set("pageNo", String(pageNo));
   url.searchParams.set("numOfRows", "500");
