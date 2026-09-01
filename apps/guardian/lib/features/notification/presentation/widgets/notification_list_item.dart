@@ -30,9 +30,25 @@ class NotificationListItem extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return AppCard(
       onTap: onTap,
+      variant: item.isRead ? AppCardVariant.normal : AppCardVariant.unread,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: AppColors.primarySoft,
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              _typeIcon(item.type),
+              color: AppColors.primary,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,6 +73,12 @@ class NotificationListItem extends StatelessWidget {
       ),
     );
   }
+
+  IconData _typeIcon(String type) => switch (type) {
+    'risky_document' => Icons.description_outlined,
+    'risky_message' => Icons.sms_outlined,
+    _ => Icons.notifications_outlined,
+  };
 
   String _typeLabel(AppLocalizations l10n, String type) => switch (type) {
     'risky_document' => l10n.notificationTypeRiskyDocument,

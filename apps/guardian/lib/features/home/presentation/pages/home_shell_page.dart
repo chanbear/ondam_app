@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../l10n/generated/app_localizations.dart';
+import '../../../notification/presentation/providers/notifications_notifier.dart';
 import '../providers/shell_tab_index_provider.dart';
 import 'home_tab_page.dart';
 import 'more_tab_page.dart';
@@ -32,6 +33,13 @@ class HomeShellPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final index = ref.watch(shellTabIndexProvider);
+    final unreadCount =
+        ref
+            .watch(notificationsProvider)
+            .value
+            ?.where((n) => !n.isRead)
+            .length ??
+        0;
     return Scaffold(
       body: SafeArea(
         child: IndexedStack(index: index, children: _tabs),
@@ -42,6 +50,7 @@ class HomeShellPage extends ConsumerWidget {
           AppBottomNavItem(
             icon: Icons.notifications_outlined,
             label: l10n.navNotification,
+            badgeCount: unreadCount,
           ),
           AppBottomNavItem(icon: Icons.history, label: l10n.navRecords),
           AppBottomNavItem(

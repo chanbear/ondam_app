@@ -51,6 +51,15 @@ class NotificationTabPage extends ConsumerWidget {
               : ListView(
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   children: [
+                    notificationsState.maybeWhen(
+                      data: (notifications) => _UnreadSummaryCard(
+                        unreadCount: notifications
+                            .where((n) => !n.isRead)
+                            .length,
+                      ),
+                      orElse: () => const SizedBox.shrink(),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
                     AppSectionHeader(title: l10n.realtimeAlertsTitle),
                     const SizedBox(height: AppSpacing.sm),
                     ...notificationsState.when(
@@ -151,6 +160,61 @@ class NotificationTabPage extends ConsumerWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => AnalysisRecordDetailPage(result: record),
+      ),
+    );
+  }
+}
+
+/// 상단 요약 카드 — 실제 `notificationsProvider` 데이터에서 안읽음 개수를
+/// 센 값이다(참고 디자인의 `inbox-summary`와 같은 자리, 문구는 실제 데이터
+/// 흐름에 맞게 새로 썼다).
+class _UnreadSummaryCard extends StatelessWidget {
+  const _UnreadSummaryCard({required this.unreadCount});
+
+  final int unreadCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.primarySoft,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '$unreadCount',
+                style: AppTextStyles.headlineMedium.copyWith(
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                l10n.unreadNotificationsCountLabel,
+                style: AppTextStyles.labelSmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          const SizedBox(width: AppSpacing.lg),
+          Expanded(
+            child: Text(
+              l10n.unreadNotificationsSummaryDescription,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
