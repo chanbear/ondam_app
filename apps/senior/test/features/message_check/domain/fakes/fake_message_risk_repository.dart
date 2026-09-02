@@ -8,11 +8,16 @@ class FakeMessageRiskRepository implements MessageRiskRepository {
   Result<void> notifyGuardianResult = const Ok(null);
 
   final List<SmsMessage> calls = [];
+  final List<String> languageCodeCalls = [];
   final List<String> notifyGuardianCalls = [];
 
   @override
-  Future<Result<AnalysisResult>> analyzeMessage(SmsMessage message) async {
+  Future<Result<AnalysisResult>> analyzeMessage(
+    SmsMessage message,
+    String languageCode,
+  ) async {
     calls.add(message);
+    languageCodeCalls.add(languageCode);
     return result;
   }
 

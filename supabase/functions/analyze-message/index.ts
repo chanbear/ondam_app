@@ -6,12 +6,13 @@ import {
   AiClassification,
   applyRiskFloor,
   buildNotificationPayload,
+  buildSystemPrompt,
   CLASSIFY_TOOL,
   parseAiClassification,
   RiskLevel,
-  SYSTEM_PROMPT,
   validateMessageBody,
 } from "./risk_classifier.ts";
+import { resolveLanguage, SupportedLanguage } from "../_shared/language.ts";
 
 // AI risk analysis for a Senior-received SMS/message (technical-decisions.md
 // §1-7: "Android SMS → Backend → Risk Detection(AI 분석) → 위험도/주의사유/
@@ -30,6 +31,7 @@ const ANTHROPIC_MODEL = "claude-haiku-4-5-20251001";
 async function classifyWithAnthropic(
   apiKey: string,
   message: string,
+  lang: SupportedLanguage,
 ): Promise<
   { ok: true; value: AiClassification } | { ok: false; reason: string }
 > {
@@ -49,7 +51,7 @@ async function classifyWithAnthropic(
       body: JSON.stringify({
         model: ANTHROPIC_MODEL,
         max_tokens: 512,
-        system: SYSTEM_PROMPT,
+        system: buildSystemPrompt(lang),
         tools: [CLASSIFY_TOOL],
         tool_choice: { type: "tool", name: "classify_message_risk" },
         messages: [
@@ -131,6 +133,7 @@ Deno.serve(async (req: Request) => {
     return json({ ok: false, reason: validated.reason }, 400);
   }
   const message = validated.value;
+  const lang = resolveLanguage(body?.language);
 
   // .trim() defends against a stray leading/trailing newline or space in
   // the configured secret (a common copy-paste artifact — e.g. a trailing
@@ -146,7 +149,7 @@ Deno.serve(async (req: Request) => {
     return json({ ok: false, reason: "ai_provider_not_configured" }, 503);
   }
 
-  const classification = await classifyWithAnthropic(apiKey, message);
+  const classification = await classifyWithAnthropic(apiKey, message, lang);
   if (!classification.ok) {
     return json({ ok: false, reason: classification.reason }, 502);
   }
@@ -158,7 +161,7 @@ Deno.serve(async (req: Request) => {
     actionItems,
     importantDates,
     clarifyingQuestions,
-  } = applyRiskFloor(message, classification.value);
+  } = applyRiskFloor(message, classification.value, lang);
 
   const { data: inserted, error: insertError } = await caller.serviceClient
     .from("analysis_results")

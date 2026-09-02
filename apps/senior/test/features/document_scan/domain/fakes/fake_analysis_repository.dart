@@ -12,10 +12,15 @@ class FakeAnalysisRepository implements AnalysisRepository {
   List<Result<AnalysisResult>>? resultsQueue;
 
   final List<CapturedPhoto> calls = [];
+  final List<String> languageCodeCalls = [];
 
   @override
-  Future<Result<AnalysisResult>> analyzeDocument(CapturedPhoto photo) async {
+  Future<Result<AnalysisResult>> analyzeDocument(
+    CapturedPhoto photo,
+    String languageCode,
+  ) async {
     calls.add(photo);
+    languageCodeCalls.add(languageCode);
     final queue = resultsQueue;
     if (queue != null && queue.isNotEmpty) {
       return queue.removeAt(0);

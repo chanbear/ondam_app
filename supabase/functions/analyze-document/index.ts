@@ -7,13 +7,14 @@ import { RiskLevel } from "../_shared/risk_floor.ts";
 import {
   applyRiskFloor,
   buildDocumentNotificationPayload,
+  buildSystemPrompt,
   CLASSIFY_TOOL,
   DocumentClassification,
   MAX_IMAGE_BYTES,
   parseDocumentClassification,
-  SYSTEM_PROMPT,
   validateStoragePath,
 } from "./document_classifier.ts";
+import { resolveLanguage, SupportedLanguage } from "../_shared/language.ts";
 
 // AI document analysis for a Senior-captured photo (technical-decisions.md
 // §1-7/§1-8: server-side AI, original deleted right after analysis). Mirrors
@@ -31,6 +32,7 @@ async function classifyWithAnthropic(
   apiKey: string,
   base64Image: string,
   mediaType: string,
+  lang: SupportedLanguage,
 ): Promise<
   { ok: true; value: DocumentClassification } | { ok: false; reason: string }
 > {
@@ -50,7 +52,7 @@ async function classifyWithAnthropic(
       body: JSON.stringify({
         model: ANTHROPIC_MODEL,
         max_tokens: 768,
-        system: SYSTEM_PROMPT,
+        system: buildSystemPrompt(lang),
         tools: [CLASSIFY_TOOL],
         tool_choice: { type: "tool", name: "report_document_analysis" },
         messages: [
@@ -140,6 +142,7 @@ Deno.serve(async (req: Request) => {
     return json({ ok: false, reason: validatedPath.reason }, 400);
   }
   const storagePath = validatedPath.value;
+  const lang = resolveLanguage((body as { language?: unknown })?.language);
 
   try {
     const apiKey = Deno.env.get("ANTHROPIC_API_KEY")?.trim();
@@ -172,6 +175,7 @@ Deno.serve(async (req: Request) => {
       apiKey,
       base64Image,
       mediaType,
+      lang,
     );
     if (!classification.ok) {
       return json({ ok: false, reason: classification.reason }, 502);
@@ -186,7 +190,7 @@ Deno.serve(async (req: Request) => {
       clarifyingQuestions,
       billingAmountKrw,
       billingDate,
-    } = applyRiskFloor(classification.value);
+    } = applyRiskFloor(classification.value, lang);
 
     const { data: inserted, error: insertError } = await caller.serviceClient
       .from("analysis_results")

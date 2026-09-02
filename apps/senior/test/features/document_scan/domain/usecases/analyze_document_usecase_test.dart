@@ -24,7 +24,7 @@ void main() {
     () async {
       repository.result = const Err(UnavailableFailure());
 
-      final result = await useCase(photo);
+      final result = await useCase(photo, 'ko');
 
       expect(result, isA<Err<AnalysisResult>>());
       expect(
@@ -40,7 +40,7 @@ void main() {
     () async {
       repository.result = const Err(ServerFailure());
 
-      final result = await useCase(photo);
+      final result = await useCase(photo, 'ko');
 
       expect((result as Err<AnalysisResult>).failure, isA<ServerFailure>());
       expect(result.failure, isNot(isA<UnavailableFailure>()));
@@ -59,7 +59,7 @@ void main() {
     );
     repository.result = Ok(analysisResult);
 
-    final result = await useCase(photo);
+    final result = await useCase(photo, 'ko');
 
     expect((result as Ok<AnalysisResult>).value, analysisResult);
   });

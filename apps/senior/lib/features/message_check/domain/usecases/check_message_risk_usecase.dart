@@ -9,6 +9,8 @@ class CheckMessageRiskUseCase {
 
   final MessageRiskRepository _repository;
 
-  Future<Result<AnalysisResult>> call(SmsMessage message) =>
-      _repository.analyzeMessage(message);
+  Future<Result<AnalysisResult>> call(
+    SmsMessage message,
+    String languageCode,
+  ) => _repository.analyzeMessage(message, languageCode);
 }

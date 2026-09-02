@@ -296,6 +296,7 @@ Deno.test(
     const result = applyRiskFloor(
       "안녕하세요, 다음 주 정기 검진 일정 안내드립니다.",
       ai,
+      "ko",
     );
     assertEquals(result.riskLevel, "safe");
     assertEquals(result, ai);
@@ -309,6 +310,7 @@ Deno.test(
     const result = applyRiskFloor(
       "미납금을 오늘까지 납부하지 않으면 계정이 정지됩니다.",
       ai,
+      "ko",
     );
     assertEquals(result.riskLevel, "caution");
   },
@@ -321,6 +323,7 @@ Deno.test(
     const result = applyRiskFloor(
       "아래 링크에서 본인 계좌번호를 입력하고 입금해 주세요. http://short.link/abc",
       ai,
+      "ko",
     );
     assertEquals(result.riskLevel, "caution");
     assertNotEquals(result.riskLevel, "safe");
@@ -342,6 +345,7 @@ Deno.test(
     const result = applyRiskFloor(
       "인증번호를 알려주시면 바로 송금 처리해드릴게요.",
       ai,
+      "ko",
     );
     assertEquals(result, ai);
   },
@@ -351,7 +355,7 @@ Deno.test(
   "a single isolated signal (only 'money', no second category) never triggers the floor",
   () => {
     const ai = safeClassification();
-    const result = applyRiskFloor("이번 달 미납금 안내드립니다.", ai);
+    const result = applyRiskFloor("이번 달 미납금 안내드립니다.", ai, "ko");
     assertEquals(
       [...detectRuleSignals("이번 달 미납금 안내드립니다.")],
       ["money"],
@@ -368,6 +372,7 @@ Deno.test(
     const result = applyRiskFloor(
       "미납금을 즉시 납부하지 않으면 법적 조치가 진행됩니다.",
       ai,
+      "ko",
     );
     assertEquals(result.riskLevel, "caution");
     assertEquals(result.confidence, "low");
@@ -386,7 +391,7 @@ Deno.test(
       importantDates: [],
       clarifyingQuestions: [],
     };
-    const result = applyRiskFloor("특별한 신호가 없는 문자입니다.", ai);
+    const result = applyRiskFloor("특별한 신호가 없는 문자입니다.", ai, "ko");
     assertEquals(result, ai);
   },
 );

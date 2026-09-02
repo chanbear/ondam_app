@@ -10,5 +10,8 @@ import '../entities/captured_photo.dart';
 /// provider secret configured in this environment), never a fabricated
 /// [AnalysisResult] (Phase 4 rule: "Mock 분석 결과 생성 금지").
 abstract class AnalysisRepository {
-  Future<Result<AnalysisResult>> analyzeDocument(CapturedPhoto photo);
+  Future<Result<AnalysisResult>> analyzeDocument(
+    CapturedPhoto photo,
+    String languageCode,
+  );
 }

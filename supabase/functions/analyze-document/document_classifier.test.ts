@@ -212,7 +212,7 @@ Deno.test(
     const ai = safeClassification({
       summary: "다음 달 정기 건강검진 안내문이에요.",
     });
-    const result = applyRiskFloor(ai);
+    const result = applyRiskFloor(ai, "ko");
     assertEquals(result.riskLevel, "safe");
     assertEquals(result, ai);
   },
@@ -225,7 +225,7 @@ Deno.test(
       summary: "요약",
       structuredFields: { "안내": "계좌번호를 알려주시면 입금해드립니다." },
     });
-    const result = applyRiskFloor(ai);
+    const result = applyRiskFloor(ai, "ko");
     assertEquals(result.riskLevel, "caution");
   },
 );
@@ -236,7 +236,7 @@ Deno.test(
     const ai = safeClassification({
       summary: "아래 링크에서 입금을 진행해 주세요. http://short.link/abc",
     });
-    const result = applyRiskFloor(ai);
+    const result = applyRiskFloor(ai, "ko");
     assertEquals(result.riskLevel, "caution");
     assertNotEquals(result.riskLevel, "safe");
   },
@@ -248,7 +248,7 @@ Deno.test(
     const ai = safeClassification({
       summary: "미납금을 오늘까지 납부하지 않으면 계정이 정지됩니다.",
     });
-    const result = applyRiskFloor(ai);
+    const result = applyRiskFloor(ai, "ko");
     assertEquals(result.riskLevel, "caution");
   },
 );
@@ -259,7 +259,7 @@ Deno.test(
     const ai = safeClassification({
       summary: "본인 확인을 위해 주민등록번호와 인증번호를 입력해 주세요.",
     });
-    const result = applyRiskFloor(ai);
+    const result = applyRiskFloor(ai, "ko");
     assertEquals(result.riskLevel, "caution");
   },
 );
@@ -268,7 +268,7 @@ Deno.test(
   "Case 6: a single isolated signal word never forces caution by itself",
   () => {
     const ai = safeClassification({ summary: "이번 달 미납금 안내드립니다." });
-    const result = applyRiskFloor(ai);
+    const result = applyRiskFloor(ai, "ko");
     assertEquals(result.riskLevel, "safe");
   },
 );
@@ -280,7 +280,7 @@ Deno.test(
       summary: "미납금을 즉시 납부하지 않으면 법적 조치가 진행됩니다.",
       reliability: "low",
     });
-    const result = applyRiskFloor(ai);
+    const result = applyRiskFloor(ai, "ko");
     assertEquals(result.riskLevel, "caution");
     assertEquals(result.reliability, "low");
   },
@@ -390,7 +390,7 @@ Deno.test(
       billingAmountKrw: null,
       billingDate: null,
     };
-    const result = applyRiskFloor(ai);
+    const result = applyRiskFloor(ai, "ko");
     assertEquals(result, ai);
   },
 );

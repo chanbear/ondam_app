@@ -17,9 +17,12 @@ class AnalysisRepositoryImpl implements AnalysisRepository {
   final AnalysisRemoteDataSource _dataSource;
 
   @override
-  Future<Result<AnalysisResult>> analyzeDocument(CapturedPhoto photo) async {
+  Future<Result<AnalysisResult>> analyzeDocument(
+    CapturedPhoto photo,
+    String languageCode,
+  ) async {
     try {
-      final data = await _dataSource.analyzeDocument(photo);
+      final data = await _dataSource.analyzeDocument(photo, languageCode);
       if (data['ok'] != true) {
         return Err(_mapReason(data['reason'] as String?));
       }

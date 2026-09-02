@@ -11,7 +11,10 @@ import '../entities/sms_message.dart';
 /// vs `CapturedPhoto`) — the output contract and Failure handling are
 /// identical.
 abstract class MessageRiskRepository {
-  Future<Result<AnalysisResult>> analyzeMessage(SmsMessage message);
+  Future<Result<AnalysisResult>> analyzeMessage(
+    SmsMessage message,
+    String languageCode,
+  );
 
   /// Notifies one linked guardian (via the `send-notification` Edge
   /// Function) that a risky message result was confirmed — 사용자가

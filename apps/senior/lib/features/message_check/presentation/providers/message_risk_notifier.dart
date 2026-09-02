@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../core/locale/locale_provider.dart';
 import '../../../../core/notification_prefs/presentation/providers/notification_prefs_provider.dart';
 import '../../../connection/presentation/providers/guardian_links_notifier.dart';
 import '../../domain/entities/sms_message.dart';
@@ -19,9 +20,10 @@ class MessageRiskNotifier extends AsyncNotifier<AnalysisResult?> {
 
   Future<Result<AnalysisResult>> analyze(SmsMessage message) async {
     state = const AsyncLoading();
+    final languageCode = ref.read(localeControllerProvider).languageCode;
     final result = await ref
         .read(checkMessageRiskUseCaseProvider)
-        .call(message);
+        .call(message, languageCode);
     state = switch (result) {
       Ok(:final value) => AsyncData(value),
       Err(:final failure) => AsyncError(failure, StackTrace.current),

@@ -9,6 +9,8 @@ class AnalyzeDocumentUseCase {
 
   final AnalysisRepository _repository;
 
-  Future<Result<AnalysisResult>> call(CapturedPhoto photo) =>
-      _repository.analyzeDocument(photo);
+  Future<Result<AnalysisResult>> call(
+    CapturedPhoto photo,
+    String languageCode,
+  ) => _repository.analyzeDocument(photo, languageCode);
 }

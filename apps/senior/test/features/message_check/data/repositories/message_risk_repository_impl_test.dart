@@ -25,7 +25,7 @@ void main() {
   });
 
   test('유효한 응답이면 AnalysisResult로 변환해 Ok를 반환한다', () async {
-    when(() => dataSource.analyzeMessage(message.body)).thenAnswer(
+    when(() => dataSource.analyzeMessage(message.body, any())).thenAnswer(
       (_) async => {
         'ok': true,
         'id': 'a1',
@@ -41,7 +41,7 @@ void main() {
       },
     );
 
-    final result = await repository.analyzeMessage(message);
+    final result = await repository.analyzeMessage(message, 'ko');
 
     expect(result, isA<Ok<AnalysisResult>>());
     final value = (result as Ok<AnalysisResult>).value;
@@ -59,7 +59,7 @@ void main() {
   test(
     'Phase 3: actionItems/importantDates가 응답에 있으면 AnalysisResult까지 정상 전달된다',
     () async {
-      when(() => dataSource.analyzeMessage(message.body)).thenAnswer(
+      when(() => dataSource.analyzeMessage(message.body, any())).thenAnswer(
         (_) async => {
           'ok': true,
           'id': 'a2',
@@ -79,7 +79,7 @@ void main() {
         },
       );
 
-      final result = await repository.analyzeMessage(message);
+      final result = await repository.analyzeMessage(message, 'ko');
 
       expect(result, isA<Ok<AnalysisResult>>());
       final value = (result as Ok<AnalysisResult>).value;
@@ -95,10 +95,10 @@ void main() {
 
   test('data.ok가 false면(예: server_error) 성공으로 오인하지 않고 Failure를 반환한다', () async {
     when(
-      () => dataSource.analyzeMessage(message.body),
+      () => dataSource.analyzeMessage(message.body, any()),
     ).thenAnswer((_) async => {'ok': false, 'reason': 'server_error'});
 
-    final result = await repository.analyzeMessage(message);
+    final result = await repository.analyzeMessage(message, 'ko');
 
     expect(result, isA<Err<AnalysisResult>>());
     expect((result as Err<AnalysisResult>).failure, isA<ServerFailure>());
@@ -108,14 +108,14 @@ void main() {
     'FunctionException(ai_provider_not_configured)는 UnavailableFailure로 매핑한다 — '
     'AI provider 미설정을 서버 오류와 구분',
     () async {
-      when(() => dataSource.analyzeMessage(message.body)).thenThrow(
+      when(() => dataSource.analyzeMessage(message.body, any())).thenThrow(
         const FunctionException(
           status: 503,
           details: {'ok': false, 'reason': 'ai_provider_not_configured'},
         ),
       );
 
-      final result = await repository.analyzeMessage(message);
+      final result = await repository.analyzeMessage(message, 'ko');
 
       expect(
         (result as Err<AnalysisResult>).failure,
@@ -125,14 +125,14 @@ void main() {
   );
 
   test('FunctionException(invalid_message)는 ValidationFailure로 매핑한다', () async {
-    when(() => dataSource.analyzeMessage(message.body)).thenThrow(
+    when(() => dataSource.analyzeMessage(message.body, any())).thenThrow(
       const FunctionException(
         status: 400,
         details: {'ok': false, 'reason': 'invalid_message'},
       ),
     );
 
-    final result = await repository.analyzeMessage(message);
+    final result = await repository.analyzeMessage(message, 'ko');
 
     expect((result as Err<AnalysisResult>).failure, isA<ValidationFailure>());
   });
@@ -145,14 +145,14 @@ void main() {
         'ai_provider_timeout',
         'ai_response_invalid',
       ]) {
-        when(() => dataSource.analyzeMessage(message.body)).thenThrow(
+        when(() => dataSource.analyzeMessage(message.body, any())).thenThrow(
           FunctionException(
             status: 502,
             details: {'ok': false, 'reason': reason},
           ),
         );
 
-        final result = await repository.analyzeMessage(message);
+        final result = await repository.analyzeMessage(message, 'ko');
 
         expect(
           (result as Err<AnalysisResult>).failure,
@@ -165,10 +165,10 @@ void main() {
 
   test('필수 필드가 빠진 malformed 응답은 크래시하지 않고 UnknownFailure로 안전하게 처리한다', () async {
     when(
-      () => dataSource.analyzeMessage(message.body),
+      () => dataSource.analyzeMessage(message.body, any()),
     ).thenAnswer((_) async => {'ok': true});
 
-    final result = await repository.analyzeMessage(message);
+    final result = await repository.analyzeMessage(message, 'ko');
 
     expect((result as Err<AnalysisResult>).failure, isA<UnknownFailure>());
   });

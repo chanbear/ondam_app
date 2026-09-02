@@ -10,10 +10,13 @@ class MessageRiskRemoteDataSource {
 
   final SupabaseClient _client;
 
-  Future<Map<String, dynamic>> analyzeMessage(String message) async {
+  Future<Map<String, dynamic>> analyzeMessage(
+    String message,
+    String languageCode,
+  ) async {
     final response = await _client.functions.invoke(
       'analyze-message',
-      body: {'message': message},
+      body: {'message': message, 'language': languageCode},
     );
     final data = response.data;
     if (data is Map<String, dynamic>) return data;

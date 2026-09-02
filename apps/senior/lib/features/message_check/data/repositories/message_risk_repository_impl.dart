@@ -17,9 +17,12 @@ class MessageRiskRepositoryImpl implements MessageRiskRepository {
   final MessageRiskRemoteDataSource _dataSource;
 
   @override
-  Future<Result<AnalysisResult>> analyzeMessage(SmsMessage message) async {
+  Future<Result<AnalysisResult>> analyzeMessage(
+    SmsMessage message,
+    String languageCode,
+  ) async {
     try {
-      final data = await _dataSource.analyzeMessage(message.body);
+      final data = await _dataSource.analyzeMessage(message.body, languageCode);
       if (data['ok'] != true) {
         return Err(_mapReason(data['reason'] as String?));
       }

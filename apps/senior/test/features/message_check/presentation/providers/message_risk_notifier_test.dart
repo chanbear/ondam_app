@@ -7,12 +7,19 @@ import 'package:ondam_senior/features/connection/presentation/providers/connecti
 import 'package:ondam_senior/features/message_check/domain/entities/sms_message.dart';
 import 'package:ondam_senior/features/message_check/presentation/providers/message_check_di_providers.dart';
 import 'package:ondam_senior/features/message_check/presentation/providers/message_risk_notifier.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/notification_prefs/domain/fakes/fake_notification_prefs_repository.dart';
 import '../../../connection/domain/fakes/fake_connection_repository.dart';
 import '../../domain/fakes/fake_message_risk_repository.dart';
 
 void main() {
+  // Case 5는 analyze()를 실제로 호출하는데, 그 안에서 읽는
+  // localeControllerProvider가 SharedPreferences를 거친다 —
+  // 바인딩이 초기화돼 있어야 한다(voice_guide_service_test.dart와 동일 이유).
+  TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
+
   final message = SmsMessage(
     sender: '010-1234-5678',
     body: '[Web발신] 계좌 정지 안내',

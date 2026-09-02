@@ -16,7 +16,10 @@ class AnalysisRemoteDataSource {
 
   final SupabaseClient _client;
 
-  Future<Map<String, dynamic>> analyzeDocument(CapturedPhoto photo) async {
+  Future<Map<String, dynamic>> analyzeDocument(
+    CapturedPhoto photo,
+    String languageCode,
+  ) async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) {
       throw const AuthException('로그인이 필요해요.');
@@ -36,7 +39,7 @@ class AnalysisRemoteDataSource {
 
     final response = await _client.functions.invoke(
       'analyze-document',
-      body: {'storagePath': storagePath},
+      body: {'storagePath': storagePath, 'language': languageCode},
     );
     final data = response.data;
     if (data is Map<String, dynamic>) return data;

@@ -24,7 +24,7 @@ void main() {
   });
 
   test('유효한 응답이면 AnalysisResult로 변환해 Ok를 반환한다', () async {
-    when(() => dataSource.analyzeDocument(photo)).thenAnswer(
+    when(() => dataSource.analyzeDocument(photo, any())).thenAnswer(
       (_) async => {
         'ok': true,
         'id': 'a1',
@@ -39,7 +39,7 @@ void main() {
       },
     );
 
-    final result = await repository.analyzeDocument(photo);
+    final result = await repository.analyzeDocument(photo, 'ko');
 
     expect(result, isA<Ok<AnalysisResult>>());
     final value = (result as Ok<AnalysisResult>).value;
@@ -56,7 +56,7 @@ void main() {
 
   test('Phase 3: actionItems/importantDates/clarifyingQuestions가 응답에 있으면 '
       'AnalysisResult까지 정상 전달된다', () async {
-    when(() => dataSource.analyzeDocument(photo)).thenAnswer(
+    when(() => dataSource.analyzeDocument(photo, any())).thenAnswer(
       (_) async => {
         'ok': true,
         'id': 'a3',
@@ -84,7 +84,7 @@ void main() {
       },
     );
 
-    final result = await repository.analyzeDocument(photo);
+    final result = await repository.analyzeDocument(photo, 'ko');
 
     expect(result, isA<Ok<AnalysisResult>>());
     final value = (result as Ok<AnalysisResult>).value;
@@ -111,7 +111,7 @@ void main() {
   test(
     'Phase 2: Edge Function 응답의 riskLevel이 AnalysisResult까지 그대로 전달된다',
     () async {
-      when(() => dataSource.analyzeDocument(photo)).thenAnswer(
+      when(() => dataSource.analyzeDocument(photo, any())).thenAnswer(
         (_) async => {
           'ok': true,
           'id': 'a2',
@@ -126,7 +126,7 @@ void main() {
         },
       );
 
-      final result = await repository.analyzeDocument(photo);
+      final result = await repository.analyzeDocument(photo, 'ko');
 
       expect(result, isA<Ok<AnalysisResult>>());
       final value = (result as Ok<AnalysisResult>).value;
@@ -138,10 +138,10 @@ void main() {
 
   test('data.ok가 false면(예: server_error) 성공으로 오인하지 않고 Failure를 반환한다', () async {
     when(
-      () => dataSource.analyzeDocument(photo),
+      () => dataSource.analyzeDocument(photo, any()),
     ).thenAnswer((_) async => {'ok': false, 'reason': 'server_error'});
 
-    final result = await repository.analyzeDocument(photo);
+    final result = await repository.analyzeDocument(photo, 'ko');
 
     expect(result, isA<Err<AnalysisResult>>());
     expect((result as Err<AnalysisResult>).failure, isA<ServerFailure>());
@@ -151,14 +151,14 @@ void main() {
     'FunctionException(ai_provider_not_configured)는 UnavailableFailure로 매핑한다 — '
     'AI provider 미설정을 서버 오류와 구분',
     () async {
-      when(() => dataSource.analyzeDocument(photo)).thenThrow(
+      when(() => dataSource.analyzeDocument(photo, any())).thenThrow(
         const FunctionException(
           status: 503,
           details: {'ok': false, 'reason': 'ai_provider_not_configured'},
         ),
       );
 
-      final result = await repository.analyzeDocument(photo);
+      final result = await repository.analyzeDocument(photo, 'ko');
 
       expect(
         (result as Err<AnalysisResult>).failure,
@@ -170,14 +170,14 @@ void main() {
   test(
     'FunctionException(invalid_storage_path)는 ValidationFailure로 매핑한다',
     () async {
-      when(() => dataSource.analyzeDocument(photo)).thenThrow(
+      when(() => dataSource.analyzeDocument(photo, any())).thenThrow(
         const FunctionException(
           status: 400,
           details: {'ok': false, 'reason': 'invalid_storage_path'},
         ),
       );
 
-      final result = await repository.analyzeDocument(photo);
+      final result = await repository.analyzeDocument(photo, 'ko');
 
       expect((result as Err<AnalysisResult>).failure, isA<ValidationFailure>());
     },
@@ -192,14 +192,14 @@ void main() {
         'ai_response_invalid',
         'storage_download_failed',
       ]) {
-        when(() => dataSource.analyzeDocument(photo)).thenThrow(
+        when(() => dataSource.analyzeDocument(photo, any())).thenThrow(
           FunctionException(
             status: 502,
             details: {'ok': false, 'reason': reason},
           ),
         );
 
-        final result = await repository.analyzeDocument(photo);
+        final result = await repository.analyzeDocument(photo, 'ko');
 
         expect(
           (result as Err<AnalysisResult>).failure,
@@ -212,30 +212,30 @@ void main() {
 
   test('Storage 업로드 실패(StorageException)는 ServerFailure로 매핑한다', () async {
     when(
-      () => dataSource.analyzeDocument(photo),
+      () => dataSource.analyzeDocument(photo, any()),
     ).thenThrow(const StorageException('upload failed'));
 
-    final result = await repository.analyzeDocument(photo);
+    final result = await repository.analyzeDocument(photo, 'ko');
 
     expect((result as Err<AnalysisResult>).failure, isA<ServerFailure>());
   });
 
   test('로그인되어 있지 않으면(AuthException) AuthFailure로 매핑한다', () async {
     when(
-      () => dataSource.analyzeDocument(photo),
+      () => dataSource.analyzeDocument(photo, any()),
     ).thenThrow(const AuthException('로그인이 필요해요.'));
 
-    final result = await repository.analyzeDocument(photo);
+    final result = await repository.analyzeDocument(photo, 'ko');
 
     expect((result as Err<AnalysisResult>).failure, isA<AuthFailure>());
   });
 
   test('필수 필드가 빠진 malformed 응답은 크래시하지 않고 UnknownFailure로 안전하게 처리한다', () async {
     when(
-      () => dataSource.analyzeDocument(photo),
+      () => dataSource.analyzeDocument(photo, any()),
     ).thenAnswer((_) async => {'ok': true});
 
-    final result = await repository.analyzeDocument(photo);
+    final result = await repository.analyzeDocument(photo, 'ko');
 
     expect((result as Err<AnalysisResult>).failure, isA<UnknownFailure>());
   });
