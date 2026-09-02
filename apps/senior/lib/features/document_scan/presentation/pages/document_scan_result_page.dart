@@ -7,6 +7,9 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../core/l10n/failure_l10n.dart';
+import '../../../../core/locale/locale_provider.dart';
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/widgets/analysis_progress_indicator.dart';
 import '../../../../core/widgets/analysis_progress_step.dart';
 import '../../../../core/widgets/analysis_result_view.dart';
@@ -94,7 +97,10 @@ class _DocumentScanResultPageState
 
       final result = await ref
           .read(analyzeDocumentUseCaseProvider)
-          .call(widget.photos[i]);
+          .call(
+            widget.photos[i],
+            ref.read(localeControllerProvider).languageCode,
+          );
       if (!mounted) return;
 
       switch (result) {
@@ -126,8 +132,12 @@ class _DocumentScanResultPageState
     // AnalysisRecordCard를 탭해 들어간 상세 화면에서 각각 공유하면 된다).
     final singleResult = _results.length == 1 ? _results.first : null;
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.analysisResultTitle,
+      // Easy 모드는 EasyAnalysisResultView가 이미 분석 요약을 직접 읽어준다
+      // (더 구체적인 안내) — 그 경우 여기서는 진입 시 자동 안내를 끄고,
+      // 화면을 벗어날 때 정지시키는 역할만 한다.
+      announceOnEnter: !easyMode,
       onBack: () => Navigator.of(context).pop(),
       headerActions: [
         if (singleResult != null) AnalysisShareAction(result: singleResult),
@@ -164,10 +174,13 @@ class _DocumentScanResultPageState
       if (failure is UnavailableFailure) {
         return AppEmptyState(
           icon: Icons.hourglass_empty,
-          message: failure.message,
+          message: localizeFailureMessage(context, failure.message),
         );
       }
-      return AppError(message: failure.message, onRetry: _analyzeAll);
+      return AppError(
+        message: localizeFailureMessage(context, failure.message),
+        onRetry: _analyzeAll,
+      );
     }
 
     if (_results.length == 1) {

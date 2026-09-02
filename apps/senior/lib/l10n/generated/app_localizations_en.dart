@@ -180,6 +180,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myRegionTitle => 'My Region';
 
   @override
+  String get regionInputHint => 'e.g. Seoul, Gangnam-gu, Yeoksam-dong';
+
+  @override
   String get regionLoadError => 'We couldn\'t load your region info.';
 
   @override
@@ -256,6 +259,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get phoneLaunchError => 'We couldn\'t open the phone app.';
+
+  @override
+  String get linkLaunchError => 'We couldn\'t open the link.';
+
+  @override
+  String get benefitServiceDetailTitle => 'Benefit Info';
+
+  @override
+  String get benefitServiceDetailLoadError =>
+      'We couldn\'t load the benefit info.';
+
+  @override
+  String get supportTargetLabel => 'Who qualifies';
+
+  @override
+  String get applyMethodLabel => 'How to apply';
+
+  @override
+  String get contactCallButton => 'Call for inquiries';
+
+  @override
+  String get viewDetailButton => 'View details';
 
   @override
   String get welfareCenterSearchError =>
@@ -603,6 +628,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myRecordsTitle => 'My Records';
 
   @override
+  String get analysisRecordsTabLabel => 'Analysis Records';
+
+  @override
+  String get scheduleTabLabel => 'Schedule';
+
+  @override
   String get documentReadLabel => 'Read Document';
 
   @override
@@ -623,6 +654,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get infoTabTitle => 'Info';
 
   @override
+  String get enterMyInfoButton => 'Enter my info';
+
+  @override
+  String get benefitLoadErrorMessage =>
+      'We couldn\'t load personalized benefit info.';
+
+  @override
+  String get benefitNoResultsMessage =>
+      'We couldn\'t find benefit info matching your current conditions.';
+
+  @override
   String get infoTabEmptyMessage =>
       'There\'s no information ready yet. We\'ll show you personalized info soon.';
 
@@ -637,6 +679,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get supportTitle => 'Customer Support';
+
+  @override
+  String get localGovOfficeContactHeader => 'Local Office Contact';
+
+  @override
+  String get localGovOfficeEmptyRegionMessage =>
+      'Register your region first to see your local welfare office\'s contact info.';
+
+  @override
+  String get localGovOfficeLoadError =>
+      'We couldn\'t load your local welfare office info.';
+
+  @override
+  String get localGovOfficeNotFoundMessage =>
+      'We couldn\'t find welfare office info for your region.';
+
+  @override
+  String get phoneNumberUnavailableMessage => 'No phone number available yet.';
 
   @override
   String get moreTitle => 'More';
@@ -674,6 +734,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayScheduleTitle => 'Today\'s Schedule';
+
+  @override
+  String get scheduleAddTitle => 'Add Schedule';
+
+  @override
+  String get scheduleTitleFieldLabel => 'Title';
+
+  @override
+  String get scheduleTitleHint => 'e.g. Take blood pressure medicine';
+
+  @override
+  String get dateLabel => 'Date';
+
+  @override
+  String get selectedDateLabel => 'Selected date';
+
+  @override
+  String get timeLabel => 'Time';
+
+  @override
+  String get selectedTimeLabel => 'Selected time';
+
+  @override
+  String get scheduleRecurringLabel => 'Repeat daily';
+
+  @override
+  String get scheduleRecurringDesc =>
+      'Repeats at the same time every day, like taking medicine.';
+
+  @override
+  String get scheduleLoadErrorMessage => 'We couldn\'t load your schedule.';
+
+  @override
+  String get scheduleEmptyMessage => 'No schedules yet.';
+
+  @override
+  String get scheduleDeleteTitle => 'Delete Schedule';
+
+  @override
+  String scheduleDeleteConfirmMessage(String title) {
+    return 'Delete \"$title\"?';
+  }
+
+  @override
+  String get deleteButton => 'Delete';
 
   @override
   String get emergencyHelpRequestLabel => 'Emergency Help (SOS)';
@@ -769,6 +874,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nextButton => 'Next';
 
   @override
+  String get previousButton => 'Previous';
+
+  @override
+  String get confirmButton => 'Confirm';
+
+  @override
+  String get howToUseTitle => 'How to Use';
+
+  @override
+  String get howToUseDocumentTitle => 'Check for scams by reading documents';
+
+  @override
+  String get howToUseDocumentDesc =>
+      'Take a photo of a bill or contract and AI will check it for anything risky.';
+
+  @override
+  String get howToUseMessageTitle => 'Check a text message';
+
+  @override
+  String get howToUseMessageDesc =>
+      'Got a suspicious text? Just paste it in — we\'ll tell you right away if it\'s a scam.';
+
+  @override
+  String get howToUseVoiceTitle => 'Ask by voice';
+
+  @override
+  String get howToUseVoiceDesc =>
+      'Tap the mic button at the bottom of the screen and say what you need — we\'ll take you there.';
+
+  @override
+  String get howToUseEmergencyTitle => 'Request emergency help';
+
+  @override
+  String get howToUseEmergencyDesc =>
+      'In an emergency, tap the emergency help button to notify your guardian right away.';
+
+  @override
+  String get howToUseBenefitTitle => 'Check personalized info';
+
+  @override
+  String get howToUseBenefitDesc =>
+      'Check benefit info matched to your age and region in the Info tab.';
+
+  @override
+  String get howToUseFacilityTitle => 'Find public facilities';
+
+  @override
+  String get howToUseFacilityDesc =>
+      'We\'ll find the location and contact info of nearby senior centers or welfare offices.';
+
+  @override
+  String get howToUseRecordsTitle => 'Check your records';
+
+  @override
+  String get howToUseRecordsDesc =>
+      'See all the documents and texts you\'ve checked so far in the Records tab.';
+
+  @override
   String get onboardingProfileIntro =>
       'If you tell us, we can show you more helpful information. (Optional)';
 
@@ -840,6 +1003,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get easyResultVoiceGuidePrefix => 'Here\'s your analysis result.';
+
+  @override
+  String get voiceGuideEnabledAnnouncement => 'Voice guide is now on.';
+
+  @override
+  String voiceGuideDefaultScreenText(String title) {
+    return 'This is the $title screen.';
+  }
 
   @override
   String get feeStatisticsTitle => 'Fee Statistics';
@@ -1133,4 +1304,132 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goHomeButton => 'Go home';
+
+  @override
+  String get pinDigitsInvalidMessage => 'Please enter a 4-digit PIN.';
+
+  @override
+  String get pinLockedRetryMessage =>
+      'Too many attempts. Please try again later.';
+
+  @override
+  String get ageInvalidMessage => 'Please enter a valid age.';
+
+  @override
+  String get ageGenderRequiredMessage =>
+      'Please enter your age and gender first.';
+
+  @override
+  String get regionRecheckMessage => 'Please check your region info again.';
+
+  @override
+  String get regionRequiredMessage => 'Please register your region first.';
+
+  @override
+  String get benefitNoLongerAvailableMessage =>
+      'This benefit info is no longer available.';
+
+  @override
+  String get loginRequiredMessage => 'You need to log in.';
+
+  @override
+  String get messageContentRecheckMessage =>
+      'Please check the message content again.';
+
+  @override
+  String get recurrenceTimeInvalidMessage => 'The repeat time isn\'t valid.';
+
+  @override
+  String get recurrenceTimeRequiredMessage => 'Please select a repeat time.';
+
+  @override
+  String get photoRecheckMessage => 'Please check the photo again.';
+
+  @override
+  String get genderRequiredMessage => 'Please select a gender.';
+
+  @override
+  String get requestInfoRecheckMessage =>
+      'Please check the request info again.';
+
+  @override
+  String get locationPermissionRequiredMessage =>
+      'Please allow location access.';
+
+  @override
+  String get locationServiceOffMessage =>
+      'Location services are off. Please turn them on in settings.';
+
+  @override
+  String get smsAutoCheckUnsupportedMessage =>
+      'This device doesn\'t support automatic text checking.';
+
+  @override
+  String get nameRequiredMessage => 'Please enter your name.';
+
+  @override
+  String get scheduleTitleRequiredMessage => 'Please enter a schedule title.';
+
+  @override
+  String get invalidBenefitInfoMessage => 'This is invalid benefit info.';
+
+  @override
+  String get phoneNumberMissingMessage => 'No phone number available.';
+
+  @override
+  String get regionAllFieldsRequiredMessage =>
+      'Please fill in all region fields.';
+
+  @override
+  String get recentMessagesLoadErrorMessage =>
+      'We couldn\'t load your recent messages.';
+
+  @override
+  String get reverseGeocodeFailedMessage =>
+      'We couldn\'t turn your location into a region name.';
+
+  @override
+  String get locationCheckFailedRetryMessage =>
+      'We couldn\'t check your current location. Please try again.';
+
+  @override
+  String get phoneNumberRecheckMessage =>
+      'Please check your phone number again.';
+
+  @override
+  String get networkFailureDefaultMessage =>
+      'Please check your network connection.';
+
+  @override
+  String get authFailureDefaultMessage => 'You need to log in.';
+
+  @override
+  String get serverFailureDefaultMessage => 'A server error occurred.';
+
+  @override
+  String get unknownFailureDefaultMessage => 'An unknown error occurred.';
+
+  @override
+  String get locationUnavailableDefaultMessage =>
+      'We couldn\'t determine your current location.';
+
+  @override
+  String get welfareCenterUnavailableMessage =>
+      'We don\'t offer senior center info yet.';
+
+  @override
+  String get localGovOfficeUnavailableMessage =>
+      'We don\'t offer local welfare office contact info yet.';
+
+  @override
+  String get benefitServiceUnavailableMessage =>
+      'We don\'t offer personalized benefit info yet.';
+
+  @override
+  String get analysisServerNotReadyMessage =>
+      'The analysis server isn\'t ready yet. Please wait a moment.';
+
+  @override
+  String get pinAlreadySetMessage =>
+      'A PIN is already set. If you forgot it, use PIN reset.';
 }

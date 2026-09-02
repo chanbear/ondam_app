@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 
@@ -17,7 +18,7 @@ class MessageGuardianNoticePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final easyMode = ref.watch(easyModeProvider);
-    return AppScaffold(
+    return VoiceGuideScaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

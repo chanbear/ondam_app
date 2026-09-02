@@ -6,6 +6,7 @@ import 'package:ondam_senior/features/info/domain/entities/benefit_service.dart'
 import 'package:ondam_senior/features/info/domain/entities/benefit_service_detail.dart';
 import 'package:ondam_senior/features/info/presentation/pages/benefit_service_detail_page.dart';
 import 'package:ondam_senior/features/info/presentation/providers/benefit_service_di_providers.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../domain/fakes/fake_benefit_service_repository.dart';
 
@@ -21,8 +22,11 @@ void main() {
       overrides: [
         benefitServiceRepositoryProvider.overrideWithValue(repository),
       ],
-      child: const MaterialApp(
-        home: BenefitServiceDetailPage(
+      child: MaterialApp(
+        locale: const Locale('ko'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const BenefitServiceDetailPage(
           id: 'WLF001',
           source: BenefitServiceSource.central,
         ),

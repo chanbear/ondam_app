@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_outline_card.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/notification_prefs/presentation/providers/notification_prefs_provider.dart';
@@ -24,7 +25,7 @@ class NotifSettingsPage extends ConsumerWidget {
     Widget wrap(Widget child) =>
         easyMode ? EasyOutlineCard(child: child) : AppCard(child: child);
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.notifSettingsTitle,
       onBack: () => Navigator.of(context).pop(),
       body: Column(

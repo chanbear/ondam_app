@@ -5,6 +5,7 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/presentation/pages/analysis_record_detail_page.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
@@ -35,10 +36,10 @@ class RecordsTabPage extends StatelessWidget {
             ),
             child: AppSectionHeader(title: l10n.myRecordsTitle),
           ),
-          const TabBar(
+          TabBar(
             tabs: [
-              Tab(text: '분석 기록'),
-              Tab(text: '일정'),
+              Tab(text: l10n.analysisRecordsTabLabel),
+              Tab(text: l10n.scheduleTabLabel),
             ],
           ),
           const Expanded(
@@ -75,7 +76,7 @@ class _AnalysisRecordsViewState extends ConsumerState<_AnalysisRecordsView> {
       loading: () => AppLoading(message: l10n.recordsLoadingMessage),
       error: (error, _) {
         final message = error is Failure
-            ? error.message
+            ? localizeFailureMessage(context, error.message)
             : l10n.recordsLoadError;
         return AppError(
           message: message,

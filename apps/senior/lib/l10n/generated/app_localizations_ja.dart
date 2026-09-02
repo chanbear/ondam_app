@@ -176,6 +176,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get myRegionTitle => 'マイエリア';
 
   @override
+  String get regionInputHint => '例：東京都渋谷区渋谷';
+
+  @override
   String get regionLoadError => '地域情報を読み込めませんでした。';
 
   @override
@@ -246,6 +249,27 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get phoneLaunchError => '電話アプリを開けませんでした。';
+
+  @override
+  String get linkLaunchError => 'リンクを開けませんでした。';
+
+  @override
+  String get benefitServiceDetailTitle => '支援情報';
+
+  @override
+  String get benefitServiceDetailLoadError => '支援情報を読み込めませんでした。';
+
+  @override
+  String get supportTargetLabel => '支援対象';
+
+  @override
+  String get applyMethodLabel => '申請方法';
+
+  @override
+  String get contactCallButton => '問い合わせ電話をかける';
+
+  @override
+  String get viewDetailButton => '詳しく見る';
 
   @override
   String get welfareCenterSearchError => '検索中に問題が発生しました。';
@@ -582,6 +606,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get myRecordsTitle => 'マイ記録';
 
   @override
+  String get analysisRecordsTabLabel => '分析記録';
+
+  @override
+  String get scheduleTabLabel => '予定';
+
+  @override
   String get documentReadLabel => '書類を読む';
 
   @override
@@ -600,6 +630,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get infoTabTitle => '情報';
 
   @override
+  String get enterMyInfoButton => 'マイ情報を入力する';
+
+  @override
+  String get benefitLoadErrorMessage => 'カスタム支援情報を読み込めませんでした。';
+
+  @override
+  String get benefitNoResultsMessage => '現在の条件に合う支援情報が見つかりませんでした。';
+
+  @override
   String get infoTabEmptyMessage => 'まだ準備された情報がありません。まもなくおすすめ情報をお届けします。';
 
   @override
@@ -613,6 +652,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get supportTitle => 'カスタマーサポート';
+
+  @override
+  String get localGovOfficeContactHeader => '管轄行政機関の連絡先';
+
+  @override
+  String get localGovOfficeEmptyRegionMessage =>
+      '管轄の行政福祉センターの連絡先を見るには、先にマイエリアを登録してください。';
+
+  @override
+  String get localGovOfficeLoadError => '管轄の行政福祉センター情報を読み込めませんでした。';
+
+  @override
+  String get localGovOfficeNotFoundMessage => 'マイエリアの行政福祉センター情報が見つかりませんでした。';
+
+  @override
+  String get phoneNumberUnavailableMessage => '電話番号情報がまだありません。';
 
   @override
   String get moreTitle => 'その他';
@@ -648,6 +703,50 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get todayScheduleTitle => '今日の予定';
+
+  @override
+  String get scheduleAddTitle => '予定を追加';
+
+  @override
+  String get scheduleTitleFieldLabel => 'タイトル';
+
+  @override
+  String get scheduleTitleHint => '例：血圧の薬を飲む';
+
+  @override
+  String get dateLabel => '日付';
+
+  @override
+  String get selectedDateLabel => '選択した日付';
+
+  @override
+  String get timeLabel => '時間';
+
+  @override
+  String get selectedTimeLabel => '選択した時間';
+
+  @override
+  String get scheduleRecurringLabel => '毎日繰り返す';
+
+  @override
+  String get scheduleRecurringDesc => '服薬のように毎日同じ時刻に繰り返されます。';
+
+  @override
+  String get scheduleLoadErrorMessage => '予定を読み込めませんでした。';
+
+  @override
+  String get scheduleEmptyMessage => '登録された予定がありません。';
+
+  @override
+  String get scheduleDeleteTitle => '予定を削除';
+
+  @override
+  String scheduleDeleteConfirmMessage(String title) {
+    return '「$title」予定を削除しますか？';
+  }
+
+  @override
+  String get deleteButton => '削除';
 
   @override
   String get emergencyHelpRequestLabel => '緊急ヘルプ（SOS）';
@@ -740,6 +839,58 @@ class AppLocalizationsJa extends AppLocalizations {
   String get nextButton => '次へ';
 
   @override
+  String get previousButton => '前へ';
+
+  @override
+  String get confirmButton => '確認';
+
+  @override
+  String get howToUseTitle => '使い方案内';
+
+  @override
+  String get howToUseDocumentTitle => '文書を読んで詐欺を確認する';
+
+  @override
+  String get howToUseDocumentDesc => '請求書や契約書を写真で撮ると、AIが危険な内容がないか確認します。';
+
+  @override
+  String get howToUseMessageTitle => 'メッセージを確認する';
+
+  @override
+  String get howToUseMessageDesc =>
+      '怪しいメッセージを受け取ったら貼り付けるだけ。詐欺メッセージかすぐにお知らせします。';
+
+  @override
+  String get howToUseVoiceTitle => '話しかけて聞く';
+
+  @override
+  String get howToUseVoiceDesc => '画面下のマイクボタンを押して話すと、必要な機能にすぐ移動します。';
+
+  @override
+  String get howToUseEmergencyTitle => '緊急ヘルプを要請する';
+
+  @override
+  String get howToUseEmergencyDesc => '緊急時は緊急ヘルプボタンを押して保護者にすぐ知らせることができます。';
+
+  @override
+  String get howToUseBenefitTitle => 'マイ情報を確認する';
+
+  @override
+  String get howToUseBenefitDesc => '情報タブで年齢と地域に合った支援情報を確認できます。';
+
+  @override
+  String get howToUseFacilityTitle => '公共施設を探す';
+
+  @override
+  String get howToUseFacilityDesc => '近くの高齢者福祉センターや行政福祉センターの場所と連絡先をお探しします。';
+
+  @override
+  String get howToUseRecordsTitle => 'マイ記録を確認する';
+
+  @override
+  String get howToUseRecordsDesc => 'これまで確認した文書やメッセージの記録を記録タブで見ることができます。';
+
+  @override
   String get onboardingProfileIntro => '教えていただくと、より役立つ情報をお届けできます。（任意入力）';
 
   @override
@@ -809,6 +960,14 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get easyResultVoiceGuidePrefix => '分析結果をお知らせします。';
+
+  @override
+  String get voiceGuideEnabledAnnouncement => 'これから音声案内を開始します。';
+
+  @override
+  String voiceGuideDefaultScreenText(String title) {
+    return '$title画面です。';
+  }
 
   @override
   String get feeStatisticsTitle => '料金統計';
@@ -1098,4 +1257,113 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get goHomeButton => 'ホームへ';
+
+  @override
+  String get pinDigitsInvalidMessage => 'PINは4桁の数字で入力してください。';
+
+  @override
+  String get pinLockedRetryMessage => '何度も間違えました。しばらくしてからもう一度お試しください。';
+
+  @override
+  String get ageInvalidMessage => '年齢を正しく入力してください。';
+
+  @override
+  String get ageGenderRequiredMessage => '先に年齢と性別を入力してください。';
+
+  @override
+  String get regionRecheckMessage => 'マイエリア情報をもう一度確認してください。';
+
+  @override
+  String get regionRequiredMessage => '先にマイエリアを登録してください。';
+
+  @override
+  String get benefitNoLongerAvailableMessage => 'これ以上提供されない支援情報です。';
+
+  @override
+  String get loginRequiredMessage => 'ログインが必要です。';
+
+  @override
+  String get messageContentRecheckMessage => 'メッセージの内容をもう一度確認してください。';
+
+  @override
+  String get recurrenceTimeInvalidMessage => '繰り返し時刻が正しくありません。';
+
+  @override
+  String get recurrenceTimeRequiredMessage => '繰り返す時刻を選択してください。';
+
+  @override
+  String get photoRecheckMessage => '写真をもう一度確認してください。';
+
+  @override
+  String get genderRequiredMessage => '性別を選択してください。';
+
+  @override
+  String get requestInfoRecheckMessage => 'リクエスト情報をもう一度確認してください。';
+
+  @override
+  String get locationPermissionRequiredMessage => '位置情報の許可をしてください。';
+
+  @override
+  String get locationServiceOffMessage => '位置情報サービスがオフです。設定でオンにしてください。';
+
+  @override
+  String get smsAutoCheckUnsupportedMessage => 'この端末ではメッセージの自動確認に対応していません。';
+
+  @override
+  String get nameRequiredMessage => '名前を入力してください。';
+
+  @override
+  String get scheduleTitleRequiredMessage => '予定のタイトルを入力してください。';
+
+  @override
+  String get invalidBenefitInfoMessage => '無効な支援情報です。';
+
+  @override
+  String get phoneNumberMissingMessage => '電話番号がありません。';
+
+  @override
+  String get regionAllFieldsRequiredMessage => '地域をすべて入力してください。';
+
+  @override
+  String get recentMessagesLoadErrorMessage => '最近のメッセージを読み込めませんでした。';
+
+  @override
+  String get reverseGeocodeFailedMessage => '現在地を地域名に変換できませんでした。';
+
+  @override
+  String get locationCheckFailedRetryMessage => '現在地を確認できませんでした。もう一度お試しください。';
+
+  @override
+  String get phoneNumberRecheckMessage => '携帯電話番号をもう一度確認してください。';
+
+  @override
+  String get networkFailureDefaultMessage => 'ネットワーク接続を確認してください。';
+
+  @override
+  String get authFailureDefaultMessage => 'ログインが必要です。';
+
+  @override
+  String get serverFailureDefaultMessage => 'サーバーで問題が発生しました。';
+
+  @override
+  String get unknownFailureDefaultMessage => '不明なエラーが発生しました。';
+
+  @override
+  String get locationUnavailableDefaultMessage => '現在地を確認できません。';
+
+  @override
+  String get welfareCenterUnavailableMessage => '高齢者福祉センター情報はまだ提供していません。';
+
+  @override
+  String get localGovOfficeUnavailableMessage => '管轄の行政福祉センターの連絡先はまだ提供していません。';
+
+  @override
+  String get benefitServiceUnavailableMessage => 'カスタム支援情報はまだ提供していません。';
+
+  @override
+  String get analysisServerNotReadyMessage => '分析サーバーがまだ準備できていません。少々お待ちください。';
+
+  @override
+  String get pinAlreadySetMessage =>
+      'すでにPINが設定されています。PINをお忘れの場合はPIN再設定をご利用ください。';
 }

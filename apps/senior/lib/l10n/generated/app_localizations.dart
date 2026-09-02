@@ -426,6 +426,12 @@ abstract class AppLocalizations {
   /// **'내 지역'**
   String get myRegionTitle;
 
+  /// No description provided for @regionInputHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'예: 서울특별시 강남구 역삼동'**
+  String get regionInputHint;
+
   /// No description provided for @regionLoadError.
   ///
   /// In ko, this message translates to:
@@ -569,6 +575,48 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'전화 앱을 열 수 없어요.'**
   String get phoneLaunchError;
+
+  /// No description provided for @linkLaunchError.
+  ///
+  /// In ko, this message translates to:
+  /// **'링크를 열 수 없어요.'**
+  String get linkLaunchError;
+
+  /// No description provided for @benefitServiceDetailTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'혜택 정보'**
+  String get benefitServiceDetailTitle;
+
+  /// No description provided for @benefitServiceDetailLoadError.
+  ///
+  /// In ko, this message translates to:
+  /// **'혜택 정보를 불러오지 못했어요.'**
+  String get benefitServiceDetailLoadError;
+
+  /// No description provided for @supportTargetLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'지원대상'**
+  String get supportTargetLabel;
+
+  /// No description provided for @applyMethodLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'신청방법'**
+  String get applyMethodLabel;
+
+  /// No description provided for @contactCallButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'문의처 전화하기'**
+  String get contactCallButton;
+
+  /// No description provided for @viewDetailButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'자세히 보기'**
+  String get viewDetailButton;
 
   /// No description provided for @welfareCenterSearchError.
   ///
@@ -1188,6 +1236,18 @@ abstract class AppLocalizations {
   /// **'내 기록'**
   String get myRecordsTitle;
 
+  /// No description provided for @analysisRecordsTabLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 기록'**
+  String get analysisRecordsTabLabel;
+
+  /// No description provided for @scheduleTabLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'일정'**
+  String get scheduleTabLabel;
+
   /// No description provided for @documentReadLabel.
   ///
   /// In ko, this message translates to:
@@ -1224,6 +1284,24 @@ abstract class AppLocalizations {
   /// **'정보'**
   String get infoTabTitle;
 
+  /// No description provided for @enterMyInfoButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 정보 입력하기'**
+  String get enterMyInfoButton;
+
+  /// No description provided for @benefitLoadErrorMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'맞춤 혜택 정보를 불러오지 못했어요.'**
+  String get benefitLoadErrorMessage;
+
+  /// No description provided for @benefitNoResultsMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'지금 조건에 맞는 혜택 정보를 찾지 못했어요.'**
+  String get benefitNoResultsMessage;
+
   /// No description provided for @infoTabEmptyMessage.
   ///
   /// In ko, this message translates to:
@@ -1253,6 +1331,36 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'고객 지원'**
   String get supportTitle;
+
+  /// No description provided for @localGovOfficeContactHeader.
+  ///
+  /// In ko, this message translates to:
+  /// **'관할 행정기관 연락처'**
+  String get localGovOfficeContactHeader;
+
+  /// No description provided for @localGovOfficeEmptyRegionMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'관할 행정복지센터 연락처를 보려면 먼저 내 지역을 등록해주세요.'**
+  String get localGovOfficeEmptyRegionMessage;
+
+  /// No description provided for @localGovOfficeLoadError.
+  ///
+  /// In ko, this message translates to:
+  /// **'관할 행정복지센터 정보를 불러오지 못했어요.'**
+  String get localGovOfficeLoadError;
+
+  /// No description provided for @localGovOfficeNotFoundMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 지역의 행정복지센터 정보를 찾지 못했어요.'**
+  String get localGovOfficeNotFoundMessage;
+
+  /// No description provided for @phoneNumberUnavailableMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'전화번호 정보가 아직 없어요.'**
+  String get phoneNumberUnavailableMessage;
 
   /// No description provided for @moreTitle.
   ///
@@ -1319,6 +1427,90 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'오늘의 일정'**
   String get todayScheduleTitle;
+
+  /// No description provided for @scheduleAddTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'일정 추가'**
+  String get scheduleAddTitle;
+
+  /// No description provided for @scheduleTitleFieldLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'제목'**
+  String get scheduleTitleFieldLabel;
+
+  /// No description provided for @scheduleTitleHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'예: 혈압약 복용'**
+  String get scheduleTitleHint;
+
+  /// No description provided for @dateLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'날짜'**
+  String get dateLabel;
+
+  /// No description provided for @selectedDateLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'선택한 날짜'**
+  String get selectedDateLabel;
+
+  /// No description provided for @timeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'시간'**
+  String get timeLabel;
+
+  /// No description provided for @selectedTimeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'선택한 시간'**
+  String get selectedTimeLabel;
+
+  /// No description provided for @scheduleRecurringLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'매일 반복'**
+  String get scheduleRecurringLabel;
+
+  /// No description provided for @scheduleRecurringDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'복약처럼 매일 같은 시각에 반복돼요.'**
+  String get scheduleRecurringDesc;
+
+  /// No description provided for @scheduleLoadErrorMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'일정을 불러오지 못했어요.'**
+  String get scheduleLoadErrorMessage;
+
+  /// No description provided for @scheduleEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록된 일정이 없어요.'**
+  String get scheduleEmptyMessage;
+
+  /// No description provided for @scheduleDeleteTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'일정 삭제'**
+  String get scheduleDeleteTitle;
+
+  /// No description provided for @scheduleDeleteConfirmMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'{title} 일정을 삭제할까요?'**
+  String scheduleDeleteConfirmMessage(String title);
+
+  /// No description provided for @deleteButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'삭제'**
+  String get deleteButton;
 
   /// No description provided for @emergencyHelpRequestLabel.
   ///
@@ -1488,6 +1680,108 @@ abstract class AppLocalizations {
   /// **'다음'**
   String get nextButton;
 
+  /// No description provided for @previousButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'이전'**
+  String get previousButton;
+
+  /// No description provided for @confirmButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인'**
+  String get confirmButton;
+
+  /// No description provided for @howToUseTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용 방법 안내'**
+  String get howToUseTitle;
+
+  /// No description provided for @howToUseDocumentTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서 읽기로 사기 확인하기'**
+  String get howToUseDocumentTitle;
+
+  /// No description provided for @howToUseDocumentDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'고지서나 계약서를 사진으로 찍으면 AI가 위험한 내용이 있는지 확인해드려요.'**
+  String get howToUseDocumentDesc;
+
+  /// No description provided for @howToUseMessageTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자 확인하기'**
+  String get howToUseMessageTitle;
+
+  /// No description provided for @howToUseMessageDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'수상한 문자를 받으면 붙여넣기만 하세요. 사기 문자인지 바로 알려드려요.'**
+  String get howToUseMessageDesc;
+
+  /// No description provided for @howToUseVoiceTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'말로 물어보기'**
+  String get howToUseVoiceTitle;
+
+  /// No description provided for @howToUseVoiceDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'화면 아래 마이크 버튼을 누르고 말씀하시면 원하는 기능으로 바로 이동해요.'**
+  String get howToUseVoiceDesc;
+
+  /// No description provided for @howToUseEmergencyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'긴급 도움 요청하기'**
+  String get howToUseEmergencyTitle;
+
+  /// No description provided for @howToUseEmergencyDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'위급한 상황엔 긴급 도움 버튼을 눌러 보호자에게 바로 알릴 수 있어요.'**
+  String get howToUseEmergencyDesc;
+
+  /// No description provided for @howToUseBenefitTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'맞춤 정보 확인하기'**
+  String get howToUseBenefitTitle;
+
+  /// No description provided for @howToUseBenefitDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'정보 탭에서 내 나이와 지역에 맞는 혜택 정보를 확인하세요.'**
+  String get howToUseBenefitDesc;
+
+  /// No description provided for @howToUseFacilityTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'공공시설 찾기'**
+  String get howToUseFacilityTitle;
+
+  /// No description provided for @howToUseFacilityDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'가까운 경로당이나 행정복지센터 위치와 연락처를 찾아드려요.'**
+  String get howToUseFacilityDesc;
+
+  /// No description provided for @howToUseRecordsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 기록 확인하기'**
+  String get howToUseRecordsTitle;
+
+  /// No description provided for @howToUseRecordsDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'지금까지 확인한 문서와 문자 기록을 기록 탭에서 다시 볼 수 있어요.'**
+  String get howToUseRecordsDesc;
+
   /// No description provided for @onboardingProfileIntro.
   ///
   /// In ko, this message translates to:
@@ -1625,6 +1919,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'분석 결과를 알려드릴게요.'**
   String get easyResultVoiceGuidePrefix;
+
+  /// No description provided for @voiceGuideEnabledAnnouncement.
+  ///
+  /// In ko, this message translates to:
+  /// **'지금부터 음성 안내를 지원합니다.'**
+  String get voiceGuideEnabledAnnouncement;
+
+  /// No description provided for @voiceGuideDefaultScreenText.
+  ///
+  /// In ko, this message translates to:
+  /// **'{title} 화면이에요.'**
+  String voiceGuideDefaultScreenText(String title);
 
   /// No description provided for @feeStatisticsTitle.
   ///
@@ -2147,6 +2453,222 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'홈으로'**
   String get goHomeButton;
+
+  /// No description provided for @pinDigitsInvalidMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'PIN은 4자리 숫자로 입력해주세요.'**
+  String get pinDigitsInvalidMessage;
+
+  /// No description provided for @pinLockedRetryMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'PIN이 잠겨 있습니다. 잠시 후 다시 시도해주세요.'**
+  String get pinLockedRetryMessage;
+
+  /// No description provided for @ageInvalidMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'나이를 올바르게 입력해주세요.'**
+  String get ageInvalidMessage;
+
+  /// No description provided for @ageGenderRequiredMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'나이와 성별을 먼저 입력해주세요.'**
+  String get ageGenderRequiredMessage;
+
+  /// No description provided for @regionRecheckMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 지역 정보를 다시 확인해주세요.'**
+  String get regionRecheckMessage;
+
+  /// No description provided for @regionRequiredMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 지역을 먼저 등록해주세요.'**
+  String get regionRequiredMessage;
+
+  /// No description provided for @benefitNoLongerAvailableMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'더 이상 제공되지 않는 혜택 정보예요.'**
+  String get benefitNoLongerAvailableMessage;
+
+  /// No description provided for @loginRequiredMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인이 필요해요.'**
+  String get loginRequiredMessage;
+
+  /// No description provided for @messageContentRecheckMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'문자 내용을 다시 확인해주세요.'**
+  String get messageContentRecheckMessage;
+
+  /// No description provided for @recurrenceTimeInvalidMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'반복 시각이 올바르지 않아요.'**
+  String get recurrenceTimeInvalidMessage;
+
+  /// No description provided for @recurrenceTimeRequiredMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'반복할 시각을 선택해주세요.'**
+  String get recurrenceTimeRequiredMessage;
+
+  /// No description provided for @photoRecheckMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진을 다시 확인해주세요.'**
+  String get photoRecheckMessage;
+
+  /// No description provided for @genderRequiredMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'성별을 선택해주세요.'**
+  String get genderRequiredMessage;
+
+  /// No description provided for @requestInfoRecheckMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'요청 정보를 다시 확인해주세요.'**
+  String get requestInfoRecheckMessage;
+
+  /// No description provided for @locationPermissionRequiredMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'위치 권한을 허용해주세요.'**
+  String get locationPermissionRequiredMessage;
+
+  /// No description provided for @locationServiceOffMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'위치 서비스가 꺼져 있어요. 설정에서 켜주세요.'**
+  String get locationServiceOffMessage;
+
+  /// No description provided for @smsAutoCheckUnsupportedMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 기기에서는 문자 자동 확인을 지원하지 않아요.'**
+  String get smsAutoCheckUnsupportedMessage;
+
+  /// No description provided for @nameRequiredMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름을 입력해주세요.'**
+  String get nameRequiredMessage;
+
+  /// No description provided for @scheduleTitleRequiredMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'일정 제목을 입력해주세요.'**
+  String get scheduleTitleRequiredMessage;
+
+  /// No description provided for @invalidBenefitInfoMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'잘못된 혜택 정보예요.'**
+  String get invalidBenefitInfoMessage;
+
+  /// No description provided for @phoneNumberMissingMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'전화번호가 없어요.'**
+  String get phoneNumberMissingMessage;
+
+  /// No description provided for @regionAllFieldsRequiredMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'지역을 모두 입력해주세요.'**
+  String get regionAllFieldsRequiredMessage;
+
+  /// No description provided for @recentMessagesLoadErrorMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 문자를 불러오지 못했어요.'**
+  String get recentMessagesLoadErrorMessage;
+
+  /// No description provided for @reverseGeocodeFailedMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 위치를 지역명으로 바꾸지 못했어요.'**
+  String get reverseGeocodeFailedMessage;
+
+  /// No description provided for @locationCheckFailedRetryMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 위치를 확인하지 못했어요. 다시 시도해주세요.'**
+  String get locationCheckFailedRetryMessage;
+
+  /// No description provided for @phoneNumberRecheckMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴대폰 번호를 다시 확인해주세요.'**
+  String get phoneNumberRecheckMessage;
+
+  /// No description provided for @networkFailureDefaultMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'네트워크 연결을 확인해주세요.'**
+  String get networkFailureDefaultMessage;
+
+  /// No description provided for @authFailureDefaultMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인이 필요합니다.'**
+  String get authFailureDefaultMessage;
+
+  /// No description provided for @serverFailureDefaultMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'서버에 문제가 발생했습니다.'**
+  String get serverFailureDefaultMessage;
+
+  /// No description provided for @unknownFailureDefaultMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'알 수 없는 오류가 발생했습니다.'**
+  String get unknownFailureDefaultMessage;
+
+  /// No description provided for @locationUnavailableDefaultMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 위치를 확인할 수 없어요.'**
+  String get locationUnavailableDefaultMessage;
+
+  /// No description provided for @welfareCenterUnavailableMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'경로당 정보를 아직 제공하지 않아요.'**
+  String get welfareCenterUnavailableMessage;
+
+  /// No description provided for @localGovOfficeUnavailableMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'관할 행정복지센터 연락처를 아직 제공하지 않아요.'**
+  String get localGovOfficeUnavailableMessage;
+
+  /// No description provided for @benefitServiceUnavailableMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'맞춤 혜택 정보를 아직 제공하지 않아요.'**
+  String get benefitServiceUnavailableMessage;
+
+  /// No description provided for @analysisServerNotReadyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 서버가 아직 준비되지 않았어요. 조금만 기다려주세요.'**
+  String get analysisServerNotReadyMessage;
+
+  /// No description provided for @pinAlreadySetMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'이미 PIN이 설정되어 있어요. PIN을 잊으셨다면 PIN 재설정을 이용해주세요.'**
+  String get pinAlreadySetMessage;
 }
 
 class _AppLocalizationsDelegate

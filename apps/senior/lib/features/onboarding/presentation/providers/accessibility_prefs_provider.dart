@@ -1,6 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/locale/locale_provider.dart';
 import '../../../../core/storage/storage_providers.dart';
+import '../../../../core/voice_guide/tts_locale.dart';
+import '../../../../core/voice_guide/voice_guide_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/text_scale_level.dart';
 import '../../domain/voice_rate_level.dart';
 
@@ -67,9 +71,20 @@ class AccessibilityPrefsNotifier extends Notifier<AccessibilityPrefs> {
     await ref.read(localStorageProvider).setInt(_textScaleKey, level.index);
   }
 
+  // 토글을 켜는 순간 "지금부터 음성 안내를 지원합니다"를 바로 들려준다
+  // (사용자 요청) — 이 지점부터 화면별 안내(VoiceGuideScaffold)가 시작된다는
+  // 걸 눈이 아니라 귀로도 확인할 수 있게 한다. Notifier는 BuildContext가
+  // 없어 `AppLocalizations.of(context)` 대신 로케일로 직접 조회하는
+  // `lookupAppLocalizations`를 쓴다.
   Future<void> setVoiceGuideEnabled(bool enabled) async {
     state = state.copyWith(voiceGuideEnabled: enabled);
     await ref.read(localStorageProvider).setBool(_voiceGuideKey, enabled);
+    if (!enabled) return;
+    final l10n = lookupAppLocalizations(ref.read(localeControllerProvider));
+    final service = ref.read(voiceGuideServiceProvider);
+    await service.setLanguage(ttsLocaleTag(ref.read(localeControllerProvider)));
+    await service.setSpeechRate(state.voiceRate.ttsRate);
+    await service.speak(l10n.voiceGuideEnabledAnnouncement);
   }
 
   Future<void> setVoiceRate(VoiceRateLevel level) async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 
 /// 개인정보 보관 안내 — 이 저장소에서 실제로 확정·구현된 정책만 안내한다
@@ -33,7 +34,7 @@ class PrivacyInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.privacyInfoTitle,
       onBack: () => Navigator.of(context).pop(),
       scrollable: true,

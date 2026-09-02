@@ -4,6 +4,8 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../core/location/presentation/providers/region_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../profile/presentation/pages/region_input_page.dart';
@@ -40,26 +42,26 @@ class SupportPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final regionAsync = ref.watch(regionProvider);
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.supportTitle,
       onBack: () => Navigator.of(context).pop(),
       scrollable: true,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const AppSectionHeader(title: '관할 행정기관 연락처'),
+          AppSectionHeader(title: l10n.localGovOfficeContactHeader),
           const SizedBox(height: AppSpacing.sm),
           regionAsync.when(
             loading: () => const AppLoading(),
             error: (_, _) => AppError(
-              message: '내 지역 정보를 불러오지 못했어요.',
+              message: l10n.welfareCenterRegionLoadError,
               onRetry: () => ref.invalidate(regionProvider),
             ),
             data: (region) {
               if (region == null) {
                 return AppEmptyState(
                   icon: Icons.place_outlined,
-                  message: '관할 행정복지센터 연락처를 보려면 먼저 내 지역을 등록해주세요.',
+                  message: l10n.localGovOfficeEmptyRegionMessage,
                   actionLabel: l10n.enterRegionAction,
                   onAction: () => _openRegionInput(context),
                 );
@@ -110,6 +112,7 @@ class _LocalGovOfficeCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final officeAsync = ref.watch(localGovOfficeNotifierProvider);
 
     return officeAsync.when(
@@ -118,12 +121,12 @@ class _LocalGovOfficeCard extends ConsumerWidget {
         if (error is UnavailableFailure) {
           return AppEmptyState(
             icon: Icons.info_outline,
-            message: error.message,
+            message: localizeFailureMessage(context, error.message),
           );
         }
         final message = error is Failure
-            ? error.message
-            : '관할 행정복지센터 정보를 불러오지 못했어요.';
+            ? localizeFailureMessage(context, error.message)
+            : l10n.localGovOfficeLoadError;
         return AppError(
           message: message,
           onRetry: () => ref.invalidate(localGovOfficeNotifierProvider),
@@ -131,9 +134,9 @@ class _LocalGovOfficeCard extends ConsumerWidget {
       },
       data: (office) {
         if (office == null) {
-          return const AppEmptyState(
+          return AppEmptyState(
             icon: Icons.search_off,
-            message: '내 지역의 행정복지센터 정보를 찾지 못했어요.',
+            message: l10n.localGovOfficeNotFoundMessage,
           );
         }
         final phone = office.phoneNumber;
@@ -148,7 +151,7 @@ class _LocalGovOfficeCard extends ConsumerWidget {
                     if (phone == null) ...[
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        '전화번호 정보가 아직 없어요.',
+                        l10n.phoneNumberUnavailableMessage,
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.textSecondary,
                         ),

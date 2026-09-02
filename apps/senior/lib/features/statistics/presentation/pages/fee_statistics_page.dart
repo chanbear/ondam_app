@@ -4,6 +4,8 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../core/l10n/failure_l10n.dart';
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../analysis/presentation/pages/analysis_record_detail_page.dart';
 import '../../../analysis/presentation/providers/analysis_records_notifier.dart';
@@ -21,7 +23,7 @@ class FeeStatisticsPage extends ConsumerWidget {
     final state = ref.watch(analysisRecordsProvider);
     final l10n = AppLocalizations.of(context)!;
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.feeStatisticsTitle,
       onBack: () => Navigator.of(context).pop(),
       scrollable: true,
@@ -29,7 +31,7 @@ class FeeStatisticsPage extends ConsumerWidget {
         loading: () => AppLoading(message: l10n.feeStatisticsLoadingMessage),
         error: (error, _) {
           final message = error is Failure
-              ? error.message
+              ? localizeFailureMessage(context, error.message)
               : l10n.feeStatisticsLoadError;
           return AppError(
             message: message,

@@ -4,6 +4,7 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:permission_handler/permission_handler.dart'
     show openAppSettings;
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/sms_message.dart';
@@ -27,7 +28,7 @@ class MessageCheckEntryPage extends ConsumerWidget {
     final permissionAsync = ref.watch(smsPermissionProvider);
     final l10n = AppLocalizations.of(context)!;
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.messageCheckLabel,
       onBack: () => Navigator.of(context).pop(),
       scrollable: false,

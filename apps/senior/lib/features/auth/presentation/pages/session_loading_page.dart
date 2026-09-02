@@ -4,6 +4,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../core/auth/supabase_client_provider.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../providers/login_notifier.dart';
 
 /// Neutral placeholder shown while the router waits for `hasPinProvider`
@@ -57,7 +58,7 @@ class _SessionLoadingPageState extends ConsumerState<SessionLoadingPage> {
     if (failure != null) {
       return Scaffold(
         body: AppError(
-          message: failure.message,
+          message: localizeFailureMessage(context, failure.message),
           onRetry: () => ref
               .read(loginNotifierProvider.notifier)
               .completeSocialLoginSession(),

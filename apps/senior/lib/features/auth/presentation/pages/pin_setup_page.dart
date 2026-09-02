@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/pin_notifier.dart';
 import '../widgets/pin_keypad.dart';
@@ -107,7 +108,7 @@ class _PinSetupPageState extends ConsumerState<PinSetupPage> {
                     if (failure != null) ...[
                       const SizedBox(height: AppSpacing.md),
                       Text(
-                        failure.message,
+                        localizeFailureMessage(context, failure.message),
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.error,
                         ),

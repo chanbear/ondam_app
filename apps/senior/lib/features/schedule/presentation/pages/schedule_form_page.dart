@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/l10n/failure_l10n.dart';
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/schedule_notifier.dart';
 
 /// 새 일정 추가 화면 — 제목 + 날짜/시간 + 매일 반복 여부만 입력받는다(범용
@@ -81,7 +84,7 @@ class _ScheduleFormPageState extends ConsumerState<ScheduleFormPage> {
       case Err(:final failure):
         setState(() {
           _saving = false;
-          _saveError = failure.message;
+          _saveError = localizeFailureMessage(context, failure.message);
         });
     }
   }
@@ -94,36 +97,46 @@ class _ScheduleFormPageState extends ConsumerState<ScheduleFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      title: '일정 추가',
+    final l10n = AppLocalizations.of(context)!;
+    return VoiceGuideScaffold(
+      title: l10n.scheduleAddTitle,
       onBack: () => Navigator.of(context).pop(),
       scrollable: true,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppTextField(
-            label: '제목',
+            label: l10n.scheduleTitleFieldLabel,
             controller: _titleController,
-            hintText: '예: 혈압약 복용',
+            hintText: l10n.scheduleTitleHint,
           ),
           const SizedBox(height: AppSpacing.xxl),
-          const AppSectionHeader(title: '날짜'),
+          AppSectionHeader(title: l10n.dateLabel),
           AppCard(
             onTap: _pickDate,
-            child: AppInfoRow(label: '선택한 날짜', value: _formatDate(_date)),
+            child: AppInfoRow(
+              label: l10n.selectedDateLabel,
+              value: _formatDate(_date),
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
-          const AppSectionHeader(title: '시간'),
+          AppSectionHeader(title: l10n.timeLabel),
           AppCard(
             onTap: _pickTime,
-            child: AppInfoRow(label: '선택한 시간', value: _formatTime(_time)),
+            child: AppInfoRow(
+              label: l10n.selectedTimeLabel,
+              value: _formatTime(_time),
+            ),
           ),
           const SizedBox(height: AppSpacing.xxl),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('매일 반복', style: AppTextStyles.bodyLarge),
+            title: Text(
+              l10n.scheduleRecurringLabel,
+              style: AppTextStyles.bodyLarge,
+            ),
             subtitle: Text(
-              '복약처럼 매일 같은 시각에 반복돼요.',
+              l10n.scheduleRecurringDesc,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -133,7 +146,7 @@ class _ScheduleFormPageState extends ConsumerState<ScheduleFormPage> {
           ),
           const SizedBox(height: AppSpacing.xxl),
           AppButton(
-            label: '저장',
+            label: l10n.saveButton,
             isLoading: _saving,
             onPressed: _saving ? null : _save,
           ),

@@ -3,13 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_senior/features/schedule/presentation/pages/schedule_form_page.dart';
 import 'package:ondam_senior/features/schedule/presentation/providers/schedule_di_providers.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../domain/fakes/fake_schedule_repository.dart';
 
 Widget _wrap(FakeScheduleRepository repository) {
   return ProviderScope(
     overrides: [scheduleRepositoryProvider.overrideWithValue(repository)],
-    child: const MaterialApp(home: ScheduleFormPage()),
+    child: MaterialApp(
+      locale: const Locale('ko'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const ScheduleFormPage(),
+    ),
   );
 }
 

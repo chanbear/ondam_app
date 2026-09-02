@@ -16,7 +16,9 @@ import '../../../../core/location/domain/entities/location_permission_status.dar
 import '../../../../core/location/domain/entities/region.dart';
 import '../../../../core/location/presentation/providers/location_di_providers.dart';
 import '../../../../core/location/presentation/providers/location_permission_provider.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../core/location/presentation/providers/region_provider.dart';
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../connection/presentation/providers/connection_token_notifier.dart';
 import '../../../profile/presentation/providers/profile_provider.dart';
@@ -88,12 +90,14 @@ class _OnboardingFlowPageState extends ConsumerState<OnboardingFlowPage> {
       _Step.guardianQr => l10n.guardianRegisterTitle,
       _Step.complete => null,
     };
-    return AppScaffold(
+    return VoiceGuideScaffold(
       // 스텝 전환 시 이전 스텝에서 스크롤한 위치가 새 스텝 콘텐츠에
       // 그대로 남아 상단이 잘려 보이는 문제 — AppScaffold(내부
       // SingleChildScrollView)가 키 없이 재사용되어 스크롤 offset이
       // 스텝 간에 유지되는 게 원인. 스텝별로 키를 줘서 스텝이 바뀔 때마다
-      // 새 스크롤 위치(0)로 시작하게 한다.
+      // 새 스크롤 위치(0)로 시작하게 한다. 이 키 덕분에 스텝마다
+      // VoiceGuideScaffold도 새로 mount되어, 스텝이 바뀔 때 이전 스텝
+      // 안내가 멈추고 새 스텝 제목이 자동으로 안내된다(사용자 요청).
       key: ValueKey(_step),
       title: title,
       // "설정 완료!" 화면은 짧은 고정 콘텐츠라 화면 전체 높이에서 수직
@@ -175,11 +179,16 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
   // 독립 화면으로 계속 쓰이므로 건드리지 않는다).
   // 2026-09-02 — ui-prototype(senior.onboard-profile)에 맞춰 시/도 선택 +
   // 시/군/구·동 수동 입력을 없애고, 위치 자동 입력 결과만 보여주는 단일
-  // 필드로 단순화했다(사용자 요청) — sigungu/dong은 더는 별도 입력칸이
-  // 없어 TextEditingController 대신 평범한 String으로 들고 있는다.
-  String? _sido;
-  String _sigungu = '';
-  String _dong = '';
+  // 필드로 단순화했다(사용자 요청).
+  // 2026-09-02 (2) — 값이 label 옆에 작게 표시되던 것을, 예시가 있고
+  // 입력하면 사라지는 입력칸 하나로 바꿨다(사용자 요청). "현재 위치로
+  // 자동 입력" 버튼은 그대로 두고, 버튼으로 자동 입력한 값이든 사용자가
+  // 이 칸에서 직접 입력한 값이든 그대로 저장된다 — Region이
+  // sido/sigungu/dong 구조를 유지해야 하므로(welfare_center 등 다른
+  // 기능이 시/도 단위로 검색에 사용) 저장 시점에 공백 기준으로 나눠 담는다.
+  // 2026-09-02 (3) — 화면 진입 시 자동으로 위치를 시도하던 것을 없앴다
+  // (사용자 요청) — 버튼을 누르거나 직접 타이핑해야만 채워진다.
+  final _regionController = TextEditingController();
   bool _locating = false;
   String? _locationError;
 
@@ -192,16 +201,13 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
   void _seedRegionFromSaved() {
     final saved = ref.read(regionProvider).value;
     if (saved == null || !mounted) return;
-    setState(() {
-      _sido = saved.sido;
-      _sigungu = saved.sigungu;
-      _dong = saved.dong;
-    });
+    setState(() => _regionController.text = saved.displayName);
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _regionController.dispose();
     super.dispose();
   }
 
@@ -263,15 +269,13 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
     switch (result) {
       case Ok(:final value):
         setState(() {
-          _sido = value.sido;
-          _sigungu = value.sigungu;
-          _dong = value.dong;
+          _regionController.text = value.displayName;
           _locating = false;
         });
       case Err(:final failure):
         setState(() {
           _locating = false;
-          _locationError = failure.message;
+          _locationError = localizeFailureMessage(context, failure.message);
         });
     }
   }
@@ -293,11 +297,18 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
             .save(Demographics(age: _age, gender: gender));
       }
     }
-    final sido = _sido;
-    if (sido != null && sido.isNotEmpty) {
+    final regionText = _regionController.text.trim();
+    if (regionText.isNotEmpty) {
+      final parts = regionText.split(RegExp(r'\s+'));
       await ref
           .read(regionProvider.notifier)
-          .save(Region(sido: sido, sigungu: _sigungu, dong: _dong));
+          .save(
+            Region(
+              sido: parts[0],
+              sigungu: parts.length > 1 ? parts[1] : '',
+              dong: parts.length > 2 ? parts.sublist(2).join(' ') : '',
+            ),
+          );
     }
     if (!mounted) return;
     widget.onNext();
@@ -307,13 +318,6 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final easyMode = ref.watch(easyModeProvider);
-    final sido = _sido;
-    final regionInfo = AppInfoRow(
-      label: l10n.currentRegionLabel,
-      value: sido == null
-          ? l10n.regionNotSetValue
-          : Region(sido: sido, sigungu: _sigungu, dong: _dong).displayName,
-    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -362,31 +366,38 @@ class _ProfileStepState extends ConsumerState<_ProfileStep> {
                 max: 119,
               ),
               const SizedBox(height: AppSpacing.xxl),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  l10n.myRegionTitle,
-                  style: AppTextStyles.titleMedium,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
               // BUG: 여기서 RegionInputPage로 이동시켰던 걸 인라인 입력으로
               // 바꿨다 — region_input_page.dart의 현재 위치 자동 입력
               // 로직을 그대로 이식한다.
-              // 2026-09-02 — ui-prototype(senior.onboard-profile)에 맞춰
-              // 시/도 선택 + 시/군/구·동 수동 입력을 없애고, 위치 자동 입력
-              // 결과만 보여주는 단일 필드로 단순화했다(사용자 요청 — 위치
-              // 인식 결과를 직접 고칠 수는 없어졌다).
+              // 2026-09-02 — 화면 진입 시 자동으로 위치를 한 번 시도해 이
+              // 칸을 채우고, "현재 위치로 자동 입력" 버튼은 그대로 남겨
+              // 다시 시도할 수 있게 한다 — 그 값을 그대로 두거나 직접 고쳐
+              // 입력해도 그 값이 저장된다(사용자 요청 — 버튼 유지 + 직접
+              // 입력도 저장).
               easyMode
-                  ? EasyOutlineCard(child: regionInfo)
-                  : AppCard(child: regionInfo),
+                  ? EasyOutlineCard(
+                      child: AppTextField(
+                        label: l10n.myRegionTitle,
+                        controller: _regionController,
+                        hintText: _locating
+                            ? l10n.locatingButton
+                            : l10n.regionInputHint,
+                      ),
+                    )
+                  : AppCard(
+                      child: AppTextField(
+                        label: l10n.myRegionTitle,
+                        controller: _regionController,
+                        hintText: _locating
+                            ? l10n.locatingButton
+                            : l10n.regionInputHint,
+                      ),
+                    ),
               const SizedBox(height: AppSpacing.md),
               AppButton(
                 label: _locating
                     ? l10n.locatingButton
                     : l10n.useCurrentLocationButton,
-                // "보호자 등록으로 넘어가기" primary 버튼과 색을 구분한다
-                // (사용자 요청) — region_input_page.dart와 같은 패턴.
                 variant: AppButtonVariant.secondary,
                 isLoading: _locating,
                 size: AppButtonSize.large,

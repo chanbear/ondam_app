@@ -4,6 +4,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../info/domain/entities/benefit_service.dart';
 import '../../../info/presentation/pages/benefit_service_detail_page.dart';
@@ -75,20 +76,20 @@ class InfoTabPage extends ConsumerWidget {
               if (error is ValidationFailure) {
                 return AppEmptyState(
                   icon: Icons.person_outline,
-                  message: error.message,
-                  actionLabel: '내 정보 입력하기',
+                  message: localizeFailureMessage(context, error.message),
+                  actionLabel: l10n.enterMyInfoButton,
                   onAction: () => _openProfile(context),
                 );
               }
               if (error is UnavailableFailure) {
                 return AppEmptyState(
                   icon: Icons.info_outline,
-                  message: error.message,
+                  message: localizeFailureMessage(context, error.message),
                 );
               }
               final message = error is Failure
-                  ? error.message
-                  : '맞춤 혜택 정보를 불러오지 못했어요.';
+                  ? localizeFailureMessage(context, error.message)
+                  : l10n.benefitLoadErrorMessage;
               return AppError(
                 message: message,
                 onRetry: () => ref.invalidate(benefitServiceNotifierProvider),
@@ -96,9 +97,9 @@ class InfoTabPage extends ConsumerWidget {
             },
             data: (results) {
               if (results == null || results.isEmpty) {
-                return const AppEmptyState(
+                return AppEmptyState(
                   icon: Icons.search_off,
-                  message: '지금 조건에 맞는 혜택 정보를 찾지 못했어요.',
+                  message: l10n.benefitNoResultsMessage,
                 );
               }
               return ListView.separated(

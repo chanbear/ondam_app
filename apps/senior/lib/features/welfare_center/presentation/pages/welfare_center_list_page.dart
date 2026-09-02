@@ -4,7 +4,9 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../core/location/presentation/providers/region_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../profile/presentation/pages/region_input_page.dart';
@@ -56,7 +58,7 @@ class WelfareCenterListPage extends ConsumerWidget {
     final regionAsync = ref.watch(regionProvider);
     final easyMode = ref.watch(easyModeProvider);
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.welfareCenterTitle,
       onBack: () => Navigator.of(context).pop(),
       scrollable: true,
@@ -127,11 +129,11 @@ class _SearchResults extends ConsumerWidget {
         if (error is UnavailableFailure) {
           return AppEmptyState(
             icon: Icons.info_outline,
-            message: error.message,
+            message: localizeFailureMessage(context, error.message),
           );
         }
         final message = error is Failure
-            ? error.message
+            ? localizeFailureMessage(context, error.message)
             : l10n.welfareCenterSearchError;
         return AppError(
           message: message,

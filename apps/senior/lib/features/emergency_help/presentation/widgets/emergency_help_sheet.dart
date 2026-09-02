@@ -4,6 +4,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/emergency_help_di_providers.dart';
 
@@ -32,9 +33,11 @@ class EmergencyHelpSheet extends ConsumerWidget {
       case Ok():
         break;
       case Err(:final failure):
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(failure.message)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizeFailureMessage(context, failure.message)),
+          ),
+        );
     }
   }
 

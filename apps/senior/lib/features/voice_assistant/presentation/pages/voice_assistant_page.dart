@@ -4,6 +4,7 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:permission_handler/permission_handler.dart'
     show openAppSettings;
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../document_scan/presentation/pages/document_scan_camera_page.dart';
@@ -31,7 +32,7 @@ class VoiceAssistantPage extends ConsumerWidget {
     final permissionAsync = ref.watch(micPermissionProvider);
     final l10n = AppLocalizations.of(context)!;
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.voiceAssistantLabel,
       onBack: () => Navigator.of(context).pop(),
       body: permissionAsync.when(

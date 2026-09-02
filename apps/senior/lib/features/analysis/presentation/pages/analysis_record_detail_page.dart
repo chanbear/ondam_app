@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/widgets/analysis_result_view.dart';
 import '../../../../core/widgets/analysis_share_action.dart';
@@ -25,7 +25,7 @@ class AnalysisRecordDetailPage extends ConsumerWidget {
     final easyMode = ref.watch(easyModeProvider);
     final l10n = AppLocalizations.of(context)!;
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.analysisResultTitle,
       onBack: () => Navigator.of(context).pop(),
       headerActions: [AnalysisShareAction(result: result)],

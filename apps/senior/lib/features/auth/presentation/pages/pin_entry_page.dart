@@ -5,6 +5,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../app/router/auth_routes.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/pin_verify_result.dart';
 import '../providers/pin_notifier.dart';
@@ -64,7 +65,9 @@ class _PinEntryPageState extends ConsumerState<PinEntryPage> {
   }
 
   String? _guidanceMessage(AppLocalizations l10n) {
-    if (_lastFailure != null) return _lastFailure!.message;
+    if (_lastFailure != null) {
+      return localizeFailureMessageWith(l10n, _lastFailure!.message);
+    }
     final result = _lastResult;
     if (result == null || result.ok) return null;
     return switch (result.reason!) {

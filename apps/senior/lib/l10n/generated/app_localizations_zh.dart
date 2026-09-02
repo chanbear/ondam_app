@@ -175,6 +175,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get myRegionTitle => '我的地区';
 
   @override
+  String get regionInputHint => '例如：首尔特别市江南区驿三洞';
+
+  @override
   String get regionLoadError => '无法加载地区信息。';
 
   @override
@@ -245,6 +248,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get phoneLaunchError => '无法打开电话应用。';
+
+  @override
+  String get linkLaunchError => '无法打开链接。';
+
+  @override
+  String get benefitServiceDetailTitle => '福利信息';
+
+  @override
+  String get benefitServiceDetailLoadError => '无法加载福利信息。';
+
+  @override
+  String get supportTargetLabel => '支持对象';
+
+  @override
+  String get applyMethodLabel => '申请方法';
+
+  @override
+  String get contactCallButton => '拨打咨询电话';
+
+  @override
+  String get viewDetailButton => '查看详情';
 
   @override
   String get welfareCenterSearchError => '搜索时发生问题。';
@@ -577,6 +601,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get myRecordsTitle => '我的记录';
 
   @override
+  String get analysisRecordsTabLabel => '分析记录';
+
+  @override
+  String get scheduleTabLabel => '日程';
+
+  @override
   String get documentReadLabel => '阅读文件';
 
   @override
@@ -595,6 +625,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get infoTabTitle => '信息';
 
   @override
+  String get enterMyInfoButton => '输入我的信息';
+
+  @override
+  String get benefitLoadErrorMessage => '无法加载专属福利信息。';
+
+  @override
+  String get benefitNoResultsMessage => '未找到符合当前条件的福利信息。';
+
+  @override
   String get infoTabEmptyMessage => '目前还没有准备好的信息，敬请期待个性化推荐信息。';
 
   @override
@@ -608,6 +647,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get supportTitle => '客户支持';
+
+  @override
+  String get localGovOfficeContactHeader => '管辖行政机关联系方式';
+
+  @override
+  String get localGovOfficeEmptyRegionMessage => '要查看管辖行政福利中心的联系方式，请先登记您的地区。';
+
+  @override
+  String get localGovOfficeLoadError => '无法加载管辖行政福利中心信息。';
+
+  @override
+  String get localGovOfficeNotFoundMessage => '未找到您所在地区的行政福利中心信息。';
+
+  @override
+  String get phoneNumberUnavailableMessage => '暂无电话号码信息。';
 
   @override
   String get moreTitle => '更多';
@@ -643,6 +697,50 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayScheduleTitle => '今日日程';
+
+  @override
+  String get scheduleAddTitle => '添加日程';
+
+  @override
+  String get scheduleTitleFieldLabel => '标题';
+
+  @override
+  String get scheduleTitleHint => '例如：服用降压药';
+
+  @override
+  String get dateLabel => '日期';
+
+  @override
+  String get selectedDateLabel => '已选日期';
+
+  @override
+  String get timeLabel => '时间';
+
+  @override
+  String get selectedTimeLabel => '已选时间';
+
+  @override
+  String get scheduleRecurringLabel => '每日重复';
+
+  @override
+  String get scheduleRecurringDesc => '像服药一样，每天在同一时间重复。';
+
+  @override
+  String get scheduleLoadErrorMessage => '无法加载日程。';
+
+  @override
+  String get scheduleEmptyMessage => '还没有已登记的日程。';
+
+  @override
+  String get scheduleDeleteTitle => '删除日程';
+
+  @override
+  String scheduleDeleteConfirmMessage(String title) {
+    return '要删除「$title」日程吗？';
+  }
+
+  @override
+  String get deleteButton => '删除';
 
   @override
   String get emergencyHelpRequestLabel => '紧急求助（SOS）';
@@ -733,6 +831,57 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nextButton => '下一步';
 
   @override
+  String get previousButton => '上一步';
+
+  @override
+  String get confirmButton => '确认';
+
+  @override
+  String get howToUseTitle => '使用方法指南';
+
+  @override
+  String get howToUseDocumentTitle => '通过阅读文件确认是否有诈骗';
+
+  @override
+  String get howToUseDocumentDesc => '拍摄账单或合同照片，AI会为您确认是否存在风险内容。';
+
+  @override
+  String get howToUseMessageTitle => '确认短信';
+
+  @override
+  String get howToUseMessageDesc => '收到可疑短信只需粘贴进来，我们会立即告诉您是否是诈骗短信。';
+
+  @override
+  String get howToUseVoiceTitle => '语音提问';
+
+  @override
+  String get howToUseVoiceDesc => '按下屏幕底部的麦克风按钮说话，即可直接跳转到所需功能。';
+
+  @override
+  String get howToUseEmergencyTitle => '请求紧急帮助';
+
+  @override
+  String get howToUseEmergencyDesc => '紧急情况下，按下紧急求助按钮即可立即通知监护人。';
+
+  @override
+  String get howToUseBenefitTitle => '查看专属信息';
+
+  @override
+  String get howToUseBenefitDesc => '在信息标签页查看符合您年龄和地区的福利信息。';
+
+  @override
+  String get howToUseFacilityTitle => '查找公共设施';
+
+  @override
+  String get howToUseFacilityDesc => '为您查找附近老年活动中心或行政福利中心的位置和联系方式。';
+
+  @override
+  String get howToUseRecordsTitle => '查看我的记录';
+
+  @override
+  String get howToUseRecordsDesc => '在记录标签页可以再次查看至今确认过的文件和短信记录。';
+
+  @override
   String get onboardingProfileIntro => '告诉我们后，我们可以为您展示更有用的信息。（选填）';
 
   @override
@@ -800,6 +949,14 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get easyResultVoiceGuidePrefix => '为您播报分析结果。';
+
+  @override
+  String get voiceGuideEnabledAnnouncement => '现在开始为您提供语音引导。';
+
+  @override
+  String voiceGuideDefaultScreenText(String title) {
+    return '这是$title页面。';
+  }
 
   @override
   String get feeStatisticsTitle => '费用统计';
@@ -1084,4 +1241,112 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get goHomeButton => '回首页';
+
+  @override
+  String get pinDigitsInvalidMessage => '请输入4位数字PIN码。';
+
+  @override
+  String get pinLockedRetryMessage => '尝试次数过多，请稍后再试。';
+
+  @override
+  String get ageInvalidMessage => '请正确输入年龄。';
+
+  @override
+  String get ageGenderRequiredMessage => '请先输入年龄和性别。';
+
+  @override
+  String get regionRecheckMessage => '请重新确认我的地区信息。';
+
+  @override
+  String get regionRequiredMessage => '请先登记我的地区。';
+
+  @override
+  String get benefitNoLongerAvailableMessage => '该福利信息已不再提供。';
+
+  @override
+  String get loginRequiredMessage => '需要登录。';
+
+  @override
+  String get messageContentRecheckMessage => '请重新确认短信内容。';
+
+  @override
+  String get recurrenceTimeInvalidMessage => '重复时间不正确。';
+
+  @override
+  String get recurrenceTimeRequiredMessage => '请选择重复时间。';
+
+  @override
+  String get photoRecheckMessage => '请重新确认照片。';
+
+  @override
+  String get genderRequiredMessage => '请选择性别。';
+
+  @override
+  String get requestInfoRecheckMessage => '请重新确认请求信息。';
+
+  @override
+  String get locationPermissionRequiredMessage => '请允许位置权限。';
+
+  @override
+  String get locationServiceOffMessage => '定位服务已关闭，请在设置中打开。';
+
+  @override
+  String get smsAutoCheckUnsupportedMessage => '该设备不支持短信自动确认。';
+
+  @override
+  String get nameRequiredMessage => '请输入姓名。';
+
+  @override
+  String get scheduleTitleRequiredMessage => '请输入日程标题。';
+
+  @override
+  String get invalidBenefitInfoMessage => '无效的福利信息。';
+
+  @override
+  String get phoneNumberMissingMessage => '没有电话号码。';
+
+  @override
+  String get regionAllFieldsRequiredMessage => '请填写完整的地区信息。';
+
+  @override
+  String get recentMessagesLoadErrorMessage => '无法加载最近的短信。';
+
+  @override
+  String get reverseGeocodeFailedMessage => '无法将当前位置转换为地区名称。';
+
+  @override
+  String get locationCheckFailedRetryMessage => '无法确认当前位置，请重试。';
+
+  @override
+  String get phoneNumberRecheckMessage => '请重新确认手机号码。';
+
+  @override
+  String get networkFailureDefaultMessage => '请检查网络连接。';
+
+  @override
+  String get authFailureDefaultMessage => '需要登录。';
+
+  @override
+  String get serverFailureDefaultMessage => '服务器出现问题。';
+
+  @override
+  String get unknownFailureDefaultMessage => '发生未知错误。';
+
+  @override
+  String get locationUnavailableDefaultMessage => '无法确认当前位置。';
+
+  @override
+  String get welfareCenterUnavailableMessage => '暂未提供老年活动中心信息。';
+
+  @override
+  String get localGovOfficeUnavailableMessage => '暂未提供管辖行政福利中心的联系方式。';
+
+  @override
+  String get benefitServiceUnavailableMessage => '暂未提供专属福利信息。';
+
+  @override
+  String get analysisServerNotReadyMessage => '分析服务器尚未就绪，请稍候。';
+
+  @override
+  String get pinAlreadySetMessage => 'PIN码已设置。如果忘记PIN码，请使用PIN重置。';
 }

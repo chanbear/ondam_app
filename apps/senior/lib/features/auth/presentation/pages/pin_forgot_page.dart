@@ -6,6 +6,7 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 
 import '../../../../app/router/auth_routes.dart';
 import '../../../../core/auth/supabase_client_provider.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/pin_notifier.dart';
 import '../providers/sign_up_notifier.dart';
@@ -134,7 +135,7 @@ class _ReauthenticatingStep extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          failure.message,
+          localizeFailureMessage(context, failure.message),
           style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
         ),
         const SizedBox(height: AppSpacing.xl),
@@ -173,7 +174,7 @@ class _NewPinStep extends ConsumerWidget {
         if (failure != null) ...[
           const SizedBox(height: AppSpacing.md),
           Text(
-            failure.message,
+            localizeFailureMessage(context, failure.message),
             style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
             textAlign: TextAlign.center,
           ),

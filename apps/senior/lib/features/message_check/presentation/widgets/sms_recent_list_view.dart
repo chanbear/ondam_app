@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../pages/sms_message_detail_page.dart';
 import '../providers/sms_inbox_notifier.dart';
@@ -22,7 +23,9 @@ class SmsRecentListView extends ConsumerWidget {
     return inboxAsync.when(
       loading: () => AppLoading(message: l10n.recentSmsLoadingMessage),
       error: (error, _) {
-        final message = error is Failure ? error.message : l10n.smsLoadError;
+        final message = error is Failure
+            ? localizeFailureMessage(context, error.message)
+            : l10n.smsLoadError;
         return AppError(
           message: message,
           onRetry: () => ref.invalidate(smsInboxProvider),

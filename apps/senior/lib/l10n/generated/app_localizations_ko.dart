@@ -176,6 +176,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get myRegionTitle => '내 지역';
 
   @override
+  String get regionInputHint => '예: 서울특별시 강남구 역삼동';
+
+  @override
   String get regionLoadError => '지역 정보를 불러오지 못했어요.';
 
   @override
@@ -246,6 +249,27 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get phoneLaunchError => '전화 앱을 열 수 없어요.';
+
+  @override
+  String get linkLaunchError => '링크를 열 수 없어요.';
+
+  @override
+  String get benefitServiceDetailTitle => '혜택 정보';
+
+  @override
+  String get benefitServiceDetailLoadError => '혜택 정보를 불러오지 못했어요.';
+
+  @override
+  String get supportTargetLabel => '지원대상';
+
+  @override
+  String get applyMethodLabel => '신청방법';
+
+  @override
+  String get contactCallButton => '문의처 전화하기';
+
+  @override
+  String get viewDetailButton => '자세히 보기';
 
   @override
   String get welfareCenterSearchError => '경로당 검색 중 문제가 발생했어요.';
@@ -583,6 +607,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get myRecordsTitle => '내 기록';
 
   @override
+  String get analysisRecordsTabLabel => '분석 기록';
+
+  @override
+  String get scheduleTabLabel => '일정';
+
+  @override
   String get documentReadLabel => '문서 읽기';
 
   @override
@@ -601,6 +631,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get infoTabTitle => '정보';
 
   @override
+  String get enterMyInfoButton => '내 정보 입력하기';
+
+  @override
+  String get benefitLoadErrorMessage => '맞춤 혜택 정보를 불러오지 못했어요.';
+
+  @override
+  String get benefitNoResultsMessage => '지금 조건에 맞는 혜택 정보를 찾지 못했어요.';
+
+  @override
   String get infoTabEmptyMessage => '아직 준비된 정보가 없어요. 곧 맞춤 정보를 보여드릴게요.';
 
   @override
@@ -614,6 +653,22 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get supportTitle => '고객 지원';
+
+  @override
+  String get localGovOfficeContactHeader => '관할 행정기관 연락처';
+
+  @override
+  String get localGovOfficeEmptyRegionMessage =>
+      '관할 행정복지센터 연락처를 보려면 먼저 내 지역을 등록해주세요.';
+
+  @override
+  String get localGovOfficeLoadError => '관할 행정복지센터 정보를 불러오지 못했어요.';
+
+  @override
+  String get localGovOfficeNotFoundMessage => '내 지역의 행정복지센터 정보를 찾지 못했어요.';
+
+  @override
+  String get phoneNumberUnavailableMessage => '전화번호 정보가 아직 없어요.';
 
   @override
   String get moreTitle => '더보기';
@@ -649,6 +704,50 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get todayScheduleTitle => '오늘의 일정';
+
+  @override
+  String get scheduleAddTitle => '일정 추가';
+
+  @override
+  String get scheduleTitleFieldLabel => '제목';
+
+  @override
+  String get scheduleTitleHint => '예: 혈압약 복용';
+
+  @override
+  String get dateLabel => '날짜';
+
+  @override
+  String get selectedDateLabel => '선택한 날짜';
+
+  @override
+  String get timeLabel => '시간';
+
+  @override
+  String get selectedTimeLabel => '선택한 시간';
+
+  @override
+  String get scheduleRecurringLabel => '매일 반복';
+
+  @override
+  String get scheduleRecurringDesc => '복약처럼 매일 같은 시각에 반복돼요.';
+
+  @override
+  String get scheduleLoadErrorMessage => '일정을 불러오지 못했어요.';
+
+  @override
+  String get scheduleEmptyMessage => '등록된 일정이 없어요.';
+
+  @override
+  String get scheduleDeleteTitle => '일정 삭제';
+
+  @override
+  String scheduleDeleteConfirmMessage(String title) {
+    return '$title 일정을 삭제할까요?';
+  }
+
+  @override
+  String get deleteButton => '삭제';
 
   @override
   String get emergencyHelpRequestLabel => '긴급 도움 (SOS)';
@@ -741,6 +840,58 @@ class AppLocalizationsKo extends AppLocalizations {
   String get nextButton => '다음';
 
   @override
+  String get previousButton => '이전';
+
+  @override
+  String get confirmButton => '확인';
+
+  @override
+  String get howToUseTitle => '사용 방법 안내';
+
+  @override
+  String get howToUseDocumentTitle => '문서 읽기로 사기 확인하기';
+
+  @override
+  String get howToUseDocumentDesc =>
+      '고지서나 계약서를 사진으로 찍으면 AI가 위험한 내용이 있는지 확인해드려요.';
+
+  @override
+  String get howToUseMessageTitle => '문자 확인하기';
+
+  @override
+  String get howToUseMessageDesc => '수상한 문자를 받으면 붙여넣기만 하세요. 사기 문자인지 바로 알려드려요.';
+
+  @override
+  String get howToUseVoiceTitle => '말로 물어보기';
+
+  @override
+  String get howToUseVoiceDesc => '화면 아래 마이크 버튼을 누르고 말씀하시면 원하는 기능으로 바로 이동해요.';
+
+  @override
+  String get howToUseEmergencyTitle => '긴급 도움 요청하기';
+
+  @override
+  String get howToUseEmergencyDesc => '위급한 상황엔 긴급 도움 버튼을 눌러 보호자에게 바로 알릴 수 있어요.';
+
+  @override
+  String get howToUseBenefitTitle => '맞춤 정보 확인하기';
+
+  @override
+  String get howToUseBenefitDesc => '정보 탭에서 내 나이와 지역에 맞는 혜택 정보를 확인하세요.';
+
+  @override
+  String get howToUseFacilityTitle => '공공시설 찾기';
+
+  @override
+  String get howToUseFacilityDesc => '가까운 경로당이나 행정복지센터 위치와 연락처를 찾아드려요.';
+
+  @override
+  String get howToUseRecordsTitle => '내 기록 확인하기';
+
+  @override
+  String get howToUseRecordsDesc => '지금까지 확인한 문서와 문자 기록을 기록 탭에서 다시 볼 수 있어요.';
+
+  @override
   String get onboardingProfileIntro => '알려주시면 더 도움이 되는 정보를 보여드릴 수 있어요. (선택 입력)';
 
   @override
@@ -810,6 +961,14 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get easyResultVoiceGuidePrefix => '분석 결과를 알려드릴게요.';
+
+  @override
+  String get voiceGuideEnabledAnnouncement => '지금부터 음성 안내를 지원합니다.';
+
+  @override
+  String voiceGuideDefaultScreenText(String title) {
+    return '$title 화면이에요.';
+  }
 
   @override
   String get feeStatisticsTitle => '요금 통계';
@@ -1098,4 +1257,114 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get goHomeButton => '홈으로';
+
+  @override
+  String get pinDigitsInvalidMessage => 'PIN은 4자리 숫자로 입력해주세요.';
+
+  @override
+  String get pinLockedRetryMessage => 'PIN이 잠겨 있습니다. 잠시 후 다시 시도해주세요.';
+
+  @override
+  String get ageInvalidMessage => '나이를 올바르게 입력해주세요.';
+
+  @override
+  String get ageGenderRequiredMessage => '나이와 성별을 먼저 입력해주세요.';
+
+  @override
+  String get regionRecheckMessage => '내 지역 정보를 다시 확인해주세요.';
+
+  @override
+  String get regionRequiredMessage => '내 지역을 먼저 등록해주세요.';
+
+  @override
+  String get benefitNoLongerAvailableMessage => '더 이상 제공되지 않는 혜택 정보예요.';
+
+  @override
+  String get loginRequiredMessage => '로그인이 필요해요.';
+
+  @override
+  String get messageContentRecheckMessage => '문자 내용을 다시 확인해주세요.';
+
+  @override
+  String get recurrenceTimeInvalidMessage => '반복 시각이 올바르지 않아요.';
+
+  @override
+  String get recurrenceTimeRequiredMessage => '반복할 시각을 선택해주세요.';
+
+  @override
+  String get photoRecheckMessage => '사진을 다시 확인해주세요.';
+
+  @override
+  String get genderRequiredMessage => '성별을 선택해주세요.';
+
+  @override
+  String get requestInfoRecheckMessage => '요청 정보를 다시 확인해주세요.';
+
+  @override
+  String get locationPermissionRequiredMessage => '위치 권한을 허용해주세요.';
+
+  @override
+  String get locationServiceOffMessage => '위치 서비스가 꺼져 있어요. 설정에서 켜주세요.';
+
+  @override
+  String get smsAutoCheckUnsupportedMessage => '이 기기에서는 문자 자동 확인을 지원하지 않아요.';
+
+  @override
+  String get nameRequiredMessage => '이름을 입력해주세요.';
+
+  @override
+  String get scheduleTitleRequiredMessage => '일정 제목을 입력해주세요.';
+
+  @override
+  String get invalidBenefitInfoMessage => '잘못된 혜택 정보예요.';
+
+  @override
+  String get phoneNumberMissingMessage => '전화번호가 없어요.';
+
+  @override
+  String get regionAllFieldsRequiredMessage => '지역을 모두 입력해주세요.';
+
+  @override
+  String get recentMessagesLoadErrorMessage => '최근 문자를 불러오지 못했어요.';
+
+  @override
+  String get reverseGeocodeFailedMessage => '현재 위치를 지역명으로 바꾸지 못했어요.';
+
+  @override
+  String get locationCheckFailedRetryMessage => '현재 위치를 확인하지 못했어요. 다시 시도해주세요.';
+
+  @override
+  String get phoneNumberRecheckMessage => '휴대폰 번호를 다시 확인해주세요.';
+
+  @override
+  String get networkFailureDefaultMessage => '네트워크 연결을 확인해주세요.';
+
+  @override
+  String get authFailureDefaultMessage => '로그인이 필요합니다.';
+
+  @override
+  String get serverFailureDefaultMessage => '서버에 문제가 발생했습니다.';
+
+  @override
+  String get unknownFailureDefaultMessage => '알 수 없는 오류가 발생했습니다.';
+
+  @override
+  String get locationUnavailableDefaultMessage => '현재 위치를 확인할 수 없어요.';
+
+  @override
+  String get welfareCenterUnavailableMessage => '경로당 정보를 아직 제공하지 않아요.';
+
+  @override
+  String get localGovOfficeUnavailableMessage => '관할 행정복지센터 연락처를 아직 제공하지 않아요.';
+
+  @override
+  String get benefitServiceUnavailableMessage => '맞춤 혜택 정보를 아직 제공하지 않아요.';
+
+  @override
+  String get analysisServerNotReadyMessage =>
+      '분석 서버가 아직 준비되지 않았어요. 조금만 기다려주세요.';
+
+  @override
+  String get pinAlreadySetMessage =>
+      '이미 PIN이 설정되어 있어요. PIN을 잊으셨다면 PIN 재설정을 이용해주세요.';
 }

@@ -1,23 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ondam_senior/features/onboarding/presentation/pages/how_to_use_page.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 Widget _wrap() {
-  return const MaterialApp(home: HowToUsePage());
+  return ProviderScope(
+    child: MaterialApp(
+      locale: const Locale('ko'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const HowToUsePage(),
+    ),
+  );
 }
 
 // pop()이 실제로 이전 화면으로 돌아가는지 확인하려면 첫 화면(root route)이
 // 아니라 push된 상태여야 한다.
 Widget _wrapPushed() {
-  return MaterialApp(
-    home: Builder(
-      builder: (context) => Scaffold(
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () => Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const HowToUsePage())),
-            child: const Text('열기'),
+  return ProviderScope(
+    child: MaterialApp(
+      locale: const Locale('ko'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: Center(
+            child: ElevatedButton(
+              onPressed: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const HowToUsePage())),
+              child: const Text('열기'),
+            ),
           ),
         ),
       ),

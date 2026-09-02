@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_outline_card.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/location/presentation/providers/region_provider.dart';
@@ -73,7 +74,7 @@ class SettingsPage extends ConsumerWidget {
     final easyMode = ref.watch(easyModeProvider);
     final l10n = AppLocalizations.of(context)!;
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.settingsTitle,
       onBack: () => Navigator.of(context).pop(),
       scrollable: true,

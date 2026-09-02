@@ -4,6 +4,7 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:permission_handler/permission_handler.dart'
     show openAppSettings;
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/camera_permission_status.dart';
@@ -39,7 +40,7 @@ class DocumentScanCameraPage extends ConsumerWidget {
       orElse: () => false,
     );
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: showsCameraPreview ? null : l10n.documentScanTitle,
       onBack: showsCameraPreview ? null : () => Navigator.of(context).pop(),
       padding: EdgeInsets.zero,

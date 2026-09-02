@@ -5,6 +5,7 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_models/ondam_models.dart';
 import 'package:ondam_senior/features/schedule/presentation/providers/schedule_di_providers.dart';
 import 'package:ondam_senior/features/schedule/presentation/widgets/schedule_tab_view.dart';
+import 'package:ondam_senior/l10n/generated/app_localizations.dart';
 
 import '../../domain/fakes/fake_schedule_repository.dart';
 
@@ -22,7 +23,12 @@ Schedule _schedule(String id, String title, {bool completed = false}) {
 Widget _wrap(FakeScheduleRepository repository) {
   return ProviderScope(
     overrides: [scheduleRepositoryProvider.overrideWithValue(repository)],
-    child: const MaterialApp(home: Scaffold(body: ScheduleTabView())),
+    child: MaterialApp(
+      locale: const Locale('ko'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const Scaffold(body: ScheduleTabView()),
+    ),
   );
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_outline_card.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
@@ -19,7 +20,7 @@ class ConnectionQrPage extends ConsumerWidget {
     final tokenState = ref.watch(connectionTokenProvider);
     final l10n = AppLocalizations.of(context)!;
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.guardianConnectTitle,
       onBack: () => Navigator.of(context).pop(),
       body: tokenState.when(

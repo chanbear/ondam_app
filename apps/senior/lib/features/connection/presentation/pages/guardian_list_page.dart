@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_outline_card.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
@@ -49,7 +50,7 @@ class _GuardianListPageState extends ConsumerState<GuardianListPage> {
     final linksState = ref.watch(guardianLinksProvider);
     final l10n = AppLocalizations.of(context)!;
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.guardianListTitle,
       onBack: () => Navigator.of(context).pop(),
       floatingActionButton: FloatingActionButton.extended(

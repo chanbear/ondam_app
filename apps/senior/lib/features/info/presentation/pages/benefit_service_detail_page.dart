@@ -4,6 +4,9 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/l10n/failure_l10n.dart';
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/benefit_service.dart';
 import '../providers/benefit_service_detail_provider.dart';
 
@@ -20,39 +23,42 @@ class BenefitServiceDetailPage extends ConsumerWidget {
   final BenefitServiceSource source;
 
   Future<void> _openExternalUrl(BuildContext context, String url) async {
+    final l10n = AppLocalizations.of(context)!;
     final launched = await launchUrl(Uri.parse(url));
     if (!launched && context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('링크를 열 수 없어요.')));
+      ).showSnackBar(SnackBar(content: Text(l10n.linkLaunchError)));
     }
   }
 
   Future<void> _callPhone(BuildContext context, String phoneNumber) async {
+    final l10n = AppLocalizations.of(context)!;
     final launched = await launchUrl(Uri(scheme: 'tel', path: phoneNumber));
     if (!launched && context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('전화 앱을 열 수 없어요.')));
+      ).showSnackBar(SnackBar(content: Text(l10n.phoneLaunchError)));
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final detailAsync = ref.watch(
       benefitServiceDetailProvider((id: id, source: source)),
     );
 
-    return AppScaffold(
-      title: '혜택 정보',
+    return VoiceGuideScaffold(
+      title: l10n.benefitServiceDetailTitle,
       onBack: () => Navigator.of(context).pop(),
       scrollable: true,
       body: detailAsync.when(
         loading: () => const AppLoading(),
         error: (error, _) {
           final message = error is Failure
-              ? error.message
-              : '혜택 정보를 불러오지 못했어요.';
+              ? localizeFailureMessage(context, error.message)
+              : l10n.benefitServiceDetailLoadError;
           return AppError(
             message: message,
             onRetry: () => ref.invalidate(
@@ -68,16 +74,22 @@ class BenefitServiceDetailPage extends ConsumerWidget {
             Text(detail.summary, style: AppTextStyles.bodyLarge),
             if (detail.supportTarget != null) ...[
               const SizedBox(height: AppSpacing.lg),
-              AppInfoRow(label: '지원대상', value: detail.supportTarget),
+              AppInfoRow(
+                label: l10n.supportTargetLabel,
+                value: detail.supportTarget,
+              ),
             ],
             if (detail.applyMethod != null) ...[
               const SizedBox(height: AppSpacing.sm),
-              AppInfoRow(label: '신청방법', value: detail.applyMethod),
+              AppInfoRow(
+                label: l10n.applyMethodLabel,
+                value: detail.applyMethod,
+              ),
             ],
             if (detail.contact != null) ...[
               const SizedBox(height: AppSpacing.lg),
               AppButton(
-                label: '문의처 전화하기',
+                label: l10n.contactCallButton,
                 size: AppButtonSize.large,
                 onPressed: () => _callPhone(context, detail.contact!),
               ),
@@ -85,7 +97,7 @@ class BenefitServiceDetailPage extends ConsumerWidget {
             if (detail.externalUrl != null) ...[
               const SizedBox(height: AppSpacing.sm),
               AppButton(
-                label: '자세히 보기',
+                label: l10n.viewDetailButton,
                 size: AppButtonSize.large,
                 onPressed: () => _openExternalUrl(context, detail.externalUrl!),
               ),

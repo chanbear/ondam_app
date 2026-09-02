@@ -7,6 +7,8 @@ import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../core/l10n/failure_l10n.dart';
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/widgets/analysis_progress_indicator.dart';
 import '../../../../core/widgets/analysis_progress_step.dart';
 import '../../../../core/widgets/analysis_result_view.dart';
@@ -104,8 +106,12 @@ class _MessageRiskResultPageState extends ConsumerState<MessageRiskResultPage> {
     final l10n = AppLocalizations.of(context)!;
     final result = state.value;
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.analysisResultTitle,
+      // Easy 모드는 EasyAnalysisResultView가 이미 분석 요약을 직접 읽어준다
+      // (더 구체적인 안내) — 그 경우 여기서는 진입 시 자동 안내를 끄고,
+      // 화면을 벗어날 때 정지시키는 역할만 한다.
+      announceOnEnter: !easyMode,
       onBack: () => Navigator.of(context).pop(),
       headerActions: [if (result != null) AnalysisShareAction(result: result)],
       body: state.when(
@@ -120,11 +126,11 @@ class _MessageRiskResultPageState extends ConsumerState<MessageRiskResultPage> {
           if (error is UnavailableFailure) {
             return AppEmptyState(
               icon: Icons.hourglass_empty,
-              message: error.message,
+              message: localizeFailureMessage(context, error.message),
             );
           }
           final message = error is Failure
-              ? error.message
+              ? localizeFailureMessage(context, error.message)
               : l10n.analysisGenericError;
           return AppError(
             message: message,

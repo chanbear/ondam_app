@@ -4,6 +4,8 @@ import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 import 'package:ondam_models/ondam_models.dart';
 
+import '../../../../core/l10n/failure_l10n.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../pages/schedule_form_page.dart';
 import '../providers/schedule_notifier.dart';
 import 'schedule_list_item.dart';
@@ -15,6 +17,7 @@ class ScheduleTabView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(scheduleListProvider);
 
     return Column(
@@ -27,7 +30,7 @@ class ScheduleTabView extends ConsumerWidget {
             0,
           ),
           child: AppButton(
-            label: '일정 추가',
+            label: l10n.scheduleAddTitle,
             icon: Icons.add,
             onPressed: () => Navigator.of(
               context,
@@ -39,8 +42,8 @@ class ScheduleTabView extends ConsumerWidget {
             loading: () => const AppLoading(),
             error: (error, _) {
               final message = error is Failure
-                  ? error.message
-                  : '일정을 불러오지 못했어요.';
+                  ? localizeFailureMessage(context, error.message)
+                  : l10n.scheduleLoadErrorMessage;
               return AppError(
                 message: message,
                 onRetry: () => ref.invalidate(scheduleListProvider),
@@ -48,7 +51,7 @@ class ScheduleTabView extends ConsumerWidget {
             },
             data: (schedules) {
               if (schedules.isEmpty) {
-                return const AppEmptyState(message: '등록된 일정이 없어요.');
+                return AppEmptyState(message: l10n.scheduleEmptyMessage);
               }
               return RefreshIndicator(
                 onRefresh: () => ref.refresh(scheduleListProvider.future),
@@ -81,11 +84,12 @@ class ScheduleTabView extends ConsumerWidget {
     WidgetRef ref,
     Schedule schedule,
   ) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await AppConfirmDialog.show(
       context,
-      title: '일정 삭제',
-      message: '"${schedule.title}" 일정을 삭제할까요?',
-      confirmLabel: '삭제',
+      title: l10n.scheduleDeleteTitle,
+      message: l10n.scheduleDeleteConfirmMessage(schedule.title),
+      confirmLabel: l10n.deleteButton,
       destructive: true,
     );
     if (!confirmed || !context.mounted) return;

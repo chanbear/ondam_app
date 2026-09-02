@@ -8,6 +8,7 @@ import '../../../../app/router/auth_routes.dart';
 import '../../../../core/auth/auth_state_provider.dart';
 import '../../../../core/auth/supabase_client_provider.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/entities/pin_verify_result.dart';
 import '../../domain/entities/social_auth_provider.dart';
@@ -146,7 +147,7 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
       if (failure != null) {
         return Scaffold(
           body: AppError(
-            message: failure.message,
+            message: localizeFailureMessage(context, failure.message),
             onRetry: () => ref
                 .read(loginNotifierProvider.notifier)
                 .completeSocialLoginSession(),
@@ -235,7 +236,7 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
                     if (failure != null) ...[
                       const SizedBox(height: AppSpacing.md),
                       Text(
-                        failure.message,
+                        localizeFailureMessage(context, failure.message),
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.error,
                         ),

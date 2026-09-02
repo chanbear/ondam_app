@@ -6,7 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/easy_mode/easy_mode_outline_card.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
 import '../../../../core/location/domain/entities/location_permission_status.dart';
 import '../../../../core/location/domain/entities/region.dart';
@@ -136,7 +138,7 @@ class _RegionInputPageState extends ConsumerState<RegionInputPage> {
       case Err(:final failure):
         setState(() {
           _locating = false;
-          _locationError = failure.message;
+          _locationError = localizeFailureMessage(context, failure.message);
         });
     }
   }
@@ -172,7 +174,7 @@ class _RegionInputPageState extends ConsumerState<RegionInputPage> {
       case Err(:final failure):
         setState(() {
           _saving = false;
-          _saveError = failure.message;
+          _saveError = localizeFailureMessage(context, failure.message);
         });
     }
   }
@@ -192,7 +194,7 @@ class _RegionInputPageState extends ConsumerState<RegionInputPage> {
         const Icon(Icons.chevron_right),
       ],
     );
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.enterRegionAction,
       onBack: () => Navigator.of(context).pop(),
       scrollable: true,

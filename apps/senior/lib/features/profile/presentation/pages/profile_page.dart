@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ondam_core/ondam_core.dart';
 import 'package:ondam_design_system/ondam_design_system.dart';
 
+import '../../../../core/voice_guide/voice_guide_scaffold.dart';
 import '../../../../core/demographics/domain/entities/demographics.dart';
+import '../../../../core/l10n/failure_l10n.dart';
 import '../../../../core/demographics/presentation/providers/demographics_provider.dart';
 import '../../../../core/easy_mode/easy_mode_outline_card.dart';
 import '../../../../core/easy_mode/easy_mode_provider.dart';
@@ -56,7 +58,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     if (profileResult case Err(:final failure)) {
       setState(() {
         _saving = false;
-        _saveError = failure.message;
+        _saveError = localizeFailureMessage(context, failure.message);
       });
       return;
     }
@@ -91,7 +93,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       case Err(:final failure):
         setState(() {
           _saving = false;
-          _saveError = failure.message;
+          _saveError = localizeFailureMessage(context, failure.message);
         });
     }
   }
@@ -133,7 +135,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       }
     });
 
-    return AppScaffold(
+    return VoiceGuideScaffold(
       title: l10n.profileTitle,
       onBack: () => Navigator.of(context).pop(),
       scrollable: true,
